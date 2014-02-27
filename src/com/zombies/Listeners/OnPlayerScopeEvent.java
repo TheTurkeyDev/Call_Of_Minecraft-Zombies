@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -27,7 +28,7 @@ public class OnPlayerScopeEvent implements Listener
 	}
 
 	@EventHandler
-	public void onPlayerInteract(PlayerInteractEvent e)
+	public void onPlayerSneak(final PlayerToggleSneakEvent e)
 	{
 		Player player = e.getPlayer();
 		if (plugin.manager.isPlayerInGame(player))
@@ -62,7 +63,7 @@ public class OnPlayerScopeEvent implements Listener
 				}
 				else if ((player.getWalkSpeed() == 0.2F) || (player.getWalkSpeed() == 0.15F))
 				{
-					player.setWalkSpeed(0.2F);
+					player.setWalkSpeed(-0.2F);
 					player.getInventory().setHelmet(new ItemStack(Material.CHAINMAIL_HELMET, 1));
 				}
 			}
