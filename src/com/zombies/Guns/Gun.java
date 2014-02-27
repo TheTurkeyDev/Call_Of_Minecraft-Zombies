@@ -66,7 +66,7 @@ public class Gun
 	 */
 	private int slot;
 	
-	private boolean ecUsed;
+	private boolean ecUsed; //it is used, though it says it isn't
 
 	/**
 	 * Constructing a new gun with params.

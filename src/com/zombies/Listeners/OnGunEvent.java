@@ -177,7 +177,7 @@ public class OnGunEvent implements Listener
 
 								zomb.playEffect(EntityEffect.DEATH);
 								plugin.pointManager.notifyPlayer(player);
-								game.spawnManager.removeEntity((Entity) zomb);
+								game.spawnManager.removeEntity((Entity)zomb);
 								game.zombieKilled(player);
 								if (game.spawnManager.getEntities().size() <= 0)
 								{
