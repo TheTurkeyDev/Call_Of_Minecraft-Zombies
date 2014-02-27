@@ -297,7 +297,7 @@ public class Gun
 					player.getLocation().getWorld().playSound(player.getLocation(), Sound.FALL_BIG, 1, 1);
 					break;
 				case "S12":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.HURT, 1, 1);
+					player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLAZE_HIT, 1, 1);
 					break;
 				case "AN-94":
 					player.getLocation().getWorld().playSound(player.getLocation(), Sound.IRONGOLEM_HIT, 1, 1);
@@ -359,7 +359,7 @@ public class Gun
 					break;
 				// check
 				case "Ray Gun":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.BREATH, 1, 1);
+					player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLAZE_DEATH, 1, 1);
 					break;
 				default:
 					player.getLocation().getWorld().playSound(player.getLocation(), Sound.LAVA_POP, 1, 1);

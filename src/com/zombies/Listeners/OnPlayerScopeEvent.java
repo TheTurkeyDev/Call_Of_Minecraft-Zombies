@@ -47,7 +47,7 @@ public class OnPlayerScopeEvent implements Listener
 					{
 						if (isSniper)
 						{
-							player.setWalkSpeed(0.001F);
+							player.setWalkSpeed(-0.15F);
 							if(plugin.getConfig().getBoolean("config.gameSettings.ZoomTexture"))
 							{
 								player.getInventory().setHelmet(new ItemStack(Material.PUMPKIN, 1));
@@ -60,9 +60,9 @@ public class OnPlayerScopeEvent implements Listener
 					}
 
 				}
-				else if ((player.getWalkSpeed() == 0.1F) || (player.getWalkSpeed() == 0.001F))
+				else if ((player.getWalkSpeed() == -0.2F) || (player.getWalkSpeed() == -0.15F))
 				{
-					player.setWalkSpeed(0.2F);
+					player.setWalkSpeed(-0.2F);
 					player.getInventory().setHelmet(new ItemStack(Material.CHAINMAIL_HELMET, 1));
 				}
 			}
