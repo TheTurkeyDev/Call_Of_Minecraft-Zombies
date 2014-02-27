@@ -1,0 +1,46 @@
+config:
+  settings:
+    useNoSlashForCommand: false
+    checkForUpdates: true
+  Perks:
+    PercentDropchance: 3
+    MaxAmmo: true
+    FireSale: true
+    InstaKill: true
+    Carpenter: true
+    Nuke: true
+    DoublePoints: true
+    maxPerks: 4
+  gameSettings:
+    #Have all or only one Mystery Box be spawned at a time
+    MultipleMysteryBoxes: false
+    #Double points length in seconds
+    doublePointsTimer: 30
+    #Insta kill lenght in seconds
+    instaKillTimer: 30
+    #Insta kill lenght in seconds
+    fireSaleTimer: 30
+    #Time perks will stay on the ground in seconds
+    perkLife: 15
+    #Gun Reload time in seconds
+    reloadTime: 3
+    #Default points when you hit a zombie, value * 2 on double points
+    defaultPointsOnHit: 10
+    #Default points when you kill a zombie, value * 2 on double points
+    defaultPointsOnKill: 60
+    #Max possible zombies in an arena at once
+    maxZombies: 20
+    #This is multiplied by a factor of 1.2
+    waveSpawnInterval: 7
+    #Interval between zombies spawning, value decreases as rounds go up
+    zombieSpawnDelay: 15
+    #Time it takes for an arena to start
+    arenaStartTime: 60
+    #Apply Scope when zooming in if textured
+    ZoomTexture: false
+  ReviveSettings:
+    ReviveTimer: 4
+    MaxDownTime: 60
+  Economy:
+    CostPerJoin: 0
+    MoneyPerKill: 1
