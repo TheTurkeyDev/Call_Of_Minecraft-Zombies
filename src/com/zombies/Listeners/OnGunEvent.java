@@ -92,6 +92,7 @@ public class OnGunEvent implements Listener
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onZombieHitEvent(EntityDamageByEntityEvent event) throws Exception
 	{
