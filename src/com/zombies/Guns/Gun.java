@@ -66,6 +66,7 @@ public class Gun
 	 */
 	private int slot;
 	
+	@SuppressWarnings("unused")
 	private boolean ecUsed; //it is used, though it says it isn't
 
 	/**

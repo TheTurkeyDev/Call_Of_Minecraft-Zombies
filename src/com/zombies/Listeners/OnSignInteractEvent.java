@@ -44,7 +44,7 @@ public class OnSignInteractEvent implements Listener
 		plugin = zombies;
 	}
 
-	@SuppressWarnings("static-access")
+	@SuppressWarnings({ "static-access", "deprecation" })
 	@EventHandler
 	public void RightClickSign(PlayerInteractEvent event)
 	{

@@ -14,6 +14,7 @@ import com.zombies.COMZombies;
 public class Leaderboards
 {
 
+	@SuppressWarnings("unused")
 	private COMZombies plugin;
 	// String being player, PlayerStats being the object that contains info
 	// about that "player" or string

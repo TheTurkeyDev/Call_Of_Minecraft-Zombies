@@ -55,14 +55,14 @@ public class OnPlayerScopeEvent implements Listener
 						}
 						else 
 						{
-							player.setWalkSpeed(0.1F);
+							player.setWalkSpeed(0.2F);
 						}
 					}
 
 				}
-				else if ((player.getWalkSpeed() == -0.2F) || (player.getWalkSpeed() == -0.15F))
+				else if ((player.getWalkSpeed() == 0.2F) || (player.getWalkSpeed() == 0.15F))
 				{
-					player.setWalkSpeed(-0.2F);
+					player.setWalkSpeed(0.2F);
 					player.getInventory().setHelmet(new ItemStack(Material.CHAINMAIL_HELMET, 1));
 				}
 			}

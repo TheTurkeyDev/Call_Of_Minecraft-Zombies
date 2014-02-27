@@ -1367,7 +1367,7 @@ public class Game
 			lb.addPlayerStats(stat);
 
 		}
-		plugin.vault.addMoney(player.getName(), (double)plugin.config.KillMoney);
+	//	plugin.vault.addMoney(player.getName(), (double)plugin.config.KillMoney); //was causing errors, constant spam of Could not pass event EntityDamageByEntityEvent to COM_Zombies v1.1.3 : org.bukkit.event.EventException
 		plugin.files.saveKillsConfig();
 		plugin.files.reloadKillsConfig();
 	}

@@ -20,6 +20,7 @@ public class AddSignCommand implements SubCommand
 		plugin = handler.plugin;
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean onCommand(Player player, String[] args)
 	{
 		if (player.hasPermission("zombies.addsign") || player.hasPermission("zombies.admin"))

@@ -28,6 +28,7 @@ import com.zombies.Guns.Gun;
 import com.zombies.Guns.GunManager;
 import com.zombies.particleutilities.ParticleEffects;
 
+
 public class OnGunEvent implements Listener
 {
 
@@ -235,21 +236,21 @@ public class OnGunEvent implements Listener
 				Location Iloc = item.getLocation();
 				item.setVelocity(player.getLocation().getDirection().multiply(1));
 				item.setPickupDelay(1000);
-				for(Entity e: game.spawnManager.mobs)
-				{
+			for(Entity e: game.spawnManager.mobs)
+			{
 					
 				}
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 				{
-					@Override
+				 @Override
 					public void run()
 					{
 						Location loc = item.getLocation();
 						player.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 4.0F, false, false);
 						item.remove();
 					}
-				}, 140);
+	  		    }, 140);
 			}
 		}
-	}
+	}         
 }
