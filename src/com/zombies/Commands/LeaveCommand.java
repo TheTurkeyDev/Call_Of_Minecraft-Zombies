@@ -5,6 +5,8 @@
 
 package com.zombies.Commands;
 
+import net.milkbowl.vault.Vault;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 

@@ -23,6 +23,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.zombies.COMZombies;
+import com.zombies.CommandUtil;
 import com.zombies.Arena.Game;
 import com.zombies.Guns.Gun;
 import com.zombies.Guns.GunManager;
@@ -59,7 +60,7 @@ public class OnSignInteractEvent implements Listener
 				if(!plugin.isEditingASign.containsKey(player) && Line1.equalsIgnoreCase("[Zombies]") && !plugin.manager.isPlayerInGame(player))
 				{
 					plugin.isEditingASign.put(player, sign);
-					player.sendMessage("You are now editing a sign!");
+					CommandUtil.sendMessageToPlayer(player, "You are now editing a sign!");
 					return;
 				}
 			}
@@ -87,7 +88,7 @@ public class OnSignInteractEvent implements Listener
 						}
 						else
 						{
-							player.sendMessage(ChatColor.DARK_RED + "There is no arena called " + ChatColor.GOLD + sign.getLine(3) + ChatColor.DARK_RED + "! Contact an admin to fix this issue!");
+							CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "There is no arena called " + ChatColor.GOLD + sign.getLine(3) + ChatColor.DARK_RED + "! Contact an admin to fix this issue!");
 							return;
 						}
 					}
@@ -96,7 +97,7 @@ public class OnSignInteractEvent implements Listener
 						Game g = plugin.manager.getGame(sign.getLine(3));
 						if (g == null)
 						{
-							event.getPlayer().sendMessage(ChatColor.DARK_RED + "InvalidArena!");
+							CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "InvalidArena!");
 							return;
 						}
 						event.getPlayer().performCommand("zombies spec " + g.getName());
@@ -119,7 +120,7 @@ public class OnSignInteractEvent implements Listener
 						}
 						else
 						{
-							player.sendMessage(ChatColor.RED + "You don't have enough points!");
+							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You don't have enough points!");
 							return;
 						}
 					}
@@ -132,14 +133,14 @@ public class OnSignInteractEvent implements Listener
 						{
 							if (!game.getInGameManager().isPowered())
 							{
-								player.sendMessage(ChatColor.RED + "You must turn on the power first!");
+								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must turn on the power first!");
 								perk.noPower(plugin, player);
 								return;
 							}
 						}
 						if (perk == null)
 						{
-							player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "An error occured when trying to buy this perk! Leave the game an contact an admin please.");
+							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "An error occured when trying to buy this perk! Leave the game an contact an admin please.");
 							return;
 						}
 						else
@@ -157,14 +158,14 @@ public class OnSignInteractEvent implements Listener
 							{
 								if (game.getInGameManager().getPlayersPerks().size() > 4)
 								{
-									player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You already have four perks!");
+									CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You already have four perks!");
 									return;
 								}
 								try
 								{
 									if (game.getInGameManager().getPlayersPerks().get(player).contains(perk))
 									{
-										player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You already have this perk!");
+										CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You already have " + perk + "!");
 										return;
 									}
 								} catch (NullPointerException e)
@@ -172,7 +173,7 @@ public class OnSignInteractEvent implements Listener
 								}
 								if (!game.getInGameManager().addPerk(player, perk)) { return; }
 								plugin.getServer().getPluginManager().callEvent(new PlayerPerkPurchaseEvent(player, perk));
-								player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You now have " + perk.toString().toLowerCase() + "!");
+								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You now have " + perk.toString().toLowerCase() + "!");
 								int slot = game.getInGameManager().getAvaliblePerkSlot(player);
 								perk.initialEffect(plugin, player, perk, slot);
 								if (perk.equals(PerkType.STAMIN_UP))

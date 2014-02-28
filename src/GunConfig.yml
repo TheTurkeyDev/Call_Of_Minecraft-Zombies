@@ -2,10 +2,9 @@ StartingGun: M1911
 Guns:
   Pistols:
     B23R:
-      itemID:
       Ammo: 15/105
       Damage: 3
-      FireRate:
+      FireRate: 
       PackAPunch:
         Damage: 15
         Name: B34R

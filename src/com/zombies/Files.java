@@ -11,7 +11,7 @@ public class Files
 {
 
 	private COMZombies plugin;
-	private FileConfiguration guns;
+	private static FileConfiguration guns;
 	private FileConfiguration arena;
 	private FileConfiguration signs;
 	private FileConfiguration egg;
