@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import com.zombies.COMZombies;
+import com.zombies.CommandUtil;
 
 public class OnPreCommandEvent implements Listener
 {
@@ -35,7 +36,7 @@ public class OnPreCommandEvent implements Listener
 			if (command.equalsIgnoreCase("zombies") || command.equalsIgnoreCase("z") || command.equalsIgnoreCase("zom")) { return; }
 			if (plugin.manager.isPlayerInGame(player))
 			{
-				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You are not allowed to use commands in game!");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You are not allowed to use commands in game!");
 				event.setCancelled(true);
 			}
 		}

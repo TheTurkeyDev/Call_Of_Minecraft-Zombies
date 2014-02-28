@@ -19,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import com.zombies.COMZombies;
+import com.zombies.CommandUtil;
 import com.zombies.Arena.Game;
 import com.zombies.Arena.GameManager;
 import com.zombies.InGameFeatures.Features.Door;
@@ -52,11 +53,11 @@ public class OnBlockBreakEvent implements Listener
 			{
 				boom(sign);
 			}
-			player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Door removed!");
+			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "" + ChatColor.BOLD + "Door removed!");
 			game.getInGameManager().removeDoor(door);
 			if (game.getInGameManager().getDoors().size() == 0)
 			{
-				player.sendMessage(ChatColor.RED + "No doors left!");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "No doors left!");
 				String[] args = new String[2];
 				args[0] = "cancel";
 				args[1] = "removedoor";
@@ -74,7 +75,7 @@ public class OnBlockBreakEvent implements Listener
 					interact.setCancelled(false);
 					if (game.spawnManager.getPoints().size() == 0)
 					{
-						player.sendMessage(ChatColor.RED + "No spawns left! Force canceling this operation!");
+						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "No spawns left! Force canceling this operation!");
 						String[] args = new String[2];
 						args[0] = "cancel";
 						args[1] = "removespawn";

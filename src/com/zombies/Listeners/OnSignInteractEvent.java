@@ -185,7 +185,7 @@ public class OnSignInteractEvent implements Listener
 							}
 							else
 							{
-								player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You do not have enough points to buy this!");
+								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You do not have enough points to buy this!");
 								return;
 							}
 						}
@@ -196,7 +196,7 @@ public class OnSignInteractEvent implements Listener
 						{
 							if (!game.getInGameManager().isPowered())
 							{
-								player.sendMessage(ChatColor.RED + "You must turn on the power before You can Pack-A-punch!");
+								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must turn on the power before You can Pack-A-punch!");
 								PerkType.noPower(plugin, player);
 								return;
 							}
@@ -210,12 +210,12 @@ public class OnSignInteractEvent implements Listener
 								Gun gun = manager.getGun(player.getInventory().getHeldItemSlot());
 								if (gun.isPackOfPunched())
 								{
-									player.sendMessage(ChatColor.RED + "Your " + gun.getType().name + " is already Pack-A-Punched!");
+									CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Your " + ChatColor.GOLD + gun.getType().name + ChatColor.RED + " is already Pack-A-Punched!");
 									return;
 								}
 								else
 								{
-									player.sendMessage(ChatColor.RED + "Your " + ChatColor.GOLD + gun.getType().name + ChatColor.RED+ " was Pack-A-Punched");
+									CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Your " + ChatColor.GOLD + gun.getType().name + ChatColor.RED+ " was Pack-A-Punched");
 									player.getWorld().playSound(player.getLocation(), Sound.ANVIL_USE, 1, 1);
 									gun.setPackOfPunch(true);
 									plugin.pointManager.takePoints(player, cost);
@@ -224,7 +224,7 @@ public class OnSignInteractEvent implements Listener
 							}
 							else
 							{
-								player.sendMessage(ChatColor.RED + "That is not a gun!");
+								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "That is not a gun!");
 								return;
 							}
 						}
@@ -232,7 +232,7 @@ public class OnSignInteractEvent implements Listener
 						{
 							GunManager manager = game.getPlayersGun(player);
 							Gun gun = manager.getGun(player.getInventory().getHeldItemSlot());
-							player.sendMessage(ChatColor.RED + "You do not have enough points to Pack-A-Punch your " + gun.getType().name + "!");
+							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You do not have enough points to Pack-A-Punch your " + gun.getType().name + "!");
 							return;
 						}
 					}
@@ -241,17 +241,17 @@ public class OnSignInteractEvent implements Listener
 						Door door = game.getInGameManager().getDoorFromSign(sign.getLocation());
 						if (door == null)
 						{
-							player.sendMessage(ChatColor.RED + "An error occured when trying to open this door! Leave the game an contact an admin please.");
+							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "An error occured when trying to open this door! Leave the game an contact an admin please.");
 							return;
 						}
 						else if (door.isOpened())
 						{
-							player.sendMessage(ChatColor.RED + "This door is already open!");
+							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "This door is already open!");
 							return;
 						}
 						else if (plugin.pointManager.getPlayerPoints(player).getPoints() < door.getCost())
 						{
-							player.sendMessage(ChatColor.RED + "You don't have enough points!");
+							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You don't have enough points!");
 							return;
 						}
 						else
@@ -260,7 +260,7 @@ public class OnSignInteractEvent implements Listener
 							door.playerDoorOpenSound();
 							plugin.pointManager.takePoints(player, door.getCost());
 							plugin.pointManager.notifyPlayer(player);
-							player.sendMessage(ChatColor.GREEN + "Door opened!");
+							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Door opened!");
 						}
 					}
 					else if (sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "Gun"))
@@ -276,14 +276,14 @@ public class OnSignInteractEvent implements Listener
 							if (plugin.pointManager.canBuy(player, Refilpoints))
 							{
 								manager.getGun(slot).maxAmmo();
-								player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Filling ammo!");
+								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Filling ammo!");
 								plugin.pointManager.takePoints(player, Refilpoints);
 								plugin.pointManager.notifyPlayer(player);
 								return;
 							}
 							else
 							{
-								player.sendMessage(ChatColor.RED + "You don't have enough points!");
+								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You don't have enough points!");
 								return;
 							}
 						}
@@ -291,7 +291,7 @@ public class OnSignInteractEvent implements Listener
 						{
 							if (plugin.pointManager.canBuy(player, Buypoints))
 							{
-								player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You got the " + ChatColor.GOLD + "" + ChatColor.BOLD + guntype.name + ChatColor.RED + ChatColor.BOLD + "!");
+								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You got the " + ChatColor.GOLD + "" + ChatColor.BOLD + guntype.name + ChatColor.RED + ChatColor.BOLD + "!");
 								manager.removeGun(manager.getGun(slot));
 								manager.addGun(new Gun(guntype, player, slot));
 								player.getLocation().getWorld().playSound(player.getLocation(), Sound.LAVA_POP, 1, 1);
@@ -301,7 +301,7 @@ public class OnSignInteractEvent implements Listener
 							}
 							else
 							{
-								player.sendMessage(ChatColor.RED + "You don't have enough points!");
+								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You don't have enough points!");
 								return;
 							}
 						}
@@ -315,11 +315,11 @@ public class OnSignInteractEvent implements Listener
 								Game g = plugin.manager.getGame(player);
 								if (g.getInGameManager().isPowered())
 								{
-									player.sendMessage(ChatColor.RED + "The power is already on!");
+									CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "The power is already on!");
 									return;
 								}
 								g.getInGameManager().turnOnPower();
-								player.sendMessage(ChatColor.RED + "Power on!");
+								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Power on!");
 							}
 						}
 					}
@@ -329,11 +329,11 @@ public class OnSignInteractEvent implements Listener
 						if(player.hasPermission("zombies.admin") || player.hasPermission("zombies.kit." + kit.getName()))
 						{
 							plugin.kitManager.addPlayersSelectedKit(player, kit);
-							player.sendMessage(ChatColor.GREEN + " You have selected the " + kit.getName() + " Kit!");
+							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + " You have selected the " + kit.getName() + " Kit!");
 						}
 						else
 						{
-							player.sendMessage(ChatColor.RED + "You dont have permission to use that kit!");
+							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You dont have permission to use that kit!");
 						}
 					}
 					else if (sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "teleporter"))
@@ -345,7 +345,7 @@ public class OnSignInteractEvent implements Listener
 							{
 								if (!(g.getInGameManager().isPowered()))
 								{
-									player.sendMessage(ChatColor.RED + "You must turn on the power first!");
+									CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must turn on the power first!");
 									PerkType.noPower(plugin, player);
 									return;
 								}
@@ -382,13 +382,13 @@ public class OnSignInteractEvent implements Listener
 								}
 								else
 								{
-									player.sendMessage(ChatColor.RED + "You don't have enough points!");
+									CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You don't have enough points!");
 									return;
 								}
 							}
 							else
 							{
-								player.sendMessage(ChatColor.RED + "ERROR!");
+								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "ERROR!");
 								return;
 							}
 						}

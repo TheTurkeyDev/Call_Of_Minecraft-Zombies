@@ -17,6 +17,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import com.zombies.COMZombies;
+import com.zombies.CommandUtil;
 import com.zombies.Arena.Game;
 import com.zombies.Arena.Game.ArenaStatus;
 import com.zombies.InGameFeatures.Features.Door;
@@ -44,7 +45,7 @@ public class OnPlayerChatEvent implements Listener
 				Sign sign = plugin.isEditingASign.get(player);
 				plugin.isEditingASign.remove(player);
 				Bukkit.getServer().getPluginManager().callEvent(new SignChangeEvent(sign.getBlock(),player,sign.getLines()));
-				player.sendMessage("You are No longr editing a sign");
+				CommandUtil.sendMessageToPlayer(player, "You are No longr editing a sign");
 				playerChat.setCancelled(true);
 				sign.update();
 			}
@@ -57,8 +58,8 @@ public class OnPlayerChatEvent implements Listener
 				if (door.hasBothLocations() && !door.areSpawnPointsFinal() && !door.arePointsFinal())
 				{
 					door.setPointsFinal(true);
-					player.sendMessage(ChatColor.RED + "Door points for door number " + door.doorNumber + " set!");
-					player.sendMessage(ChatColor.GOLD + "Now select any spawn points in the room the door leads to.");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Door points for door number " + door.doorNumber + " set!");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now select any spawn points in the room the door leads to.");
 					door.saveBlocks(door.p1, door.p2);
 					playerChat.setCancelled(true);
 				}
@@ -71,15 +72,15 @@ public class OnPlayerChatEvent implements Listener
 					}
 					Game game = plugin.manager.getGame(door);
 					game.resetSpawnLocationBlocks();
-					player.sendMessage(ChatColor.RED + "Spawn points for door number " + door.doorNumber + " set!");
-					player.sendMessage(ChatColor.GOLD + "Now select any signs that can open this door.");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn points for door number " + door.doorNumber + " set!");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now select any signs that can open this door.");
 					playerChat.setCancelled(true);
 				}
 				else if (door.arePointsFinal() && door.areSpawnPointsFinal() && !door.areSignsFinal())
 				{
 					door.setSignsFinal(true);
-					player.sendMessage(ChatColor.RED + "Signs for door number " + door.doorNumber + " set!");
-					player.sendMessage(ChatColor.GOLD + "Now type in a price for the doors.");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Signs for door number " + door.doorNumber + " set!");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now type in a price for the doors.");
 					playerChat.setCancelled(true);
 				}
 			}
@@ -100,11 +101,11 @@ public class OnPlayerChatEvent implements Listener
 					price = Integer.parseInt(message);
 				} catch (NumberFormatException ex)
 				{
-					player.sendMessage(ChatColor.RED + message + " is not a number!");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + message + " is not a number!");
 					return;
 				}
 				door.setPrice(price);
-				player.sendMessage(ChatColor.RED + "Door setup complete!");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Door setup complete!");
 				playerChat.setCancelled(true);
 				door.closeDoor();
 				plugin.isCreatingDoor.remove(player);
@@ -117,7 +118,7 @@ public class OnPlayerChatEvent implements Listener
 				Game game = plugin.isArenaSetup.get(player);
 				game.addPointOne(player, player.getLocation());
 				playerChat.setCancelled(true);
-				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Point p1 set for arena : " + game.getName());
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Point p1 set for arena : " + game.getName());
 			}
 			else if (message.equalsIgnoreCase("p2"))
 			{
@@ -130,7 +131,7 @@ public class OnPlayerChatEvent implements Listener
 				}
 				playerChat.setCancelled(true);
 				game.arena.setWorld(loc.getWorld());
-				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Point p2 set for arena : " + game.getName());
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Point p2 set for arena : " + game.getName());
 			}
 			else if (message.equalsIgnoreCase("pw"))
 			{
@@ -142,7 +143,7 @@ public class OnPlayerChatEvent implements Listener
 					return;
 				}
 				playerChat.setCancelled(true);
-				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Player location location set for arena : " + game.getName());
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Player location location set for arena : " + game.getName());
 			}
 			else if (message.equalsIgnoreCase("sw"))
 			{
@@ -155,7 +156,7 @@ public class OnPlayerChatEvent implements Listener
 				}
 				playerChat.setCancelled(true);
 				game.mode = ArenaStatus.WAITING;
-				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Spectator location set for arena : " + game.getName());
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Spectator location set for arena : " + game.getName());
 			}
 			else if (message.equalsIgnoreCase("lw"))
 			{
@@ -167,7 +168,7 @@ public class OnPlayerChatEvent implements Listener
 					return;
 				}
 				playerChat.setCancelled(true);
-				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Lobby location set for arena : " + game.getName());
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Lobby location set for arena : " + game.getName());
 			}
 			else if (message.equalsIgnoreCase("cancel"))
 			{

@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.zombies.COMZombies;
+import com.zombies.CommandUtil;
 import com.zombies.Arena.Game;
 import com.zombies.InGameFeatures.Features.RandomBox;
 import com.zombies.InGameFeatures.PerkMachines.PerkType;
@@ -128,7 +129,7 @@ public class OnSignChangeEvent implements Listener
 					Player player = sign.getPlayer();
 					sign.setLine(0, ChatColor.RED + "[Zombies]");
 					sign.setLine(1, ChatColor.AQUA + "power");
-					player.sendMessage(ChatColor.RED + "Type /z removepower " + game.getName() + " to disable the power!");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type /z removepower " + game.getName() + " to disable the power!");
 					plugin.files.getArenasFile().addDefault(game.getName() + ".Power", null);
 					plugin.files.getArenasFile().set(game.getName() + ".Power", true);
 

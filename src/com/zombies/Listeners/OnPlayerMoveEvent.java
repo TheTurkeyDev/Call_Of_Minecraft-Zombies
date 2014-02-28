@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.zombies.COMZombies;
+import com.zombies.CommandUtil;
 import com.zombies.Arena.Game;
 import com.zombies.Arena.GameManager;
 import com.zombies.Arena.Game.ArenaStatus;
@@ -45,7 +46,7 @@ public class OnPlayerMoveEvent implements Listener
 			if (game.mode == ArenaStatus.INGAME)
 			{
 				player.teleport(game.getPlayerSpawn());
-				player.sendMessage(ChatColor.RED + "Please do not leave the arena!");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Please do not leave the arena!");
 			}
 		}
 	}

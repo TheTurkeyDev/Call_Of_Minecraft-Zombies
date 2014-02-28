@@ -12,6 +12,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.zombies.COMZombies;
+import com.zombies.CommandUtil;
 import com.zombies.Arena.Game;
 import com.zombies.InGameFeatures.Features.Door;
 import com.zombies.Spawning.SpawnPoint;
@@ -47,7 +48,7 @@ public class OnBlockInteractEvent implements Listener
 							if (point == null) { return; }
 							door.addSpawnPoint(point);
 							game.addDoorSpawnPointToConfig(door, point);
-							player.sendMessage(ChatColor.RED + "Spawn point selected!");
+							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn point selected!");
 							event.setCancelled(true);
 						}
 					} catch (NullPointerException e)
@@ -66,7 +67,7 @@ public class OnBlockInteractEvent implements Listener
 							Game game = plugin.manager.getGame(door);
 							game.addDoorSignToConfig(door, sign.getLocation());
 							event.setCancelled(true);
-							player.sendMessage(ChatColor.RED + "Sign selected!");
+							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Sign selected!");
 						}
 					}
 				}
@@ -75,14 +76,14 @@ public class OnBlockInteractEvent implements Listener
 				{
 					Location loc = event.getClickedBlock().getLocation();
 					door.p1 = loc;
-					player.sendMessage(ChatColor.RED + "Point one set!");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Point one set!");
 					event.setCancelled(true);
 				}
 				else if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
 				{
 					Location loc = event.getClickedBlock().getLocation();
 					door.p2 = loc;
-					player.sendMessage(ChatColor.RED + "Point two set!");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Point two set!");
 					event.setCancelled(true);
 				}
 			}
