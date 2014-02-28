@@ -26,6 +26,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.zombies.COMZombies;
+import com.zombies.CommandUtil;
 import com.zombies.Arena.Game;
 import com.zombies.InGameFeatures.PerkMachines.PerkType;
 
@@ -66,7 +67,6 @@ public class Gun
 	 */
 	private int slot;
 	
-	@SuppressWarnings("unused")
 	private boolean ecUsed; //it is used, though it says it isn't
 
 	/**
@@ -240,7 +240,7 @@ public class Gun
 		if (isReloading) return;
 		if (totalAmmo == 0 && clipAmmo == 0)
 		{
-			player.sendMessage(ChatColor.RED + "No ammo!");
+			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "No ammo!");
 			player.getLocation().getWorld().playSound(player.getLocation(), Sound.CLICK, 1, 1);
 			return;
 		}
