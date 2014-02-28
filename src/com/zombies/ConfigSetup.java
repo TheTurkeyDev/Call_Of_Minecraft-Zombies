@@ -85,6 +85,8 @@ public class ConfigSetup
 	public int maxPerks;
 
 	public int KillMoney;
+	
+	public boolean PistolMaterial;
 
 	/**
 	 * Instantiates the plugin field as the main class and assigns correct
@@ -155,6 +157,7 @@ public class ConfigSetup
 		arenaStartTime = plugin.getConfig().getInt("config.gameSettings.arenaStartTime");
 		maxPerks = plugin.getConfig().getInt("config.Perks.maxPerks");
 		KillMoney = plugin.getConfig().getInt("config.Economy.MoneyPerKill");
+		PistolMaterial = plugin.getConfig().getBoolean("config.Guns.PistolMaterial");
 
 		try
 		{

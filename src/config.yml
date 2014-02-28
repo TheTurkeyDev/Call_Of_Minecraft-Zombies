@@ -44,3 +44,5 @@ config:
   Economy:
     CostPerJoin: 0
     MoneyPerKill: 1
+  Guns:
+    PistalMaterial: Gold_AXE

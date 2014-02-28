@@ -2,9 +2,11 @@ package com.zombies.Guns;
 
 import org.bukkit.Material;
 
+import com.zombies.COMZombies;
+
 public class GunType
 {
-
+    public COMZombies plugin;
 	public String name;
 	public GunTypeEnum type;
 	public int damage;
@@ -41,7 +43,7 @@ public class GunType
 	 */
 	public Material categorizeGun()
 	{
-		if (type.equals(GunTypeEnum.Pistols)) { return Material.WOOD_HOE; }
+		if (type.equals(GunTypeEnum.Pistols)) { return (Material.getMaterial(plugin.getConfig().getInt("config.Guns.PistolMaterial"))); }
 		if (type.equals(GunTypeEnum.Shotguns)) { return Material.STONE_HOE; }
 		if (type.equals(GunTypeEnum.AssaultRifles)) { return Material.GOLD_HOE; }
 		if (type.equals(GunTypeEnum.LightMachineGuns)) { return Material.IRON_HOE; }
