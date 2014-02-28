@@ -414,7 +414,6 @@ public class Gun
 	 * @variable stack: Item to be changed to a gun
 	 * @Suppresses deprecation: Update inventory is still an active method.
 	 */
-	@SuppressWarnings("deprecation")
 	public void updateGun()
 	{
 		if (gun == null) return;
