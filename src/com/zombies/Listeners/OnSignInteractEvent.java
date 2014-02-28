@@ -195,7 +195,7 @@ public class OnSignInteractEvent implements Listener
 						{
 							if (!game.getInGameManager().isPowered())
 							{
-								player.sendMessage(ChatColor.RED + "You must turn on the power first!");
+								player.sendMessage(ChatColor.RED + "You must turn on the power before You can Pack-A-punch!");
 								PerkType.noPower(plugin, player);
 								return;
 							}
@@ -209,14 +209,14 @@ public class OnSignInteractEvent implements Listener
 								Gun gun = manager.getGun(player.getInventory().getHeldItemSlot());
 								if (gun.isPackOfPunched())
 								{
-									player.sendMessage(ChatColor.RED + "Your gun is already pack a punched!");
+									player.sendMessage(ChatColor.RED + "Your " + gun.getType().name + " is already Pack-A-Punched!");
 									return;
 								}
 								else
 								{
-									gun.setPackOfPunch(true);
-									player.sendMessage(ChatColor.RED + "Gun pack a punched");
+									player.sendMessage(ChatColor.RED + "Your " + ChatColor.GOLD + gun.getType().name + ChatColor.RED+ " was Pack-A-Punched");
 									player.getWorld().playSound(player.getLocation(), Sound.ANVIL_USE, 1, 1);
+									gun.setPackOfPunch(true);
 									plugin.pointManager.takePoints(player, cost);
 									return;
 								}
@@ -229,7 +229,9 @@ public class OnSignInteractEvent implements Listener
 						}
 						else
 						{
-							player.sendMessage(ChatColor.RED + "You do not have enough points to buy this!");
+							GunManager manager = game.getPlayersGun(player);
+							Gun gun = manager.getGun(player.getInventory().getHeldItemSlot());
+							player.sendMessage(ChatColor.RED + "You do not have enough points to Pack-A-Punch your " + gun.getType().name + "!");
 							return;
 						}
 					}
@@ -330,7 +332,7 @@ public class OnSignInteractEvent implements Listener
 						}
 						else
 						{
-							player.sendMessage(ChatColor.RED + "You dont have perms for that kit!");
+							player.sendMessage(ChatColor.RED + "You dont have permission to use that kit!");
 						}
 					}
 					else if (sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "teleporter"))
