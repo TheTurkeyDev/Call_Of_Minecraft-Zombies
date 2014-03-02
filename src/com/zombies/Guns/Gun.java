@@ -264,74 +264,32 @@ public class Gun
 		if (getType().type.equals(GunTypeEnum.Pistols))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.5));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.5));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.5));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.5));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.5));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.5));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.5));
 			ls.setVelocity(ls.getVelocity().multiply(.5));
 		}
 		if (getType().type.equals(GunTypeEnum.AssaultRifles))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.7));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.7));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.7));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.7));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.7));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.7));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.7));
 			ls.setVelocity(ls.getVelocity().multiply(.7));
 		}
 		if (getType().type.equals(GunTypeEnum.SniperRifles))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.9));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.9));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.9));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.9));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.9));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.9));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.9));
-			ls.setVelocity(ls.getVelocity().multiply(.9));
+			ls.setVelocity(ls.getVelocity().multiply(1));
 		}
 		if (getType().type.equals(GunTypeEnum.LightMachineGuns))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.11));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.11));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.11));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.11));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.11));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.11));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.11));
-			ls.setVelocity(ls.getVelocity().multiply(.11));
+			ls.setVelocity(ls.getVelocity().multiply(2));
 		}
 		if (getType().type.equals(GunTypeEnum.SubMachineGuns))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.13));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.13));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.13));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.13));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.13));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.13));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.13));
-			ls.setVelocity(ls.getVelocity().multiply(.13));
+			ls.setVelocity(ls.getVelocity().multiply(3));
 		}
 		else
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.15));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.15));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.15));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.15));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.15));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.15));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.15));
-			ls.setVelocity(ls.getVelocity().multiply(.15));
+			ls.setVelocity(ls.getVelocity().multiply(4));
 		}
 		if (plugin.files.getGunsConfig().getString("Resource Sounds").equalsIgnoreCase("on"))
 		{
