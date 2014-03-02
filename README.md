@@ -7,4 +7,4 @@ BukkitDev page: http://dev.bukkit.org/bukkit-plugins/call-duty-zombies
 ===
 Brainzzz
 ==
-smeths().eatsZombies().rottenFleshOnly(Flexh.getRotten(), 64)) }
+smeths().eatsZombies().rottenFleshOnly(Flesh.getRotten(), 64)) }
