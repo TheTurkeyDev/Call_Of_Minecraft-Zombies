@@ -252,14 +252,14 @@ public class Gun
 		if (getType().type.equals(GunTypeEnum.Shotguns))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.6));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.6));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.6));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.6));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.6));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.6));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.6));
-			ls.setVelocity(ls.getVelocity().multiply(.6));
+			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.1));
+			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.1));
+			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.1));
+			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.1));
+			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.1));
+			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.1));
+			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.1));
+			ls.setVelocity(ls.getVelocity().multiply(.5));
 		}
 		else
 		{

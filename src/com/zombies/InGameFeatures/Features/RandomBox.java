@@ -16,6 +16,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
 import com.zombies.COMZombies;
+import com.zombies.CommandUtil;
 
 public class RandomBox
 {
@@ -39,7 +40,7 @@ public class RandomBox
 		if (!(plugin.manager.isPlayerInGame(player))) { return; }
 		if(!plugin.pointManager.canBuy(player, PointsNeeded))
 		{
-			player.sendMessage(ChatColor.RED + "You don't have enough points!");
+			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You don't have enough points!");
 			return;
 		}
 		if (boxGame == null) return;
@@ -47,7 +48,7 @@ public class RandomBox
 		int randID = (int) (Math.random() * plugin.possibleGuns.size() + 1);
 		try{
 		gun = plugin.possibleGuns.get(randID);
-		}catch(IndexOutOfBoundsException e){if(!boxGame.isFireSale()){player.sendMessage(ChatColor.DARK_RED + "TeadyBear!!!!!!");boxGame.getBoxManger().teddyBear();return;}else{randID = (int) Math.random() * plugin.possibleGuns.size();}}
+		}catch(IndexOutOfBoundsException e){if(!boxGame.isFireSale()){CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "TeadyBear!!!!!!");boxGame.getBoxManger().teddyBear();return;}else{randID = (int) Math.random() * plugin.possibleGuns.size();}}
 		GunManager manager = boxGame.getPlayersGun(player);
 		int slot = manager.getCorrectSlot();
 		manager.removeGun(manager.getGun(slot));
