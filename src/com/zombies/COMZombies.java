@@ -180,7 +180,7 @@ public class COMZombies extends JavaPlugin
 	 * @category Custom constructor
 	 */
 	public SignManager signManager;
-	// public Vault vault;
+    //public Vault vault;
 	public Files files;
 
 	public Vault vault;
@@ -189,7 +189,7 @@ public class COMZombies extends JavaPlugin
 	{
 		instance = this;
 		files = new Files();
-		// vault = new Vault(this);
+	    vault = new Vault(this);
 		reloadConfig();
 		config = new ConfigSetup(this);
 		manager = new GameManager(this);

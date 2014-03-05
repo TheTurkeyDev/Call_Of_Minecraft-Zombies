@@ -789,7 +789,7 @@ public class Game
 		for (int i = 0; i < players.size(); i++)
 		{
 			double points = waveNumber;
-			// plugin.vault.addMoney(players.get(i).getName(), points);
+			plugin.vault.addMoney(players.get(i).getName(), points);
 			CommandUtil.sendMessageToPlayer(players.get(i), "You got " + points + " for getting to round: " + waveNumber + "!");
 			scoreboard.removePlayer(players.get(i));
 			playerLeave(players.get(i));
@@ -1245,7 +1245,7 @@ public class Game
 		player.getInventory().setLeggings(pants);
 		player.getInventory().setBoots(boots);
 		player.getInventory().setItem(0, knife);
-		//player.getInventory().setItem(8, new ItemStack(Material.MAGMA_CREAM, 4));
+		player.getInventory().setItem(8, new ItemStack(Material.MAGMA_CREAM, 4));
 		player.getInventory().setItem(27, setItemMeta(27, ib));
 		player.getInventory().setItem(28, setItemMeta(28, ib));
 		player.getInventory().setItem(29, setItemMeta(29, ib));
@@ -1367,7 +1367,7 @@ public class Game
 			lb.addPlayerStats(stat);
 
 		}
-	//	plugin.vault.addMoney(player.getName(), (double)plugin.config.KillMoney); //was causing errors, constant spam of Could not pass event EntityDamageByEntityEvent to COM_Zombies v1.1.3 : org.bukkit.event.EventException
+		plugin.vault.addMoney(player.getName(), (double)plugin.config.KillMoney); 
 		plugin.files.saveKillsConfig();
 		plugin.files.reloadKillsConfig();
 	}

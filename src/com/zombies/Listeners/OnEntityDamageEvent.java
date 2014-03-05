@@ -111,6 +111,7 @@ public class OnEntityDamageEvent implements Listener
 			Game game = plugin.manager.getGame(entity);
 			if (game != null)
 			{
+				
 				if (e.getDamager() instanceof Player)
 				{
 					Player player = (Player) e.getDamager();
@@ -222,13 +223,6 @@ public class OnEntityDamageEvent implements Listener
 					}
 					return;
 				}
-				else if(e.getCause().equals(DamageCause.LAVA))
-				{
-					Zombie z = (Zombie) entity;
-					z.setFireTicks(0);
-					z.teleport(game.getPlayerSpawn());
-					e.setCancelled(true);
-				}
 			}
 		}
 	}
@@ -260,6 +254,14 @@ public class OnEntityDamageEvent implements Listener
 				}
 			}
 			if (plugin.manager.isPlayerInGame(player)) player.getLocation().getWorld().playEffect(player.getLocation().add(0, 1, 0), Effect.STEP_SOUND, 152);
+		}
+		else if(e.getCause().equals(DamageCause.LAVA))
+		{
+			Zombie z = (Zombie) e.getEntity();
+			z.setFireTicks(0);
+			Game game =  plugin.manager.getGame(z);
+			z.teleport(game.getPlayerSpawn());
+			e.setCancelled(true);
 		}
 	}
 

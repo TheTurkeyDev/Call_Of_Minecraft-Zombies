@@ -43,23 +43,28 @@ public class OnPlayerScopeEvent implements Listener
 			if (game.mode.equals(Game.ArenaStatus.INGAME))
 			{
 				if (player.isSneaking())
-				{
-					if (player.getWalkSpeed() == 0.2F)
-					{
-						if (isSniper)
-						{
-							player.setWalkSpeed(-0.15F);
-							if(plugin.getConfig().getBoolean("config.gameSettings.ZoomTexture"))
-							{
-								player.getInventory().setHelmet(new ItemStack(Material.PUMPKIN, 1));
-							}
-						}
-						else 
-						{
-							player.setWalkSpeed(0.2F);
-						}
-					}
-
+			    {
+			     player.setWalkSpeed(0.2F);
+			     player.getInventory().setHelmet(new ItemStack(Material.CHAINMAIL_HELMET, 1));
+			    }
+			    else
+			    {
+			     if (player.getWalkSpeed() == 0.2F)
+			     {
+			      if (isSniper)
+			      {
+			       player.setWalkSpeed(-0.2F);
+			       if(plugin.getConfig().getBoolean("config.gameSettings.ZoomTexture"))
+			       {
+			        player.getInventory().setHelmet(new ItemStack(Material.PUMPKIN, 1));
+			       }
+			      }
+			      else 
+			      {
+			       player.setWalkSpeed(-0.1F);
+			      }
+			     }
+			    }
 				}
 				else if ((player.getWalkSpeed() == 0.2F) || (player.getWalkSpeed() == 0.15F))
 				{
@@ -69,4 +74,3 @@ public class OnPlayerScopeEvent implements Listener
 			}
 		}
 	}
-}
