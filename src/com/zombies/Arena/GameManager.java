@@ -35,14 +35,15 @@ public class GameManager
 		return new GameManager(plugin);
 	}
 
-	public void endAll()
-	{
-		if (games.size() < 1) return;
-		for (Game gl : games)
-		{
-			gl.endGame();
-		}
-	}
+	 public void endAll()
+	  {
+	    if (this.games.size() < 1) {
+	      return;
+	    }
+	    for (Game gl : this.games) {
+	      gl.endGame();
+	    }
+	  }
 
 	public Game getGame(Entity entity)
 	{
