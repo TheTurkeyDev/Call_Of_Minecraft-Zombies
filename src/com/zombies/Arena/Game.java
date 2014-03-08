@@ -1261,7 +1261,7 @@ public class Game
 		player.updateInventory();
 	}
 
-	public void clearArena()
+	public void clearArena()//clear players
 	{
 		if (this.getWorld() == null) return;
 		for (Entity entity : this.getWorld().getEntities())
@@ -1281,7 +1281,7 @@ public class Game
 	       List<Entity> entList = getWorld().getEntities();//get all entities in the world
 	       
 	        for(Entity current : entList){//loop through the list
-	            if (current instanceof Item){//make sure we aren't deleting mobs/players
+	            if (current instanceof Item){//make sure we are only deleting what we want to delete
 	            current.remove();//remove it
 	            }
 	            if(current instanceof Zombie){
