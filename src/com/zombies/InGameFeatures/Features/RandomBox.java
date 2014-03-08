@@ -92,7 +92,7 @@ public class RandomBox
 
 	public void loadBox()
 	{
-		boxLoc.getBlock().setType(Material.WALL_SIGN); 
+		boxLoc.getBlock().setType( Material.WALL_SIGN); 
 		Sign sign = (Sign) boxLoc.getBlock().getState();
 		sign.setLine(0, ChatColor.RED + "[Zombies]");
 		sign.setLine(1, ChatColor.AQUA + "MysteryBox");

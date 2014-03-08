@@ -10,6 +10,7 @@
 
 package com.zombies.Guns;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -453,6 +454,9 @@ public class Gun
 			{
 				data.setDisplayName(ChatColor.BLUE + gun.packAPunchName + " " + clipAmmo + "/" + totalAmmo);
 				data.addEnchant(Enchantment.KNOCKBACK, 1, true);
+				ArrayList<String> lore = new ArrayList<String>();
+				lore.add("PACK-A-PUNCHED");
+				data.setLore(lore);
 			}
 			else
 			{
@@ -461,7 +465,32 @@ public class Gun
 		}
 		stack.setItemMeta(data);
 		player.getInventory().setItem(slot, stack);
-		player.updateInventory();
+	}
+	public void updateGunOnReload()
+	{
+		if (gun == null) return;
+		ItemStack stack = player.getInventory().getItemInHand();
+		stack = new ItemStack(gun.categorizeGun(), 1);
+		stack.setType(gun.categorizeGun());
+		ItemMeta data = stack.getItemMeta();
+		if (isReloading) data.setDisplayName(ChatColor.RED + "Reloading!");
+		else
+		{
+			if (packed)
+			{
+				data.setDisplayName(ChatColor.BLUE + gun.packAPunchName + " " + clipAmmo + "/" + totalAmmo);
+				data.addEnchant(Enchantment.KNOCKBACK, 1, true);
+				ArrayList<String> lore = new ArrayList<String>();
+				lore.add("PACK-A-PUNCHED");
+				data.setLore(lore);
+			}
+			else
+			{
+				data.setDisplayName(ChatColor.RED + gun.name + " " + clipAmmo + "/" + totalAmmo);
+			}
+		}
+		stack.setItemMeta(data);
+		player.getInventory().setItem(slot, stack);
 	}
 
 	/**

@@ -18,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -70,10 +71,8 @@ public class OnGunEvent implements Listener
 	}
 
 	@EventHandler
-	public void onGunReload(PlayerInteractEvent e)
+	public void onGunReload(PlayerDropItemEvent e)
 	{
-		if (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK))
-		{
 			Player player = e.getPlayer();
 			if (plugin.manager.isPlayerInGame(player))
 			{
@@ -81,17 +80,17 @@ public class OnGunEvent implements Listener
 				if (!(game.mode == ArenaStatus.INGAME)) { return; }
 				if (game.getPlayersGun(player) != null)
 				{
+					e.setCancelled(true);
 					GunManager gunManager = game.getPlayersGun(player);
 					if (gunManager.isGun())
 					{
 						Gun gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
 						gun.reload();
-						gun.updateGun();
+						gun.updateGunOnReload();
 					}
 				}
 			}
 		}
-	}
 
 	@SuppressWarnings("deprecation")
 	@EventHandler
@@ -231,7 +230,7 @@ public class OnGunEvent implements Listener
 			if (!(game.mode == ArenaStatus.INGAME)) { return; }
 			if (player.getItemInHand().getType().equals(Material.MAGMA_CREAM))
 			{
-				player.getInventory().remove(Material.MAGMA_CREAM);
+				player.getInventory().removeItem(new ItemStack(Material.MAGMA_CREAM, 1));
 				final Item item = player.getWorld().dropItemNaturally(player.getEyeLocation(), new ItemStack(Material.MAGMA_CREAM));
 				Location Iloc = item.getLocation();
 				item.setVelocity(player.getLocation().getDirection().multiply(1));

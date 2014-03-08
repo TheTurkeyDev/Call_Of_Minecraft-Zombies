@@ -25,8 +25,10 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
@@ -817,6 +819,7 @@ public class Game
 		waveNumber = 0;
 		spawnManager.zombieSpawnInterval = plugin.getConfig().getInt("config.gameSettings.waveSpawnInterval");
 		clearArena();
+		clearArenaItems();
 		for (Player pl : Bukkit.getOnlinePlayers())
 		{
 			for (Player p : Bukkit.getOnlinePlayers())
@@ -1268,12 +1271,24 @@ public class Game
 				if (!(entity instanceof Player))
 				{
 					entity.setTicksLived(Integer.MAX_VALUE);
-					entity.remove();
 				}
 			}
 		}
 	}
-
+	public void clearArenaItems()
+	{
+		if (this.getWorld() == null) return;
+	       List<Entity> entList = getWorld().getEntities();//get all entities in the world
+	       
+	        for(Entity current : entList){//loop through the list
+	            if (current instanceof Item){//make sure we aren't deleting mobs/players
+	            current.remove();//remove it
+	            }
+	            if(current instanceof Zombie){
+	            current.remove();
+	            }
+	        }
+	}
 	public GameScoreboard getScoreboard()
 	{
 		return scoreboard;
