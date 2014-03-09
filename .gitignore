@@ -1,0 +1,16 @@
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+/bin
+=======
+>>>>>>> branch 'master' of https://github.com/Turkey2349/COMZ.git
+=======
+>>>>>>> branch 'master' of https://github.com/Turkey2349/COMZ.git
+=======
+>>>>>>> refs/remotes/origin/master
