@@ -91,14 +91,14 @@ public class RandomBox
 
 	public void loadBox()
 	{
-		boxLoc.getBlock().setType(Material.SIGN_POST);
+		boxLoc.getBlock().setType( Material.WALL_SIGN); 
 		Sign sign = (Sign) boxLoc.getBlock().getState();
 		sign.setLine(0, ChatColor.RED + "[Zombies]");
 		sign.setLine(1, ChatColor.AQUA + "MysteryBox");
 		sign.setLine(2, "" + boxCost);
 		sign.update();
 	}
-
+	
 	public void removeBox()
 	{
 		boxLoc.getBlock().setType(Material.AIR);

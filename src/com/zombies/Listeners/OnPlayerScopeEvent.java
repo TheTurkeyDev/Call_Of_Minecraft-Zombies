@@ -61,6 +61,11 @@ public class OnPlayerScopeEvent implements Listener
 					}
 				}
 			}
+			else if ((player.getWalkSpeed() == 0.2F) || (player.getWalkSpeed() == 0.15F))
+			{
+				player.setWalkSpeed(-0.2F);
+				player.getInventory().setHelmet(new ItemStack(Material.CHAINMAIL_HELMET, 1));
+			}
 		}
 	}
 }

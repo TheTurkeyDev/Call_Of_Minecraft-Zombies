@@ -180,7 +180,6 @@ public class COMZombies extends JavaPlugin
 	 * @category Custom constructor
 	 */
 	public SignManager signManager;
-	// public Vault vault;
 	public Files files;
 
 	public Vault vault;

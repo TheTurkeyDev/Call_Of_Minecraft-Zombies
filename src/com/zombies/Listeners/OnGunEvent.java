@@ -1,5 +1,8 @@
 package com.zombies.Listeners;
 
+import net.minecraft.server.v1_7_R1.EntityLiving;
+import net.minecraft.server.v1_7_R1.PathEntity;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
@@ -15,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -67,24 +71,23 @@ public class OnGunEvent implements Listener
 	}
 
 	@EventHandler
-	public void onGunReload(PlayerInteractEvent e)
+	public void onGunReload(PlayerDropItemEvent e)
 	{
-		if (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK))
+		Player player = e.getPlayer();
+		if (plugin.manager.isPlayerInGame(player))
 		{
-			Player player = e.getPlayer();
-			if (plugin.manager.isPlayerInGame(player))
+			Game game = plugin.manager.getGame(player);
+			if (!(game.mode == ArenaStatus.INGAME)) { return; }
+			if (game.getPlayersGun(player) != null)
 			{
-				Game game = plugin.manager.getGame(player);
-				if (!(game.mode == ArenaStatus.INGAME)) { return; }
-				if (game.getPlayersGun(player) != null)
+				e.setCancelled(true);
+				GunManager gunManager = game.getPlayersGun(player);
+				if (gunManager.isGun())
 				{
-					GunManager gunManager = game.getPlayersGun(player);
-					if (gunManager.isGun())
-					{
-						Gun gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
-						gun.reload();
-						gun.updateGun();
-					}
+					Gun gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
+					gun.reload();
+					gun.updateGun();
+					gun.updateGunOnReload();
 				}
 			}
 		}
@@ -227,25 +230,25 @@ public class OnGunEvent implements Listener
 			if (!(game.mode == ArenaStatus.INGAME)) { return; }
 			if (player.getItemInHand().getType().equals(Material.MAGMA_CREAM))
 			{
-				player.getInventory().remove(Material.MAGMA_CREAM);
+				player.getInventory().removeItem(new ItemStack(Material.MAGMA_CREAM, 1));
 				final Item item = player.getWorld().dropItemNaturally(player.getEyeLocation(), new ItemStack(Material.MAGMA_CREAM));
 				Location Iloc = item.getLocation();
 				item.setVelocity(player.getLocation().getDirection().multiply(1));
 				item.setPickupDelay(1000);
-			for(Entity e: game.spawnManager.mobs)
-			{
-					
+				for(Entity e: game.spawnManager.mobs)
+				{
+
 				}
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 				{
-				 @Override
+					@Override
 					public void run()
 					{
 						Location loc = item.getLocation();
 						player.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 4.0F, false, false);
 						item.remove();
 					}
-	  		    }, 140);
+				}, 140);
 			}
 		}
 	}         

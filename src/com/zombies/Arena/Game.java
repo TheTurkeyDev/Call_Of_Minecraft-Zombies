@@ -27,6 +27,8 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
@@ -789,7 +791,7 @@ public class Game
 		for (int i = 0; i < players.size(); i++)
 		{
 			double points = waveNumber;
-			// plugin.vault.addMoney(players.get(i).getName(), points);
+			plugin.vault.addMoney(players.get(i).getName(), points);
 			CommandUtil.sendMessageToPlayer(players.get(i), "You got " + points + " for getting to round: " + waveNumber + "!");
 			scoreboard.removePlayer(players.get(i));
 			playerLeave(players.get(i));
@@ -817,6 +819,7 @@ public class Game
 		waveNumber = 0;
 		spawnManager.zombieSpawnInterval = plugin.getConfig().getInt("config.gameSettings.waveSpawnInterval");
 		clearArena();
+		clearArenaItems();
 		for (Player pl : Bukkit.getOnlinePlayers())
 		{
 			for (Player p : Bukkit.getOnlinePlayers())
@@ -1258,7 +1261,7 @@ public class Game
 		player.updateInventory();
 	}
 
-	public void clearArena()
+	public void clearArena()//clear players
 	{
 		if (this.getWorld() == null) return;
 		for (Entity entity : this.getWorld().getEntities())
@@ -1274,6 +1277,21 @@ public class Game
 		}
 	}
 
+	public void clearArenaItems()
+	{
+		if (this.getWorld() == null) return;
+	       List<Entity> entList = getWorld().getEntities();//get all entities in the world
+	       
+	        for(Entity current : entList){//loop through the list
+	            if (current instanceof Item){//make sure we are only deleting what we want to delete
+	            current.remove();//remove it
+	            }
+	            if(current instanceof Zombie){
+	            current.remove();
+	            }
+	        }
+	}
+	
 	public GameScoreboard getScoreboard()
 	{
 		return scoreboard;

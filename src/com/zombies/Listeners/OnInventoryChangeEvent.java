@@ -6,6 +6,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import com.zombies.COMZombies;
+import com.zombies.Arena.Game;
+import com.zombies.Arena.Game.ArenaStatus;
+import com.zombies.Guns.Gun;
+import com.zombies.Guns.GunManager;
 
 public class OnInventoryChangeEvent implements Listener
 {
@@ -23,6 +27,18 @@ public class OnInventoryChangeEvent implements Listener
 		if (plugin.manager.isPlayerInGame(player))
 		{
 			event.setCancelled(true);
+		}
+		Game game = plugin.manager.getGame(player);
+		if (!(game.mode == ArenaStatus.INGAME)) { return; }
+		if (game.getPlayersGun(player) != null)
+		{
+			GunManager gunManager = game.getPlayersGun(player);
+			if (gunManager.isGun())
+			{
+				Gun gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
+				gun.reload();
+				gun.updateGun();
+			}
 		}
 	}
 }

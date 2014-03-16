@@ -1,0 +1,11 @@
+name: COM Zombies
+main: com.zombies.COMZombies
+authors: [IModZombies4Fun, Turkey2349]
+description: Beta
+version: 1.1.3
+load: POSTWORLD
+softdepend: [PermissionsEx, Permissions, Essentials, EssentialsChat, HeroChat, iChat, LocalAreaChat, LWC, nChat, ChatManager, CAPI, AuthMe, Vault, Spout, WorldEdit, WorldGuard, AuthDB, CaptureThePoints, CombatTag]
+commands:
+  zombies:
+    description: Type /zombies help for more info!
+    aliases: [z, zo, zom]
