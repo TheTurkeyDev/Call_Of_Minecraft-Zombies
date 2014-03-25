@@ -43,10 +43,8 @@ config:
     MaxDownTime: 60
   Economy:
     CostPerJoin: 0
-<<<<<<< HEAD
     MoneyPerKill: 1
-=======
+    MoneyPerKill: 1
     MoneyPerKill: 1
   Guns:
     PistalMaterial: WOOD_AXE
->>>>>>> 91efea25bac7b847e8a4653895766f225c3c9525
