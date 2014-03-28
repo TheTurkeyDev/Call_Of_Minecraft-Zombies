@@ -13,6 +13,8 @@ package com.zombies.Guns;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.server.v1_7_R1.Item;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -444,7 +446,7 @@ public class Gun
 	{
 		if (gun == null) return;
 		ItemStack stack = player.getInventory().getItem(slot);
-		stack = new ItemStack(gun.categorizeGun(), 1);
+		stack = new ItemStack(gun.categorizeGun());
 		stack.setType(gun.categorizeGun());
 		ItemMeta data = stack.getItemMeta();
 		if (isReloading) data.setDisplayName(ChatColor.RED + "Reloading!");
@@ -491,7 +493,6 @@ public class Gun
 		}
 		stack.setItemMeta(data);
 		player.getInventory().setItem(slot, stack);
-		player.updateInventory();
 	}
 
 	/**

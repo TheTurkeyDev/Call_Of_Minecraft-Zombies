@@ -209,7 +209,7 @@ public class OnEntityDamageEvent implements Listener
 							}
 							for (Player pl : game.players)
 							{
-								pl.playEffect(entity.getLocation().add(0, 1, 0), Effect.STEP_SOUND, null);
+								pl.playEffect(entity.getLocation().add(0, 1, 0), Effect.STEP_SOUND, 1);
 							}
 						}
 						else

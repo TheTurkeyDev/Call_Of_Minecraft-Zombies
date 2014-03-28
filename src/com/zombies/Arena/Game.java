@@ -1385,8 +1385,6 @@ public class Game
 			lb.addPlayerStats(stat);
 
 		}
-		Bukkit.broadcastMessage("" + plugin.vault);
-		Bukkit.broadcastMessage("" + plugin.config.KillMoney);
 		if(plugin.vault != null)
 		{
 			try{

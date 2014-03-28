@@ -1,5 +1,6 @@
 package com.zombies.Arena;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -8,6 +9,7 @@ import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 
 /**
@@ -125,6 +127,22 @@ public class ArenaAntiBreak implements Listener
 			event.setCancelled(true);
 		}
 	}
+
+	/**
+	 * Called whenever a Hanging entity. Entities include, paintings and itemFrames
+	 * 
+	 * @param HangingBreakBy
+	 *                    EntityEvent
+	 */
+	@EventHandler
+    public void onBlockHangingBreak(HangingBreakByEntityEvent event)
+    {
+		Player player = (Player) event.getRemover();
+		if (plugin.manager.isPlayerInGame(player))
+		{ 
+			event.setCancelled(true);
+		}
+    }
 
 	/**
 	 * Called whenever a bucket is emptied
