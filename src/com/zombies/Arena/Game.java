@@ -242,8 +242,10 @@ public class Game
 	 */
 	public GunManager getPlayersGun(Player player)
 	{
-		if (playersGuns.containsKey(player)) { return playersGuns.get(player); }
-		return null;
+		if (playersGuns.containsKey(player)) 
+			return playersGuns.get(player);
+		playersGuns.put(player, new GunManager(plugin, player));
+		return playersGuns.get(player); 
 	}
 
 	public InGameManager getInGameManager()
@@ -370,7 +372,6 @@ public class Game
 				boxManager.getCurrentbox().loadBox();
 			}
 		}
-		kitManager.giveOutKits(this);
 		spawnManager.update();
 
 		for (Door door : inGameManager.getDoors())
@@ -406,6 +407,7 @@ public class Game
 		mode = ArenaStatus.INGAME;
 		nextWave();
 		updateJoinSigns();
+		kitManager.giveOutKits(this);
 		return true;
 	}
 

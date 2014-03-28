@@ -148,7 +148,7 @@ public class Kit
 			return;
 		Game game = plugin.manager.getGame(player);
 		GunManager manager = game.getPlayersGun(player);
-
+		
 		if(gunOne!=null)
 		{
 			int slot = 1;
