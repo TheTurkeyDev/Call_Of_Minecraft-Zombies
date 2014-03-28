@@ -541,7 +541,7 @@ public class Game
 			}
 			for (Player pl : players)
 			{
-				CommandUtil.sendMessageToPlayer(player, pl.getName() + " has joined with " + players.size() + "/" + maxPlayers + "!");
+				CommandUtil.sendMessageToPlayer(pl, player.getName() + " has joined with " + players.size() + "/" + maxPlayers + "!");
 			}
 			if (players.size() >= plugin.files.getArenasFile().getInt(arenaName + ".minPlayers"))
 			{
@@ -551,7 +551,7 @@ public class Game
 					starter.startTimer();
 					for (Player pl : players)
 					{
-						pl.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Game starting soon!");
+						CommandUtil.sendMessageToPlayer(pl, ChatColor.RED + "" + ChatColor.BOLD + "Game starting soon!");
 					}
 					mode = ArenaStatus.STARTING;
 				}
