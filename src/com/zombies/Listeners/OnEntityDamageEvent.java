@@ -271,31 +271,26 @@ public class OnEntityDamageEvent implements Listener
 		{
 			player.setFireTicks(0);
 		}
+		if(DownedPlayers.size() + 1 == game.players.size())
+		{
+			for (DownedPlayer downedPlayer : game.getInGameManager().getDownedPlayers())
+			{
+				downedPlayer.cancelDowned();
+			}
+			for (int i = 0; i < game.players.size(); i++)
+			{
+				Player player1 = (Player)game.players.get(0);
+				game.removePlayer(player1);
+			}
+			game.endGame();
+			return;
+		}
 		if (!game.getInGameManager().isPlayerDowned(player))
 		{
 			DownedPlayer down = new DownedPlayer(player, game);
 			down.setPlayerDown(true);
 			game.getInGameManager().addDownedPlayer(down);
 			player.setHealth(1);
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
-			{
-				public void run()
-				{
-					if (game.players.size() == game.getInGameManager().getDownedPlayers().size())
-					{
-						for (DownedPlayer downedPlayer : game.getInGameManager().getDownedPlayers())
-						{
-							downedPlayer.cancelDowned();
-						}
-						for (int i = 0; i < game.players.size(); i++)
-						{
-							Player player1 = (Player)game.players.get(0);
-							game.removePlayer(player1);
-						}
-						return;
-					}
-				}
-			}, 40L);
 		}
 	}
 
