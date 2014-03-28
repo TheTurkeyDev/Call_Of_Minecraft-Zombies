@@ -71,26 +71,28 @@ public class OnGunEvent implements Listener
 	}
 
 	@EventHandler
-	public void onGunReload(PlayerDropItemEvent e)
+	public void onGunReload(PlayerInteractEvent e)
 	{
-		Player player = e.getPlayer();
-		if (plugin.manager.isPlayerInGame(player))
+		if (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK))
 		{
-			Game game = plugin.manager.getGame(player);
-			if (!(game.mode == ArenaStatus.INGAME)) { return; }
-			if (game.getPlayersGun(player) != null)
+			Player player = e.getPlayer();
+			if (plugin.manager.isPlayerInGame(player))
 			{
-				e.setCancelled(true);
-				GunManager gunManager = game.getPlayersGun(player);
-				if (gunManager.isGun())
+				Game game = plugin.manager.getGame(player);
+				if (!(game.mode == ArenaStatus.INGAME)) { return; }
+				if (game.getPlayersGun(player) != null)
 				{
-					Gun gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
-					gun.reload();
+					GunManager gunManager = game.getPlayersGun(player);
+					if (gunManager.isGun())
+					{
+						Gun gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
+						gun.reload();
+						gun.updateGun();
+					}
 				}
 			}
 		}
 	}
-
 	@EventHandler
 	public void onZombieHitEvent(EntityDamageByEntityEvent event) throws Exception
 	{
