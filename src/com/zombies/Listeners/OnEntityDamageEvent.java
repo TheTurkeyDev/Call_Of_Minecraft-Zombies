@@ -24,12 +24,12 @@ import com.zombies.COMZombies;
 import com.zombies.Arena.Game;
 import com.zombies.Arena.Game.ArenaStatus;
 import com.zombies.InGameFeatures.DownedPlayer;
+import com.zombies.InGameFeatures.InGameManager;
 import com.zombies.InGameFeatures.PerkMachines.PerkType;
 
 public class OnEntityDamageEvent implements Listener
 {
 	private COMZombies plugin;
-	private ArrayList<Player> DownedPlayers = new ArrayList<Player>();
 	private ArrayList<Player> beingHealed = new ArrayList<Player>();
 
 	public OnEntityDamageEvent(COMZombies zombies)
@@ -66,7 +66,8 @@ public class OnEntityDamageEvent implements Listener
 						else
 						{
 							final Player player = (Player) e.getEntity();
-							final Game game = plugin.manager.getGame(player);
+							Game game = plugin.manager.getGame(player);
+							InGameManager igm = game.getInGameManager();
 							int damage = 6;
 							if (game.getInGameManager().getPlayersPerks().containsKey(player))
 							{
@@ -83,7 +84,7 @@ public class OnEntityDamageEvent implements Listener
 							}
 							else
 							{
-								if(DownedPlayers.contains(player))
+								if(igm.isPlayerDowned(player))
 								{
 									e.setCancelled(true);
 								}
@@ -233,7 +234,8 @@ public class OnEntityDamageEvent implements Listener
 		if (e.getEntity() instanceof Player)
 		{
 			Player player = (Player) e.getEntity();
-			if (DownedPlayers.contains(player))
+			InGameManager igm = plugin.manager.getGame(player).getInGameManager();
+			if (igm.isPlayerDowned(player))
 			{
 				e.setCancelled(true);
 			}
@@ -271,16 +273,11 @@ public class OnEntityDamageEvent implements Listener
 		{
 			player.setFireTicks(0);
 		}
-		if(DownedPlayers.size() + 1 == game.players.size())
+		if(game.getInGameManager().getDownedPlayers().size() + 1 == game.players.size())
 		{
 			for (DownedPlayer downedPlayer : game.getInGameManager().getDownedPlayers())
 			{
 				downedPlayer.cancelDowned();
-			}
-			for (int i = 0; i < game.players.size(); i++)
-			{
-				Player player1 = (Player)game.players.get(0);
-				game.removePlayer(player1);
 			}
 			game.endGame();
 			return;
@@ -322,12 +319,11 @@ public class OnEntityDamageEvent implements Listener
 
 	public void removeDownedPlayer(Player player)
 	{
-		DownedPlayers.remove(player);
+		plugin.manager.getGame(player).getInGameManager().removeDownedPlayer(player);
 	}
 
-	public boolean isDownedPlayer(String string)
+	public boolean isDownedPlayer(String name)
 	{
-		if (DownedPlayers.contains(string)) { return true; }
-		return false;
+		return plugin.manager.getGame(Bukkit.getPlayer(name)).getInGameManager().isPlayerDowned(Bukkit.getPlayer(name));
 	}
 }

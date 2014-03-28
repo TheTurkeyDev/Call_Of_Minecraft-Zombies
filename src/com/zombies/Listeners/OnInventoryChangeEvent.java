@@ -29,7 +29,8 @@ public class OnInventoryChangeEvent implements Listener
 			event.setCancelled(true);
 		}
 		Game game = plugin.manager.getGame(player);
-		if (!(game.mode == ArenaStatus.INGAME)) { return; }
+		if (!(game.mode == ArenaStatus.INGAME)) 
+			return;
 		if (game.getPlayersGun(player) != null)
 		{
 			GunManager gunManager = game.getPlayersGun(player);
