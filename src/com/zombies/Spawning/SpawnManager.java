@@ -310,7 +310,7 @@ public class SpawnManager
 		EntityInsentient nmsEntity = (EntityInsentient) ((CraftLivingEntity) entity).getHandle();
 		AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.b);
 
-		AttributeModifier modifier = new AttributeModifier(id, "COMZombies follow distance multiplier", 512.0F, 1);
+		AttributeModifier modifier = new AttributeModifier(id, "COMZombies follow distance multiplier", 512.0F, 2);
 
 		attributes.b(modifier);
 		attributes.a(modifier);

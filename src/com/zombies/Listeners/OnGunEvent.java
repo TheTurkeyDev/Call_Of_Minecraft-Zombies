@@ -86,8 +86,6 @@ public class OnGunEvent implements Listener
 				{
 					Gun gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
 					gun.reload();
-					gun.updateGun();
-					gun.updateGunOnReload();
 				}
 			}
 		}
