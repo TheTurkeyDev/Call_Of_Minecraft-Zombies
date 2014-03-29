@@ -5,6 +5,7 @@
 
 package com.zombies.Commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -28,6 +29,8 @@ public class ReloadCommand implements SubCommand
 		{
 			try
 			{
+				Bukkit.getServer().getPluginManager().disablePlugin(plugin);
+				Bukkit.getServer().getPluginManager().enablePlugin(plugin);
 				plugin.files.reloadArenas();
 				plugin.reloadConfig();
 				for (Game gl : plugin.manager.games)
