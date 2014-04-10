@@ -6,7 +6,7 @@ import org.bukkit.World;
 /**
  * Arena contained in every game.
  * 
- * @author Connor Hollasch
+ * @author Ryan Turk
  */
 public class Arena
 {

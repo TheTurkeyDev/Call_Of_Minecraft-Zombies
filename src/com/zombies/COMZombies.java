@@ -383,7 +383,11 @@ public class COMZombies extends JavaPlugin
 		}
 		return null;
 	}
-
+	
+	/**
+	 * 
+	 * @return returns the instance of the plugin
+	 */
 	public static COMZombies getInstance()
 	{
 		return instance;

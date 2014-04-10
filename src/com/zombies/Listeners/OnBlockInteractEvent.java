@@ -71,7 +71,8 @@ public class OnBlockInteractEvent implements Listener
 						}
 					}
 				}
-				if (door.arePointsFinal()) { return; }
+				if (door.arePointsFinal())
+					return;
 				if (event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK))
 				{
 					Location loc = event.getClickedBlock().getLocation();
