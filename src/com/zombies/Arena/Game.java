@@ -97,6 +97,11 @@ public class Game
 	 * If double points is active.
 	 */
 	private boolean doublePoints = false;
+	
+	/**
+	 * If fire salse is active
+	 */
+	private boolean isFireSale = false;
 
 	/**
 	 * If insta kill is active.
@@ -236,9 +241,9 @@ public class Game
 	}
 
 	/**
-	 * 
-	 * @param player
-	 * @return
+	 * Gets the guns the player currently has
+	 * @param player to get the guns of
+	 * @return GunManager of the players guns
 	 */
 	public GunManager getPlayersGun(Player player)
 	{
@@ -248,38 +253,62 @@ public class Game
 		return playersGuns.get(player); 
 	}
 
+	/**
+	 * 
+	 * @return the InGameManager
+	 */
 	public InGameManager getInGameManager()
 	{
 		return inGameManager;
 	}
 
+	/**
+	 * 
+	 * @return the players spawn location on the map
+	 */
 	public Location getPlayerSpawn()
 	{
 		return playerTPLocation;
 	}
 
+	/**
+	 * 
+	 * @return the spectators spawn location on the map
+	 */
 	public Location getSpectateLocation()
 	{
 		return spectateLocation;
 	}
 
+	/**
+	 * 
+	 * @return the lobby spawn location on the map
+	 */
 	public Location getLobbyLocation()
 	{
 		return lobbyLocation;
 	}
 
+	/**
+	 * 
+	 * @return if Double Points is active
+	 */
 	public boolean isDoublePoints()
 	{
 		return doublePoints;
 	}
 
+	/**
+	 * 
+	 * @return if Insta Kill is active
+	 */
 	public boolean isInstaKill()
 	{
 		return instaKill;
 	}
 
 	/**
-	 * Turns on instakill.
+	 * Turns on or off instakill.
 	 * 
 	 * @param isInstaKill
 	 */
@@ -298,6 +327,9 @@ public class Game
 		doublePoints = isDoublePoints;
 	}
 
+	/**
+	 * Resets the blocks to air at the spawn locations
+	 */
 	public void resetSpawnLocationBlocks()
 	{
 		for (int i = 0; i < spawnManager.getPoints().size(); i++)
@@ -307,6 +339,10 @@ public class Game
 		}
 	}
 
+	/**
+	 * 
+	 * @return if the game has been created fully
+	 */
 	public boolean isCreated()
 	{
 		if (isDisabled) { return false; }
@@ -314,6 +350,9 @@ public class Game
 		return false;
 	}
 
+	/**
+	 * force starts the arena
+	 */
 	public void forceStart()
 	{
 		if (mode == ArenaStatus.INGAME) { return; }
@@ -331,6 +370,10 @@ public class Game
 
 	}
 
+	/**
+	 * starts the game normally
+	 * @return if the game starts correct
+	 */
 	public boolean startArena()
 	{
 		if (mode == ArenaStatus.INGAME) { return false; }
@@ -411,6 +454,11 @@ public class Game
 		return true;
 	}
 
+	/**
+	 * Starts a delayed task
+	 * @param run Runnable that runs the task
+	 * @param delayInSeconds delay for the task
+	 */
 	public void scheduleSyncTask(Runnable run, int delayInSeconds)
 	{
 		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, run, delayInSeconds);
@@ -489,7 +537,10 @@ public class Game
 		}
 	}
 
-
+	/**
+	 * Adds a player to the game
+	 * @param player to be added to the game
+	 */
 	public void addPlayer(Player player)
 	{
 		if (mode == ArenaStatus.WAITING || mode == ArenaStatus.STARTING)
@@ -575,6 +626,10 @@ public class Game
 		}
 	}
 
+	/**
+	 * Removes the given player from the game
+	 * @param player to be removed from the game
+	 */
 	public void playerLeave(Player player)
 	{
 		players.remove(player);
@@ -663,6 +718,10 @@ public class Game
 		}
 	}
 
+	/**
+	 * Removes a player from the game
+	 * @param player to be removed
+	 */
 	public void removePlayer(Player player)
 	{
 		players.remove(player);
@@ -704,6 +763,12 @@ public class Game
 		updateJoinSigns();
 	}
 
+	/**
+	 * Sets the spectator warp location
+	 * @param p player the set the location
+	 * @param loc location where the warp will be
+	 * @return if the spawn was set or not
+	 */
 	public boolean setSpectateLocation(Player p, Location loc)
 	{
 		if (min == null || max == null || playerTPLocation == null || lobbyLocation == null)
@@ -735,11 +800,21 @@ public class Game
 		}, 5L, 1200L);
 	}
 
+	/**
+	 * Gets the world where the map is located
+	 * @return
+	 */
 	public World getWorld()
 	{
 		return plugin.getServer().getWorld(plugin.files.getArenasFile().getString(arenaName + ".Location.world"));
 	}
 
+	/**
+	 * Sets the lobby spawn location
+	 * @param player that set the spawn
+	 * @param loc location where the spawn wll be
+	 * @return if the spawn was set or not
+	 */
 	public boolean setLobbySpawn(Player player, Location loc)
 	{
 		if (min == null || max == null)
@@ -751,6 +826,12 @@ public class Game
 		return true;
 	}
 
+	/**
+	 * Sets the first point in the arena
+	 * @param p player that set the point
+	 * @param loc location that
+	 * @return if the point was set or not
+	 */
 	public boolean addPointOne(Player p, Location loc)
 	{
 		min = loc;
@@ -759,6 +840,12 @@ public class Game
 		return true;
 	}
 
+	/**
+	 * Sets the Second point in the arena
+	 * @param p player that set the point
+	 * @param loc location that
+	 * @return if the point was set or not
+	 */
 	public boolean addPointTwo(Player p, Location loc)
 	{
 		if (min == null)
@@ -774,6 +861,9 @@ public class Game
 		return true;
 	}
 
+	/**
+	 * Disables the game
+	 */
 	public void setDisabled()
 	{
 		isDisabled = true;
@@ -781,6 +871,9 @@ public class Game
 		mode = ArenaStatus.DISABLED;
 	}
 
+	/**
+	 * Enables the game
+	 */
 	public void setEnabled()
 	{
 		isDisabled = false;
@@ -788,6 +881,9 @@ public class Game
 		mode = ArenaStatus.WAITING;
 	}
 
+	/**
+	 * Ends the game
+	 */
 	public void endGame()
 	{
 		for (int i = 0; i < players.size(); i++)
@@ -834,11 +930,11 @@ public class Game
 	}
 
 	/**
-	 * Sets the players teleport location.
+	 * Sets the players warp location in game.
 	 * 
-	 * @param p
-	 * @param loc
-	 * @return
+	 * @param p player that set the point
+	 * @param loc location where the point will be set
+	 * @return if the point was set or not
 	 */
 	public boolean setPlayerTPLocation(Player p, Location loc)
 	{
@@ -852,18 +948,24 @@ public class Game
 		return true;
 	}
 
-	// Called upon creation in ZombiesCommand.
+	/**
+	 * Sets the name of the game
+	 * @param name Name of the arena to be set to
+	 */
 	public void setName(String name)
 	{
 		arenaName = name;
 	}
 
-	// Game state.
 	public static enum ArenaStatus
 	{
 		DISABLED, STARTING, WAITING, INGAME;
 	}
 
+	/**
+	 * Saves all locations to the config
+	 * @param player that saved the locations
+	 */
 	public void saveLocationsInConfig(Player player)
 	{
 		if (min.getWorld().getName() != null)
@@ -905,6 +1007,9 @@ public class Game
 		}
 	}
 
+	/**
+	 * Sets up the arena when the server loads
+	 */
 	public void enable()
 	{
 		plugin.files.reloadArenas();
@@ -948,8 +1053,8 @@ public class Game
 		mode = ArenaStatus.WAITING;
 	}
 
-	/*
-	 * Use as a template for arena creation, not save / load.
+	/**
+	 * Sets up the arena when the server loads
 	 */
 	public void setup()
 	{
@@ -1051,6 +1156,10 @@ public class Game
 
 	}
 
+	/**
+	 * gets the current config that the game is on
+	 * @return the spawn point that the game is on
+	 */
 	public int getCurrentSpawnPoint()
 	{
 		int spawnNum = 0;
@@ -1116,11 +1225,19 @@ public class Game
 		}
 	}
 
+	/**
+	 * gets the name of the game
+	 * @return
+	 */
 	public String getName()
 	{
 		return arenaName;
 	}
 
+	/**
+	 * gets the current door number the game is on
+	 * @return the number of the current door
+	 */
 	public int getCurrentDoorNumber()
 	{
 		int i = 1;
@@ -1138,6 +1255,10 @@ public class Game
 		return i;
 	}
 
+	/**
+	 * gets the current door sign number the game is on
+	 * @return the number of the current sign number
+	 */
 	private int getCurrentDoorSignNumber(int doorNumber)
 	{
 		int i = 1;
@@ -1155,6 +1276,11 @@ public class Game
 		return i;
 	}
 
+	/**
+	 * Adds a spawn point dehind a door to the config
+	 * @param door to add the spawn point to
+	 * @param spawnPoint to be added
+	 */
 	public void addDoorSpawnPointToConfig(Door door, SpawnPoint spawnPoint)
 	{
 		List<String> spawnPoints = plugin.files.getArenasFile().getStringList(arenaName + ".Doors.door" + door.doorNumber + ".SpawnPoints");
@@ -1166,6 +1292,11 @@ public class Game
 		plugin.files.reloadArenas();
 	}
 
+	/**
+	 * Adds a soor sign to the config
+	 * @param door that contains the sign
+	 * @param location of the sign
+	 */
 	public void addDoorSignToConfig(Door door, Location location)
 	{
 		int x = location.getBlockX();
@@ -1183,6 +1314,12 @@ public class Game
 		plugin.files.reloadArenas();
 	}
 
+	/**
+	 * Sets up the players inventory in  game
+	 * @param slot of the item
+	 * @param item to be set up
+	 * @return the item after set up
+	 */
 	private ItemStack setItemMeta(int slot, ItemStack item)
 	{
 		ItemMeta data = item.getItemMeta();
@@ -1263,6 +1400,9 @@ public class Game
 		player.updateInventory();
 	}
 
+	/**
+	 * Clears the arena
+	 */
 	public void clearArena()//clear players
 	{
 		if (this.getWorld() == null) return;
@@ -1279,6 +1419,9 @@ public class Game
 		}
 	}
 
+	/**
+	 * Clears items out of the arena
+	 */
 	public void clearArenaItems()
 	{
 		if (this.getWorld() == null) return;
@@ -1294,12 +1437,14 @@ public class Game
 	        }
 	}
 	
+	/**
+	 * gets the scoreboard 
+	 * @return GameScoreboard
+	 */
 	public GameScoreboard getScoreboard()
 	{
 		return scoreboard;
 	}
-
-	private boolean isFireSale = false;
 
 	public void setFireSale(boolean b)
 	{
