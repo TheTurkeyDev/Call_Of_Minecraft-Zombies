@@ -1,8 +1,5 @@
 package com.zombies.Listeners;
 
-import net.minecraft.server.v1_7_R1.EntityLiving;
-import net.minecraft.server.v1_7_R1.PathEntity;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
@@ -18,7 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -232,13 +228,13 @@ public class OnGunEvent implements Listener
 			{
 				player.getInventory().removeItem(new ItemStack(Material.MAGMA_CREAM, 1));
 				final Item item = player.getWorld().dropItemNaturally(player.getEyeLocation(), new ItemStack(Material.MAGMA_CREAM));
-				Location Iloc = item.getLocation();
+				//Location Iloc = item.getLocation();
 				item.setVelocity(player.getLocation().getDirection().multiply(1));
 				item.setPickupDelay(1000);
-				for(Entity e: game.spawnManager.mobs)
+				/*for(Entity e: game.spawnManager.mobs)
 				{
 
-				}
+				}*/
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 				{
 					@Override

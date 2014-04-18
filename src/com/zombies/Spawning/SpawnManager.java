@@ -10,17 +10,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import net.minecraft.server.v1_7_R1.AttributeInstance;
-import net.minecraft.server.v1_7_R1.AttributeModifier;
-import net.minecraft.server.v1_7_R1.EntityInsentient;
-import net.minecraft.server.v1_7_R1.GenericAttributes;
+import net.minecraft.server.v1_7_R3.AttributeInstance;
+import net.minecraft.server.v1_7_R3.AttributeModifier;
+import net.minecraft.server.v1_7_R3.EntityInsentient;
+import net.minecraft.server.v1_7_R3.GenericAttributes;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_7_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_7_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;

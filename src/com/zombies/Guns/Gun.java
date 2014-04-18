@@ -13,8 +13,6 @@ package com.zombies.Guns;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.server.v1_7_R1.Item;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -204,7 +202,7 @@ public class Gun
 			if (!(game.getInGameManager().getPlayersPerks().containsKey(player))) return;
 			if (game.getInGameManager().getPlayersPerks().get(player).contains(PerkType.ELECTRIC_C))
 			{
-				if(totalAmmo == 0)
+				if(totalAmmo == 0 && !ecUsed)
 					return;
 				ecUsed = true;
 				List<Entity> near = player.getNearbyEntities(6, 6, 6);
