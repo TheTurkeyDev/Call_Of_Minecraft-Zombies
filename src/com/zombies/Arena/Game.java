@@ -40,6 +40,7 @@ import com.zombies.Guns.GunManager;
 import com.zombies.Guns.GunType;
 import com.zombies.InGameFeatures.DownedPlayer;
 import com.zombies.InGameFeatures.InGameManager;
+import com.zombies.InGameFeatures.Features.BarrierManager;
 import com.zombies.InGameFeatures.Features.BoxManager;
 import com.zombies.InGameFeatures.Features.Door;
 import com.zombies.InGameFeatures.Features.RandomBox;
@@ -97,7 +98,7 @@ public class Game
 	 * If double points is active.
 	 */
 	private boolean doublePoints = false;
-	
+
 	/**
 	 * If fire salse is active
 	 */
@@ -202,6 +203,11 @@ public class Game
 	public BoxManager boxManager;
 
 	/**
+	 * contains all of the Barriers in the game
+	 */
+	public BarrierManager barrierManager;
+
+	/**
 	 * contains all of the Kits in the game
 	 */
 	public KitManager kitManager;
@@ -224,10 +230,12 @@ public class Game
 		spawnManager = new SpawnManager(plugin, this);
 		inGameManager = new InGameManager(plugin, this);
 		boxManager = new BoxManager(plugin, this);
+		barrierManager = new BarrierManager(plugin, null);
 		kitManager = plugin.kitManager;
 		scoreboard = new GameScoreboard(this);
 		spawnManager.loadAllSpawnsToGame();
 		boxManager.loadAllBoxesToGame();
+		barrierManager.loadAllBarriersToGame();
 		try
 		{
 			enable();
@@ -1425,18 +1433,18 @@ public class Game
 	public void clearArenaItems()
 	{
 		if (this.getWorld() == null) return;
-	       List<Entity> entList = getWorld().getEntities();//get all entities in the world
-	       
-	        for(Entity current : entList){//loop through the list
-	            if (current instanceof Item){//make sure we are only deleting what we want to delete
-	            current.remove();//remove it
-	            }
-	            if(current instanceof Zombie){
-	            current.remove();
-	            }
-	        }
+		List<Entity> entList = getWorld().getEntities();//get all entities in the world
+
+		for(Entity current : entList){//loop through the list
+			if (current instanceof Item){//make sure we are only deleting what we want to delete
+				current.remove();//remove it
+			}
+			if(current instanceof Zombie){
+				current.remove();
+			}
+		}
 	}
-	
+
 	/**
 	 * gets the scoreboard 
 	 * @return GameScoreboard
@@ -1535,10 +1543,10 @@ public class Game
 		if(plugin.vault != null)
 		{
 			try{
-			if(!plugin.vault.hasAccount(player.getName()))
-				plugin.vault.newAccount(player.getName());
-			plugin.vault.addMoney(player.getName(), (double)plugin.config.KillMoney);
-		}catch(NullPointerException e){}
+				if(!plugin.vault.hasAccount(player.getName()))
+					plugin.vault.newAccount(player.getName());
+				plugin.vault.addMoney(player.getName(), (double)plugin.config.KillMoney);
+			}catch(NullPointerException e){}
 		}
 		plugin.files.saveKillsConfig();
 		plugin.files.reloadKillsConfig();

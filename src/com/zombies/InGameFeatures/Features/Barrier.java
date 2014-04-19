@@ -11,12 +11,14 @@ public class Barrier {
 	private Block block;
 	private int stage;
 	private SpawnPoint spawn;
+	private int number;
 	
-	public Barrier(Location l, Block b)
+	public Barrier(Location l, Block b, int n)
 	{
 		loc = l;
 		block = b;
 		stage = 0;
+		number = n;
 	}
 	
 	public void damage()
@@ -52,5 +54,10 @@ public class Barrier {
 	public SpawnPoint getSpawnPoint()
 	{
 		return spawn;
+	}
+	
+	public int getNum()
+	{
+		return number;
 	}
 }
