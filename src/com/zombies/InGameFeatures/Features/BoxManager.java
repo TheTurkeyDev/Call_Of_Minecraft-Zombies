@@ -25,6 +25,7 @@ public class BoxManager
 	private ArrayList<RandomBox> boxes = new ArrayList<RandomBox>();
 	private ArrayList<Integer> numbers = new ArrayList<Integer>();
 	private RandomBox currentBox;
+	
 
 	public BoxManager(COMZombies plugin, Game game)
 	{

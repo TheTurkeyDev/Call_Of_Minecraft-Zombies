@@ -228,14 +228,6 @@ public class COMZombies extends JavaPlugin
 
 		log.info("[Call of Minecraft: Zombies] has been enabled!");
 
-		try
-		{
-			Metrics metrics = new Metrics(this);
-			metrics.start();
-		} catch (IOException e)
-		{
-			System.out.println("Error Submitting stats!");
-		}
 		if(getConfig().getBoolean("config.settings.checkForUpdates"))
 		{
 			try
