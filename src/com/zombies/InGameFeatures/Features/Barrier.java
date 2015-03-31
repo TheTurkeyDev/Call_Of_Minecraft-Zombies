@@ -3,32 +3,44 @@ package com.zombies.InGameFeatures.Features;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
+import com.zombies.Arena.Game;
 import com.zombies.Spawning.SpawnPoint;
 
 public class Barrier {
 
 	private Location loc;
 	private Block block;
+	private Location repairLoc;
+	
 	private int stage;
+	
 	private SpawnPoint spawn;
+	
 	private int number;
 	
-	public Barrier(Location l, Block b, int n)
+	private Game game;
+	
+	private int reward;
+	
+	public Barrier(Location l, Block b, int n, Game game)
 	{
 		loc = l;
 		block = b;
-		stage = 0;
+		stage = 3;
 		number = n;
+		this.game = game;
 	}
 	
 	public void damage()
 	{
 		stage++;
+		game.updateBarrierDamage(stage, block);
 	}
 	
 	public void repair()
 	{
 		stage = 0;
+		game.updateBarrierDamage(stage, block);
 	}
 	
 	public Location getLocation()
@@ -59,5 +71,30 @@ public class Barrier {
 	public int getNum()
 	{
 		return number;
+	}
+
+	public int getReward()
+	{
+		return reward;
+	}
+
+	public void setReward(int reward)
+	{
+		this.reward = reward;
+	}
+
+	public Location getRepairLoc()
+	{
+		return repairLoc;
+	}
+
+	public void setRepairLoc(Location repairLoc)
+	{
+		this.repairLoc = repairLoc;
+	}
+	
+	public Game getGame()
+	{
+		return game;
 	}
 }

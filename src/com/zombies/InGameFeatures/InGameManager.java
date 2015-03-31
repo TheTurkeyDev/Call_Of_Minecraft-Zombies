@@ -1,8 +1,3 @@
-/******************************************
- *            COM: Zombies                *
- * Developers: Connor Hollasch, Ryan Turk *
- *****************************************/
-
 package com.zombies.InGameFeatures;
 
 import java.util.ArrayList;
@@ -24,7 +19,7 @@ import com.zombies.Spawning.SpawnPoint;
 
 public class InGameManager
 {
-
+	
 	private HashMap<Player, ArrayList<PerkType>> playersPerks = new HashMap<Player, ArrayList<PerkType>>();
 	private HashMap<String, ArrayList<Location>> teleporters = new HashMap<String, ArrayList<Location>>();
 	private ArrayList<RandomBox> boxes = new ArrayList<RandomBox>();
@@ -36,42 +31,42 @@ public class InGameManager
 	private boolean power;
 	private boolean powerEnabled;
 	private boolean loaded = false;
-
+	
 	public InGameManager(COMZombies pl, Game gl)
 	{
 		game = gl;
 		plugin = pl;
 		powerEnabled = plugin.files.getArenasFile().getBoolean(game.getName() + ".Power");
 	}
-
+	
 	public void addDownedPlayer(DownedPlayer down)
 	{
 		downedPlayers.add(down);
 	}
-
+	
 	public void removeDownedPlayer(DownedPlayer down)
 	{
 		downedPlayers.remove(down);
 	}
-
+	
 	public ArrayList<DownedPlayer> getDownedPlayers()
 	{
 		return downedPlayers;
 	}
-
+	
 	public boolean isDownedPlayer(DownedPlayer player)
 	{
 		if (downedPlayers.contains(player)) { return true; }
 		return false;
 	}
-
+	
 	public boolean isPlayerDowned(Player player)
 	{
 		for (DownedPlayer pl : downedPlayers)
 			if (pl.getPlayer().equals(player)) return true;
 		return false;
 	}
-
+	
 	public void removePerkEffect(Player player, PerkType effect)
 	{
 		if (playersPerks.get(player).contains(effect))
@@ -82,12 +77,12 @@ public class InGameManager
 			player.getInventory().remove(stack);
 		}
 	}
-
+	
 	public HashMap<Player, ArrayList<PerkType>> getPlayersPerks()
 	{
 		return playersPerks;
 	}
-
+	
 	public void enable()
 	{
 		if(!loaded)
@@ -97,7 +92,7 @@ public class InGameManager
 			loaded = true;
 		}
 	}
-
+	
 	private void loadAllTeleporters()
 	{
 		String location = game.getName() + ".Teleporters";
@@ -122,7 +117,7 @@ public class InGameManager
 		{
 		}
 	}
-
+	
 	public boolean hasPerk(Player player, PerkType type)
 	{
 		if (playersPerks.containsKey(player))
@@ -132,7 +127,7 @@ public class InGameManager
 		}
 		return false;
 	}
-
+	
 	public boolean addPerk(Player player, PerkType type)
 	{
 		if (playersPerks.containsKey(player))
@@ -155,7 +150,7 @@ public class InGameManager
 		}
 		return true;
 	}
-
+	
 	public int getAvaliblePerkSlot(Player player)
 	{
 		if (player.getInventory().getItem(4) == null)
@@ -170,17 +165,17 @@ public class InGameManager
 		if (player.getInventory().getItem(7) == null) { return 7; }
 		return 4;
 	}
-
+	
 	public boolean isPowered()
 	{
 		return power;
 	}
-
+	
 	public void turnOffPower()
 	{
 		power = false;
 	}
-
+	
 	public void turnOnPower()
 	{
 		power = true;
@@ -195,7 +190,7 @@ public class InGameManager
 		{
 		}
 	}
-
+	
 	public Door getDoorFromSign(Location location)
 	{
 		for (Door door : doors)
@@ -207,12 +202,12 @@ public class InGameManager
 		}
 		return null;
 	}
-
+	
 	public void addDoor(Door door)
 	{
 		doors.add(door);
 	}
-
+	
 	public void loadAllDoors()
 	{
 		String location = game.getName() + ".Doors";
@@ -229,33 +224,33 @@ public class InGameManager
 		{
 		}
 	}
-
+	
 	public boolean containsPower()
 	{
 		if (!powerEnabled) return false;
 		return true;
 	}
-
+	
 	public Game getGame()
 	{
 		return game;
 	}
-
+	
 	public COMZombies getPlugin()
 	{
 		return plugin;
 	}
-
+	
 	public ArrayList<RandomBox> getRandomBoxes()
 	{
 		return boxes;
 	}
-
+	
 	public ArrayList<Door> getDoors()
 	{
 		return doors;
 	}
-
+	
 	public boolean canSpawnZombieAtPoint(SpawnPoint point)
 	{
 		for (Door door : doors)
@@ -267,22 +262,22 @@ public class InGameManager
 		}
 		return false;
 	}
-
+	
 	public void clearPerks()
 	{
 		playersPerks.clear();
 	}
-
+	
 	public void removeDoor(Door door)
 	{
 		doors.remove(door);
 	}
-
+	
 	public ArrayList<ItemStack> getCurrentDroppedPerks()
 	{
 		return currentPerkDrops;
 	}
-
+	
 	public void removeItemFromList(ItemStack stack)
 	{
 		if (currentPerkDrops.contains(stack))
@@ -290,12 +285,12 @@ public class InGameManager
 			currentPerkDrops.remove(stack);
 		}
 	}
-
+	
 	public void setCurrentPerkDrops(ArrayList<ItemStack> stack)
 	{
 		currentPerkDrops = stack;
 	}
-
+	
 	public void clearPlayersPerks(Player player)
 	{
 		if (playersPerks.containsKey(player))
@@ -309,7 +304,7 @@ public class InGameManager
 			player.getInventory().clear(i);
 		}
 	}
-
+	
 	public void removeDownedPlayer(Player player)
 	{
 		for (int i = 0; i < downedPlayers.size(); i++)
@@ -321,7 +316,7 @@ public class InGameManager
 			}
 		}
 	}
-
+	
 	public void clearDownedPlayers()
 	{
 		for (int i = 0; i < downedPlayers.size(); i++)
@@ -330,23 +325,24 @@ public class InGameManager
 			downedPlayers.remove(downedPlayers.get(i));
 		}
 	}
-
+	
 	public void saveTeleporterSpot(String teleName, Location to)
 	{
 		ArrayList<Location> temp = new ArrayList<Location>();
+		teleName = teleName.toLowerCase();
 		if(teleporters.containsKey(teleName))
 		{
 			temp.addAll(teleporters.get(teleName));
 		}
 		temp.add(to);
 		teleporters.put(teleName,temp);
-
+		
 		double x = to.getX();
 		double y = to.getY();
 		double z = to.getZ();
 		float pitch = to.getPitch();
 		float yaw = to.getYaw();
-
+		
 		plugin.files.getArenasFile().addDefault(game.getName() + ".Teleporters." + teleName + ".x", x);
 		plugin.files.getArenasFile().addDefault(game.getName() + ".Teleporters." + teleName + ".y", y);
 		plugin.files.getArenasFile().addDefault(game.getName() + ".Teleporters." + teleName + ".z", z);
@@ -357,11 +353,29 @@ public class InGameManager
 		plugin.files.getArenasFile().set(game.getName() + ".Teleporters." + teleName + ".z", z);
 		plugin.files.getArenasFile().set(game.getName() + ".Teleporters." + teleName + ".pitch", pitch);
 		plugin.files.getArenasFile().set(game.getName() + ".Teleporters." + teleName + ".yaw", yaw);
-
+		
 		plugin.files.saveArenasConfig();
 		plugin.files.reloadArenas();
 	}
-
+	
+	public void removedTeleporter(String teleName, Player player)
+	{
+		teleName = teleName.toLowerCase();
+		if(teleporters.containsKey(teleName))
+		{
+			teleporters.remove(teleName);
+			
+			plugin.files.getArenasFile().set(game.getName() + ".Teleporters." + teleName, null);
+			
+			plugin.files.saveArenasConfig();
+			plugin.files.reloadArenas();
+		}
+		else
+		{
+			player.sendMessage("That is not a valid teleporter name!");
+		}
+	}
+	
 	public HashMap<String, ArrayList<Location>> getTeleporters()
 	{
 		return teleporters;

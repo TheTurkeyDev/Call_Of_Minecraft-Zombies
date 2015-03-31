@@ -5,6 +5,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -18,14 +19,14 @@ import com.zombies.particleutilities.ParticleEffects;
 
 public class OnPlayerVelocityEvent implements Listener
 {
-
+	
 	private COMZombies plugin;
-
+	
 	public OnPlayerVelocityEvent(COMZombies pl)
 	{
 		plugin = pl;
 	}
-
+	
 	@EventHandler
 	public void OnPlyerVelocityEvent(PlayerMoveEvent event) throws Exception
 	{
@@ -58,10 +59,47 @@ public class OnPlayerVelocityEvent implements Listener
 					}
 					for (Entity e : player.getNearbyEntities(5, 5, 5))
 					{
-						if (e instanceof Player) continue;
-						if (plugin.manager.isEntityInGame(e))
+						if (e instanceof Zombie)
 						{
-							((LivingEntity) e).damage(12);
+							int totalHealth;
+							if (game.spawnManager.totalHealth().containsKey(e))
+							{
+								totalHealth = game.spawnManager.totalHealth().get(e);
+							}
+							else
+							{
+								game.spawnManager.setTotalHealth(e, 20);
+								totalHealth = 20;
+							}
+							if (totalHealth >= 20)
+							{
+								((LivingEntity)e).setHealth(20);
+								if (game.spawnManager.totalHealth().get(e) <= 20)
+								{
+									((LivingEntity)e).setHealth(game.spawnManager.totalHealth().get(e));
+								}
+								else
+								{
+									game.spawnManager.setTotalHealth(e, totalHealth - 12);
+								}
+								plugin.pointManager.notifyPlayer(player);
+							}
+							else if(totalHealth - 12 < 1)
+							{
+								OnZombiePerkDrop perkdrop = new OnZombiePerkDrop(plugin);
+								perkdrop.perkDrop(e, player);
+								e.remove();
+								game.spawnManager.removeEntity(e);
+								game.zombieKilled(player);
+								if (game.spawnManager.getEntities().size() <= 0)
+								{
+									game.nextWave();
+								}
+							}
+							else
+							{
+								((LivingEntity)e).damage(12);
+							}
 						}
 					}
 					player.setHealth(pHealth);
@@ -69,7 +107,7 @@ public class OnPlayerVelocityEvent implements Listener
 			}
 		}
 	}
-
+	
 	@EventHandler
 	public void ProjectileHit(EntityDamageEvent event)
 	{

@@ -1,8 +1,3 @@
-/******************************************
- *            COM: Zombies                *
- * Developers: Connor Hollasch, Ryan Turk *
- *****************************************/
-
 package com.zombies.Leaderboards;
 
 import java.util.ArrayList;

@@ -58,7 +58,6 @@ public enum PerkType
 			@Override
 			public void run()
 			{
-				world.playSound(player.getLocation(), Sound.GLASS, 1L, 1L);
 				world.playEffect(player.getLocation(), Effect.POTION_BREAK, 1);
 			}
 
@@ -122,7 +121,7 @@ public enum PerkType
 	public static void noPower(COMZombies plugin, Player player)
 	{
 		World world = player.getLocation().getWorld();
-		world.playSound(player.getLocation(), Sound.FIRE_IGNITE, 1L, 1L);
+		world.playSound(player.getLocation(), Sound.GHAST_MOAN, 1L, 1L);
 	}
 
 	private ItemStack setItemMeta(ItemStack item, String type)

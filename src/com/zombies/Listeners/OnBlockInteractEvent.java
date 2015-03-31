@@ -14,19 +14,20 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import com.zombies.COMZombies;
 import com.zombies.CommandUtil;
 import com.zombies.Arena.Game;
+import com.zombies.InGameFeatures.Features.Barrier;
 import com.zombies.InGameFeatures.Features.Door;
 import com.zombies.Spawning.SpawnPoint;
 
 public class OnBlockInteractEvent implements Listener
 {
-
+	
 	private COMZombies plugin;
-
+	
 	public OnBlockInteractEvent(COMZombies pl)
 	{
 		plugin = pl;
 	}
-
+	
 	@EventHandler
 	public void hitEvent(PlayerInteractEvent event)
 	{
@@ -88,9 +89,53 @@ public class OnBlockInteractEvent implements Listener
 					event.setCancelled(true);
 				}
 			}
+			else if (plugin.isCreatingBarrier.containsKey(player))
+			{
+				Barrier b = plugin.isCreatingBarrier.get(player);
+				if(b != null)
+				{
+					if (b.getRepairLoc() == null)
+					{
+						if (event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+						{
+							Block block = event.getClickedBlock();
+							b.setRepairLoc(block.getLocation().add(0, 1, 0));
+							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier repair sign location set!");
+							event.setCancelled(true);
+						}
+					}
+					else if (b.getSpawnPoint() == null)
+					{
+						try
+						{
+							if (event.getMaterial().equals(Material.ENDER_PORTAL_FRAME) || event.getClickedBlock().getType().equals(Material.ENDER_PORTAL_FRAME))
+							{
+								Game game = plugin.manager.getGame(event.getClickedBlock().getLocation());
+								SpawnPoint point = game.spawnManager.getSpawnPoint(event.getClickedBlock().getLocation());
+								if (point == null) { return; }
+								b.assingSpawnPoint(point);
+								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn point selected!");
+								event.setCancelled(true);
+							}
+						} catch (NullPointerException e)
+						{
+						}
+					} 
+				}
+				else if (event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK))
+				{
+					Location loc = event.getClickedBlock().getLocation();
+					Game game = plugin.manager.getGame(loc);
+					Barrier barrier = new Barrier(loc, event.getClickedBlock(), game.barrierManager.getNextBarrierNumber(), game);
+					plugin.isCreatingBarrier.remove(player);
+					plugin.isCreatingBarrier.put(player, barrier);
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier block set!");
+					event.setCancelled(true);
+				}
+			}
 		}
 	}
-
+	
 	@EventHandler
 	public void grenadeUse(PlayerInteractEvent event)
 	{

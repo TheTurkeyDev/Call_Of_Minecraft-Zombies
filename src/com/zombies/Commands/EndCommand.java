@@ -8,20 +8,20 @@ import com.zombies.CommandUtil;
 import com.zombies.Arena.Game;
 import com.zombies.Arena.Game.ArenaStatus;
 
-public class StartCommand implements SubCommand
+public class EndCommand implements SubCommand
 {
-
+	
 	private COMZombies plugin;
-
-	public StartCommand(ZombiesCommand cmd)
+	
+	public EndCommand(ZombiesCommand cmd)
 	{
 		plugin = cmd.plugin;
 	}
-
+	
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
-		if (player.hasPermission("zombies.forcestart") || player.hasPermission("zombies.admin"))
+		if (player.hasPermission("zombies.forceend") || player.hasPermission("zombies.admin"))
 		{
 			if (args.length == 1)
 			{
@@ -30,22 +30,16 @@ public class StartCommand implements SubCommand
 					Game game = plugin.manager.getGame(player);
 					if (game.mode == ArenaStatus.INGAME)
 					{
-						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Game already started!");
+						game.endGame();
 					}
 					else
 					{
-						try
-						{
-							game.forceStart();
-						} catch (IllegalAccessError e)
-						{
-							game.startArena();
-						}
+						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Game is not currently in progress!");
 					}
 				}
 				else
 				{
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must either be waiting in a game or specify a game! /z s [arena]");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must either be waiting in a game or specify a game! /z end [arena]");
 					return true;
 				}
 			}
@@ -54,7 +48,14 @@ public class StartCommand implements SubCommand
 				if (plugin.manager.isValidArena(args[1]))
 				{
 					Game game = plugin.manager.getGame(args[1]);
-					game.forceStart();
+					if (game.mode == ArenaStatus.INGAME)
+					{
+						game.endGame();
+					}
+					else
+					{
+						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Game is not currently in progress!");
+					}
 				}
 				else
 				{
@@ -65,5 +66,4 @@ public class StartCommand implements SubCommand
 		}
 		return false;
 	}
-
 }

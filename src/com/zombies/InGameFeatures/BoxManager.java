@@ -3,7 +3,7 @@
  * Developers: Connor Hollasch, Ryan Turk *
  *****************************************/
 
-package com.zombies.InGameFeatures.Features;
+package com.zombies.InGameFeatures;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import com.zombies.COMZombies;
 import com.zombies.Arena.Game;
 import com.zombies.Arena.Game.ArenaStatus;
+import com.zombies.InGameFeatures.Features.RandomBox;
 
 public class BoxManager
 {
@@ -25,12 +26,13 @@ public class BoxManager
 	private ArrayList<RandomBox> boxes = new ArrayList<RandomBox>();
 	private ArrayList<Integer> numbers = new ArrayList<Integer>();
 	private RandomBox currentBox;
+	private boolean multiBox;
 	
-
 	public BoxManager(COMZombies plugin, Game game)
 	{
 		this.plugin = plugin;
 		this.game = game;
+		multiBox = plugin.config.MultiBox;
 	}
 
 	public void loadAllBoxesToGame()
@@ -136,6 +138,11 @@ public class BoxManager
 	}
 	public void setCurrentBox(RandomBox box)
 	{
+		if(multiBox)
+		{
+			currentBox = null;
+			return;
+		}
 		if(currentBox!=null)
 			currentBox.removeBox();
 		currentBox = box;

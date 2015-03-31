@@ -1,8 +1,3 @@
-/******************************************
- *            COM: Zombies                *
- * Developers: Connor Hollasch, Ryan Turk *
- *****************************************/
-
 package com.zombies.Commands;
 
 import org.bukkit.Bukkit;

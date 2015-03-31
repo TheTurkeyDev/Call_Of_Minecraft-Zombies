@@ -1,8 +1,3 @@
-/******************************************
- *            COM: Zombies                *
- * Developers: Connor Hollasch, Ryan Turk *
- *****************************************/
-
 package com.zombies.Arena;
 
 import org.bukkit.entity.Player;
@@ -15,7 +10,6 @@ import com.zombies.Listeners.CustomEvents.GameStartEvent;
 /**
  * Arena auto start class.
  * 
- * @author Connor
  * @credit garbagemule for the private Countdown class.
  */
 public class AutoStart

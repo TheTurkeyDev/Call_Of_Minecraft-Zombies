@@ -1,8 +1,3 @@
-/******************************************
- *            COM: Zombies                *
- * Developers: Connor Hollasch, Ryan Turk *
- *****************************************/
-
 package com.zombies.Listeners;
 
 import java.util.ArrayList;
@@ -44,8 +39,7 @@ public class OnSignInteractEvent implements Listener
 	{
 		plugin = zombies;
 	}
-
-	@SuppressWarnings({ "static-access",})
+	
 	@EventHandler
 	public void RightClickSign(PlayerInteractEvent event)
 	{
@@ -294,7 +288,7 @@ public class OnSignInteractEvent implements Listener
 								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You got the " + ChatColor.GOLD + "" + ChatColor.BOLD + guntype.name + ChatColor.RED + ChatColor.BOLD + "!");
 								manager.removeGun(manager.getGun(slot));
 								manager.addGun(new Gun(guntype, player, slot));
-								player.getLocation().getWorld().playSound(player.getLocation(), Sound.LAVA_POP, 1, 1);
+								player.getLocation().getWorld().playSound(player.getLocation(), Sound.GHAST_FIREBALL, 1, 1);
 								plugin.pointManager.takePoints(player, Buypoints);
 								plugin.pointManager.notifyPlayer(player);
 								return;

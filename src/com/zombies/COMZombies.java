@@ -1,24 +1,3 @@
-/**
- * Call of Minecraft Zombies
- * @author: Connor Hollasch, Ryan Turk, Ryne Tate
- * <br> </br>
- * Class Hiearchy
- * <li>
- * <ol> com.zombies </ol>
- * <ol>   arena </ol>
- * <ol>   commands </ol>
- * <ol>   economy </ol>
- * <ol>   guns </ol>
- * <ol>   in game features </ol>
- * <ol>     features </ol>
- * <ol>     perk machines </ol>
- * <ol>   leaderboards </ol>
- * <ol>   listeners </ol>
- * <ol>     custom events </ol>
- * <ol>   spawning </ol>
- * </li>
- */
-
 package com.zombies;
 
 import java.io.BufferedReader;
@@ -50,13 +29,14 @@ import com.zombies.Arena.SignManager;
 import com.zombies.Commands.ZombiesCommand;
 import com.zombies.Economy.PointManager;
 import com.zombies.Guns.GunType;
+import com.zombies.InGameFeatures.Features.Barrier;
 import com.zombies.InGameFeatures.Features.Door;
 import com.zombies.Leaderboards.Leaderboards;
 import com.zombies.Listeners.OnBlockBreakEvent;
 import com.zombies.Listeners.OnBlockInteractEvent;
 import com.zombies.Listeners.OnBlockPlaceEvent;
 import com.zombies.Listeners.OnEntityCombustEvent;
-import com.zombies.Listeners.OnEntityDeathEvent;
+import com.zombies.Listeners.OnEntityDamageEvent;
 import com.zombies.Listeners.OnEntitySpawnEvent;
 import com.zombies.Listeners.OnExpEvent;
 import com.zombies.Listeners.OnGunEvent;
@@ -64,15 +44,14 @@ import com.zombies.Listeners.OnInventoryChangeEvent;
 import com.zombies.Listeners.OnOutsidePlayerInteractEvent;
 import com.zombies.Listeners.OnPlayerChatEvent;
 import com.zombies.Listeners.OnPlayerGetEXPEvent;
-import com.zombies.Listeners.OnPlayerScopeEvent;
-import com.zombies.Listeners.OnPlayerVelocityEvent;
 import com.zombies.Listeners.OnPlayerJoinEvent;
 import com.zombies.Listeners.OnPlayerLeaveEvent;
 import com.zombies.Listeners.OnPlayerMoveEvent;
+import com.zombies.Listeners.OnPlayerScopeEvent;
+import com.zombies.Listeners.OnPlayerVelocityEvent;
 import com.zombies.Listeners.OnPreCommandEvent;
 import com.zombies.Listeners.OnSignChangeEvent;
 import com.zombies.Listeners.OnSignInteractEvent;
-import com.zombies.Listeners.OnEntityDamageEvent;
 import com.zombies.Listeners.OnZombiePerkDrop;
 import com.zombies.kits.KitManager;
 
@@ -133,16 +112,28 @@ public class COMZombies extends JavaPlugin
 	 * player is removing doors from.
 	 */
 	public HashMap<Player, Game> isRemovingDoors = new HashMap<Player, Game>();
-
+	/**
+	 * Players who are in this hash map are creating a door for a game, the
+	 * value that player contains is the door that they are creating. The door
+	 * contains the game and it's information.
+	 */
+	public HashMap<Player, Barrier> isCreatingBarrier = new HashMap<Player, Barrier>();
+	/**
+	 * Players who are contained in this hash map are removing doors for a given
+	 * arena, the value that corresponds to the player is the game that the
+	 * player is removing doors from.
+	 */
+	public HashMap<Player, Game> isRemovingBarriers = new HashMap<Player, Game>();
+	
 	/**
 	 * Players who are contained in this hash map are in sign edit for a given
 	 * sign, the value that corresponds to the player is the sign that the
 	 * player is editing.
 	 */
 	public HashMap<Player, Sign> isEditingASign = new HashMap<Player, Sign>();
-
+	
 	public URL bukkitPage;
-
+	
 	/**
 	 * Called when the plugin is reloading to cancel every remove spawn, create
 	 * door, and arena setup operation.
@@ -154,7 +145,7 @@ public class COMZombies extends JavaPlugin
 		isCreatingDoor.clear();
 		isRemovingDoors.clear();
 	}
-
+	
 	public static String prefix = ChatColor.RED + "< " + ChatColor.GOLD + ChatColor.ITALIC + "CoM: Zombies" + ChatColor.RED + " >" + ChatColor.GRAY + " ";
 	/**
 	 * List of every gun contained in the config.
@@ -181,9 +172,9 @@ public class COMZombies extends JavaPlugin
 	 */
 	public SignManager signManager;
 	public Files files;
-
+	
 	public Vault vault;
-
+	
 	public void onEnable()
 	{
 		instance = this;
@@ -197,13 +188,10 @@ public class COMZombies extends JavaPlugin
 		pointManager.saveAll();
 		command = new ZombiesCommand(this);
 		leaderboards = new Leaderboards(this);
-		if(Bukkit.getPluginManager().isPluginEnabled("Vault"))
-		{
-			vault = new Vault(this);
-		}
+		vault = new Vault(this);
 		config.Setup();
 		registerEvents();
-
+		
 		boolean say = true;
 		Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] " + ChatColor.GREEN + "" + ChatColor.BOLD + "This server is running " + ChatColor.GOLD + "" + ChatColor.BOLD + getName() + ChatColor.RED + "" + ChatColor.BOLD + "!");
 		Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] " + ChatColor.GREEN + "" + ChatColor.BOLD + "Testing plugin...");
@@ -214,7 +202,7 @@ public class COMZombies extends JavaPlugin
 		{
 			Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] " + ChatColor.DARK_RED + "Zombies has run into an error!");
 			Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] " + ChatColor.DARK_RED + e.toString());
-
+			
 			say = false;
 		}
 		if (say)
@@ -222,12 +210,12 @@ public class COMZombies extends JavaPlugin
 			Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] " + ChatColor.GREEN + "" + ChatColor.BOLD + "Zombies is working just fine!");
 			saveConfig();
 		}
-
-
+		
+		
 		getCommand("zombies").setExecutor(command);
-
+		
 		log.info("[Call of Minecraft: Zombies] has been enabled!");
-
+		
 		if(getConfig().getBoolean("config.settings.checkForUpdates"))
 		{
 			try
@@ -242,10 +230,10 @@ public class COMZombies extends JavaPlugin
 				InputStream stream = bukkitPage.openConnection().getInputStream();
 				final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 				String response = reader.readLine();
-
+				
 				// Parse the array of files from the query's response
 				JSONArray array = (JSONArray) JSONValue.parse(response);
-
+				
 				if (array.size() > 0) 
 				{
 					JSONObject latest = (JSONObject) array.get(array.size() - 1);
@@ -265,7 +253,7 @@ public class COMZombies extends JavaPlugin
 						System.out.println(ChatColor.RED + "[Zombies] " + ChatColor.DARK_RED + "" + ChatColor.BOLD + "You currently have version: " + getDescription().getVersion() + " and the current version fro COM:Z is verion: " + versionName);
 						System.out.println(ChatColor.RED + "[Zombies] " + ChatColor.DARK_RED + "" + ChatColor.BOLD + "Get the latest version of COM:Z here: " + versionLink);
 					}
-
+					
 				} else {
 					System.out.println("There are no files for this project");
 				}
@@ -275,12 +263,12 @@ public class COMZombies extends JavaPlugin
 				return;
 			}
 		}
-
+		
 		manager.loadAllGames();
 		signManager = new SignManager();
-
+		
 	}
-
+	
 	/**
 	 * Tests the plugin for any errors, if an exception is caught, the server
 	 * will notify to the console.
@@ -302,7 +290,7 @@ public class COMZombies extends JavaPlugin
 		files.saveSignsConfig();
 		getConfig().getClass();
 	}
-
+	
 	/**
 	 * Registers every event in the event package
 	 * 
@@ -321,7 +309,6 @@ public class COMZombies extends JavaPlugin
 		m.registerEvents(new OnPlayerMoveEvent(this), this);
 		m.registerEvents(new OnPlayerChatEvent(this), this);
 		m.registerEvents(new OnSignChangeEvent(this), this);
-		m.registerEvents(new OnEntityDeathEvent(this), this);
 		m.registerEvents(new OnSignInteractEvent(this), this);
 		m.registerEvents(new OnEntityDamageEvent(this), this);
 		m.registerEvents(new OnPlayerLeaveEvent(this), this);
@@ -335,12 +322,12 @@ public class COMZombies extends JavaPlugin
 		m.registerEvents(new OnInventoryChangeEvent(this), this);
 		m.registerEvents(new OnPlayerScopeEvent(this), this);
 	}
-
+	
 	public void registerSpecificClass(Listener c)
 	{
 		getServer().getPluginManager().registerEvents(c, this);
 	}
-
+	
 	/**
 	 * Disables the plugin
 	 * 
@@ -359,7 +346,7 @@ public class COMZombies extends JavaPlugin
 		manager.games.clear();
 		log.info("[Zombies] has been disabled!");
 	}
-
+	
 	/**
 	 * Gets a gun based off of the name given
 	 * 

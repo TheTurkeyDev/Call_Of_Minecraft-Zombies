@@ -1,10 +1,5 @@
 package com.zombies.InGameFeatures.Features;
 
-/******************************************
- *            COM: Zombies                *
- * Developers: Connor Hollasch, Ryan Turk *
- *****************************************/
-
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;

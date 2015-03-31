@@ -1,7 +1,6 @@
 package com.zombies.Listeners;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,14 +27,14 @@ import com.zombies.particleutilities.ParticleEffects;
 
 public class OnGunEvent implements Listener
 {
-
+	
 	private COMZombies plugin;
-
+	
 	public OnGunEvent(COMZombies pl)
 	{
 		plugin = pl;
 	}
-
+	
 	@EventHandler
 	public void onBlockInteractEvent(PlayerInteractEvent event)
 	{
@@ -65,7 +64,7 @@ public class OnGunEvent implements Listener
 			}
 		}
 	}
-
+	
 	@EventHandler
 	public void onGunReload(PlayerInteractEvent e)
 	{
@@ -125,7 +124,7 @@ public class OnGunEvent implements Listener
 							}
 							for (Player pl : game.players)
 							{
-								pl.playEffect(zomb.getLocation(), Effect.STEP_SOUND, 152);
+								pl.playSound(pl.getLocation(), Sound.LAVA_POP, 1.0F, 0.0F);
 							}
 							if (game.spawnManager.totalHealth().containsKey(event.getEntity()))
 							{
@@ -161,7 +160,7 @@ public class OnGunEvent implements Listener
 							{
 								OnZombiePerkDrop perkdrop = new OnZombiePerkDrop(plugin);
 								perkdrop.perkDrop(zomb, player);
-								zomb.damage(Integer.MAX_VALUE);
+								zomb.remove();
 								boolean doublePoints = game.isDoublePoints();
 								if (doublePoints)
 								{
@@ -171,7 +170,7 @@ public class OnGunEvent implements Listener
 								{
 									plugin.pointManager.addPoints(player, plugin.config.pointsOnKill);
 								}
-
+								
 								zomb.playEffect(EntityEffect.DEATH);
 								plugin.pointManager.notifyPlayer(player);
 								game.spawnManager.removeEntity((Entity)zomb);
@@ -197,12 +196,7 @@ public class OnGunEvent implements Listener
 							}
 							if (game.isInstaKill())
 							{
-								while (!zomb.isDead())
-								{
-									OnZombiePerkDrop perkdrop = new OnZombiePerkDrop(plugin);
-									perkdrop.perkDrop(zomb, player);
-									zomb.damage(Integer.MAX_VALUE);
-								}
+								zomb.remove();
 							}
 						}
 					}
@@ -210,7 +204,7 @@ public class OnGunEvent implements Listener
 			}
 		}
 	}
-
+	
 	@EventHandler
 	public void onPlayerMonkeyBomb(PlayerInteractEvent event)
 	{

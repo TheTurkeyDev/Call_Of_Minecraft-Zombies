@@ -1,8 +1,3 @@
-/******************************************
- *            COM: Zombies                *
- * Developers: Connor Hollasch, Ryan Turk *
- *****************************************/
-
 package com.zombies.Listeners;
 
 import java.util.ArrayList;
@@ -11,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
@@ -31,12 +27,12 @@ public class OnEntityDamageEvent implements Listener
 {
 	private COMZombies plugin;
 	private ArrayList<Player> beingHealed = new ArrayList<Player>();
-
+	
 	public OnEntityDamageEvent(COMZombies zombies)
 	{
 		plugin = zombies;
 	}
-
+	
 	@EventHandler
 	public void damge(EntityDamageByEntityEvent e)
 	{
@@ -47,7 +43,7 @@ public class OnEntityDamageEvent implements Listener
 				if (e.getCause() == DamageCause.ENTITY_ATTACK)
 				{
 					EntityDamageByEntityEvent damager = (EntityDamageByEntityEvent) e;
-
+					
 					if (damager.getDamager() instanceof Player)
 					{
 						damager.setCancelled(true);
@@ -92,12 +88,12 @@ public class OnEntityDamageEvent implements Listener
 							}
 							Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 							{
-
+								
 								public void run()
 								{
 									healPlayer(player);
 								}
-
+								
 							}, 100L);
 						}
 					}
@@ -129,7 +125,7 @@ public class OnEntityDamageEvent implements Listener
 							int zx = (int) zombie1.getLocation().getX();
 							int zy = (int) zombie1.getLocation().getY();
 							int zz = (int) zombie1.getLocation().getZ();
-
+							
 							if (Math.abs(px - zx) <= 1 && Math.abs(py - zy) <= 1 && Math.abs(pz - zz) <= 1)
 							{
 								damageAmount = 5;
@@ -170,7 +166,7 @@ public class OnEntityDamageEvent implements Listener
 							{
 								OnZombiePerkDrop perkdrop = new OnZombiePerkDrop(plugin);
 								perkdrop.perkDrop(zombie1, player);
-								zombie1.damage(Integer.MAX_VALUE);
+								zombie1.remove();
 								boolean doublePoints = game.isDoublePoints();
 								if (doublePoints)
 								{
@@ -201,16 +197,12 @@ public class OnEntityDamageEvent implements Listener
 							game.spawnManager.setTotalHealth(e.getEntity(), (int) (totalHealth - damageAmount));
 							if (game.isInstaKill())
 							{
-								while (!zombie1.isDead())
-								{
-									OnZombiePerkDrop perkdrop = new OnZombiePerkDrop(plugin);
-									perkdrop.perkDrop(zombie1, player);
-									zombie1.damage(Integer.MAX_VALUE);
-								}
+								zombie1.remove();
+								game.spawnManager.removeEntity((Entity) zombie1);
 							}
 							for (Player pl : game.players)
 							{
-								pl.playEffect(entity.getLocation().add(0, 1, 0), Effect.STEP_SOUND, 1);
+								pl.playSound(entity.getLocation().add(0, 1, 0), Sound.STEP_STONE, 1, 1);
 							}
 						}
 						else
@@ -227,13 +219,15 @@ public class OnEntityDamageEvent implements Listener
 			}
 		}
 	}
-
+	
 	@EventHandler
 	public void damgeEvent(EntityDamageEvent e)
 	{
 		if (e.getEntity() instanceof Player)
 		{
 			Player player = (Player) e.getEntity();
+			if( plugin.manager.getGame(player) == null)
+				return;
 			InGameManager igm = plugin.manager.getGame(player).getInGameManager();
 			if (igm.isPlayerDowned(player))
 			{
@@ -257,16 +251,18 @@ public class OnEntityDamageEvent implements Listener
 			}
 			if (plugin.manager.isPlayerInGame(player)) player.getLocation().getWorld().playEffect(player.getLocation().add(0, 1, 0), Effect.STEP_SOUND, 152);
 		}
-		else if(e.getCause().equals(DamageCause.LAVA))
+		else if(e.getCause().equals(DamageCause.LAVA) && e.getEntity() instanceof Zombie)
 		{
 			Zombie z = (Zombie) e.getEntity();
-			z.setFireTicks(0);
 			Game game =  plugin.manager.getGame(z);
+			if(game == null)
+				return;
+			z.setFireTicks(0);
 			z.teleport(game.getPlayerSpawn());
 			e.setCancelled(true);
 		}
 	}
-
+	
 	private void playerDowned(Player player, final Game game)
 	{
 		if (player.getFireTicks() > 0)
@@ -290,7 +286,7 @@ public class OnEntityDamageEvent implements Listener
 			player.setHealth(1);
 		}
 	}
-
+	
 	public void healPlayer(final Player player)
 	{
 		if (beingHealed.contains(player)) return;
@@ -298,7 +294,7 @@ public class OnEntityDamageEvent implements Listener
 		if (!(plugin.manager.isPlayerInGame(player))) return;
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 		{
-
+			
 			@Override
 			public void run()
 			{
@@ -313,15 +309,16 @@ public class OnEntityDamageEvent implements Listener
 					return;
 				}
 			}
-
+			
 		}, 20L);
 	}
-
+	
 	public void removeDownedPlayer(Player player)
 	{
 		plugin.manager.getGame(player).getInGameManager().removeDownedPlayer(player);
 	}
-
+	
+	@SuppressWarnings("deprecation")
 	public boolean isDownedPlayer(String name)
 	{
 		return plugin.manager.getGame(Bukkit.getPlayer(name)).getInGameManager().isPlayerDowned(Bukkit.getPlayer(name));

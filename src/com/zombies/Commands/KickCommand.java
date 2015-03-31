@@ -1,8 +1,3 @@
-/******************************************
- *            COM: Zombies                *
- * Developers: Connor Hollasch, Ryan Turk *
- *****************************************/
-
 package com.zombies.Commands;
 
 import org.bukkit.Bukkit;
@@ -24,6 +19,7 @@ public class KickCommand implements SubCommand
 		plugin = zombiesCommand.plugin;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{

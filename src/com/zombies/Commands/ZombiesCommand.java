@@ -1,8 +1,3 @@
-/******************************************
- *            COM: Zombies                *
- * Developers: Connor Hollasch, Ryan Turk *
- *****************************************/
-
 package com.zombies.Commands;
 
 import java.util.HashMap;
@@ -60,11 +55,18 @@ public class ZombiesCommand implements CommandExecutor
 															// zombies.forcestart
 		commandList.put("s", commandList.get("start"));
 		commandList.put("forcestart", commandList.get("start"));
+		
+		commandList.put("end", new EndCommand(this)); // Force ends the
+															// given arena: Perm
+															// -
+															// zombies.forceend
+		commandList.put("forceend", commandList.get("end"));
+
 		commandList.put("e", new EnableCommand(this)); // Enables the given
 														// arena: Perm -
 														// zombies.enable
 		commandList.put("enable", commandList.get("e"));
-		commandList.put("enableArena", commandList.get("e"));
+		commandList.put("enablearena", commandList.get("e"));
 		commandList.put("join", new JoinCommand(this)); // Puts you if
 														// applicable in the
 														// arena specified or
@@ -136,6 +138,7 @@ public class ZombiesCommand implements CommandExecutor
 															// from the given
 															// arena: Perm -
 															// zombies.removedoor
+		commandList.put("addbarrier", new AddBarrier(this));
 		commandList.put("removedoors", commandList.get("rd"));
 		commandList.put("removedoor", commandList.get("rd"));
 		commandList.put("disablepower", new DisablePowerCommand(this));
@@ -144,6 +147,8 @@ public class ZombiesCommand implements CommandExecutor
 		commandList.put("spectate", commandList.get("spec"));
 		commandList.put("addteleporter", new AddTeleporterCommand(this));
 		commandList.put("at", commandList.get("addteleporter"));
+		commandList.put("removeteleporter", new RemoveTeleporterCommand(this));
+		commandList.put("rt", commandList.get("removeteleporter"));
 		commandList.put("addsign", new AddSignCommand(this));
 	}
 

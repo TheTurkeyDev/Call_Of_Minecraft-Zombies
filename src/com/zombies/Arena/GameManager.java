@@ -1,12 +1,8 @@
-/******************************************
- *            COM: Zombies                *
- * Developers: Connor Hollasch, Ryan Turk *
- *****************************************/
-
 package com.zombies.Arena;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,8 +17,7 @@ import com.zombies.InGameFeatures.Features.Door;
 public class GameManager
 {
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public ArrayList<Game> games = new ArrayList();
+	public List<Game> games = new ArrayList<Game>();
 	private static COMZombies plugin;
 
 	public GameManager(COMZombies zombies)

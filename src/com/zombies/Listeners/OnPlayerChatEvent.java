@@ -1,8 +1,3 @@
-/******************************************
- *            COM: Zombies                *
- * Developers: Connor Hollasch, Ryan Turk *
- *****************************************/
-
 package com.zombies.Listeners;
 
 import org.bukkit.Bukkit;
@@ -20,6 +15,7 @@ import com.zombies.COMZombies;
 import com.zombies.CommandUtil;
 import com.zombies.Arena.Game;
 import com.zombies.Arena.Game.ArenaStatus;
+import com.zombies.InGameFeatures.Features.Barrier;
 import com.zombies.InGameFeatures.Features.Door;
 
 public class OnPlayerChatEvent implements Listener
@@ -48,6 +44,55 @@ public class OnPlayerChatEvent implements Listener
 				CommandUtil.sendMessageToPlayer(player, "You are No longr editing a sign");
 				playerChat.setCancelled(true);
 				sign.update();
+			}
+		}
+		if (plugin.isCreatingBarrier.containsKey(player))
+		{
+			Barrier b = plugin.isCreatingBarrier.get(player);
+			if(b == null)
+			{
+				CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "You have not selected a block for the barrier yet!");
+				return;
+			}
+			if(message.equalsIgnoreCase("done"))
+			{
+				if(b.getRepairLoc() == null)
+				{
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier block for barrier " + b.getNum() + " set!");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now select where the repair sign will be located at.");
+					playerChat.setCancelled(true);
+				}
+				else if(b.getSpawnPoint() == null)
+				{
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier block repair sign location for barrier " + b.getNum() + " set!");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now select the spawn point that is located behind the barrier.");
+					playerChat.setCancelled(true);
+				}
+				else
+				{
+					Game game = b.getGame();
+					game.resetSpawnLocationBlocks();
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn point for barrier number " + b.getNum() + " set!");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now type in the ammount the player will receive per repairation level of the barrier.");
+					playerChat.setCancelled(true);
+				}
+			}
+			else if (b.getSpawnPoint()!= null && b.getBlock() != null && b.getRepairLoc() != null)
+			{
+				int price = 0;
+				try
+				{
+					price = Integer.parseInt(message);
+				} catch (NumberFormatException ex)
+				{
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + message + " is not a number!");
+					return;
+				}
+				b.setReward(price);
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier setup complete!");
+				b.getGame().barrierManager.addBarrier(b);
+				playerChat.setCancelled(true);
+				plugin.isCreatingBarrier.remove(player);
 			}
 		}
 		if (plugin.isCreatingDoor.containsKey(player))

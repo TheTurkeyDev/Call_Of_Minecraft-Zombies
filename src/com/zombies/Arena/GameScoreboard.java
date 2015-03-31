@@ -37,14 +37,14 @@ public class GameScoreboard
 		objective = board.registerNewObjective(this.game.getName(), "dummy");
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		objective.setDisplayName(ChatColor.RED + this.game.getName());
-		round = objective.getScore(Bukkit.getOfflinePlayer(ChatColor.RED + "Round"));
+		round = objective.getScore(ChatColor.RED + "Round");
 		round.setScore(0);
 	}
 
 	public void addPlayer(Player player)
 	{
 		team.addPlayer(player);
-		Score s = objective.getScore(player);
+		Score s = objective.getScore(player.getName());
 		playerScores.put(player, s);
 		for (Player pl : game.players)
 		{
@@ -57,7 +57,7 @@ public class GameScoreboard
 	public void removePlayer(Player player)
 	{
 		team.removePlayer(player);
-		board.resetScores(player);
+		board.resetScores(player.getName());
 		player.setScoreboard(manager.getNewScoreboard());
 		playerScores.remove(player);
 		plugin.signManager.updateGame(game);

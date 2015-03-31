@@ -1,13 +1,3 @@
-/**
- * Wood hoe = pistol
- * Stone hoe = shotgun
- * Gold hoe = Assult Rifle
- * Iron hoe = lmg
- * stick = smg
- * blaze rod = sniper
- * diamond hoe = other
- */
-
 package com.zombies.Guns;
 
 import java.util.ArrayList;
@@ -19,6 +9,7 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
@@ -30,6 +21,7 @@ import com.zombies.COMZombies;
 import com.zombies.CommandUtil;
 import com.zombies.Arena.Game;
 import com.zombies.InGameFeatures.PerkMachines.PerkType;
+import com.zombies.Listeners.OnZombiePerkDrop;
 
 public class Gun
 {
@@ -214,7 +206,45 @@ public class Gun
 						{
 							World world = player.getWorld();
 							world.strikeLightningEffect(ent.getLocation());
-							((Zombie) ent).damage(10);
+							int totalHealth;
+							if (game.spawnManager.totalHealth().containsKey(ent))
+							{
+								totalHealth = game.spawnManager.totalHealth().get(ent);
+							}
+							else
+							{
+								game.spawnManager.setTotalHealth(ent, 20);
+								totalHealth = 20;
+							}
+							if (totalHealth >= 20)
+							{
+								((LivingEntity)ent).setHealth(20);
+								if (game.spawnManager.totalHealth().get(ent) <= 20)
+								{
+									((LivingEntity)ent).setHealth(game.spawnManager.totalHealth().get(ent));
+								}
+								else
+								{
+									game.spawnManager.setTotalHealth(ent, totalHealth - 10);
+								}
+								plugin.pointManager.notifyPlayer(player);
+							}
+							else if(totalHealth - 10 < 1)
+							{
+								OnZombiePerkDrop perkdrop = new OnZombiePerkDrop(plugin);
+								perkdrop.perkDrop(ent, player);
+								ent.remove();
+								game.spawnManager.removeEntity(ent);
+								game.zombieKilled(player);
+								if (game.spawnManager.getEntities().size() <= 0)
+								{
+									game.nextWave();
+								}
+							}
+							else
+							{
+								((LivingEntity)ent).damage(10);
+							}
 						}
 					}
 				}
@@ -265,17 +295,17 @@ public class Gun
 		if (getType().type.equals(GunTypeEnum.Pistols))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
-			ls.setVelocity(ls.getVelocity().multiply(.5));
+			ls.setVelocity(ls.getVelocity().multiply(1));
 		}
 		if (getType().type.equals(GunTypeEnum.AssaultRifles))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
-			ls.setVelocity(ls.getVelocity().multiply(.7));
+			ls.setVelocity(ls.getVelocity().multiply(1.5));
 		}
 		if (getType().type.equals(GunTypeEnum.SniperRifles))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
-			ls.setVelocity(ls.getVelocity().multiply(1));
+			ls.setVelocity(ls.getVelocity().multiply(7));
 		}
 		if (getType().type.equals(GunTypeEnum.LightMachineGuns))
 		{
@@ -287,7 +317,7 @@ public class Gun
 			Projectile ls = player.launchProjectile(Snowball.class);
 			ls.setVelocity(ls.getVelocity().multiply(3));
 		}
-		else
+		if(getType().type.equals(GunTypeEnum.Others))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
 			ls.setVelocity(ls.getVelocity().multiply(4));

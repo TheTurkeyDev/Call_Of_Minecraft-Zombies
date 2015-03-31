@@ -1,8 +1,3 @@
-/******************************************
- *            COM: Zombies                *
- * Developers: Connor Hollasch, Ryan Turk *
- *****************************************/
-
 //MODES
 //DISABLED
 //INGAME
@@ -16,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import net.minecraft.server.v1_7_R4.PacketPlayOutBlockBreakAnimation;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -23,11 +20,14 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.craftbukkit.v1_7_R4.CraftServer;
+import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -38,10 +38,10 @@ import com.zombies.CommandUtil;
 import com.zombies.Guns.Gun;
 import com.zombies.Guns.GunManager;
 import com.zombies.Guns.GunType;
+import com.zombies.InGameFeatures.BarrierManager;
+import com.zombies.InGameFeatures.BoxManager;
 import com.zombies.InGameFeatures.DownedPlayer;
 import com.zombies.InGameFeatures.InGameManager;
-import com.zombies.InGameFeatures.Features.BarrierManager;
-import com.zombies.InGameFeatures.Features.BoxManager;
 import com.zombies.InGameFeatures.Features.Door;
 import com.zombies.InGameFeatures.Features.RandomBox;
 import com.zombies.Leaderboards.Leaderboards;
@@ -52,168 +52,166 @@ import com.zombies.kits.KitManager;
 
 /**
  * Main game class.
- * 
- * @author Connor, Ryan, Ryne
  */
 public class Game
 {
-
+	
 	/**
 	 * Main class / plugin instance.
 	 */
 	private COMZombies plugin;
-
+	
 	/**
 	 * List of every player contained in game.
 	 */
 	public List<Player> players = new ArrayList<Player>();
-
+	
 	/**
 	 * List of every join sign for this game.
 	 */
 	public ArrayList<Sign> joinSigns = new ArrayList<Sign>();
-
+	
 	/**
 	 * Status of the game.
 	 */
 	public ArenaStatus mode = ArenaStatus.DISABLED;
-
+	
 	/**
 	 * Assuring that the game has every warp, spectator, game, and lobby.
 	 */
 	private boolean hasWarps = false;
-
+	
 	/**
 	 * Assuring that the game has every point, point one for the arena, and
 	 * point two.
 	 */
 	private boolean hasPoints = false;
-
+	
 	/**
 	 * If the game is disabled / edit mode, true.
 	 */
 	private boolean isDisabled = false;
-
+	
 	/**
 	 * If double points is active.
 	 */
 	private boolean doublePoints = false;
-
+	
 	/**
 	 * If fire salse is active
 	 */
 	private boolean isFireSale = false;
-
+	
 	/**
 	 * If insta kill is active.
 	 */
 	private static boolean instaKill = false;
-
+	
 	/**
 	 * Contains a player and the gun manager corresponding to that player.
 	 */
 	private HashMap<Player, GunManager> playersGuns = new HashMap<Player, GunManager>();
-
+	
 	/**
 	 * Current wave number.
 	 */
 	public int waveNumber = 0;
-
+	
 	/**
 	 * World name for the game.
 	 */
 	public String worldName = "world";
-
+	
 	/**
 	 * Arena name for the game.
 	 */
 	private String arenaName;
-
+	
 	/**
 	 * Min point in which the game is contained.
 	 * 
 	 * @see field arena
 	 */
 	private Location min;
-
+	
 	/**
 	 * Max point in which the game is contained.
 	 * 
 	 * @see field arena
 	 */
 	private Location max;
-
+	
 	/**
 	 * Location players will teleport to when the game starts.
 	 */
 	private Location playerTPLocation;
-
+	
 	/**
 	 * Location players will teleport to when they leave or die.
 	 */
 	private Location spectateLocation;
-
+	
 	/**
 	 * Location in which players will teleport upon first join.
 	 */
 	private Location lobbyLocation;
-
+	
 	/**
 	 * Arena contained in the game.
 	 */
 	public Arena arena;
-
+	
 	/**
 	 * Manager controlling zombie spawing and spawn points for the game.
 	 */
 	public SpawnManager spawnManager;
-
+	
 	/**
 	 * Auto start timer, constructed upon join.
 	 */
 	public AutoStart starter;
-
+	
 	/**
 	 * Manager controlling extra features in the game.
 	 * 
 	 * @see InGameManager class
 	 */
 	private InGameManager inGameManager;
-
+	
 	/**
 	 * Information containing gamemode, and fly mode the player was in before
 	 * they joined the game.
 	 */
 	private PreJoinInformation pInfo = new PreJoinInformation();
-
+	
 	/**
 	 * Scoreboard used to manage players points
 	 */
 	public GameScoreboard scoreboard;
-
+	
 	/**
 	 * Max players is used to check for player count and if not to remove a
 	 * player if the game is full.
 	 */
 	public int maxPlayers;
-
+	
 	/**
 	 * contains all of the Mysteryboxes in the game
 	 */
 	public BoxManager boxManager;
-
+	
 	/**
 	 * contains all of the Barriers in the game
 	 */
 	public BarrierManager barrierManager;
-
+	
 	/**
 	 * contains all of the Kits in the game
 	 */
 	public KitManager kitManager;
-
+	
 	public boolean changingRound = false;
-
+	
 	/**
 	 * Creates a game based off of the parameters and arena configuration file.
 	 * 
@@ -230,7 +228,7 @@ public class Game
 		spawnManager = new SpawnManager(plugin, this);
 		inGameManager = new InGameManager(plugin, this);
 		boxManager = new BoxManager(plugin, this);
-		barrierManager = new BarrierManager(plugin, null);
+		barrierManager = new BarrierManager(plugin, this);
 		kitManager = plugin.kitManager;
 		scoreboard = new GameScoreboard(this);
 		spawnManager.loadAllSpawnsToGame();
@@ -247,7 +245,7 @@ public class Game
 			forceNight();
 		}
 	}
-
+	
 	/**
 	 * Gets the guns the player currently has
 	 * @param player to get the guns of
@@ -260,7 +258,7 @@ public class Game
 		playersGuns.put(player, new GunManager(plugin, player));
 		return playersGuns.get(player); 
 	}
-
+	
 	/**
 	 * 
 	 * @return the InGameManager
@@ -269,7 +267,7 @@ public class Game
 	{
 		return inGameManager;
 	}
-
+	
 	/**
 	 * 
 	 * @return the players spawn location on the map
@@ -278,7 +276,7 @@ public class Game
 	{
 		return playerTPLocation;
 	}
-
+	
 	/**
 	 * 
 	 * @return the spectators spawn location on the map
@@ -287,7 +285,7 @@ public class Game
 	{
 		return spectateLocation;
 	}
-
+	
 	/**
 	 * 
 	 * @return the lobby spawn location on the map
@@ -296,7 +294,7 @@ public class Game
 	{
 		return lobbyLocation;
 	}
-
+	
 	/**
 	 * 
 	 * @return if Double Points is active
@@ -305,7 +303,7 @@ public class Game
 	{
 		return doublePoints;
 	}
-
+	
 	/**
 	 * 
 	 * @return if Insta Kill is active
@@ -314,7 +312,7 @@ public class Game
 	{
 		return instaKill;
 	}
-
+	
 	/**
 	 * Turns on or off instakill.
 	 * 
@@ -324,7 +322,7 @@ public class Game
 	{
 		instaKill = isInstaKill;
 	}
-
+	
 	/**
 	 * Turns on double points.
 	 * 
@@ -334,7 +332,7 @@ public class Game
 	{
 		doublePoints = isDoublePoints;
 	}
-
+	
 	/**
 	 * Resets the blocks to air at the spawn locations
 	 */
@@ -346,7 +344,7 @@ public class Game
 			loc.getBlock().setType(Material.AIR);
 		}
 	}
-
+	
 	/**
 	 * 
 	 * @return if the game has been created fully
@@ -357,7 +355,7 @@ public class Game
 		if (hasPoints == true && hasWarps == true && !isDisabled) { return true; }
 		return false;
 	}
-
+	
 	/**
 	 * force starts the arena
 	 */
@@ -375,9 +373,9 @@ public class Game
 		starter.startTimer();
 		mode = ArenaStatus.STARTING;
 		starter.forced = true;
-
+		
 	}
-
+	
 	/**
 	 * starts the game normally
 	 * @return if the game starts correct
@@ -385,7 +383,7 @@ public class Game
 	public boolean startArena()
 	{
 		if (mode == ArenaStatus.INGAME) { return false; }
-
+		
 		for (Player player : players)
 		{
 			player.teleport(playerTPLocation);
@@ -396,14 +394,13 @@ public class Game
 			} catch (Exception ex)
 			{
 			}
-
+			
 			player.setHealth(20);
 			player.setFoodLevel(20);
 			player.setLevel(0);
 			plugin.pointManager.setPoints(player, 500);
-			player.playSound(player.getLocation(), Sound.PORTAL_TRAVEL, 1, 1);
 		}
-
+		
 		scoreboard.update();
 		if(plugin.config.MultiBox)
 		{
@@ -424,12 +421,12 @@ public class Game
 			}
 		}
 		spawnManager.update();
-
+		
 		for (Door door : inGameManager.getDoors())
 		{
 			door.loadSpawns();
 		}
-
+		
 		try
 		{
 			for (LivingEntity entity : getWorld().getLivingEntities())
@@ -461,7 +458,7 @@ public class Game
 		kitManager.giveOutKits(this);
 		return true;
 	}
-
+	
 	/**
 	 * Starts a delayed task
 	 * @param run Runnable that runs the task
@@ -471,7 +468,7 @@ public class Game
 	{
 		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, run, delayInSeconds);
 	}
-
+	
 	/**
 	 * Spawns in the next wave of zombies.
 	 */
@@ -510,9 +507,10 @@ public class Game
 					spawnManager.zombiesSpawned = 0;
 					for (Player pl : players)
 					{
+						pl.playSound(pl.getLocation(), Sound.PORTAL_TRAVEL, 1, 1);
 						CommandUtil.sendMessageToPlayer(pl, "Round " + waveNumber + "!");
 					}
-
+					
 					spawnManager.setSpawnInterval((int) (spawnManager.zombieSpawnInterval / 1.05));
 					if (spawnManager.zombieSpawnInterval < 1)
 					{
@@ -532,7 +530,7 @@ public class Game
 			{
 				CommandUtil.sendMessageToPlayer(pl, "Round " + waveNumber + "!");
 			}
-
+			
 			spawnManager.setSpawnInterval((int) (spawnManager.zombieSpawnInterval / 1.05));
 			if (spawnManager.zombieSpawnInterval < 1)
 			{
@@ -544,7 +542,7 @@ public class Game
 			changingRound = false;
 		}
 	}
-
+	
 	/**
 	 * Adds a player to the game
 	 * @param player to be added to the game
@@ -632,8 +630,9 @@ public class Game
 		{
 			CommandUtil.sendMessageToPlayer(player, "Something could have went wrong here, COM Zombies has picked this up and will continue without error.");
 		}
+		updateJoinSigns();
 	}
-
+	
 	/**
 	 * Removes the given player from the game
 	 * @param player to be removed from the game
@@ -682,7 +681,7 @@ public class Game
 		}
 		updateJoinSigns();
 	}
-
+	
 	@SuppressWarnings("deprecation")
 	private void resetPlayer(Player player)
 	{
@@ -724,8 +723,9 @@ public class Game
 				pl.hidePlayer(player);
 			}
 		}
+		updateJoinSigns();
 	}
-
+	
 	/**
 	 * Removes a player from the game
 	 * @param player to be removed
@@ -770,7 +770,7 @@ public class Game
 		}
 		updateJoinSigns();
 	}
-
+	
 	/**
 	 * Sets the spectator warp location
 	 * @param p player the set the location
@@ -790,7 +790,7 @@ public class Game
 		mode = ArenaStatus.WAITING;
 		return true;
 	}
-
+	
 	/**
 	 * Causes the game to always be at night time.
 	 */
@@ -798,16 +798,16 @@ public class Game
 	{
 		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
 		{
-
+			
 			@Override
 			public void run()
 			{
 				getWorld().setTime(14000L);
 			}
-
+			
 		}, 5L, 1200L);
 	}
-
+	
 	/**
 	 * Gets the world where the map is located
 	 * @return
@@ -816,7 +816,7 @@ public class Game
 	{
 		return plugin.getServer().getWorld(plugin.files.getArenasFile().getString(arenaName + ".Location.world"));
 	}
-
+	
 	/**
 	 * Sets the lobby spawn location
 	 * @param player that set the spawn
@@ -833,7 +833,7 @@ public class Game
 		lobbyLocation = loc;
 		return true;
 	}
-
+	
 	/**
 	 * Sets the first point in the arena
 	 * @param p player that set the point
@@ -847,7 +847,7 @@ public class Game
 		worldName = loc.getWorld().getName();
 		return true;
 	}
-
+	
 	/**
 	 * Sets the Second point in the arena
 	 * @param p player that set the point
@@ -868,7 +868,7 @@ public class Game
 		hasPoints = true;
 		return true;
 	}
-
+	
 	/**
 	 * Disables the game
 	 */
@@ -877,8 +877,9 @@ public class Game
 		isDisabled = true;
 		endGame();
 		mode = ArenaStatus.DISABLED;
+		updateJoinSigns();
 	}
-
+	
 	/**
 	 * Enables the game
 	 */
@@ -887,8 +888,9 @@ public class Game
 		isDisabled = false;
 		if (mode == ArenaStatus.INGAME) { return; }
 		mode = ArenaStatus.WAITING;
+		updateJoinSigns();
 	}
-
+	
 	/**
 	 * Ends the game
 	 */
@@ -936,7 +938,7 @@ public class Game
 		}
 		updateJoinSigns();
 	}
-
+	
 	/**
 	 * Sets the players warp location in game.
 	 * 
@@ -955,7 +957,7 @@ public class Game
 		saveLocationsInConfig(p);
 		return true;
 	}
-
+	
 	/**
 	 * Sets the name of the game
 	 * @param name Name of the arena to be set to
@@ -964,12 +966,12 @@ public class Game
 	{
 		arenaName = name;
 	}
-
+	
 	public static enum ArenaStatus
 	{
 		DISABLED, STARTING, WAITING, INGAME;
 	}
-
+	
 	/**
 	 * Saves all locations to the config
 	 * @param player that saved the locations
@@ -1005,7 +1007,7 @@ public class Game
 			plugin.files.getArenasFile().set(arenaName + ".LobbySpawn.yaw", lobbyLocation.getYaw());
 			plugin.files.saveArenasConfig();
 			plugin.files.reloadArenas();
-
+			
 			CommandUtil.sendMessageToPlayer(player, "Arena " + arenaName + " setup!");
 			plugin.isArenaSetup.remove(player);
 			hasWarps = true;
@@ -1014,7 +1016,7 @@ public class Game
 			return;
 		}
 	}
-
+	
 	/**
 	 * Sets up the arena when the server loads
 	 */
@@ -1060,15 +1062,15 @@ public class Game
 		spawnManager.loadAllSpawnsToGame();
 		mode = ArenaStatus.WAITING;
 	}
-
+	
 	/**
 	 * Sets up the arena when the server loads
 	 */
 	public void setup()
 	{
-
+		
 		// Sets up ArenaConfig
-
+		
 		// Adding ArenaName
 		String loc = arenaName;
 		plugin.files.getArenasFile().addDefault(loc + ".Power", false);
@@ -1108,7 +1110,7 @@ public class Game
 		plugin.files.getArenasFile().addDefault(locPS + ".y", null);
 		// adds the playerwarpsz
 		plugin.files.getArenasFile().addDefault(locPS + ".z", null);
-
+		
 		String locLB = loc + ".LobbySpawn";
 		// adds the lobby LB spawn
 		plugin.files.getArenasFile().addDefault(locLB, null);
@@ -1139,15 +1141,15 @@ public class Game
 		// adds Door Locations main
 		String locD = loc + ".Doors";
 		plugin.files.getArenasFile().addDefault(locD, null);
-
+		
 		String isForceNight = loc + ".IsForceNight";
 		plugin.files.getArenasFile().addDefault(isForceNight, false);
 		plugin.files.getArenasFile().set(isForceNight, false);
-
+		
 		String minToStart = loc + ".minPlayers";
 		plugin.files.getArenasFile().addDefault(minToStart, 1);
 		plugin.files.getArenasFile().set(minToStart, 1);
-
+		
 		String spawnDelay = loc + ".ZombieSpawnDelay";
 		plugin.files.getArenasFile().addDefault(spawnDelay, 15);
 		plugin.files.getArenasFile().set(spawnDelay, 15);
@@ -1161,9 +1163,9 @@ public class Game
 		// Saves and reloads Arenaconfig
 		plugin.files.saveArenasConfig();
 		plugin.files.reloadArenas();
-
+		
 	}
-
+	
 	/**
 	 * gets the current config that the game is on
 	 * @return the spawn point that the game is on
@@ -1183,7 +1185,7 @@ public class Game
 		}
 		return spawnNum + 1;
 	}
-
+	
 	/**
 	 * Adds a spawnPoint to the Arena config file.
 	 * 
@@ -1212,11 +1214,11 @@ public class Game
 		plugin.files.getArenasFile().set(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".x", x);
 		plugin.files.getArenasFile().set(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".y", y);
 		plugin.files.getArenasFile().set(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".z", z);
-
+		
 		plugin.files.saveArenasConfig();
 		plugin.files.reloadArenas();
 	}
-
+	
 	/**
 	 * Takes a spawn point out of the config file.
 	 */
@@ -1232,7 +1234,7 @@ public class Game
 			return;
 		}
 	}
-
+	
 	/**
 	 * gets the name of the game
 	 * @return
@@ -1241,7 +1243,7 @@ public class Game
 	{
 		return arenaName;
 	}
-
+	
 	/**
 	 * gets the current door number the game is on
 	 * @return the number of the current door
@@ -1262,7 +1264,7 @@ public class Game
 		}
 		return i;
 	}
-
+	
 	/**
 	 * gets the current door sign number the game is on
 	 * @return the number of the current sign number
@@ -1283,7 +1285,7 @@ public class Game
 		}
 		return i;
 	}
-
+	
 	/**
 	 * Adds a spawn point dehind a door to the config
 	 * @param door to add the spawn point to
@@ -1295,11 +1297,11 @@ public class Game
 		if (spawnPoints.contains(spawnPoint.getName())) return;
 		spawnPoints.add(spawnPoint.getName());
 		plugin.files.getArenasFile().set(arenaName + ".Doors.door" + door.doorNumber + ".SpawnPoints", spawnPoints);
-
+		
 		plugin.files.saveArenasConfig();
 		plugin.files.reloadArenas();
 	}
-
+	
 	/**
 	 * Adds a soor sign to the config
 	 * @param door that contains the sign
@@ -1317,11 +1319,11 @@ public class Game
 		plugin.files.getArenasFile().set(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".x", x);
 		plugin.files.getArenasFile().set(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".y", y);
 		plugin.files.getArenasFile().set(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".z", z);
-
+		
 		plugin.files.saveArenasConfig();
 		plugin.files.reloadArenas();
 	}
-
+	
 	/**
 	 * Sets up the players inventory in  game
 	 * @param slot of the item
@@ -1334,57 +1336,57 @@ public class Game
 		List<String> lore = new ArrayList<String>();
 		switch (slot)
 		{
-		case 27:
-			data.setDisplayName("Knife slot");
-			lore.add("Holds players knife");
-			lore.add("Knife only works within 2 blocks!");
-			break;
-		case 28:
-			data.setDisplayName("Gun Slot 1");
-			lore.add("Holds 1 Gun");
-			break;
-		case 29:
-			data.setDisplayName("Gun Slot 2");
-			lore.add("Holds 1 gun");
-			break;
-		case 30:
-			data.setDisplayName("Gun Slot 3");
-			lore.add("Holds 1 Gun");
-			lore.add("Requires MuleKick to work!");
-			break;
-		case 31:
-			data.setDisplayName("Perk Slot 1");
-			lore.add("Holds 1 Perk");
-			break;
-		case 32:
-			data.setDisplayName("Perk Slot 2");
-			lore.add("Holds 1 Perk");
-			break;
-		case 33:
-			data.setDisplayName("Perk Slot 3");
-			lore.add("Holds 1 Perk");
-			break;
-		case 34:
-			data.setDisplayName("Perk Slot 4");
-			lore.add("Holds 1 Perk");
-			break;
-		case 35:
-			data.setDisplayName("Grenade Slot");
-			lore.add("");
-			break;
+			case 27:
+				data.setDisplayName("Knife slot");
+				lore.add("Holds players knife");
+				lore.add("Knife only works within 2 blocks!");
+				break;
+			case 28:
+				data.setDisplayName("Gun Slot 1");
+				lore.add("Holds 1 Gun");
+				break;
+			case 29:
+				data.setDisplayName("Gun Slot 2");
+				lore.add("Holds 1 gun");
+				break;
+			case 30:
+				data.setDisplayName("Gun Slot 3");
+				lore.add("Holds 1 Gun");
+				lore.add("Requires MuleKick to work!");
+				break;
+			case 31:
+				data.setDisplayName("Perk Slot 1");
+				lore.add("Holds 1 Perk");
+				break;
+			case 32:
+				data.setDisplayName("Perk Slot 2");
+				lore.add("Holds 1 Perk");
+				break;
+			case 33:
+				data.setDisplayName("Perk Slot 3");
+				lore.add("Holds 1 Perk");
+				break;
+			case 34:
+				data.setDisplayName("Perk Slot 4");
+				lore.add("Holds 1 Perk");
+				break;
+			case 35:
+				data.setDisplayName("Grenade Slot");
+				lore.add("");
+				break;
 		}
 		data.setLore(lore);
 		item.setItemMeta(data);
 		return item;
 	}
-
+	
 	@SuppressWarnings("deprecation")
 	public void assignPlayerInventory(Player player)
 	{
-		ItemStack helmet = new ItemStack(Material.IRON_HELMET, 1);
-		ItemStack chestPlate = new ItemStack(Material.IRON_CHESTPLATE, 1);
-		ItemStack pants = new ItemStack(Material.IRON_LEGGINGS, 1);
-		ItemStack boots = new ItemStack(Material.IRON_BOOTS, 1);
+		ItemStack helmet = new ItemStack(Material.LEATHER_HELMET, 1);
+		ItemStack chestPlate = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
+		ItemStack pants = new ItemStack(Material.LEATHER_LEGGINGS, 1);
+		ItemStack boots = new ItemStack(Material.LEATHER_BOOTS, 1);
 		ItemStack knife = new ItemStack(Material.IRON_SWORD, 1);
 		ItemMeta kMeta = knife.getItemMeta();
 		kMeta.setDisplayName(ChatColor.RED + "Knife");
@@ -1407,11 +1409,11 @@ public class Game
 		player.getInventory().setItem(35, setItemMeta(35, ib));
 		player.updateInventory();
 	}
-
+	
 	/**
 	 * Clears the arena
 	 */
-	public void clearArena()//clear players
+	public void clearArena()
 	{
 		if (this.getWorld() == null) return;
 		for (Entity entity : this.getWorld().getEntities())
@@ -1426,7 +1428,7 @@ public class Game
 			}
 		}
 	}
-
+	
 	/**
 	 * Clears items out of the arena
 	 */
@@ -1434,7 +1436,7 @@ public class Game
 	{
 		if (this.getWorld() == null) return;
 		List<Entity> entList = getWorld().getEntities();//get all entities in the world
-
+		
 		for(Entity current : entList){//loop through the list
 			if (current instanceof Item){//make sure we are only deleting what we want to delete
 				current.remove();//remove it
@@ -1444,7 +1446,7 @@ public class Game
 			}
 		}
 	}
-
+	
 	/**
 	 * gets the scoreboard 
 	 * @return GameScoreboard
@@ -1453,22 +1455,22 @@ public class Game
 	{
 		return scoreboard;
 	}
-
+	
 	public void setFireSale(boolean b)
 	{
 		isFireSale = b;
 	}
-
+	
 	public boolean isFireSale()
 	{
 		return isFireSale;
 	}
-
+	
 	public BoxManager getBoxManger()
 	{
 		return boxManager;
 	}
-
+	
 	public void addJoinSign(Sign sign)
 	{
 		joinSigns.add(sign);
@@ -1477,6 +1479,7 @@ public class Game
 	{
 		return joinSigns.contains(sign);
 	}
+	
 	public void updateJoinSigns()
 	{
 		if(mode == ArenaStatus.INGAME)
@@ -1521,7 +1524,7 @@ public class Game
 			sign.setLine(0, "");
 		}
 	}
-
+	
 	public void zombieKilled(Player player)
 	{
 		Leaderboards lb = plugin.leaderboards;
@@ -1538,7 +1541,7 @@ public class Game
 			plugin.files.getKillsFile().set("Kills." + player.getName(), 1);
 			PlayerStats stat = new PlayerStats(player.getName(), 1);
 			lb.addPlayerStats(stat);
-
+			
 		}
 		if(plugin.vault != null)
 		{
@@ -1550,5 +1553,15 @@ public class Game
 		}
 		plugin.files.saveKillsConfig();
 		plugin.files.reloadKillsConfig();
+	}
+	
+	public void updateBarrierDamage(int damage, Block block)
+	{
+		for(Player player: this.players)
+		{
+			PacketPlayOutBlockBreakAnimation packet = new PacketPlayOutBlockBreakAnimation(0, block.getX(), block.getY(), block.getZ(), damage);
+			int dimension = ((CraftWorld) player.getWorld()).getHandle().dimension;
+			((CraftServer) player.getServer()).getHandle().sendPacketNearby(block.getX(), block.getY(), block.getZ(), 120, dimension, packet);
+		}
 	}
 }
