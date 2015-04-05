@@ -17,21 +17,22 @@ import com.zombies.COMZombies;
 import com.zombies.CommandUtil;
 import com.zombies.Arena.Game;
 import com.zombies.Arena.GameManager;
+import com.zombies.InGameFeatures.Features.Barrier;
 import com.zombies.InGameFeatures.Features.Door;
 import com.zombies.Spawning.SpawnPoint;
 
 public class OnBlockBreakEvent implements Listener
 {
-
+	
 	private COMZombies plugin;
 	private GameManager manager;
-
+	
 	public OnBlockBreakEvent(COMZombies z)
 	{
 		plugin = z;
 		manager = z.manager;
 	}
-
+	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreakEvent(BlockBreakEvent interact)
 	{
@@ -80,9 +81,48 @@ public class OnBlockBreakEvent implements Listener
 				}
 			}
 		}
-		if (manager.isPlayerInGame(player) == true)
+		if (plugin.isRemovingBarriers.containsKey(player))
 		{
+			Game game = plugin.isRemovingBarriers.get(player);
+			Location loc = interact.getBlock().getLocation();
+			Barrier barrier = game.barrierManager.getBarrierFromRepair(loc);
+			if (barrier == null) return;
 			interact.setCancelled(true);
+			game.barrierManager.removeBarrier(player, barrier);
+			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "" + ChatColor.BOLD + "Barrier removed!");
+			if (game.barrierManager.getTotalBarriers() == 0)
+			{
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "No barriers left!");
+				String[] args = new String[2];
+				args[0] = "cancel";
+				args[1] = "removebarrier";
+				plugin.command.onRemoteCommand(player, args);
+			}
+		}
+		if (manager.isPlayerInGame(player))
+		{
+			if(interact.getBlock().getType().equals(Material.SIGN_POST))
+			{
+				Sign sign = (Sign) interact.getBlock().getState();
+				if(sign.getLine(0).equalsIgnoreCase("[BarrierRepair]"))
+				{
+					Game game = manager.getGame(player);
+					Barrier b = game.barrierManager.getBarrierFromRepair(sign.getLocation());
+					if(b != null)
+						b.repair();
+					else
+					{
+						CommandUtil.sendMessageToPlayer(player, "Congrats! You broke the plugin! JK its all fixed now.");
+						interact.getBlock().setType(Material.AIR);
+					}
+				}
+				else
+				{
+					interact.setCancelled(true);
+				}
+			}
+			else
+				interact.setCancelled(true);
 			return;
 		}
 		try
@@ -111,13 +151,13 @@ public class OnBlockBreakEvent implements Listener
 			}
 		}
 	}
-
+	
 	public void boom(final Sign sign)
 	{
 		int j = 1;
 		for (int i = 6; i > 0; i--)
 		{
-
+			
 			final int copyI = (i - 1);
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 			{
@@ -140,7 +180,7 @@ public class OnBlockBreakEvent implements Listener
 						sign.update(true);
 					}
 				}
-
+				
 			}, j * 20);
 			j += 1;
 		}

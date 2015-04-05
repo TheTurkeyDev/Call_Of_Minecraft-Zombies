@@ -75,5 +75,4 @@ public class RemoveDoorCommand implements SubCommand
 		}
 		return false;
 	}
-
 }

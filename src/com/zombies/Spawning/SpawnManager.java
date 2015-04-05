@@ -25,6 +25,7 @@ import org.bukkit.entity.Zombie;
 import com.zombies.COMZombies;
 import com.zombies.Arena.Game;
 import com.zombies.Arena.Game.ArenaStatus;
+import com.zombies.InGameFeatures.Features.Barrier;
 import com.zombies.InGameFeatures.Features.Door;
 
 public class SpawnManager
@@ -286,6 +287,10 @@ public class SpawnManager
 		}
 		mobs.add(zomb);
 		zombiesSpawned++;
+		
+		Barrier b = game.barrierManager.getBarrier(loc);
+		if(b != null)
+			b.initBarrier(zomb);
 
 		Runnable delayedSpawnFunc = new Runnable()
 		{

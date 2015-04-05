@@ -2,12 +2,9 @@ package com.zombies.InGameFeatures;
 
 import java.util.ArrayList;
 
-import net.minecraft.server.v1_7_R4.Blocks;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import com.zombies.COMZombies;
@@ -36,12 +33,11 @@ public class BarrierManager
 		{
 			for (String key : plugin.files.getArenasFile().getConfigurationSection(game.getName() + ".Barriers").getKeys(false))
 			{
-				
 				double x = plugin.files.getArenasFile().getDouble(game.getName() + ".Barriers." + key + ".x");
 				double y = plugin.files.getArenasFile().getDouble(game.getName() + ".Barriers." + key + ".y");
 				double z = plugin.files.getArenasFile().getDouble(game.getName() + ".Barriers." + key + ".z");
 				Location loc = new Location(game.getWorld(), x, y, z);
-				int number = Integer.parseInt(key.substring(3));
+				int number = Integer.parseInt(key);
 				Barrier barrier = new Barrier(loc,loc.getWorld().getBlockAt(loc), number, game);
 				
 				loc.getBlock().setTypeId(plugin.files.getArenasFile().getInt(game.getName() + ".Barriers." + key + ".bb"));
@@ -73,17 +69,33 @@ public class BarrierManager
 		return null;
 	}
 	
+	public Barrier getBarrierFromRepair(Location loc)
+	{
+		for (Barrier b : barriers)
+		{
+			if (b.getRepairLoc().equals(loc)) { return b; }
+		}
+		return null;
+	}
+	
+	public Barrier getBarrier(SpawnPoint p)
+	{
+		for (Barrier b : barriers)
+		{
+			if (b.getSpawnPoint().getLocation().equals(p.getLocation())) { return b; }
+		}
+		return null;
+	}
+	
 	public void removeBarrier(Player player, Barrier barrier)
 	{
 		if (barriers.contains(barrier))
 		{
-			Location loc = barrier.getLocation();
 			plugin.files.getArenasFile().set(game.getName() + ".Barriers." + barrier.getNum(), null);
 			plugin.files.saveArenasConfig();
 			loadAllBarriersToGame();
 			player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Barrier removed!");
-			Block block = loc.getBlock();
-			block.setType(Material.AIR);
+			game.getWorld().getBlockAt(barrier.getRepairLoc()).setType(Material.AIR);
 			barriers.remove(barrier);
 		}
 	}
@@ -165,7 +177,7 @@ public class BarrierManager
 		}
 	}
 	
-	public ArrayList<Barrier> getBrrier()
+	public ArrayList<Barrier> getBrriers()
 	{
 		return barriers;
 	}
@@ -188,5 +200,13 @@ public class BarrierManager
 			a++;
 		}
 		return a;
+	}
+
+	public void unloadAllBarriers()
+	{
+		for(Barrier b: barriers)
+		{
+			b.repairFull();
+		}
 	}
 }

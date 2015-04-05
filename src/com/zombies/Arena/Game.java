@@ -919,7 +919,8 @@ public class Game
 		}
 		inGameManager.clearDownedPlayers();
 		inGameManager.turnOffPower();
-		boxManager.loadAllBoxes();
+		boxManager.unloadAllBoxes();
+		barrierManager.unloadAllBarriers();
 		players.clear();
 		scoreboard = new GameScoreboard(this);
 		instaKill = false;

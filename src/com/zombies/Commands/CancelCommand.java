@@ -1,12 +1,14 @@
 package com.zombies.Commands;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
 import com.zombies.COMZombies;
 import com.zombies.CommandUtil;
 import com.zombies.Arena.Game;
+import com.zombies.InGameFeatures.Features.Barrier;
 import com.zombies.InGameFeatures.Features.Door;
 
 public class CancelCommand implements SubCommand
@@ -115,6 +117,26 @@ public class CancelCommand implements SubCommand
 							sign.update();
 							sign.update(true);
 						}
+					}
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Door removal operation has been canceled!");
+					return true;
+				}
+			}
+			else if (args[1].equalsIgnoreCase("barrierremoval") || args[1].equalsIgnoreCase("removebarrier") || args[1].equalsIgnoreCase("removebarriers"))
+			{
+				if (plugin.isRemovingBarriers.containsKey(player))
+				{
+					Game game = plugin.isRemovingBarriers.get(player);
+					if (game == null)
+					{
+						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "An error has occured!");
+						return true;
+					}
+					plugin.isRemovingBarriers.remove(player);
+					for (Barrier barrier : game.barrierManager.getBrriers())
+					{
+						barrier.repairFull();
+						game.getWorld().getBlockAt(barrier.getRepairLoc()).setType(Material.AIR);
 					}
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Door removal operation has been canceled!");
 					return true;

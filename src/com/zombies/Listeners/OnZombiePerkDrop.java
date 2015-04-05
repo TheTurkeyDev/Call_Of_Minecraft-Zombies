@@ -21,6 +21,7 @@ import com.zombies.Arena.Game;
 import com.zombies.Arena.Game.ArenaStatus;
 import com.zombies.Guns.Gun;
 import com.zombies.Guns.GunManager;
+import com.zombies.InGameFeatures.Features.Barrier;
 
 public class OnZombiePerkDrop implements Listener
 {
@@ -216,6 +217,10 @@ public class OnZombiePerkDrop implements Listener
 				currentPerks.remove(event.getItem().getItemStack());
 				event.getPlayer().getInventory().remove(item);
 				notifyAll(game, "Carpenter!");
+				for(Barrier barrier : game.barrierManager.getBrriers())
+				{
+					barrier.repairFull();
+				}
 				event.getItem().remove();
 				event.setCancelled(true);
 				return;

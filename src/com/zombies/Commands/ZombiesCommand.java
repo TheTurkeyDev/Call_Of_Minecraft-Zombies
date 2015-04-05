@@ -139,6 +139,7 @@ public class ZombiesCommand implements CommandExecutor
 															// arena: Perm -
 															// zombies.removedoor
 		commandList.put("addbarrier", new AddBarrier(this));
+		commandList.put("removebarrier", new RemoveBarrierCommand(this));
 		commandList.put("removedoors", commandList.get("rd"));
 		commandList.put("removedoor", commandList.get("rd"));
 		commandList.put("disablepower", new DisablePowerCommand(this));
