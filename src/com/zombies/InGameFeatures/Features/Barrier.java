@@ -192,6 +192,12 @@ public class Barrier implements Runnable
 			entsToAdd.clear();
 			Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getInstance(), this, 3 * 20L);
 		}
+		else if(entsToAdd.size() > 0)
+		{
+			ents.addAll(entsToAdd);
+			entsToAdd.clear();
+			Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getInstance(), this, 3 * 20L);
+		}
 		else
 			this.breaking = false;
 	}
