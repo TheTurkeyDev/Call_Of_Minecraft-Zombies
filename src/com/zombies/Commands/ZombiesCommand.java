@@ -151,6 +151,7 @@ public class ZombiesCommand implements CommandExecutor
 		commandList.put("removeteleporter", new RemoveTeleporterCommand(this));
 		commandList.put("rt", commandList.get("removeteleporter"));
 		commandList.put("addsign", new AddSignCommand(this));
+		commandList.put("perks", new PerksCommand());
 	}
 
 	public void onRemoteCommand(Player player, String[] args)

@@ -50,6 +50,7 @@ public class ZombiesHelpCommand
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "---------" + ChatColor.GOLD + "Zombies Admin Help! Page: " + page + "!" + ChatColor.RED + "--------");
 			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "/zombies disable [arena]" + ChatColor.YELLOW + " - Disables the given arena.");
+			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "/zombies perks" + ChatColor.YELLOW + " - Shows the list of available perks.");
 		}
 		else
 		{
@@ -64,6 +65,7 @@ public class ZombiesHelpCommand
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "/zombies join [arena]" + ChatColor.YELLOW + " - Join a specific arena.");
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "/zombies leave" + ChatColor.YELLOW + " - Leave the game you're currently in.");
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "/zombies listarenas" + ChatColor.YELLOW + " - Shows a list of all the games.");
+		CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "/zombies perks" + ChatColor.YELLOW + " - Shows the list of available perks.");
 	}
 
 	public void playerSignHelp()
