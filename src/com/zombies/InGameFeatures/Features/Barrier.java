@@ -1,6 +1,7 @@
 package com.zombies.InGameFeatures.Features;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -180,13 +181,16 @@ public class Barrier implements Runnable
 	{
 		if(!this.damage() && ents.size() > 0)
 		{
+			try{
 			Iterator<Entity> itr = ents.iterator();
 			while(itr.hasNext())
 			{
 				Entity ent = itr.next();
 				if(ent.isDead())
 					ents.remove(ent);
-			}
+			}}catch(ConcurrentModificationException e){}
+			
+			//TODO: FOR THE LOVE OF ALL GOOD THINGS REPLACE THIS! OMG THIS IS SUCH BAD CODING ANDI NEED TO FIX IT ASAP
 			
 			ents.addAll(entsToAdd);
 			entsToAdd.clear();
