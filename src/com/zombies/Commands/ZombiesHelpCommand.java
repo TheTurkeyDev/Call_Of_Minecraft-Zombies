@@ -50,6 +50,15 @@ public class ZombiesHelpCommand
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "---------" + ChatColor.GOLD + "Zombies Admin Help! Page: " + page + "!" + ChatColor.RED + "--------");
 			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "/zombies disable [arena]" + ChatColor.YELLOW + " - Disables the given arena.");
+			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "/zombies addBarrier [arena]" + ChatColor.YELLOW + " - Begins the creation of a barrier.");
+			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "/zombies removeBarrier [arena]" + ChatColor.YELLOW + " - Begins the process to remove a barrier.");
+			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "/zombies addDoor [arena]" + ChatColor.YELLOW + " - Begins the creation of a boor.");
+			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "/zombies removeDoor [arena]" + ChatColor.YELLOW + " - Begins the process to remove a door.");
+			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "/zombies help admin 4 - Type this for the next page of admin help!");
+		}
+		else if (page == 4)
+		{
+			
 		}
 		else
 		{
