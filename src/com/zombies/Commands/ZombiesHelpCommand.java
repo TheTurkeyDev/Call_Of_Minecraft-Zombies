@@ -50,7 +50,6 @@ public class ZombiesHelpCommand
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "---------" + ChatColor.GOLD + "Zombies Admin Help! Page: " + page + "!" + ChatColor.RED + "--------");
 			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "/zombies disable [arena]" + ChatColor.YELLOW + " - Disables the given arena.");
-			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "/zombies perks" + ChatColor.YELLOW + " - Shows the list of available perks.");
 		}
 		else
 		{
@@ -91,7 +90,7 @@ public class ZombiesHelpCommand
 		if (page == 1)
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "----------" + ChatColor.GOLD + "Plugin Information. Page: " + page + ChatColor.RED + "----------");
-			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Zombies was a plugin inspired by Call of Duty© Zombies. It was programmed by: " + ChatColor.GOLD + "IModZombies4Fun and Turkey2349." + ChatColor.GREEN + " Zombies is a multi-arena zombies plugin with super cool Call of Duty features!");
+			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Zombies was a plugin inspired by Call of DutyÂ© Zombies. It was programmed by: " + ChatColor.GOLD + "IModZombies4Fun and Turkey2349." + ChatColor.GREEN + " Zombies is a multi-arena zombies plugin with super cool Call of Duty features!");
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Contributions: ");
 			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Jackso66, ILoveMW2jr, e1kfws7, Ryne Tate, F3RULLO14, Jay | Oblivion & Nein, Fluby26, Tony McHugh, DareDevil1003, Double_0_Negative, ImJaqo, Mysteriaz, Sebastian, Silver, Kichida Katsumi, Jaw818.");
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "------------------------------------");
