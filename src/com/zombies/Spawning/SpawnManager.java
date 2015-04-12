@@ -281,6 +281,7 @@ public class SpawnManager
 		zomb.setBaby(false);
 		setFollowDistance(zomb);
 		setTotalHealth(zomb, strength);
+		zomb.setHealth(strength);
 		if (game.waveNumber > 4)
 		{
 			if (((int) (Math.random() * 100)) < game.waveNumber * 5) setSpeed(zomb, (float) (Math.random()));
@@ -301,7 +302,10 @@ public class SpawnManager
 			}
 		};
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delayedSpawnFunc, time * 20L);
+		if(this.zombiesToSpawn == 0)
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delayedSpawnFunc, 200);
+		else
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delayedSpawnFunc, time * 20L);
 	}
 
 	public void setFollowDistance(Entity zomb)

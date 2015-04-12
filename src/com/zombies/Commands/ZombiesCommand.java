@@ -207,7 +207,7 @@ public class ZombiesCommand implements CommandExecutor
 			else if (args[0].equalsIgnoreCase("version"))
 			{
 				CommandUtil.sendMessageToPlayer(player, plugin.getDescription().getVersion());
-				return true;
+				return true; 
 			}
 			if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("h"))
 			{
