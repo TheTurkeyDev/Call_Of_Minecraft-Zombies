@@ -9,8 +9,8 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import com.zombies.COMZombies;
 import com.zombies.CommandUtil;
 import com.zombies.Arena.Game;
-import com.zombies.Arena.GameManager;
 import com.zombies.Arena.Game.ArenaStatus;
+import com.zombies.Arena.GameManager;
 
 public class OnPlayerMoveEvent implements Listener
 {

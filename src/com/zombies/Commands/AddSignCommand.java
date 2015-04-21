@@ -1,7 +1,10 @@
 package com.zombies.Commands;
 
+import java.util.Set;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -33,7 +36,7 @@ public class AddSignCommand implements SubCommand
 			if (plugin.manager.isValidArena(args[1]))
 			{
 				Game g = plugin.manager.getGame(args[1]);
-				Location loc = player.getTargetBlock(null, 200).getLocation();
+				Location loc = player.getTargetBlock(null, 20).getLocation();
 				if (!(loc.getBlock().getState() instanceof Sign))
 				{
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You are not looking at a sign!");

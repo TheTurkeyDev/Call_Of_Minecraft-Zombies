@@ -1,17 +1,17 @@
 package com.zombies.Listeners;
 
-import com.zombies.Arena.Game;
-import com.zombies.COMZombies;
-import com.zombies.Guns.Gun;
-import com.zombies.Guns.GunManager;
-import com.zombies.Guns.GunTypeEnum;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
+
+import com.zombies.COMZombies;
+import com.zombies.Arena.Game;
+import com.zombies.Guns.Gun;
+import com.zombies.Guns.GunManager;
+import com.zombies.Guns.GunTypeEnum;
 
 public class OnPlayerScopeEvent implements Listener
 {

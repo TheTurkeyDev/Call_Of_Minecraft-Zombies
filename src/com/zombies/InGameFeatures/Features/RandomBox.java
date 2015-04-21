@@ -1,8 +1,5 @@
 package com.zombies.InGameFeatures.Features;
 
-import com.zombies.Arena.Game;
-import com.zombies.Guns.*;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,6 +9,10 @@ import org.bukkit.entity.Player;
 
 import com.zombies.COMZombies;
 import com.zombies.CommandUtil;
+import com.zombies.Arena.Game;
+import com.zombies.Guns.Gun;
+import com.zombies.Guns.GunManager;
+import com.zombies.Guns.GunType;
 
 public class RandomBox
 {

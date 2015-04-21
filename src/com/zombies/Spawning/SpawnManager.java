@@ -281,7 +281,7 @@ public class SpawnManager
 		zomb.setBaby(false);
 		setFollowDistance(zomb);
 		setTotalHealth(zomb, strength);
-		zomb.setHealth(strength);
+		zomb.setHealth(strength<=20?strength:20);
 		if (game.waveNumber > 4)
 		{
 			if (((int) (Math.random() * 100)) < game.waveNumber * 5) setSpeed(zomb, (float) (Math.random()));
