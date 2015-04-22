@@ -1,4 +1,13 @@
 StartingGun: M1911
+
+PistolsMaterial: WOOD_HOE
+ShotgunsMaterial: STONE_HOE
+AssaultRiflesMaterial: GOLD_HOE
+LightMachineGunsMaterial: IRON_HOE
+SubMachineGunsMaterial: STICK
+SniperRiflesMaterial: BLAZE_ROD
+OthersMaterial: DIAMOND_HOE
+
 Guns:
   Pistols:
     B23R:
@@ -12,6 +21,7 @@ Guns:
     Executioner:
       Ammo: 5/75
       Damage: 23
+      FireRate: 
       PackAPunch:
         Damage: 40
         Name: Voice of Justice
@@ -19,6 +29,7 @@ Guns:
     Five-Seven:
       Ammo: 20/120
       Damage: 3
+      FireRate:
       PackAPunch:
         Damage: 15
         Name: Ultra

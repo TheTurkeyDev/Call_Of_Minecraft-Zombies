@@ -25,7 +25,7 @@ import com.zombies.Listeners.OnZombiePerkDrop;
 
 public class Gun
 {
-
+	
 	/**
 	 * Contains gun ammo, damage, total ammo, and name
 	 */
@@ -48,6 +48,10 @@ public class Gun
 	 */
 	private boolean isReloading;
 	/**
+	 * If the gun was recently fired then this is false until it can be shot again
+	 */
+	private boolean canFire;
+	/**
 	 * Player who contains this gun
 	 */
 	private Player player;
@@ -60,8 +64,8 @@ public class Gun
 	 */
 	private int slot;
 	
-	private boolean ecUsed; //it is used, though it says it isn't
-
+	private boolean ecUsed;
+	
 	/**
 	 * Constructing a new gun with params.
 	 * 
@@ -81,7 +85,7 @@ public class Gun
 		totalAmmo = type.totalammo;
 		updateGun();
 	}
-
+	
 	/**
 	 * Used to check if a gun is pack-a-punched
 	 * 
@@ -91,7 +95,7 @@ public class Gun
 	{
 		return packed;
 	}
-
+	
 	/**
 	 * Used to pack-a-punch a gun.
 	 * 
@@ -108,7 +112,7 @@ public class Gun
 			updateGun();
 		}
 	}
-
+	
 	/**
 	 * Used to get the guns slot
 	 * 
@@ -118,7 +122,7 @@ public class Gun
 	{
 		return slot;
 	}
-
+	
 	/**
 	 * Used to get the guns total damage
 	 * 
@@ -129,7 +133,7 @@ public class Gun
 		if (packed) { return gun.packAPunchDamage; }
 		return gun.damage;
 	}
-
+	
 	/**
 	 * Used to see if this current instance of a gun is reloading. Non static,
 	 * gun is unique.
@@ -140,7 +144,7 @@ public class Gun
 	{
 		return isReloading;
 	}
-
+	
 	/**
 	 * Used to reload this current weapon. If the player contained in this gun
 	 * has speed cola, reload times speed up.
@@ -154,7 +158,7 @@ public class Gun
 		{
 			player.getLocation().getWorld().playSound(player.getLocation(), Sound.ANVIL_USE, 1, 1);
 		}
-
+		
 		if (plugin.manager.isPlayerInGame(player))
 		{
 			if (gun.clipammo == clipAmmo) return;
@@ -164,7 +168,7 @@ public class Gun
 			else reloadTime = plugin.config.reloadTime;
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 			{
-
+				
 				@Override
 				public void run()
 				{
@@ -180,7 +184,7 @@ public class Gun
 							clipAmmo = totalAmmo;
 							totalAmmo = 0;
 						}
-
+						
 					} catch (Exception e)
 					{
 					}
@@ -188,7 +192,7 @@ public class Gun
 					ecUsed = false;
 					updateGun();
 				}
-
+				
 			}, reloadTime * 20);
 			isReloading = true;
 			if (!(game.getInGameManager().getPlayersPerks().containsKey(player))) return;
@@ -251,7 +255,7 @@ public class Gun
 			}
 		}
 	}
-
+	
 	/**
 	 * Used to get the guns type.
 	 * 
@@ -261,7 +265,7 @@ public class Gun
 	{
 		return gun;
 	}
-
+	
 	/**
 	 * Called when the gun was shot, decrements total ammo count and reloads if
 	 * the bullet shot was the last in the clip.
@@ -269,6 +273,7 @@ public class Gun
 	public void wasShot()
 	{
 		if (isReloading) return;
+		if (!canFire) return;
 		if (totalAmmo == 0 && clipAmmo == 0)
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "No ammo!");
@@ -362,7 +367,6 @@ public class Gun
 				case "Colt M16A1":
 					player.getLocation().getWorld().playSound(player.getLocation(), Sound.IRONGOLEM_WALK, 1, 1);
 					break;
-				// check
 				case "FAL":
 					player.getLocation().getWorld().playSound(player.getLocation(), Sound.FIRE_IGNITE, 1, 1);
 					break;
@@ -384,7 +388,6 @@ public class Gun
 				case "Type 25":
 					player.getLocation().getWorld().playSound(player.getLocation(), Sound.NOTE_BASS_GUITAR, 1, 1);
 					break;
-				// check
 				case "HAMR":
 					player.getLocation().getWorld().playSound(player.getLocation(), Sound.NOTE_PIANO, 1, 1);
 					break;
@@ -397,14 +400,12 @@ public class Gun
 				case "Chicom CQB":
 					player.getLocation().getWorld().playSound(player.getLocation(), Sound.NOTE_STICKS, 1, 1);
 					break;
-				// check
 				case "MP5":
 					player.getLocation().getWorld().playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
 					break;
 				case "PDW-57":
 					player.getLocation().getWorld().playSound(player.getLocation(), Sound.SHOOT_ARROW, 1, 1);
 					break;
-				// check
 				case "Barret M82A1":
 					player.getLocation().getWorld().playSound(player.getLocation(), Sound.CHEST_OPEN, 1, 1);
 					break;
@@ -414,7 +415,6 @@ public class Gun
 				case "SVU-AS":
 					player.getLocation().getWorld().playSound(player.getLocation(), Sound.STEP_WOOD, 1, 1);
 					break;
-				// check
 				case "Ray Gun":
 					player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLAZE_DEATH, 1, 1);
 					break;
@@ -435,8 +435,20 @@ public class Gun
 			}
 		}
 		updateGun();
+		canFire = false;
+		
+		Runnable delayedSpawnFunc = new Runnable()
+		{
+			
+			public void run()
+			{
+				canFire = true;
+			}
+		};
+		
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delayedSpawnFunc, this.gun.fireDelay);
 	}
-
+	
 	/**
 	 * Used to change the players gun in slot (slot).
 	 * 
@@ -462,7 +474,7 @@ public class Gun
 		}
 		updateGun();
 	}
-
+	
 	/**
 	 * Called whenever guns ammo was modified, or the gun itself was modified.
 	 * Used to update the guns material, and name.
@@ -522,7 +534,7 @@ public class Gun
 		stack.setItemMeta(data);
 		player.getInventory().setItem(slot, stack);
 	}
-
+	
 	/**
 	 * Used to set the guns slot
 	 * 
@@ -533,7 +545,7 @@ public class Gun
 	{
 		this.slot = slot;
 	}
-
+	
 	/**
 	 * Used to refill the players ammo to the top
 	 */

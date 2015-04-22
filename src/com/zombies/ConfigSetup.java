@@ -1,6 +1,7 @@
 package com.zombies;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 
 import com.zombies.Guns.GunType;
 import com.zombies.Guns.GunTypeEnum;
@@ -16,7 +17,7 @@ public class ConfigSetup
 	 * Weather or not to spawn multiple MysteryBoxes
 	 */
 	public boolean MultiBox;
-
+	
 	/**
 	 * Default points when a player shoots a zombie.
 	 */
@@ -78,11 +79,11 @@ public class ConfigSetup
 	 * Max possible perks a player can obtain.
 	 */
 	public int maxPerks;
-
+	
 	public int KillMoney;
 	
 	//public int PistolMaterial;
-
+	
 	/**
 	 * Instantiates the plugin field as the main class and assigns correct
 	 * values to every other field using setup().
@@ -95,7 +96,7 @@ public class ConfigSetup
 		plugin = instance;
 		Setup();
 	}
-
+	
 	/**
 	 * Main method to assign values to every field.
 	 */
@@ -124,6 +125,50 @@ public class ConfigSetup
 		{
 			plugin.possibleGuns.clear();
 		}
+		
+		Material m = Material.getMaterial(plugin.files.getGunsConfig().getString("PistolsMaterial"));
+		if(m != null)
+			GunTypeEnum.Pistols.setMaterial(m);
+		else
+			Bukkit.broadcastMessage("Unable to change the material for pistols! " + plugin.files.getGunsConfig().getString("PistolsMaterial") + " Is not a valid material!!!");
+		
+		m = Material.getMaterial(plugin.files.getGunsConfig().getString("ShotgunsMaterial"));
+		if(m != null)
+			GunTypeEnum.Pistols.setMaterial(m);
+		else
+			Bukkit.broadcastMessage("Unable to change the material for shotguns! " + plugin.files.getGunsConfig().getString("ShotgunsMaterial") + " Is not a valid material!!!");
+		
+		m = Material.getMaterial(plugin.files.getGunsConfig().getString("AssaultRiflesMaterial"));
+		if(m != null)
+			GunTypeEnum.Pistols.setMaterial(m);
+		else
+			Bukkit.broadcastMessage("Unable to change the material for assault rifles! " + plugin.files.getGunsConfig().getString("AssaultRiflesMaterial") + " Is not a valid material!!!");
+		
+		m = Material.getMaterial(plugin.files.getGunsConfig().getString("LightMachineGunsMaterial"));
+		if(m != null)
+			GunTypeEnum.Pistols.setMaterial(m);
+		else
+			Bukkit.broadcastMessage("Unable to change the material for light machineguns! " + plugin.files.getGunsConfig().getString("LightMachineGunsMaterial") + " Is not a valid material!!!");
+		
+		m = Material.getMaterial(plugin.files.getGunsConfig().getString("SubMachineGunsMaterial"));
+		if(m != null)
+			GunTypeEnum.Pistols.setMaterial(m);
+		else
+			Bukkit.broadcastMessage("Unable to change the material for sub machineguns! " + plugin.files.getGunsConfig().getString("SubMachineGunsMaterial") + " Is not a valid material!!!");
+		
+		m = Material.getMaterial(plugin.files.getGunsConfig().getString("SniperRiflesMaterial"));
+		if(m != null)
+			GunTypeEnum.Pistols.setMaterial(m);
+		else
+			Bukkit.broadcastMessage("Unable to change the material for sniper rifles! " + plugin.files.getGunsConfig().getString("SniperRiflesMaterial") + " Is not a valid material!!!");
+		
+		m = Material.getMaterial(plugin.files.getGunsConfig().getString("OthersMaterial"));
+		if(m != null)
+			GunTypeEnum.Pistols.setMaterial(m);
+		else
+			Bukkit.broadcastMessage("Unable to change the material for others! " + plugin.files.getGunsConfig().getString("OthersMaterial") + " Is not a valid material!!!");
+		
+		
 		for (String group : plugin.files.getGunsConfig().getConfigurationSection("Guns").getKeys(false))
 		{
 			for (String gun : plugin.files.getGunsConfig().getConfigurationSection("Guns." + group).getKeys(false))
@@ -133,11 +178,12 @@ public class ConfigSetup
 				int clipAmmo = Integer.parseInt(ammo.substring(0, ammo.indexOf("/")));
 				int totalAmmo = Integer.parseInt(ammo.substring(ammo.indexOf("/") + 1));
 				int damage = plugin.files.getGunsConfig().getInt("Guns." + group + "." + gun + ".Damage");
+				int fireDelay = plugin.files.getGunsConfig().getInt("Guns." + group + "." + gun + ".FireDelay");
 				int pClip = Integer.parseInt(packAmmo.substring(0, packAmmo.indexOf("/")));
 				int pTotal = Integer.parseInt(packAmmo.substring(packAmmo.indexOf("/") + 1));
 				int packDamage = plugin.files.getGunsConfig().getInt("Guns." + group + "." + gun + ".PackAPunch.Damage");
 				String packGunName = plugin.files.getGunsConfig().getString("Guns." + group + "." + gun + ".PackAPunch.Name");
-				plugin.possibleGuns.add(new GunType(GunTypeEnum.getGun(group), gun, damage, clipAmmo, totalAmmo, pClip, pTotal, packDamage, packGunName));
+				plugin.possibleGuns.add(new GunType(GunTypeEnum.getGun(group), gun, damage, fireDelay, clipAmmo, totalAmmo, pClip, pTotal, packDamage, packGunName));
 			}
 		}
 		maxAmmo = plugin.getConfig().getBoolean("config.Perks.MaxAmmo");
@@ -153,7 +199,7 @@ public class ConfigSetup
 		maxPerks = plugin.getConfig().getInt("config.Perks.maxPerks");
 		KillMoney = plugin.getConfig().getInt("config.Economy.MoneyPerKill");
 		//PistolMaterial = plugin.getConfig().getInt("config.Guns.PistolMaterial");
-
+		
 		try
 		{
 			for(String a : plugin.files.getKillsFile().getConfigurationSection("Kills").getKeys(true))
@@ -163,7 +209,7 @@ public class ConfigSetup
 			}
 		}catch(NullPointerException e)
 		{
-
+			
 		}
 	}
 }

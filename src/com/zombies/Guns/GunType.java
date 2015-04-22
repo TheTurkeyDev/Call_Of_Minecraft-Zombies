@@ -10,6 +10,7 @@ public class GunType
 	public String name;
 	public GunTypeEnum type;
 	public int damage;
+	public int fireDelay;
 	public int clipammo;
 	public int totalammo;
 	public int packAPunchClipAmmo;
@@ -17,9 +18,10 @@ public class GunType
 	public int packAPunchDamage;
 	public String packAPunchName;
 
-	public GunType(GunTypeEnum type, String gunName, int damage, int clipammo, int totalammo, int packClip, int packTotal, int packDamage, String packName)
+	public GunType(GunTypeEnum type, String gunName, int damage, int fireDelay, int clipammo, int totalammo, int packClip, int packTotal, int packDamage, String packName)
 	{
 		this.damage = damage;
+		this.fireDelay = fireDelay;
 		this.clipammo = clipammo;
 		this.totalammo = totalammo;
 		this.name = gunName;
