@@ -71,7 +71,7 @@ public class OnZombiePerkDrop implements Listener
 				{
 					ItemStack drop = new ItemStack(Material.DIAMOND_SWORD, 1);
 					dropItem((Zombie) zombie, drop);
-					game.getInGameManager().setCurrentPerkDrops(currentPerks);
+					game.perkManager.setCurrentPerkDrops(currentPerks);
 				}
 			}
 			if (randomPerk == 2)
@@ -111,7 +111,7 @@ public class OnZombiePerkDrop implements Listener
 					dropItem((Zombie) zombie, drop);
 				}
 			}
-			game.getInGameManager().setCurrentPerkDrops(currentPerks);
+			game.perkManager.setCurrentPerkDrops(currentPerks);
 		}
 	}
 
@@ -217,7 +217,7 @@ public class OnZombiePerkDrop implements Listener
 				currentPerks.remove(event.getItem().getItemStack());
 				event.getPlayer().getInventory().remove(item);
 				notifyAll(game, "Carpenter!");
-				for(Barrier barrier : game.getInGameManager().barrierManager.getBrriers())
+				for(Barrier barrier : game.barrierManager.getBrriers())
 				{
 					barrier.repairFull();
 				}
@@ -266,7 +266,7 @@ public class OnZombiePerkDrop implements Listener
 				currentPerks.remove(event.getItem().getItemStack());
 				event.getPlayer().getInventory().remove(item);
 				game.setFireSale(true);
-				game.getInGameManager().boxManager.FireSale(true);
+				game.boxManager.FireSale(true);
 				notifyAll(game, "Fire Sale!");
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 				{
@@ -275,7 +275,7 @@ public class OnZombiePerkDrop implements Listener
 					public void run()
 					{
 						game.setFireSale(false);
-						game.getInGameManager().boxManager.FireSale(false);
+						game.boxManager.FireSale(false);
 					}
 
 				}, plugin.config.fireSaleTimer * 20);

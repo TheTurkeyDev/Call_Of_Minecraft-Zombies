@@ -38,8 +38,12 @@ import com.zombies.CommandUtil;
 import com.zombies.game.features.Door;
 import com.zombies.game.features.DownedPlayer;
 import com.zombies.game.features.RandomBox;
+import com.zombies.game.managers.BarrierManager;
 import com.zombies.game.managers.BoxManager;
-import com.zombies.game.managers.InGameManager;
+import com.zombies.game.managers.DoorManager;
+import com.zombies.game.managers.DownedPlayerManager;
+import com.zombies.game.managers.PerkManager;
+import com.zombies.game.managers.TeleporterManager;
 import com.zombies.guns.Gun;
 import com.zombies.guns.GunManager;
 import com.zombies.guns.GunType;
@@ -107,6 +111,16 @@ public class Game
 	private static boolean instaKill = false;
 	
 	/**
+	 * If the power is on
+	 */
+	private boolean power;
+	
+	/**
+	 * If the game has power enabled
+	 */
+	private boolean powerEnabled;
+	
+	/**
 	 * Contains a player and the gun manager corresponding to that player.
 	 */
 	private HashMap<Player, GunManager> playersGuns = new HashMap<Player, GunManager>();
@@ -169,13 +183,36 @@ public class Game
 	 * Auto start timer, constructed upon join.
 	 */
 	public AutoStart starter;
+
+	/**
+	 * contains all of the Mysteryboxes in the game
+	 */
+	public BoxManager boxManager;
 	
 	/**
-	 * Manager controlling extra features in the game.
-	 * 
-	 * @see InGameManager class
+	 * contains all of the Barriers in the game
 	 */
-	private InGameManager inGameManager;
+	public BarrierManager barrierManager;
+	
+	/**
+	 * contains all of the doors in the game
+	 */
+	public DoorManager doorManager;
+	
+	/**
+	 * contains all of the perks in the game as well as the perks that are currently dropped in the map
+	 */
+	public PerkManager perkManager;
+	
+	/**
+	 * contains all of the teleporters in the game
+	 */
+	public TeleporterManager teleporterManager;
+	
+	/**
+	 * contains all of the downed palyers in the game
+	 */
+	public DownedPlayerManager downedPlayerManager;
 	
 	/**
 	 * Information containing gamemode, and fly mode the player was in before
@@ -213,13 +250,28 @@ public class Game
 	{
 		plugin = zombies;
 		arenaName = name;
+		
+		powerEnabled = plugin.files.getArenasFile().getBoolean(name + ".Power");
+		
 		starter = new AutoStart(plugin, this, 60);
+		
 		spawnManager = new SpawnManager(plugin, this);
-		inGameManager = new InGameManager(plugin, this);
-
+		boxManager = new BoxManager(plugin, this);
+		barrierManager = new BarrierManager(plugin, this);
+		doorManager = new DoorManager(plugin, this);
+		perkManager = new PerkManager(plugin);
+		teleporterManager = new TeleporterManager(plugin, this);
+		downedPlayerManager = new DownedPlayerManager();
 		kitManager = plugin.kitManager;
+		
 		scoreboard = new GameScoreboard(this);
+		
 		spawnManager.loadAllSpawnsToGame();
+		boxManager.loadAllBoxesToGame();
+		barrierManager.loadAllBarriersToGame();
+		doorManager.loadAllDoorsToGame();
+		teleporterManager.loadAllTeleportersToGame();
+		
 		try
 		{
 			enable();
@@ -243,15 +295,6 @@ public class Game
 			return playersGuns.get(player);
 		playersGuns.put(player, new GunManager(plugin, player));
 		return playersGuns.get(player); 
-	}
-	
-	/**
-	 * 
-	 * @return the InGameManager
-	 */
-	public InGameManager getInGameManager()
-	{
-		return inGameManager;
 	}
 	
 	/**
@@ -317,6 +360,51 @@ public class Game
 	public void setDoublePoints(boolean isDoublePoints)
 	{
 		doublePoints = isDoublePoints;
+	}
+	
+	/**
+	 *
+	 * @return if the game currently has the power on
+	 */
+	public boolean isPowered()
+	{
+		return power;
+	}
+	
+	/**
+	 * Turns off the power for the game
+	 */
+	public void turnOffPower()
+	{
+		power = false;
+	}
+	
+	/**
+	 * Turns on the power for the game
+	 */
+	public void turnOnPower()
+	{
+		power = true;
+		try
+		{
+			for (Player pl : players)
+			{
+				Location loc = pl.getLocation();
+				loc.getWorld().playSound(loc, Sound.AMBIENCE_THUNDER, 1L, 1L);
+			}
+		} catch (NullPointerException e)
+		{
+		}
+	}
+	
+	/**
+	 * 
+	 * @return if power is enabled for the game
+	 */
+	public boolean containsPower()
+	{
+		if (!powerEnabled) return false;
+		return true;
 	}
 	
 	/**
@@ -394,21 +482,21 @@ public class Game
 			{
 				player.sendMessage("" + ChatColor.RED + "[Zombies] All mysteryboxes are generating.");
 			}
-			this.inGameManager.boxManager.loadAllBoxes();
+			this.boxManager.loadAllBoxes();
 		}
 		else
 		{
-			this.inGameManager.boxManager.unloadAllBoxes();
-			RandomBox b = this.inGameManager.boxManager.getRandomBox();
+			this.boxManager.unloadAllBoxes();
+			RandomBox b = this.boxManager.getRandomBox();
 			if(b!=null)
 			{
-				this.inGameManager.boxManager.setCurrentBox(b);
-				this.inGameManager.boxManager.getCurrentbox().loadBox();
+				this.boxManager.setCurrentBox(b);
+				this.boxManager.getCurrentbox().loadBox();
 			}
 		}
 		spawnManager.update();
 		
-		for (Door door : inGameManager.doorManager.getDoors())
+		for (Door door : doorManager.getDoors())
 		{
 			door.loadSpawns();
 		}
@@ -640,17 +728,17 @@ public class Game
 				waveNumber = 0;
 				plugin.pointManager.clearGamePoints(this);
 				endGame();
-				for (int i = 0; i < inGameManager.doorManager.getDoors().size(); i++)
+				for (int i = 0; i < doorManager.getDoors().size(); i++)
 				{
-					inGameManager.doorManager.getDoors().get(i).closeDoor();
+					doorManager.getDoors().get(i).closeDoor();
 				}
 			}
 		}
 		try
 		{
-			if (inGameManager.isPlayerDowned(player))
+			if (downedPlayerManager.isPlayerDowned(player))
 			{
-				inGameManager.removeDownedPlayer(player);
+				downedPlayerManager.removeDownedPlayer(player);
 			}
 			resetPlayer(player);
 			playersGuns.remove(player);
@@ -733,9 +821,9 @@ public class Game
 				waveNumber = 0;
 				plugin.pointManager.clearGamePoints(this);
 				endGame();
-				for (int i = 0; i < inGameManager.doorManager.getDoors().size(); i++)
+				for (int i = 0; i < doorManager.getDoors().size(); i++)
 				{
-					inGameManager.doorManager.getDoors().get(i).closeDoor();
+					doorManager.getDoors().get(i).closeDoor();
 				}
 			}
 		}
@@ -894,19 +982,19 @@ public class Game
 		spawnManager.zombiesSpawned = 0;
 		spawnManager.zombiesToSpawn = 0;
 		spawnManager.mobs.clear();
-		for (Door door : inGameManager.doorManager.getDoors())
+		for (Door door : doorManager.getDoors())
 		{
 			door.closeDoor();
 		}
-		inGameManager.clearPerks();
-		for (DownedPlayer pl : inGameManager.getDownedPlayers())
+		perkManager.clearPerks();
+		for (DownedPlayer pl : downedPlayerManager.getDownedPlayers())
 		{
 			pl.setPlayerDown(false);
 		}
-		inGameManager.clearDownedPlayers();
-		inGameManager.turnOffPower();
-		inGameManager.boxManager.unloadAllBoxes();
-		inGameManager.barrierManager.unloadAllBarriers();
+		downedPlayerManager.clearDownedPlayers();
+		turnOffPower();
+		boxManager.unloadAllBoxes();
+		barrierManager.unloadAllBarriers();
 		players.clear();
 		scoreboard = new GameScoreboard(this);
 		instaKill = false;
@@ -1044,7 +1132,6 @@ public class Game
 		playerTPLocation = pwarp.add(0.5, 0, 0.5);
 		spectateLocation = swarp.add(0.5, 0, 0.5);
 		lobbyLocation = lwarp.add(0.5, 0, 0.5);
-		inGameManager.enable();
 		arena = new Arena(min, max, Bukkit.getWorld(worldName));
 		spawnManager.loadAllSpawnsToGame();
 		mode = ArenaStatus.WAITING;
@@ -1451,11 +1538,6 @@ public class Game
 	public boolean isFireSale()
 	{
 		return isFireSale;
-	}
-	
-	public BoxManager getBoxManger()
-	{
-		return inGameManager.boxManager;
 	}
 	
 	public void addJoinSign(Sign sign)

@@ -165,7 +165,7 @@ public class Gun
 			if (gun.clipammo == clipAmmo) return;
 			Game game = plugin.manager.getGame(player);
 			final int reloadTime;
-			if (game.getInGameManager().hasPerk(player, PerkType.SPEED_COLA)) reloadTime = (plugin.config.reloadTime) / 2;
+			if (game.perkManager.hasPerk(player, PerkType.SPEED_COLA)) reloadTime = (plugin.config.reloadTime) / 2;
 			else reloadTime = plugin.config.reloadTime;
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 			{
@@ -196,8 +196,8 @@ public class Gun
 				
 			}, reloadTime * 20);
 			isReloading = true;
-			if (!(game.getInGameManager().getPlayersPerks().containsKey(player))) return;
-			if (game.getInGameManager().getPlayersPerks().get(player).contains(PerkType.ELECTRIC_C))
+			if (!(game.perkManager.getPlayersPerks().containsKey(player))) return;
+			if (game.perkManager.getPlayersPerks().get(player).contains(PerkType.ELECTRIC_C))
 			{
 				if(totalAmmo == 0 && !ecUsed)
 					return;

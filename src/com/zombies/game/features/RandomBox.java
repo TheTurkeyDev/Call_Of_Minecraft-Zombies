@@ -44,7 +44,7 @@ public class RandomBox
 		int randID = (int) (Math.random() * plugin.possibleGuns.size() + 1);
 		try{
 		gun = plugin.possibleGuns.get(randID);
-		}catch(IndexOutOfBoundsException e){if(!boxGame.isFireSale()){CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "TeadyBear!!!!!!");boxGame.getBoxManger().teddyBear();return;}else{randID = (int) Math.random() * plugin.possibleGuns.size();}}
+		}catch(IndexOutOfBoundsException e){if(!boxGame.isFireSale()){CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "TeadyBear!!!!!!");boxGame.boxManager.teddyBear();return;}else{randID = (int) Math.random() * plugin.possibleGuns.size();}}
 		GunManager manager = boxGame.getPlayersGun(player);
 		int slot = manager.getCorrectSlot();
 		manager.removeGun(manager.getGun(slot));

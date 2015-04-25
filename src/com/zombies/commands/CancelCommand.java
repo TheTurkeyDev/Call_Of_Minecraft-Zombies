@@ -106,7 +106,7 @@ public class CancelCommand implements SubCommand
 						return true;
 					}
 					plugin.isRemovingDoors.remove(player);
-					for (Door door : game.getInGameManager().doorManager.getDoors())
+					for (Door door : game.doorManager.getDoors())
 					{
 						for (Sign sign : door.getSigns())
 						{
@@ -133,7 +133,7 @@ public class CancelCommand implements SubCommand
 						return true;
 					}
 					plugin.isRemovingBarriers.remove(player);
-					for (Barrier barrier : game.getInGameManager().barrierManager.getBrriers())
+					for (Barrier barrier : game.barrierManager.getBrriers())
 					{
 						barrier.repairFull();
 						game.getWorld().getBlockAt(barrier.getRepairLoc()).setType(Material.AIR);

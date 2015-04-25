@@ -39,7 +39,7 @@ public class OnOutsidePlayerInteractEvent implements Listener
 		}
 		if (plugin.manager.isPlayerInGame(player))
 		{
-			currentPerks = game.getInGameManager().getCurrentDroppedPerks();
+			currentPerks = game.perkManager.getCurrentDroppedPerks();
 			if (!currentPerks.contains(e.getItem()))
 			{
 				e.getItem().remove();

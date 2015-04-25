@@ -289,7 +289,7 @@ public class SpawnManager
 		mobs.add(zomb);
 		zombiesSpawned++;
 		
-		Barrier b = game.getInGameManager().barrierManager.getBarrier(loc);
+		Barrier b = game.barrierManager.getBarrier(loc);
 		if(b != null)
 			b.initBarrier(zomb);
 
@@ -393,7 +393,7 @@ public class SpawnManager
 		if (point == null) return false;
 		boolean isContained = false;
 		boolean maySpawn = false;
-		for (Door door : game.getInGameManager().doorManager.getDoors())
+		for (Door door : game.doorManager.getDoors())
 		{
 			for (SpawnPoint p : door.getSpawnsInRoomDoorLeadsTo())
 			{

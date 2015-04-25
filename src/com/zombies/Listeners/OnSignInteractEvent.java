@@ -107,7 +107,7 @@ public class OnSignInteractEvent implements Listener
 						}
 						if (plugin.pointManager.canBuy(player, points))
 						{
-							RandomBox box = game.getBoxManger().getBox(sign.getLocation());
+							RandomBox box = game.boxManager.getBox(sign.getLocation());
 							box.Start(player, points);
 							player.getLocation().getWorld().playSound(player.getLocation(), Sound.CHEST_OPEN, 1, 1);
 							return;
@@ -123,9 +123,9 @@ public class OnSignInteractEvent implements Listener
 						String perkName = sign.getLine(2);
 						PerkType perk = PerkType.DEADSHOT_DAIQ;
 						perk = perk.getPerkType(perkName);
-						if (game.getInGameManager().containsPower())
+						if (game.containsPower())
 						{
-							if (!game.getInGameManager().isPowered())
+							if (!game.isPowered())
 							{
 								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must turn on the power first!");
 								perk.noPower(plugin, player);
@@ -150,14 +150,14 @@ public class OnSignInteractEvent implements Listener
 							}
 							if (playerPoints >= cost)
 							{
-								if (game.getInGameManager().getPlayersPerks().size() > 4)
+								if (game.perkManager.getPlayersPerks().size() > 4)
 								{
 									CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You already have four perks!");
 									return;
 								}
 								try
 								{
-									if (game.getInGameManager().getPlayersPerks().get(player).contains(perk))
+									if (game.perkManager.getPlayersPerks().get(player).contains(perk))
 									{
 										CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You already have " + perk + "!");
 										return;
@@ -165,10 +165,10 @@ public class OnSignInteractEvent implements Listener
 								} catch (NullPointerException e)
 								{
 								}
-								if (!game.getInGameManager().addPerk(player, perk)) { return; }
+								if (!game.perkManager.addPerk(player, perk)) { return; }
 								plugin.getServer().getPluginManager().callEvent(new PlayerPerkPurchaseEvent(player, perk));
 								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You now have " + perk.toString().toLowerCase() + "!");
-								int slot = game.getInGameManager().getAvaliblePerkSlot(player);
+								int slot = game.perkManager.getAvaliblePerkSlot(player);
 								perk.initialEffect(plugin, player, perk, slot);
 								if (perk.equals(PerkType.STAMIN_UP))
 								{
@@ -186,9 +186,9 @@ public class OnSignInteractEvent implements Listener
 					}
 					else if (sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "pack-a-punch"))
 					{
-						if (game.getInGameManager().containsPower())
+						if (game.containsPower())
 						{
-							if (!game.getInGameManager().isPowered())
+							if (!game.isPowered())
 							{
 								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must turn on the power before You can Pack-A-punch!");
 								PerkType.noPower(plugin, player);
@@ -232,7 +232,7 @@ public class OnSignInteractEvent implements Listener
 					}
 					else if (sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "Door"))
 					{
-						Door door = game.getInGameManager().doorManager.getDoorFromSign(sign.getLocation());
+						Door door = game.doorManager.getDoorFromSign(sign.getLocation());
 						if (door == null)
 						{
 							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "An error occured when trying to open this door! Leave the game an contact an admin please.");
@@ -307,12 +307,12 @@ public class OnSignInteractEvent implements Listener
 							if (plugin.manager.isPlayerInGame(player))
 							{
 								Game g = plugin.manager.getGame(player);
-								if (g.getInGameManager().isPowered())
+								if (g.isPowered())
 								{
 									CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "The power is already on!");
 									return;
 								}
-								g.getInGameManager().turnOnPower();
+								g.turnOnPower();
 								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Power on!");
 							}
 						}
@@ -335,9 +335,9 @@ public class OnSignInteractEvent implements Listener
 						if (plugin.manager.isPlayerInGame(player))
 						{
 							Game g = plugin.manager.getGame(player);
-							if (g.getInGameManager().getTeleporters().containsKey(sign.getLine(2)))
+							if (g.teleporterManager.getTeleporters().containsKey(sign.getLine(2)))
 							{
-								if (!(g.getInGameManager().isPowered()))
+								if (!(g.isPowered()))
 								{
 									CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must turn on the power first!");
 									PerkType.noPower(plugin, player);
@@ -346,7 +346,7 @@ public class OnSignInteractEvent implements Listener
 								int points = Integer.parseInt(sign.getLine(3));
 								if (plugin.pointManager.canBuy(player, points))
 								{
-									ArrayList<Location> locList = g.getInGameManager().getTeleporters().get(sign.getLine(2));
+									ArrayList<Location> locList = g.teleporterManager.getTeleporters().get(sign.getLine(2));
 									Random r = new Random();
 									Location loc = locList.get(r.nextInt(locList.size()));
 									while(loc.equals(sign.getLocation()))

@@ -38,8 +38,8 @@ public class OnPlayerVelocityEvent implements Listener
 			if (fallDistance > 2)
 			{
 				Game game = plugin.manager.getGame(player);
-				if (!game.getInGameManager().getPlayersPerks().containsKey(player)) { return; }
-				if (game.getInGameManager().getPlayersPerks().get(player).contains(PerkType.PHD_FLOPPER))
+				if (!game.perkManager.getPlayersPerks().containsKey(player)) { return; }
+				if (game.perkManager.getPlayersPerks().get(player).contains(PerkType.PHD_FLOPPER))
 				{
 					int pHealth = (int) player.getHealth();
 					Location loc = player.getLocation();
@@ -129,7 +129,7 @@ public class OnPlayerVelocityEvent implements Listener
 				Player player = (Player) event.getEntity();
 				if (plugin.manager.isPlayerInGame(player))
 				{
-					if (plugin.manager.getGame(player).getInGameManager().hasPerk(player, PerkType.PHD_FLOPPER))
+					if (plugin.manager.getGame(player).perkManager.hasPerk(player, PerkType.PHD_FLOPPER))
 					{
 						event.setCancelled(true);
 					}

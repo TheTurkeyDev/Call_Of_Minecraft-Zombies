@@ -48,7 +48,7 @@ public class DownedPlayer implements Listener
 		if (isPlayerDown)
 		{
 			player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You have went down and need to be revived!");
-			game.getInGameManager().clearPlayersPerks(player);
+			game.perkManager.clearPlayersPerks(player);
 			player.setGameMode(GameMode.CREATIVE);
 			player.setAllowFlight(false);
 		}
@@ -96,9 +96,9 @@ public class DownedPlayer implements Listener
 	public void RevivePlayer(Player pl)
 	{
 		int reviveTime = plugin.config.reviveTimer * 20;
-		if (game.getInGameManager().getPlayersPerks().containsKey(pl))
+		if (game.perkManager.getPlayersPerks().containsKey(pl))
 		{
-			if (game.getInGameManager().getPlayersPerks().get(pl).contains(PerkType.QUICK_REVIVE))
+			if (game.perkManager.getPlayersPerks().get(pl).contains(PerkType.QUICK_REVIVE))
 			{
 				reviveTime /= 2;
 			}
@@ -112,7 +112,7 @@ public class DownedPlayer implements Listener
 				if (!hasMoved)
 				{
 					isPlayerDown = false;
-					game.getInGameManager().removeDownedPlayer(DownedPlayer.this);
+					game.downedPlayerManager.removeDownedPlayer(DownedPlayer.this);
 					player.sendMessage(ChatColor.GREEN + "You have been revived!");
 					player.setGameMode(GameMode.SURVIVAL);
 					if (!(reviver == null)) reviver.sendMessage(ChatColor.GREEN + "You revived " + ChatColor.DARK_GREEN + player.getName());
@@ -141,12 +141,12 @@ public class DownedPlayer implements Listener
 		}
 		if (!(plugin.manager.isPlayerInGame(tmp))) return;
 		if (reviver != null) return;
-		if (!(game.getInGameManager().isDownedPlayer(this))) return;
+		if (!(game.downedPlayerManager.isDownedPlayer(this))) return;
 		if (tmp.equals(player)) return;
 		if (isBeingRevived) return;
 		reviver = tmp;
 		if (!(game.players.contains(reviver))) return;
-		if (game.getInGameManager().isPlayerDowned(reviver)) { return; }
+		if (game.downedPlayerManager.isPlayerDowned(reviver)) { return; }
 		if (reviver != player)
 		{
 			if (reviver == null && reviver.getName().equals(player.getName())) { return; }
@@ -190,7 +190,7 @@ public class DownedPlayer implements Listener
 						game.removePlayer(player);
 						isPlayerDown = false;
 					}
-					else if (!game.getInGameManager().isDownedPlayer(DownedPlayer.this))
+					else if (!game.downedPlayerManager.isDownedPlayer(DownedPlayer.this))
 					{
 						player.setHealth(20);
 						player.setWalkSpeed(0.2F);

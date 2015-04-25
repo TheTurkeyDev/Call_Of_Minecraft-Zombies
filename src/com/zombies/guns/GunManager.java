@@ -54,7 +54,7 @@ public class GunManager
 		if (plugin.manager.isPlayerInGame(player))
 		{
 			Game game = plugin.manager.getGame(player);
-			if (game.getInGameManager().hasPerk(player, PerkType.MULE_KICK))
+			if (game.perkManager.hasPerk(player, PerkType.MULE_KICK))
 			{
 				if (current > 3)
 				{

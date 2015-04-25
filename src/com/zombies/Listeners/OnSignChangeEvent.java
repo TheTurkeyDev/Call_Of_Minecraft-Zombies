@@ -57,16 +57,16 @@ public class OnSignChangeEvent implements Listener
 					sign.setLine(0, ChatColor.RED + "[Zombies]");
 					sign.setLine(1, ChatColor.AQUA + "MysteryBox");
 					sign.setLine(2, "950");
-					RandomBox box = new RandomBox(sign.getBlock().getLocation(), game, plugin, game.getBoxManger().getNextBoxName(), Integer.parseInt(thirdLine));
-					game.getBoxManger().addBox(box);
+					RandomBox box = new RandomBox(sign.getBlock().getLocation(), game, plugin, game.boxManager.getNextBoxName(), Integer.parseInt(thirdLine));
+					game.boxManager.addBox(box);
 					sign.getPlayer().sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Random Weapon Box Created!");
 					return;
 				}
 				sign.setLine(0, ChatColor.RED + "[Zombies]");
 				sign.setLine(1, ChatColor.AQUA + "MysteryBox");
 				sign.setLine(2, thirdLine);
-				RandomBox box = new RandomBox(sign.getBlock().getLocation(), game, plugin, game.getBoxManger().getNextBoxName(), Integer.parseInt(thirdLine));
-				game.getBoxManger().addBox(box);
+				RandomBox box = new RandomBox(sign.getBlock().getLocation(), game, plugin, game.boxManager.getNextBoxName(), Integer.parseInt(thirdLine));
+				game.boxManager.addBox(box);
 				sign.getPlayer().sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Random Weapon Box Created!");
 				return;
 			}
@@ -217,7 +217,7 @@ public class OnSignChangeEvent implements Listener
 					sign.setLine(3, "");
 					return;
 				}
-				if (g.getInGameManager().getTeleporters().containsKey(thirdLine))
+				if (g.teleporterManager.getTeleporters().containsKey(thirdLine))
 				{
 					if(sign.getLine(3).equals(""))
 					{

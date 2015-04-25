@@ -35,12 +35,12 @@ public class RemoveBarrierCommand implements SubCommand
 				if (plugin.manager.isValidArena(args[1]))
 				{
 					Game game = plugin.manager.getGame(args[1]);
-					if (game.getInGameManager().barrierManager.getTotalBarriers() == 0)
+					if (game.barrierManager.getTotalBarriers() == 0)
 					{
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "This arena has no barriers!");
 						return true;
 					}
-					for (Barrier barrier : game.getInGameManager().barrierManager.getBrriers())
+					for (Barrier barrier : game.barrierManager.getBrriers())
 					{
 						game.getWorld().getBlockAt(barrier.getRepairLoc()).setType(Material.SIGN_POST);
 						Sign sign = (Sign) game.getWorld().getBlockAt(barrier.getRepairLoc()).getState();

@@ -126,7 +126,7 @@ public class OnBlockInteractEvent implements Listener
 				{
 					Location loc = event.getClickedBlock().getLocation();
 					Game game = plugin.manager.getGame(loc);
-					Barrier barrier = new Barrier(loc, event.getClickedBlock(), game.getInGameManager().barrierManager.getNextBarrierNumber(), game);
+					Barrier barrier = new Barrier(loc, event.getClickedBlock(), game.barrierManager.getNextBarrierNumber(), game);
 					plugin.isCreatingBarrier.remove(player);
 					plugin.isCreatingBarrier.put(player, barrier);
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier block set!");

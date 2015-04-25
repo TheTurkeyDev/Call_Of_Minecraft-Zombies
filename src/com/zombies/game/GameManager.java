@@ -77,9 +77,9 @@ public class GameManager
 			{
 				for (int j = 0; j < games.size(); j++)
 				{
-					for (int q = 0; q < games.get(j).getInGameManager().doorManager.getDoors().size(); q++)
+					for (int q = 0; q < games.get(j).doorManager.getDoors().size(); q++)
 					{
-						games.get(j).getInGameManager().doorManager.getDoors().get(q).closeDoor();
+						games.get(j).doorManager.getDoors().get(q).closeDoor();
 					}
 				}
 				gl.endGame();
@@ -101,7 +101,7 @@ public class GameManager
 	{
 		for (Game gl : games)
 		{
-			if (gl.getInGameManager().doorManager.getDoors().contains(door)) { return gl; }
+			if (gl.doorManager.getDoors().contains(door)) { return gl; }
 		}
 		return null;
 	}

@@ -46,7 +46,7 @@ public class DoorManager
 	}
 	
 	
-	public void loadAllDoors()
+	public void loadAllDoorsToGame()
 	{
 		String location = game.getName() + ".Doors";
 		try

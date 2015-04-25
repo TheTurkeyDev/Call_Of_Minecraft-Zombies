@@ -23,8 +23,8 @@ public class AddTeleporterCommand implements SubCommand
 		if (player.hasPermission("zombies.createteleporter") || player.hasPermission("zombies.admin"))
 		{
 			Location loc = player.getLocation();
-			Game arena = plugin.manager.getGame(loc);
-			if (arena == null)
+			Game game = plugin.manager.getGame(loc);
+			if (game == null)
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must be in an arena!");
 				return true;
@@ -34,8 +34,8 @@ public class AddTeleporterCommand implements SubCommand
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Please specify a teleporter name!");
 				return true;
 			}
-			arena.getInGameManager().saveTeleporterSpot(args[1], loc);
-			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Teleporter added for arena: " + ChatColor.GOLD + arena.getName() + ChatColor.RED + "!");
+			game.teleporterManager.saveTeleporterSpot(args[1], loc);
+			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Teleporter added for arena: " + ChatColor.GOLD + game.getName() + ChatColor.RED + "!");
 			return true;
 		}
 		else

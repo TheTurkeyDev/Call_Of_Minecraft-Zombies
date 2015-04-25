@@ -21,7 +21,6 @@ import com.zombies.InGameFeatures.perkMachines.PerkType;
 import com.zombies.game.Game;
 import com.zombies.game.Game.ArenaStatus;
 import com.zombies.game.features.DownedPlayer;
-import com.zombies.game.managers.InGameManager;
 
 public class OnEntityDamageEvent implements Listener
 {
@@ -63,11 +62,10 @@ public class OnEntityDamageEvent implements Listener
 						{
 							final Player player = (Player) e.getEntity();
 							Game game = plugin.manager.getGame(player);
-							InGameManager igm = game.getInGameManager();
 							int damage = 6;
-							if (game.getInGameManager().getPlayersPerks().containsKey(player))
+							if (game.perkManager.getPlayersPerks().containsKey(player))
 							{
-								if (game.getInGameManager().getPlayersPerks().get(player).contains(PerkType.JUGGERNOG))
+								if (game.perkManager.getPlayersPerks().get(player).contains(PerkType.JUGGERNOG))
 								{
 									damage = damage / 2;
 								}
@@ -80,7 +78,7 @@ public class OnEntityDamageEvent implements Listener
 							}
 							else
 							{
-								if(igm.isPlayerDowned(player))
+								if(game.downedPlayerManager.isPlayerDowned(player))
 								{
 									e.setCancelled(true);
 								}
@@ -228,8 +226,7 @@ public class OnEntityDamageEvent implements Listener
 			Player player = (Player) e.getEntity();
 			if( plugin.manager.getGame(player) == null)
 				return;
-			InGameManager igm = plugin.manager.getGame(player).getInGameManager();
-			if (igm.isPlayerDowned(player))
+			if ( plugin.manager.getGame(player).downedPlayerManager.isPlayerDowned(player))
 			{
 				e.setCancelled(true);
 			}
@@ -269,20 +266,20 @@ public class OnEntityDamageEvent implements Listener
 		{
 			player.setFireTicks(0);
 		}
-		if(game.getInGameManager().getDownedPlayers().size() + 1 == game.players.size())
+		if(game.downedPlayerManager.getDownedPlayers().size() + 1 == game.players.size())
 		{
-			for (DownedPlayer downedPlayer : game.getInGameManager().getDownedPlayers())
+			for (DownedPlayer downedPlayer : game.downedPlayerManager.getDownedPlayers())
 			{
 				downedPlayer.cancelDowned();
 			}
 			game.endGame();
 			return;
 		}
-		if (!game.getInGameManager().isPlayerDowned(player))
+		if (!game.downedPlayerManager.isPlayerDowned(player))
 		{
 			DownedPlayer down = new DownedPlayer(player, game);
 			down.setPlayerDown(true);
-			game.getInGameManager().addDownedPlayer(down);
+			game.downedPlayerManager.addDownedPlayer(down);
 			player.setHealth(1);
 		}
 	}
@@ -315,12 +312,12 @@ public class OnEntityDamageEvent implements Listener
 	
 	public void removeDownedPlayer(Player player)
 	{
-		plugin.manager.getGame(player).getInGameManager().removeDownedPlayer(player);
+		plugin.manager.getGame(player).downedPlayerManager.removeDownedPlayer(player);
 	}
 	
 	@SuppressWarnings("deprecation")
 	public boolean isDownedPlayer(String name)
 	{
-		return plugin.manager.getGame(Bukkit.getPlayer(name)).getInGameManager().isPlayerDowned(Bukkit.getPlayer(name));
+		return plugin.manager.getGame(Bukkit.getPlayer(name)).downedPlayerManager.isPlayerDowned(Bukkit.getPlayer(name));
 	}
 }

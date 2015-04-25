@@ -34,7 +34,7 @@ public class RemoveTeleporterCommand implements SubCommand
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Please specify a teleporter name!");
 				return true;
 			}
-			arena.getInGameManager().removedTeleporter(args[1], player);
+			arena.teleporterManager.removedTeleporter(args[1], player);
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Teleporter removed for arena: " + ChatColor.GOLD + arena.getName() + ChatColor.RED + "!");
 			return true;
 		}

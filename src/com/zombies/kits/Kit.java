@@ -165,9 +165,9 @@ public class Kit
 		if(perkOne!=null)
 		{
 			PerkType perk = perkOne;
-			if (!game.getInGameManager().addPerk(player, perk)) { return; }
+			if (!game.perkManager.addPerk(player, perk)) { return; }
 			plugin.getServer().getPluginManager().callEvent(new PlayerPerkPurchaseEvent(player, perk));
-			int slot = game.getInGameManager().getAvaliblePerkSlot(player);
+			int slot = game.perkManager.getAvaliblePerkSlot(player);
 			perk.initialEffect(plugin, player, perk, slot);
 			if (perk.equals(PerkType.STAMIN_UP))
 			{
@@ -177,9 +177,9 @@ public class Kit
 		if(perkTwo!=null)
 		{
 			PerkType perk = perkTwo;
-			if (!game.getInGameManager().addPerk(player, perk)) { return; }
+			if (!game.perkManager.addPerk(player, perk)) { return; }
 			plugin.getServer().getPluginManager().callEvent(new PlayerPerkPurchaseEvent(player, perk));
-			int slot = game.getInGameManager().getAvaliblePerkSlot(player);
+			int slot = game.perkManager.getAvaliblePerkSlot(player);
 			perk.initialEffect(plugin, player, perk, slot);
 			if (perk.equals(PerkType.STAMIN_UP))
 			{
@@ -189,9 +189,9 @@ public class Kit
 		if(perkThree!=null)
 		{
 			PerkType perk = perkThree;
-			if (!game.getInGameManager().addPerk(player, perk)) { return; }
+			if (!game.perkManager.addPerk(player, perk)) { return; }
 			plugin.getServer().getPluginManager().callEvent(new PlayerPerkPurchaseEvent(player, perk));
-			int slot = game.getInGameManager().getAvaliblePerkSlot(player);
+			int slot = game.perkManager.getAvaliblePerkSlot(player);
 			perk.initialEffect(plugin, player, perk, slot);
 			if (perk.equals(PerkType.STAMIN_UP))
 			{
@@ -201,9 +201,9 @@ public class Kit
 		if(perkFour!=null)
 		{
 			PerkType perk = perkFour;
-			if (!game.getInGameManager().addPerk(player, perk)) { return; }
+			if (!game.perkManager.addPerk(player, perk)) { return; }
 			plugin.getServer().getPluginManager().callEvent(new PlayerPerkPurchaseEvent(player, perk));
-			int slot = game.getInGameManager().getAvaliblePerkSlot(player);
+			int slot = game.perkManager.getAvaliblePerkSlot(player);
 			perk.initialEffect(plugin, player, perk, slot);
 			if (perk.equals(PerkType.STAMIN_UP))
 			{

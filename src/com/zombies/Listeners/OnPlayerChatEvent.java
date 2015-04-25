@@ -90,7 +90,7 @@ public class OnPlayerChatEvent implements Listener
 				}
 				b.setReward(price);
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier setup complete!");
-				b.getGame().getInGameManager().barrierManager.addBarrier(b);
+				b.getGame().barrierManager.addBarrier(b);
 				playerChat.setCancelled(true);
 				plugin.isCreatingBarrier.remove(player);
 			}
