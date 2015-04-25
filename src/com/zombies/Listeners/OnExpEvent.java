@@ -1,4 +1,4 @@
-package com.zombies.Listeners;
+package com.zombies.listeners;
 
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;

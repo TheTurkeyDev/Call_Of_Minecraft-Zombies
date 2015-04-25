@@ -1,4 +1,4 @@
-package com.zombies.Listeners;
+package com.zombies.listeners;
 
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;

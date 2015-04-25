@@ -1,4 +1,4 @@
-package com.zombies.Listeners;
+package com.zombies.listeners;
 
 import java.util.ArrayList;
 
@@ -17,11 +17,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import com.zombies.COMZombies;
-import com.zombies.Arena.Game;
-import com.zombies.Arena.Game.ArenaStatus;
-import com.zombies.InGameFeatures.DownedPlayer;
-import com.zombies.InGameFeatures.InGameManager;
-import com.zombies.InGameFeatures.PerkMachines.PerkType;
+import com.zombies.InGameFeatures.perkMachines.PerkType;
+import com.zombies.game.Game;
+import com.zombies.game.Game.ArenaStatus;
+import com.zombies.game.features.DownedPlayer;
+import com.zombies.game.managers.InGameManager;
 
 public class OnEntityDamageEvent implements Listener
 {

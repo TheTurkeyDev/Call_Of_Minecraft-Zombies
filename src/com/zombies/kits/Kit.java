@@ -7,12 +7,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.zombies.COMZombies;
-import com.zombies.Arena.Game;
-import com.zombies.Guns.Gun;
-import com.zombies.Guns.GunManager;
-import com.zombies.Guns.GunType;
-import com.zombies.InGameFeatures.PerkMachines.PerkType;
-import com.zombies.Listeners.CustomEvents.PlayerPerkPurchaseEvent;
+import com.zombies.InGameFeatures.perkMachines.PerkType;
+import com.zombies.game.Game;
+import com.zombies.guns.Gun;
+import com.zombies.guns.GunManager;
+import com.zombies.guns.GunType;
+import com.zombies.listeners.customEvents.PlayerPerkPurchaseEvent;
 
 public class Kit
 {

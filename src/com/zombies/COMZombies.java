@@ -22,38 +22,38 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-import com.zombies.Arena.ArenaAntiBreak;
-import com.zombies.Arena.Game;
-import com.zombies.Arena.GameManager;
-import com.zombies.Arena.SignManager;
-import com.zombies.Commands.ZombiesCommand;
-import com.zombies.Economy.PointManager;
-import com.zombies.Guns.GunType;
-import com.zombies.InGameFeatures.Features.Barrier;
-import com.zombies.InGameFeatures.Features.Door;
-import com.zombies.Leaderboards.Leaderboards;
-import com.zombies.Listeners.OnBlockBreakEvent;
-import com.zombies.Listeners.OnBlockInteractEvent;
-import com.zombies.Listeners.OnBlockPlaceEvent;
-import com.zombies.Listeners.OnEntityCombustEvent;
-import com.zombies.Listeners.OnEntityDamageEvent;
-import com.zombies.Listeners.OnEntitySpawnEvent;
-import com.zombies.Listeners.OnExpEvent;
-import com.zombies.Listeners.OnGunEvent;
-import com.zombies.Listeners.OnInventoryChangeEvent;
-import com.zombies.Listeners.OnOutsidePlayerInteractEvent;
-import com.zombies.Listeners.OnPlayerChatEvent;
-import com.zombies.Listeners.OnPlayerGetEXPEvent;
-import com.zombies.Listeners.OnPlayerJoinEvent;
-import com.zombies.Listeners.OnPlayerLeaveEvent;
-import com.zombies.Listeners.OnPlayerMoveEvent;
-import com.zombies.Listeners.OnPlayerScopeEvent;
-import com.zombies.Listeners.OnPlayerVelocityEvent;
-import com.zombies.Listeners.OnPreCommandEvent;
-import com.zombies.Listeners.OnSignChangeEvent;
-import com.zombies.Listeners.OnSignInteractEvent;
-import com.zombies.Listeners.OnZombiePerkDrop;
+import com.zombies.commands.ZombiesCommand;
+import com.zombies.economy.PointManager;
+import com.zombies.game.ArenaAntiBreak;
+import com.zombies.game.Game;
+import com.zombies.game.GameManager;
+import com.zombies.game.features.Barrier;
+import com.zombies.game.features.Door;
+import com.zombies.game.managers.SignManager;
+import com.zombies.guns.GunType;
 import com.zombies.kits.KitManager;
+import com.zombies.leaderboards.Leaderboards;
+import com.zombies.listeners.OnBlockBreakEvent;
+import com.zombies.listeners.OnBlockInteractEvent;
+import com.zombies.listeners.OnBlockPlaceEvent;
+import com.zombies.listeners.OnEntityCombustEvent;
+import com.zombies.listeners.OnEntityDamageEvent;
+import com.zombies.listeners.OnEntitySpawnEvent;
+import com.zombies.listeners.OnExpEvent;
+import com.zombies.listeners.OnGunEvent;
+import com.zombies.listeners.OnInventoryChangeEvent;
+import com.zombies.listeners.OnOutsidePlayerInteractEvent;
+import com.zombies.listeners.OnPlayerChatEvent;
+import com.zombies.listeners.OnPlayerGetEXPEvent;
+import com.zombies.listeners.OnPlayerJoinEvent;
+import com.zombies.listeners.OnPlayerLeaveEvent;
+import com.zombies.listeners.OnPlayerMoveEvent;
+import com.zombies.listeners.OnPlayerScopeEvent;
+import com.zombies.listeners.OnPlayerVelocityEvent;
+import com.zombies.listeners.OnPreCommandEvent;
+import com.zombies.listeners.OnSignChangeEvent;
+import com.zombies.listeners.OnSignInteractEvent;
+import com.zombies.listeners.OnZombiePerkDrop;
 
 /**
  * Main class plugin handler.
@@ -189,7 +189,6 @@ public class COMZombies extends JavaPlugin
 		command = new ZombiesCommand(this);
 		leaderboards = new Leaderboards(this);
 		vault = new Vault(this);
-		config.Setup();
 		registerEvents();
 		
 		boolean say = true;
@@ -294,7 +293,7 @@ public class COMZombies extends JavaPlugin
 	/**
 	 * Registers every event in the event package
 	 * 
-	 * @see com.zombies.Listeners
+	 * @see com.zombies.listeners
 	 */
 	public void registerEvents()
 	{

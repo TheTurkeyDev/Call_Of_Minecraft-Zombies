@@ -1,4 +1,4 @@
-package com.zombies.Listeners;
+package com.zombies.listeners;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -13,10 +13,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.zombies.COMZombies;
 import com.zombies.CommandUtil;
-import com.zombies.Arena.Game;
-import com.zombies.InGameFeatures.Features.Barrier;
-import com.zombies.InGameFeatures.Features.Door;
-import com.zombies.Spawning.SpawnPoint;
+import com.zombies.game.Game;
+import com.zombies.game.features.Barrier;
+import com.zombies.game.features.Door;
+import com.zombies.spawning.SpawnPoint;
 
 public class OnBlockInteractEvent implements Listener
 {
@@ -126,7 +126,7 @@ public class OnBlockInteractEvent implements Listener
 				{
 					Location loc = event.getClickedBlock().getLocation();
 					Game game = plugin.manager.getGame(loc);
-					Barrier barrier = new Barrier(loc, event.getClickedBlock(), game.barrierManager.getNextBarrierNumber(), game);
+					Barrier barrier = new Barrier(loc, event.getClickedBlock(), game.getInGameManager().barrierManager.getNextBarrierNumber(), game);
 					plugin.isCreatingBarrier.remove(player);
 					plugin.isCreatingBarrier.put(player, barrier);
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier block set!");

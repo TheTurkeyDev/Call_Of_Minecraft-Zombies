@@ -1,4 +1,4 @@
-package com.zombies.Listeners;
+package com.zombies.listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import com.zombies.COMZombies;
-import com.zombies.Arena.Game;
+import com.zombies.game.Game;
 
 public class OnPlayerLeaveEvent implements Listener
 {

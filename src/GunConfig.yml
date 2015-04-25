@@ -13,7 +13,7 @@ Guns:
     B23R:
       Ammo: 15/105
       Damage: 3
-      FireRate: 
+      FireDelay: 10
       PackAPunch:
         Damage: 15
         Name: B34R
@@ -21,7 +21,7 @@ Guns:
     Executioner:
       Ammo: 5/75
       Damage: 23
-      FireRate: 
+      FireDelay: 10
       PackAPunch:
         Damage: 40
         Name: Voice of Justice
@@ -29,7 +29,7 @@ Guns:
     Five-Seven:
       Ammo: 20/120
       Damage: 3
-      FireRate:
+      FireDelay: 10
       PackAPunch:
         Damage: 15
         Name: Ultra
@@ -37,6 +37,7 @@ Guns:
     Kap-40:
       Ammo: 12/96
       Damage: 3
+      FireDelay: 10
       PackAPunch:
         Damage: 12
         Name: Karmic Atom Perforator-4000
@@ -44,6 +45,7 @@ Guns:
     M1911:
       Ammo: 8/80
       Damage: 2
+      FireDelay: 10
       PackAPunch:
         Damage: 30
         Name: C-3000 b1at-ch35
@@ -51,6 +53,7 @@ Guns:
     Python:
       Ammo: 6/84
       Damage: 30
+      FireDelay: 10
       PackAPunch:
         Damage: 50
         Name: Cobra
@@ -61,6 +64,7 @@ Guns:
     M1216:
       Ammo: 16/84
       Damage: 30
+      FireDelay: 15
       PackAPunch:
         Damage: 40
         Name: Mesmerizer
@@ -68,6 +72,7 @@ Guns:
     Olympia:
       Ammo: 2/38
       Damage: 20
+      FireDelay: 15
       PackAPunch:
         Damage: 30
         Name: Hades
@@ -75,6 +80,7 @@ Guns:
     R870 MCS:
       Ammo: 6/48
       Damage: 22
+      FireDelay: 15
       PackAPunch:
         Damage: 30
         Name: Refitted-870 Mechanical Cranium Sequencer
@@ -82,6 +88,7 @@ Guns:
     S12:
       Ammo: 10/30
       Damage: 24
+      FireDelay: 15
       PackAPunch:
         Damage: 30
         Name: Synthetic Dozen
@@ -91,6 +98,7 @@ Guns:
     AN-94:
       Ammo: 30/90
       Damage: 5
+      FireDelay: 7
       PackAPunch:
         Damage: 10 
         Name: Actuated Neutralizer 94000
@@ -98,6 +106,7 @@ Guns:
     Colt M16A1:
       Ammo: 30/120
       Damage: 4
+      FireDelay: 7
       PackAPunch:
         Damage: 13
         Name: Skullcrusher
@@ -105,6 +114,7 @@ Guns:
     FAL:
       Ammo: 20/180
       Damage: 7
+      FireDelay: 7
       PackAPunch:
         Damage: 15 
         Name: EPC WN
@@ -112,6 +122,7 @@ Guns:
     M8A1:
       Ammo: 32/192
       Damage: 3
+      FireDelay: 7
       PackAPunch:
         Damage: 7 
         Name: Micro Aerator
@@ -119,6 +130,7 @@ Guns:
     M14:
       Ammo: 8/96
       Damage: 4
+      FireDelay: 7
       PackAPunch:
         Damage: 7
         Name: Mnesia
@@ -126,6 +138,7 @@ Guns:
     M27:
       Ammo: 30/240
       Damage: 5
+      FireDelay: 7
       PackAPunch:
         Damage: 10
         Name: Mystifier
@@ -133,6 +146,7 @@ Guns:
     MTAR:
       Ammo: 30/240
       Damage: 5
+      FireDelay: 7
       PackAPunch:
         Damage: 10
         Name: Malevolent Taxonomic Anodized Redeemer
@@ -140,6 +154,7 @@ Guns:
     SMR:
       Ammo: 20/140
       Damage: 3
+      FireDelay: 7
       PackAPunch:
         Damage: 8 
         Name: SM1L3R
@@ -147,6 +162,7 @@ Guns:
     Type 25:
       Ammo: 30/150
       Damage: 4
+      FireDelay: 7
       PackAPunch:
         Damage: 12
         Name: Strain 25
@@ -156,6 +172,7 @@ Guns:
     HAMR:
       Ammo: 135/375
       Damage: 10
+      FireDelay: 5
       PackAPunch:
         Damage: 15
         Name: SLDG-HAMR
@@ -163,6 +180,7 @@ Guns:
     LSAT:
       Ammo: 100/400
       Damage: 12
+      FireDelay: 5
       PackAPunch:
         Damage: 16
         Name: FSIRT
@@ -170,6 +188,7 @@ Guns:
     RPD:
       Ammo: 100/400
       Damage: 10
+      FireDelay: 5
       PackAPunch:
         Damage: 15
         Name: Relativistic Punishment Device
@@ -180,6 +199,7 @@ Guns:
     Chicom CQB:
       Ammo: 40/120
       Damage: 2
+      FireDelay: 5
       PackAPunch:
         Damage: 7
         Name: Chicom Cataclysmic Quadruple Burst
@@ -187,6 +207,7 @@ Guns:
     MP5:
       Ammo: 30/120
       Damage: 3
+      FireDelay: 5
       PackAPunch:
         Damage: 7
         Name: MP115 Kollider
@@ -194,6 +215,7 @@ Guns:
     PDW-57:
       Ammo: 50/200
       Damage: 2
+      FireDelay: 5
       PackAPunch:
         Damage: 6 
         Name: Predictive Death Wish 57000
@@ -203,6 +225,7 @@ Guns:
     Barret M82A1:
       Ammo: 5/30
       Damage: 50
+      FireDelay: 20
       PackAPunch:
         Damage: 70
         Name: Macro Annihilator
@@ -210,6 +233,7 @@ Guns:
     DSR 50:
       Ammo: 4/48
       Damage: 50
+      FireDelay: 20
       PackAPunch:
         Damage: 70
         Name: Dead Specimen Reactor 5000
@@ -217,6 +241,7 @@ Guns:
     SVU-AS:
       Ammo: 12/48
       Damage: 30
+      FireDelay: 20
       PackAPunch:
         Damage: 50
         Name: Shadowy Veil Utilizer
@@ -225,6 +250,7 @@ Guns:
     Ray Gun:
       Ammo: 20/160
       Damage: 90
+      FireDelay: 7
       PackAPunch:
         Damage: 120 
         Name: Porter's X2 Ray Gun

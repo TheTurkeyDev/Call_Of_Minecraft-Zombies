@@ -1,4 +1,4 @@
-package com.zombies.Listeners;
+package com.zombies.listeners;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -7,7 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.zombies.COMZombies;
-import com.zombies.Arena.GameManager;
+import com.zombies.game.GameManager;
 
 public class OnBlockPlaceEvent implements Listener
 {

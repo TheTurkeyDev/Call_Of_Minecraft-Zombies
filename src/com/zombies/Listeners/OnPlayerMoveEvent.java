@@ -1,4 +1,4 @@
-package com.zombies.Listeners;
+package com.zombies.listeners;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -8,9 +8,9 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.zombies.COMZombies;
 import com.zombies.CommandUtil;
-import com.zombies.Arena.Game;
-import com.zombies.Arena.Game.ArenaStatus;
-import com.zombies.Arena.GameManager;
+import com.zombies.game.Game;
+import com.zombies.game.GameManager;
+import com.zombies.game.Game.ArenaStatus;
 
 public class OnPlayerMoveEvent implements Listener
 {

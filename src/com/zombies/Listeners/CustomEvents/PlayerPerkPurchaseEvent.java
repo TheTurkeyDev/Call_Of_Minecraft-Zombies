@@ -1,10 +1,10 @@
-package com.zombies.Listeners.CustomEvents;
+package com.zombies.listeners.customEvents;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.zombies.InGameFeatures.PerkMachines.PerkType;
+import com.zombies.InGameFeatures.perkMachines.PerkType;
 
 public class PlayerPerkPurchaseEvent extends Event
 {

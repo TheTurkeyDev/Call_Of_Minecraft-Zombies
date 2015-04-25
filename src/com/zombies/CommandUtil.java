@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import com.zombies.Arena.Game;
+import com.zombies.game.Game;
 
 public class CommandUtil
 {

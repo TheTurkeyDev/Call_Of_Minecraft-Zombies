@@ -1,4 +1,4 @@
-package com.zombies.Listeners;
+package com.zombies.listeners;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
@@ -9,9 +9,9 @@ import org.bukkit.event.block.SignChangeEvent;
 
 import com.zombies.COMZombies;
 import com.zombies.CommandUtil;
-import com.zombies.Arena.Game;
-import com.zombies.InGameFeatures.Features.RandomBox;
-import com.zombies.InGameFeatures.PerkMachines.PerkType;
+import com.zombies.InGameFeatures.perkMachines.PerkType;
+import com.zombies.game.Game;
+import com.zombies.game.features.RandomBox;
 import com.zombies.kits.Kit;
 
 public class OnSignChangeEvent implements Listener

@@ -1,4 +1,4 @@
-package com.zombies.Listeners;
+package com.zombies.listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,10 +13,10 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import com.zombies.COMZombies;
 import com.zombies.CommandUtil;
-import com.zombies.Arena.Game;
-import com.zombies.Arena.Game.ArenaStatus;
-import com.zombies.InGameFeatures.Features.Barrier;
-import com.zombies.InGameFeatures.Features.Door;
+import com.zombies.game.Game;
+import com.zombies.game.Game.ArenaStatus;
+import com.zombies.game.features.Barrier;
+import com.zombies.game.features.Door;
 
 public class OnPlayerChatEvent implements Listener
 {
@@ -90,7 +90,7 @@ public class OnPlayerChatEvent implements Listener
 				}
 				b.setReward(price);
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier setup complete!");
-				b.getGame().barrierManager.addBarrier(b);
+				b.getGame().getInGameManager().barrierManager.addBarrier(b);
 				playerChat.setCancelled(true);
 				plugin.isCreatingBarrier.remove(player);
 			}

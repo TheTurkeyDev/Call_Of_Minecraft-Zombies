@@ -1,4 +1,4 @@
-package com.zombies.Listeners;
+package com.zombies.listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,11 +15,11 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import com.zombies.COMZombies;
 import com.zombies.CommandUtil;
-import com.zombies.Arena.Game;
-import com.zombies.Arena.GameManager;
-import com.zombies.InGameFeatures.Features.Barrier;
-import com.zombies.InGameFeatures.Features.Door;
-import com.zombies.Spawning.SpawnPoint;
+import com.zombies.game.Game;
+import com.zombies.game.GameManager;
+import com.zombies.game.features.Barrier;
+import com.zombies.game.features.Door;
+import com.zombies.spawning.SpawnPoint;
 
 public class OnBlockBreakEvent implements Listener
 {
@@ -41,7 +41,7 @@ public class OnBlockBreakEvent implements Listener
 		{
 			Game game = plugin.isRemovingDoors.get(player);
 			Location loc = interact.getBlock().getLocation();
-			Door door = game.getInGameManager().getDoorFromSign(loc);
+			Door door = game.getInGameManager().doorManager.getDoorFromSign(loc);
 			if (door == null) return;
 			door.removeSelfFromConfig();
 			interact.setCancelled(true);
@@ -50,8 +50,8 @@ public class OnBlockBreakEvent implements Listener
 				boom(sign);
 			}
 			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "" + ChatColor.BOLD + "Door removed!");
-			game.getInGameManager().removeDoor(door);
-			if (game.getInGameManager().getDoors().size() == 0)
+			game.getInGameManager().doorManager.removeDoor(door);
+			if (game.getInGameManager().doorManager.getDoors().size() == 0)
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "No doors left!");
 				String[] args = new String[2];
@@ -85,12 +85,12 @@ public class OnBlockBreakEvent implements Listener
 		{
 			Game game = plugin.isRemovingBarriers.get(player);
 			Location loc = interact.getBlock().getLocation();
-			Barrier barrier = game.barrierManager.getBarrierFromRepair(loc);
+			Barrier barrier = game.getInGameManager().barrierManager.getBarrierFromRepair(loc);
 			if (barrier == null) return;
 			interact.setCancelled(true);
-			game.barrierManager.removeBarrier(player, barrier);
+			game.getInGameManager().barrierManager.removeBarrier(player, barrier);
 			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "" + ChatColor.BOLD + "Barrier removed!");
-			if (game.barrierManager.getTotalBarriers() == 0)
+			if (game.getInGameManager().barrierManager.getTotalBarriers() == 0)
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "No barriers left!");
 				String[] args = new String[2];
@@ -107,7 +107,7 @@ public class OnBlockBreakEvent implements Listener
 				if(sign.getLine(0).equalsIgnoreCase("[BarrierRepair]"))
 				{
 					Game game = manager.getGame(player);
-					Barrier b = game.barrierManager.getBarrierFromRepair(sign.getLocation());
+					Barrier b = game.getInGameManager().barrierManager.getBarrierFromRepair(sign.getLocation());
 					if(b != null)
 						b.repair();
 					else
@@ -146,7 +146,7 @@ public class OnBlockBreakEvent implements Listener
 				Game game = plugin.manager.getGame(interact.getBlock().getLocation());
 				if(game!=null)
 				{
-					game.boxManager.removeBox(interact.getPlayer(), game.boxManager.getBox(sign.getLocation()));
+					game.getInGameManager().boxManager.removeBox(interact.getPlayer(), game.getInGameManager().boxManager.getBox(sign.getLocation()));
 				}
 			}
 		}

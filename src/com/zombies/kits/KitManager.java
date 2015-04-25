@@ -6,7 +6,7 @@ import java.util.HashMap;
 import org.bukkit.entity.Player;
 
 import com.zombies.COMZombies;
-import com.zombies.Arena.Game;
+import com.zombies.game.Game;
 
 public class KitManager
 {

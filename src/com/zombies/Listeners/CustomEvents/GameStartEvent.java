@@ -1,4 +1,4 @@
-package com.zombies.Listeners.CustomEvents;
+package com.zombies.listeners.customEvents;
 
 import java.util.ArrayList;
 
@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.zombies.Arena.Game;
+import com.zombies.game.Game;
 
 public class GameStartEvent extends Event
 {

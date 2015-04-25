@@ -1,4 +1,4 @@
-package com.zombies.Listeners;
+package com.zombies.listeners;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -19,15 +19,15 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.zombies.COMZombies;
 import com.zombies.CommandUtil;
-import com.zombies.Arena.Game;
-import com.zombies.Guns.Gun;
-import com.zombies.Guns.GunManager;
-import com.zombies.Guns.GunType;
-import com.zombies.InGameFeatures.Features.Door;
-import com.zombies.InGameFeatures.Features.RandomBox;
-import com.zombies.InGameFeatures.PerkMachines.PerkType;
-import com.zombies.Listeners.CustomEvents.PlayerPerkPurchaseEvent;
+import com.zombies.InGameFeatures.perkMachines.PerkType;
+import com.zombies.game.Game;
+import com.zombies.game.features.Door;
+import com.zombies.game.features.RandomBox;
+import com.zombies.guns.Gun;
+import com.zombies.guns.GunManager;
+import com.zombies.guns.GunType;
 import com.zombies.kits.Kit;
+import com.zombies.listeners.customEvents.PlayerPerkPurchaseEvent;
 import com.zombies.particleutilities.ParticleEffects;
 
 public class OnSignInteractEvent implements Listener
@@ -232,7 +232,7 @@ public class OnSignInteractEvent implements Listener
 					}
 					else if (sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "Door"))
 					{
-						Door door = game.getInGameManager().getDoorFromSign(sign.getLocation());
+						Door door = game.getInGameManager().doorManager.getDoorFromSign(sign.getLocation());
 						if (door == null)
 						{
 							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "An error occured when trying to open this door! Leave the game an contact an admin please.");

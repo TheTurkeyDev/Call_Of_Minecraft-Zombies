@@ -1,4 +1,4 @@
-package com.zombies.Listeners;
+package com.zombies.listeners;
 
 import java.util.ArrayList;
 
@@ -17,11 +17,11 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.zombies.COMZombies;
-import com.zombies.Arena.Game;
-import com.zombies.Arena.Game.ArenaStatus;
-import com.zombies.Guns.Gun;
-import com.zombies.Guns.GunManager;
-import com.zombies.InGameFeatures.Features.Barrier;
+import com.zombies.game.Game;
+import com.zombies.game.Game.ArenaStatus;
+import com.zombies.game.features.Barrier;
+import com.zombies.guns.Gun;
+import com.zombies.guns.GunManager;
 
 public class OnZombiePerkDrop implements Listener
 {
@@ -217,7 +217,7 @@ public class OnZombiePerkDrop implements Listener
 				currentPerks.remove(event.getItem().getItemStack());
 				event.getPlayer().getInventory().remove(item);
 				notifyAll(game, "Carpenter!");
-				for(Barrier barrier : game.barrierManager.getBrriers())
+				for(Barrier barrier : game.getInGameManager().barrierManager.getBrriers())
 				{
 					barrier.repairFull();
 				}
@@ -266,7 +266,7 @@ public class OnZombiePerkDrop implements Listener
 				currentPerks.remove(event.getItem().getItemStack());
 				event.getPlayer().getInventory().remove(item);
 				game.setFireSale(true);
-				game.boxManager.FireSale(true);
+				game.getInGameManager().boxManager.FireSale(true);
 				notifyAll(game, "Fire Sale!");
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 				{
@@ -275,7 +275,7 @@ public class OnZombiePerkDrop implements Listener
 					public void run()
 					{
 						game.setFireSale(false);
-						game.boxManager.FireSale(false);
+						game.getInGameManager().boxManager.FireSale(false);
 					}
 
 				}, plugin.config.fireSaleTimer * 20);

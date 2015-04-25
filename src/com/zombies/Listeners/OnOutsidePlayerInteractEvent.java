@@ -1,4 +1,4 @@
-package com.zombies.Listeners;
+package com.zombies.listeners;
 
 import java.util.ArrayList;
 
@@ -12,8 +12,8 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.zombies.COMZombies;
-import com.zombies.Arena.Game;
-import com.zombies.Arena.Game.ArenaStatus;
+import com.zombies.game.Game;
+import com.zombies.game.Game.ArenaStatus;
 
 public class OnOutsidePlayerInteractEvent implements Listener
 {

@@ -1,4 +1,4 @@
-package com.zombies.Listeners;
+package com.zombies.listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
@@ -18,10 +18,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.zombies.COMZombies;
-import com.zombies.Arena.Game;
-import com.zombies.Arena.Game.ArenaStatus;
-import com.zombies.Guns.Gun;
-import com.zombies.Guns.GunManager;
+import com.zombies.game.Game;
+import com.zombies.game.Game.ArenaStatus;
+import com.zombies.guns.Gun;
+import com.zombies.guns.GunManager;
 import com.zombies.particleutilities.ParticleEffects;
 
 

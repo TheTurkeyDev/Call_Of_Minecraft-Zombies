@@ -1,4 +1,4 @@
-package com.zombies.Listeners;
+package com.zombies.listeners;
 
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -13,8 +13,8 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.zombies.COMZombies;
-import com.zombies.Arena.Game;
-import com.zombies.InGameFeatures.PerkMachines.PerkType;
+import com.zombies.InGameFeatures.perkMachines.PerkType;
+import com.zombies.game.Game;
 import com.zombies.particleutilities.ParticleEffects;
 
 public class OnPlayerVelocityEvent implements Listener
