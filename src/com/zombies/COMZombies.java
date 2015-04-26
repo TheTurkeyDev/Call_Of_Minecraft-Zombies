@@ -147,6 +147,7 @@ public class COMZombies extends JavaPlugin
 	}
 	
 	public static String prefix = ChatColor.RED + "< " + ChatColor.GOLD + ChatColor.ITALIC + "CoM: Zombies" + ChatColor.RED + " >" + ChatColor.GRAY + " ";
+	public static String consoleprefix = "[COM_Zombies]";
 	/**
 	 * List of every gun contained in the config.
 	 */
@@ -213,7 +214,7 @@ public class COMZombies extends JavaPlugin
 		
 		getCommand("zombies").setExecutor(command);
 		
-		log.info("[Call of Minecraft: Zombies] has been enabled!");
+		log.info(COMZombies.consoleprefix +" has been enabled!");
 		
 		if(getConfig().getBoolean("config.settings.checkForUpdates"))
 		{

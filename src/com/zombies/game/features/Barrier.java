@@ -177,20 +177,23 @@ public class Barrier implements Runnable
 	
 	public void update()
 	{
-		if(!this.damage() && ents.size() > 0)
+		if(ents.size() > 0)
 		{
-			for(int i = 0; i < ents.size(); i++)
+			if(!this.damage())
 			{
-				Entity ent = ents.get(i);
-				if(ent.isDead())
+				for(int i = 0; i < ents.size(); i++)
 				{
-					ents.remove(ent);
-					i--;
+					Entity ent = ents.get(i);
+					if(ent.isDead())
+					{
+						ents.remove(ent);
+						i--;
+					}
 				}
+				ents.addAll(entsToAdd);
+				entsToAdd.clear();
+				Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getInstance(), this, 3 * 20L);
 			}
-			ents.addAll(entsToAdd);
-			entsToAdd.clear();
-			Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getInstance(), this, 3 * 20L);
 		}
 		else if(entsToAdd.size() > 0)
 		{

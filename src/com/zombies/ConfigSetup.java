@@ -130,64 +130,64 @@ public class ConfigSetup
 		if(m != null)
 		{
 			GunTypeEnum.Pistols.setMaterial(m);
-			Bukkit.broadcastMessage(COMZombies.prefix + "Set pistol gun material to " + m.toString());
+			System.out.println(COMZombies.consoleprefix + "Set pistol gun material to " + m.toString());
 		}
 		else
-			Bukkit.broadcastMessage("Unable to change the material for pistols! " + plugin.files.getGunsConfig().getString("PistolsMaterial") + " Is not a valid material!!!");
+			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for pistols! " + plugin.files.getGunsConfig().getString("PistolsMaterial") + " Is not a valid material!!!");
 		
 		m = Material.getMaterial(plugin.files.getGunsConfig().getString("ShotgunsMaterial"));
 		if(m != null)
 		{
 			GunTypeEnum.Shotguns.setMaterial(m);
-			Bukkit.broadcastMessage(COMZombies.prefix + "Set shotgun gun material to " + m.toString());
+			System.out.println(COMZombies.consoleprefix + "Set shotgun gun material to " + m.toString());
 		}
 		else
-			Bukkit.broadcastMessage("Unable to change the material for shotguns! " + plugin.files.getGunsConfig().getString("ShotgunsMaterial") + " Is not a valid material!!!");
+			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for shotguns! " + plugin.files.getGunsConfig().getString("ShotgunsMaterial") + " Is not a valid material!!!");
 		
 		m = Material.getMaterial(plugin.files.getGunsConfig().getString("AssaultRiflesMaterial"));
 		if(m != null)
 		{
 			GunTypeEnum.AssaultRifles.setMaterial(m);
-			Bukkit.broadcastMessage(COMZombies.prefix + "Set assault rifle material to " + m.toString());
+			System.out.println(COMZombies.consoleprefix + "Set assault rifle material to " + m.toString());
 		}
 		else
-			Bukkit.broadcastMessage("Unable to change the material for assault rifles! " + plugin.files.getGunsConfig().getString("AssaultRiflesMaterial") + " Is not a valid material!!!");
+			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for assault rifles! " + plugin.files.getGunsConfig().getString("AssaultRiflesMaterial") + " Is not a valid material!!!");
 		
 		m = Material.getMaterial(plugin.files.getGunsConfig().getString("LightMachineGunsMaterial"));
 		if(m != null)
 		{
 			GunTypeEnum.LightMachineGuns.setMaterial(m);
-			Bukkit.broadcastMessage(COMZombies.prefix + "Set light machinegun material to " + m.toString());
+			System.out.println(COMZombies.consoleprefix + "Set light machinegun material to " + m.toString());
 		}
 		else
-			Bukkit.broadcastMessage("Unable to change the material for light machineguns! " + plugin.files.getGunsConfig().getString("LightMachineGunsMaterial") + " Is not a valid material!!!");
+			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for light machineguns! " + plugin.files.getGunsConfig().getString("LightMachineGunsMaterial") + " Is not a valid material!!!");
 		
 		m = Material.getMaterial(plugin.files.getGunsConfig().getString("SubMachineGunsMaterial"));
 		if(m != null)
 		{
 			GunTypeEnum.SubMachineGuns.setMaterial(m);
-			Bukkit.broadcastMessage(COMZombies.prefix + "Set sub machinegun material to " + m.toString());
+			System.out.println(COMZombies.consoleprefix + "Set sub machinegun material to " + m.toString());
 		}
 		else
-			Bukkit.broadcastMessage("Unable to change the material for sub machineguns! " + plugin.files.getGunsConfig().getString("SubMachineGunsMaterial") + " Is not a valid material!!!");
+			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for sub machineguns! " + plugin.files.getGunsConfig().getString("SubMachineGunsMaterial") + " Is not a valid material!!!");
 		
 		m = Material.getMaterial(plugin.files.getGunsConfig().getString("SniperRiflesMaterial"));
 		if(m != null)
 		{
 			GunTypeEnum.SniperRifles.setMaterial(m);
-			Bukkit.broadcastMessage(COMZombies.prefix + "Set sniper rifle material to " + m.toString());
+			System.out.println(COMZombies.consoleprefix + "Set sniper rifle material to " + m.toString());
 		}
 		else
-			Bukkit.broadcastMessage("Unable to change the material for sniper rifles! " + plugin.files.getGunsConfig().getString("SniperRiflesMaterial") + " Is not a valid material!!!");
+			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for sniper rifles! " + plugin.files.getGunsConfig().getString("SniperRiflesMaterial") + " Is not a valid material!!!");
 		
 		m = Material.getMaterial(plugin.files.getGunsConfig().getString("OthersMaterial"));
 		if(m != null)
 		{
 			GunTypeEnum.Others.setMaterial(m);
-			Bukkit.broadcastMessage(COMZombies.prefix + "Set other's gun material to " + m.toString());
+			System.out.println(COMZombies.consoleprefix + "Set other's gun material to " + m.toString());
 		}
 		else
-			Bukkit.broadcastMessage("Unable to change the material for others! " + plugin.files.getGunsConfig().getString("OthersMaterial") + " Is not a valid material!!!");
+			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for others! " + plugin.files.getGunsConfig().getString("OthersMaterial") + " Is not a valid material!!!");
 		
 		
 		for (String group : plugin.files.getGunsConfig().getConfigurationSection("Guns").getKeys(false))

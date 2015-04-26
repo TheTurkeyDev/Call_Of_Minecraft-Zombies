@@ -1,6 +1,5 @@
 package com.zombies.guns;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
 public enum GunTypeEnum
@@ -28,7 +27,6 @@ public enum GunTypeEnum
 	
 	public void setMaterial(Material material)
 	{
-		Bukkit.getServer().broadcastMessage("here");
 		this.material = material;
 	}
 

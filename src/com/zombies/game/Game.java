@@ -1603,7 +1603,15 @@ public class Game
 			kills++;
 			plugin.files.getKillsFile().set("Kills." + player.getName(), kills);
 			PlayerStats stat = lb.getPlayerStatFromPlayer(player);
-			stat.setKills(kills);
+			if(stat == null)
+			{
+				PlayerStats newstat = new PlayerStats(player.getName(), 1);
+				lb.addPlayerStats(newstat);
+			}
+			else
+			{
+				stat.setKills(stat.getKills()+1);
+			}
 		}
 		else
 		{
