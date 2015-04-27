@@ -1544,6 +1544,7 @@ public class Game
 	{
 		joinSigns.add(sign);
 	}
+	
 	public boolean isJoinSign(Sign sign)
 	{
 		return joinSigns.contains(sign);
