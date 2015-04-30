@@ -65,9 +65,9 @@ public class OnSignInteractEvent implements Listener
 					Player player = event.getPlayer();
 					if (sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "Join"))
 					{
-						if (plugin.manager.isValidArena(sign.getLine(3)))
+						if (plugin.manager.isValidArena(sign.getLine(2)))
 						{
-							Game game = plugin.manager.getGame(sign.getLine(3));
+							Game game = plugin.manager.getGame(sign.getLine(2));
 							if(!game.isJoinSign(sign))
 							{
 								game.addJoinSign(sign);
@@ -82,7 +82,7 @@ public class OnSignInteractEvent implements Listener
 						}
 						else
 						{
-							CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "There is no arena called " + ChatColor.GOLD + sign.getLine(3) + ChatColor.DARK_RED + "! Contact an admin to fix this issue!");
+							CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "There is no arena called " + ChatColor.GOLD + sign.getLine(2) + ChatColor.DARK_RED + "! Contact an admin to fix this issue!");
 							return;
 						}
 					}
@@ -387,12 +387,6 @@ public class OnSignInteractEvent implements Listener
 							}
 						}
 					}
-				}
-				else if (sign.getLine(3).equals("[Click to join]"))
-				{
-					Game g = plugin.manager.getGame(sign.getLine(0));
-					if (g == null) return;
-					event.getPlayer().performCommand("zombies join " + g.getName());
 				}
 				return;
 			}

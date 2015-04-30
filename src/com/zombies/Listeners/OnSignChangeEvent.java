@@ -197,11 +197,10 @@ public class OnSignChangeEvent implements Listener
 				{
 					sign.setLine(0, ChatColor.DARK_RED + "No such");
 					sign.setLine(1, ChatColor.DARK_RED + "game!");
+					sign.setLine(2, "");
+					sign.setLine(3, "");
+					return;
 				}
-				sign.setLine(0, ChatColor.RED + "[Zombies]");
-				sign.setLine(1, ChatColor.AQUA + "Join");
-				sign.setLine(2, ChatColor.RED + "Arena:");
-				sign.setLine(3, thirdLine);
 				Game game = plugin.manager.getGame(thirdLine);
 				game.addJoinSign((Sign) sign.getBlock().getState());
 				return;

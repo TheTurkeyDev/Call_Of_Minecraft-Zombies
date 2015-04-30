@@ -265,8 +265,6 @@ public class COMZombies extends JavaPlugin
 		}
 		
 		manager.loadAllGames();
-		signManager = new SignManager();
-		
 	}
 	
 	/**

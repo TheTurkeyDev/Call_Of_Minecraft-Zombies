@@ -147,7 +147,7 @@ public class AutoStart
 						index = index - 1;
 					}
 					AutoStart.this.timeLeft = remain;
-					plugin.signManager.updateGame(game);
+					game.signManager.updateGame();
 					if (!stopped) AutoStart.this.game.scheduleSyncTask(this, 20);
 				}
 				notifyAll();

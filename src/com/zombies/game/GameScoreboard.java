@@ -51,7 +51,7 @@ public class GameScoreboard
 			if (pl.isValid()) pl.setScoreboard(board);
 			playerScores.get(player).setScore(500);
 		}
-		plugin.signManager.updateGame(game);
+		game.signManager.updateGame();
 	}
 
 	public void removePlayer(Player player)
@@ -60,7 +60,7 @@ public class GameScoreboard
 		board.resetScores(player.getName());
 		player.setScoreboard(manager.getNewScoreboard());
 		playerScores.remove(player);
-		plugin.signManager.updateGame(game);
+		game.signManager.updateGame();
 	}
 
 	public void update()
@@ -76,6 +76,6 @@ public class GameScoreboard
 				playerScores.get(player).setScore(500);
 			}
 		}
-		plugin.signManager.updateGame(game);
+		game.signManager.updateGame();
 	}
 }

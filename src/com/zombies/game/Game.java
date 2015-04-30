@@ -43,6 +43,7 @@ import com.zombies.game.managers.BoxManager;
 import com.zombies.game.managers.DoorManager;
 import com.zombies.game.managers.DownedPlayerManager;
 import com.zombies.game.managers.PerkManager;
+import com.zombies.game.managers.SignManager;
 import com.zombies.game.managers.TeleporterManager;
 import com.zombies.guns.Gun;
 import com.zombies.guns.GunManager;
@@ -68,11 +69,6 @@ public class Game
 	 * List of every player contained in game.
 	 */
 	public List<Player> players = new ArrayList<Player>();
-	
-	/**
-	 * List of every join sign for this game.
-	 */
-	public ArrayList<Sign> joinSigns = new ArrayList<Sign>();
 	
 	/**
 	 * Status of the game.
@@ -215,6 +211,11 @@ public class Game
 	public DownedPlayerManager downedPlayerManager;
 	
 	/**
+	 * contains all of the downed palyers in the game
+	 */
+	public SignManager signManager;
+	
+	/**
 	 * Information containing gamemode, and fly mode the player was in before
 	 * they joined the game.
 	 */
@@ -262,6 +263,7 @@ public class Game
 		perkManager = new PerkManager(plugin);
 		teleporterManager = new TeleporterManager(plugin, this);
 		downedPlayerManager = new DownedPlayerManager();
+		signManager = new SignManager(this);
 		kitManager = plugin.kitManager;
 		
 		scoreboard = new GameScoreboard(this);
@@ -591,7 +593,7 @@ public class Game
 						spawnManager.zombieSpawnInterval = 1;
 					}
 					spawnManager.smartSpawn(waveNumber, players);
-					plugin.signManager.updateGame(game);
+					game.signManager.updateGame();
 					updateJoinSigns();
 					changingRound = false;
 				}
@@ -611,7 +613,7 @@ public class Game
 				spawnManager.zombieSpawnInterval = 1;
 			}
 			spawnManager.smartSpawn(waveNumber, players);
-			plugin.signManager.updateGame(this);
+			signManager.updateGame();
 			updateJoinSigns();
 			changingRound = false;
 		}
@@ -697,7 +699,7 @@ public class Game
 					}
 					mode = ArenaStatus.STARTING;
 				}
-				plugin.signManager.updateGame(this);
+				signManager.updateGame();
 			}
 		}
 		else
@@ -1542,57 +1544,25 @@ public class Game
 	
 	public void addJoinSign(Sign sign)
 	{
-		joinSigns.add(sign);
+		signManager.addSign(sign);
 	}
 	
 	public boolean isJoinSign(Sign sign)
 	{
-		return joinSigns.contains(sign);
+		return signManager.isSign(sign);
 	}
 	
 	public void updateJoinSigns()
 	{
-		if(mode == ArenaStatus.INGAME)
-		{
-			for(Sign sign: joinSigns)
-			{
-				sign.setLine(1, "In Progress!!");
-				sign.setLine(2, "Round: " + waveNumber);
-				sign.setLine(3, "Players: " + players.size() + "/" + maxPlayers);
-				sign.update();
-			}
-		}
-		else if(mode == ArenaStatus.DISABLED)
-		{
-			for(Sign sign: joinSigns)
-			{
-				sign.setLine(1, "Arena Disabled");
-				sign.setLine(2, "This arena is currently down!");
-				sign.setLine(3,"");
-				sign.update();
-			}
-		}
-		else
-		{
-			for(Sign sign: joinSigns)
-			{
-				sign.setLine(0, ChatColor.RED + "[Zombies]");
-				sign.setLine(1, ChatColor.AQUA + "Join");
-				sign.setLine(2, ChatColor.RED + "Arena:");
-				sign.setLine(3, arenaName);
-				sign.update();
-			}
-		}
+		signManager.updateGame();
 	}
-	public void removeJoinSigns()
+	public void removeJoinSign(Sign sign)
 	{
-		for(Sign sign: joinSigns)
-		{
-			sign.setLine(0, "");
-			sign.setLine(0, "");
-			sign.setLine(0, "");
-			sign.setLine(0, "");
-		}
+		signManager.removeSign(sign);
+	}
+	public void removeAllJoinSigns()
+	{
+		signManager.removeAllSigns();
 	}
 	
 	public void zombieKilled(Player player)

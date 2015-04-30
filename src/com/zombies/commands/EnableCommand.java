@@ -42,7 +42,7 @@ public class EnableCommand implements SubCommand
 					{
 						game.setEnabled();
 						game.updateJoinSigns();
-						plugin.signManager.updateGame(game);
+						game.signManager.updateGame();
 						CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Arena " + game.getName() + " has been enabled!");
 						return true;
 					}

@@ -150,7 +150,6 @@ public class ZombiesCommand implements CommandExecutor
 		commandList.put("at", commandList.get("addteleporter"));
 		commandList.put("removeteleporter", new RemoveTeleporterCommand(this));
 		commandList.put("rt", commandList.get("removeteleporter"));
-		commandList.put("addsign", new AddSignCommand(this));
 		commandList.put("perks", new PerksCommand());
 	}
 
