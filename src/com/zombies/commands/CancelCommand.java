@@ -110,12 +110,13 @@ public class CancelCommand implements SubCommand
 					{
 						for (Sign sign : door.getSigns())
 						{
-							sign.setLine(0, ChatColor.RED + "[Zombies]");
-							sign.setLine(1, ChatColor.GOLD + "Door");
+							door.closeDoor();
+							/*sign.setLine(0, ChatColor.RED + "[Zombies]");
+							sign.setLine(1, ChatColor.AQUA + "Door");
 							sign.setLine(2, ChatColor.GOLD + "Price:");
 							sign.setLine(3, Integer.toString(door.getCost()));
 							sign.update();
-							sign.update(true);
+							sign.update(true);*/
 						}
 					}
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Door removal operation has been canceled!");
