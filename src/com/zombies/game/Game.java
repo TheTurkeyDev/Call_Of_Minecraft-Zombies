@@ -967,6 +967,7 @@ public class Game
 	 */
 	public void setEnabled()
 	{
+		resetSpawnLocationBlocks();
 		isDisabled = false;
 		if (mode == ArenaStatus.INGAME) { return; }
 		mode = ArenaStatus.WAITING;
