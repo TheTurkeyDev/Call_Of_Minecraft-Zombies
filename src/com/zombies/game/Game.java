@@ -529,6 +529,7 @@ public class Game
 		{
 		}
 		mode = ArenaStatus.INGAME;
+		this.waveNumber = 0;
 		nextWave();
 		updateJoinSigns();
 		kitManager.giveOutKits(this);
@@ -550,6 +551,11 @@ public class Game
 	 */
 	public void nextWave()
 	{
+		if(players.size() == 0)
+		{
+			this.endGame();
+			return;
+		}
 		if (!(spawnManager.mobs.size() == 0) || !(spawnManager.zombiesToSpawn <= spawnManager.zombiesSpawned)) return;
 		if(changingRound)
 			return;
@@ -567,7 +573,7 @@ public class Game
 			waveNumber = 0;
 			return;
 		}
-		++waveNumber;
+		waveNumber++;
 		if(waveNumber != 1)
 		{
 			for (Player pl : players)

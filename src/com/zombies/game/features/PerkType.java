@@ -1,4 +1,4 @@
-package com.zombies.InGameFeatures.perkMachines;
+package com.zombies.game.features;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

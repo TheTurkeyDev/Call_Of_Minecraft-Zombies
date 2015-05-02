@@ -17,10 +17,10 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import com.zombies.COMZombies;
-import com.zombies.InGameFeatures.perkMachines.PerkType;
 import com.zombies.game.Game;
 import com.zombies.game.Game.ArenaStatus;
 import com.zombies.game.features.DownedPlayer;
+import com.zombies.game.features.PerkType;
 
 public class OnEntityDamageEvent implements Listener
 {

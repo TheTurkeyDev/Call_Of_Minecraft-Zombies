@@ -9,8 +9,8 @@ import org.bukkit.event.block.SignChangeEvent;
 
 import com.zombies.COMZombies;
 import com.zombies.CommandUtil;
-import com.zombies.InGameFeatures.perkMachines.PerkType;
 import com.zombies.game.Game;
+import com.zombies.game.features.PerkType;
 import com.zombies.game.features.RandomBox;
 import com.zombies.kits.Kit;
 

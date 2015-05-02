@@ -7,8 +7,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.zombies.COMZombies;
-import com.zombies.InGameFeatures.perkMachines.PerkType;
 import com.zombies.game.Game;
+import com.zombies.game.features.PerkType;
 import com.zombies.guns.Gun;
 import com.zombies.guns.GunManager;
 import com.zombies.guns.GunType;

@@ -19,8 +19,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.zombies.COMZombies;
 import com.zombies.CommandUtil;
-import com.zombies.InGameFeatures.perkMachines.PerkType;
 import com.zombies.game.Game;
+import com.zombies.game.features.PerkType;
 import com.zombies.listeners.OnZombiePerkDrop;
 
 public class Gun

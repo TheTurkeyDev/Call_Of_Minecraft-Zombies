@@ -19,9 +19,9 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.zombies.COMZombies;
 import com.zombies.CommandUtil;
-import com.zombies.InGameFeatures.perkMachines.PerkType;
 import com.zombies.game.Game;
 import com.zombies.game.features.Door;
+import com.zombies.game.features.PerkType;
 import com.zombies.game.features.RandomBox;
 import com.zombies.guns.Gun;
 import com.zombies.guns.GunManager;

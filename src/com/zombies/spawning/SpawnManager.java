@@ -2,6 +2,7 @@ package com.zombies.spawning;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,14 +40,14 @@ public class SpawnManager
 	public int zombiesSpawned = 0;
 	public int zombiesToSpawn = 0;
 	private boolean updated = false;
-
+	
 	public SpawnManager(COMZombies plugin, Game game)
 	{
 		this.plugin = plugin;
 		this.game = game;
 		zombieSpawnInterval = plugin.getConfig().getInt("config.gameSettings.zombieSpawnDelay");
 	}
-
+	
 	public void loadAllSpawnsToGame()
 	{
 		points.clear();
@@ -65,7 +66,7 @@ public class SpawnManager
 		{
 		}
 	}
-
+	
 	public SpawnPoint getSpawnPoint(String name)
 	{
 		for (SpawnPoint p : points)
@@ -74,7 +75,7 @@ public class SpawnManager
 		}
 		return null;
 	}
-
+	
 	public SpawnPoint getSpawnPoint(Location loc)
 	{
 		for (SpawnPoint point : points)
@@ -83,7 +84,7 @@ public class SpawnManager
 		}
 		return null;
 	}
-
+	
 	public void removePoint(Player player, SpawnPoint point)
 	{
 		if (points.contains(point))
@@ -98,17 +99,17 @@ public class SpawnManager
 			points.remove(point);
 		}
 	}
-
+	
 	public int getCurrentSpawn()
 	{
 		return points.size();
 	}
-
+	
 	public ArrayList<SpawnPoint> getPoints()
 	{
 		return points;
 	}
-
+	
 	public void killMob(Entity entity)
 	{
 		if (entity instanceof Player) return;
@@ -120,13 +121,13 @@ public class SpawnManager
 		if (mobs.contains(entity)) mobs.remove(entity);
 		if (getEntities().size() < 1) game.nextWave();
 	}
-
+	
 	public void nuke()
 	{
 		killAll(false);
 		game.clearArena();
 	}
-
+	
 	public void killAll(boolean nextWave)
 	{
 		ArrayList<Entity> mobs = this.mobs;
@@ -157,15 +158,15 @@ public class SpawnManager
 		if (nextWave) game.nextWave();
 		mobs.clear();
 	}
-
+	
 	public ArrayList<Entity> getEntities()
 	{
 		return mobs;
 	}
-
+	
 	public void removeEntity(Entity entity)
 	{
-
+		
 		if (mobs.contains(entity))
 		{
 			health.remove(entity);
@@ -176,30 +177,30 @@ public class SpawnManager
 			}
 		}
 	}
-
+	
 	public HashMap<Entity, Integer> totalHealth()
 	{
 		return health;
 	}
-
+	
 	public void addPoint(SpawnPoint point)
 	{
 		if (game.mode == ArenaStatus.DISABLED) points.add(point);
 	}
-
+	
 	// Finds the closest locations to point loc, it results numToGet amount of
 	// spawn points
-
+	
 	public int getTotalSpawns()
 	{
 		return points.size();
 	}
-
+	
 	public Game getGame()
 	{
 		return game;
 	}
-
+	
 	private ArrayList<SpawnPoint> getNearestPoints(Location loc, int numToGet)
 	{
 		ArrayList<SpawnPoint> points = game.spawnManager.getPoints();
@@ -237,10 +238,11 @@ public class SpawnManager
 		}
 		return results;
 	}
-
+	
 	public void smartSpawn(int wave, final List<Player> players)
 	{
 		if (game.mode != ArenaStatus.INGAME) return;
+		if (players.size() == 0) return;
 		zombiesToSpawn = (int) ((wave * 0.15) * 30) + (2 * players.size());
 		if (zombiesToSpawn <= zombiesSpawned)
 		{
@@ -271,7 +273,7 @@ public class SpawnManager
 		}
 		scheduleSpawn(zombieSpawnInterval, selectPoint, wave, players);
 	}
-
+	
 	private void scheduleSpawn(int time, SpawnPoint loc, final int wave, final List<Player> players)
 	{
 		int strength = (int) (((wave * 100) + 50) / 50);
@@ -292,53 +294,50 @@ public class SpawnManager
 		Barrier b = game.barrierManager.getBarrier(loc);
 		if(b != null)
 			b.initBarrier(zomb);
-
+		
 		Runnable delayedSpawnFunc = new Runnable()
 		{
-
+			
 			public void run()
 			{
 				smartSpawn(wave, players);
 			}
 		};
-
-		if(this.zombiesToSpawn == 0)
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delayedSpawnFunc, 200);
-		else
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delayedSpawnFunc, time * 20L);
+		
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delayedSpawnFunc, time * 20L);
 	}
-
+	
 	public void setFollowDistance(Entity zomb)
 	{
 		UUID id = UUID.randomUUID();
 		LivingEntity entity = (LivingEntity) zomb;
 		EntityInsentient nmsEntity = (EntityInsentient) ((CraftLivingEntity) entity).getHandle();
 		AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.b);
-
+		
 		AttributeModifier modifier = new AttributeModifier(id, "COMZombies follow distance multiplier", 512.0F, 2);
-
+		
 		attributes.b(modifier);
 		attributes.a(modifier);
 	}
-
+	
 	public void setSpeed(Entity zomb, float speed)
 	{
 		UUID id = UUID.randomUUID();
 		LivingEntity entity = (LivingEntity) zomb;
 		EntityInsentient nmsEntity = (EntityInsentient) ((CraftLivingEntity) entity).getHandle();
 		AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.d);
-
+		
 		AttributeModifier modifier = new AttributeModifier(id, "COMZombies speed multiplier", speed, 1);
-
+		
 		attributes.b(modifier);
 		attributes.a(modifier);
 	}
-
+	
 	public void update()
 	{
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 		{
-
+			
 			@Override
 			public void run()
 			{
@@ -349,24 +348,26 @@ public class SpawnManager
 					z.setTarget(closest);
 				}
 				if (game.mode != ArenaStatus.INGAME) return;
-				for (int i = 0; i < mobs.size(); i++)
+				Iterator<Entity> mobsIter = mobs.iterator();
+				while(mobsIter.hasNext())
 				{
-					if (mobs.get(i).isDead())
+					Entity ent = mobsIter.next();
+					if (ent.isDead())
 					{
 						zombiesSpawned--;
-						mobs.remove(mobs.get(i));
+						mobsIter.remove();
 						smartSpawn(game.waveNumber, game.players);
 						updated = true;
 					}
 				}
-
+				
 				if ((mobs.size() == 0) && zombiesSpawned >= zombiesToSpawn)
 				{
 					game.nextWave();
 				}
 				update();
 			}
-
+			
 			private Player getNearestPlayer(Entity e)
 			{
 				Player closest = null;
@@ -379,15 +380,15 @@ public class SpawnManager
 				}
 				return closest;
 			}
-
+			
 		}, 100L);
 	}
-
+	
 	public void setSpawnInterval(int interval)
 	{
 		this.zombieSpawnInterval = interval;
 	}
-
+	
 	private boolean canSpawn(SpawnPoint point)
 	{
 		if (point == null) return false;
@@ -410,7 +411,7 @@ public class SpawnManager
 		if (!(isContained)) { return true; }
 		return maySpawn;
 	}
-
+	
 	public void setTotalHealth(Entity entity, int totalHealth)
 	{
 		if (health.containsKey(entity))
@@ -419,7 +420,7 @@ public class SpawnManager
 		}
 		health.put(entity, totalHealth);
 	}
-
+	
 	private void oopsWeHadAnError()
 	{
 		for (Player pl : game.players)
@@ -428,5 +429,5 @@ public class SpawnManager
 		}
 		game.endGame();
 	}
-
+	
 }

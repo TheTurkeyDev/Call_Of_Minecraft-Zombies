@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.zombies.InGameFeatures.perkMachines.PerkType;
+import com.zombies.game.features.PerkType;
 
 public class PlayerPerkPurchaseEvent extends Event
 {

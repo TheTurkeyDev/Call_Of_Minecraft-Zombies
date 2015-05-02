@@ -17,7 +17,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 import com.zombies.COMZombies;
-import com.zombies.InGameFeatures.perkMachines.PerkType;
 import com.zombies.game.Game;
 
 public class DownedPlayer implements Listener

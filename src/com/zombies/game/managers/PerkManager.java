@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.zombies.COMZombies;
-import com.zombies.InGameFeatures.perkMachines.PerkType;
+import com.zombies.game.features.PerkType;
 
 public class PerkManager
 {	

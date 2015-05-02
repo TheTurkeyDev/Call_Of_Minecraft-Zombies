@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import org.bukkit.entity.Player;
 
 import com.zombies.COMZombies;
-import com.zombies.InGameFeatures.perkMachines.PerkType;
 import com.zombies.game.Game;
+import com.zombies.game.features.PerkType;
 
 public class GunManager
 {
