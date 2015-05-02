@@ -70,11 +70,12 @@ public class AutoStart
 	{
 		try
 		{
-			if (seconds > 0 && !started)
+			if (!started)
 			{
+				started = true;
+				seconds++;
 				timer = new Countdown(seconds);
 				timer.run();
-				started = true;
 			}
 		} catch (Exception e)
 		{
