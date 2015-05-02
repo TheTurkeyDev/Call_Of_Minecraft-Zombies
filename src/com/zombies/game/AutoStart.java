@@ -72,9 +72,9 @@ public class AutoStart
 		{
 			if (seconds > 0 && !started)
 			{
+				started = true;
 				timer = new Countdown(seconds);
 				timer.run();
-				started = true;
 			}
 		} catch (Exception e)
 		{
