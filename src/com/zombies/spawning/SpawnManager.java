@@ -250,7 +250,7 @@ public class SpawnManager
 			else updated = false;
 		}
 		if (plugin.config.maxZombies < zombiesToSpawn) zombiesToSpawn = plugin.config.maxZombies;
-		int selectPlayer = (int) (Math.random() * players.size());
+		int selectPlayer = (int) (Math.random(1, players.size()));
 		SpawnPoint selectPoint = null;
 		Player player = players.get(selectPlayer);
 		ArrayList<SpawnPoint> points = getNearestPoints(player.getLocation(), zombiesToSpawn);
@@ -260,7 +260,7 @@ public class SpawnManager
 		{
 			if (curr == points.size())
 			{
-				player = players.get((int) (Math.random() * players.size()));
+				player = players.get((int) (Math.random(1, players.size())));
 				points = getNearestPoints(player.getLocation(), zombiesToSpawn / players.size());
 				curr = 0;
 				continue;
