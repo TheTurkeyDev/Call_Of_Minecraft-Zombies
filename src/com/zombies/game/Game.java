@@ -556,8 +556,6 @@ public class Game
 			this.endGame();
 			return;
 		}
-		else
-		{
 		if (!(spawnManager.mobs.size() == 0) || !(spawnManager.zombiesToSpawn <= spawnManager.zombiesSpawned)) return;
 		if(changingRound)
 			return;
@@ -624,7 +622,6 @@ public class Game
 			signManager.updateGame();
 			updateJoinSigns();
 			changingRound = false;
-		}
 		}
 	}
 	
