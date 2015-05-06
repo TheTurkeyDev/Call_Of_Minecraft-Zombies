@@ -102,12 +102,13 @@ public class ConfigSetup
 	 */
 	public void Setup()
 	{
-		if (plugin.files.getGunsConfig().get("Resource Sounds") == null)
+		CustomConfig conf = plugin.configManager.getConfig("GunConfig");
+		if (conf.getFileConfiguration().get("Resource Sounds") == null)
 		{
 			Bukkit.broadcastMessage("Resource Sounds missing");
-			plugin.files.getGunsConfig().set("Resource Sounds", "off");
-			plugin.files.saveGunsConfig();
-			plugin.files.reloadGuns();
+			conf.getFileConfiguration().set("Resource Sounds", "off");
+			conf.saveConfig();
+			conf.reloadConfig();
 		}
 		MultiBox = plugin.getConfig().getBoolean("config.gameSettings.MultipleMysteryBoxes");
 		doublePointsTimer = plugin.getConfig().getInt("config.gameSettings.doublePointsTimer");
@@ -126,84 +127,84 @@ public class ConfigSetup
 			plugin.possibleGuns.clear();
 		}
 		
-		Material m = Material.getMaterial(plugin.files.getGunsConfig().getString("PistolsMaterial"));
+		Material m = Material.getMaterial(conf.getFileConfiguration().getString("PistolsMaterial"));
 		if(m != null)
 		{
 			GunTypeEnum.Pistols.setMaterial(m);
 			System.out.println(COMZombies.consoleprefix + "Set pistol gun material to " + m.toString());
 		}
 		else
-			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for pistols! " + plugin.files.getGunsConfig().getString("PistolsMaterial") + " Is not a valid material!!!");
+			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for pistols! " + conf.getFileConfiguration().getString("PistolsMaterial") + " Is not a valid material!!!");
 		
-		m = Material.getMaterial(plugin.files.getGunsConfig().getString("ShotgunsMaterial"));
+		m = Material.getMaterial(conf.getFileConfiguration().getString("ShotgunsMaterial"));
 		if(m != null)
 		{
 			GunTypeEnum.Shotguns.setMaterial(m);
 			System.out.println(COMZombies.consoleprefix + "Set shotgun gun material to " + m.toString());
 		}
 		else
-			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for shotguns! " + plugin.files.getGunsConfig().getString("ShotgunsMaterial") + " Is not a valid material!!!");
+			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for shotguns! " + conf.getFileConfiguration().getString("ShotgunsMaterial") + " Is not a valid material!!!");
 		
-		m = Material.getMaterial(plugin.files.getGunsConfig().getString("AssaultRiflesMaterial"));
+		m = Material.getMaterial(conf.getFileConfiguration().getString("AssaultRiflesMaterial"));
 		if(m != null)
 		{
 			GunTypeEnum.AssaultRifles.setMaterial(m);
 			System.out.println(COMZombies.consoleprefix + "Set assault rifle material to " + m.toString());
 		}
 		else
-			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for assault rifles! " + plugin.files.getGunsConfig().getString("AssaultRiflesMaterial") + " Is not a valid material!!!");
+			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for assault rifles! " + conf.getFileConfiguration().getString("AssaultRiflesMaterial") + " Is not a valid material!!!");
 		
-		m = Material.getMaterial(plugin.files.getGunsConfig().getString("LightMachineGunsMaterial"));
+		m = Material.getMaterial(conf.getFileConfiguration().getString("LightMachineGunsMaterial"));
 		if(m != null)
 		{
 			GunTypeEnum.LightMachineGuns.setMaterial(m);
 			System.out.println(COMZombies.consoleprefix + "Set light machinegun material to " + m.toString());
 		}
 		else
-			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for light machineguns! " + plugin.files.getGunsConfig().getString("LightMachineGunsMaterial") + " Is not a valid material!!!");
+			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for light machineguns! " + conf.getFileConfiguration().getString("LightMachineGunsMaterial") + " Is not a valid material!!!");
 		
-		m = Material.getMaterial(plugin.files.getGunsConfig().getString("SubMachineGunsMaterial"));
+		m = Material.getMaterial(conf.getFileConfiguration().getString("SubMachineGunsMaterial"));
 		if(m != null)
 		{
 			GunTypeEnum.SubMachineGuns.setMaterial(m);
 			System.out.println(COMZombies.consoleprefix + "Set sub machinegun material to " + m.toString());
 		}
 		else
-			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for sub machineguns! " + plugin.files.getGunsConfig().getString("SubMachineGunsMaterial") + " Is not a valid material!!!");
+			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for sub machineguns! " + conf.getFileConfiguration().getString("SubMachineGunsMaterial") + " Is not a valid material!!!");
 		
-		m = Material.getMaterial(plugin.files.getGunsConfig().getString("SniperRiflesMaterial"));
+		m = Material.getMaterial(conf.getFileConfiguration().getString("SniperRiflesMaterial"));
 		if(m != null)
 		{
 			GunTypeEnum.SniperRifles.setMaterial(m);
 			System.out.println(COMZombies.consoleprefix + "Set sniper rifle material to " + m.toString());
 		}
 		else
-			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for sniper rifles! " + plugin.files.getGunsConfig().getString("SniperRiflesMaterial") + " Is not a valid material!!!");
+			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for sniper rifles! " + conf.getFileConfiguration().getString("SniperRiflesMaterial") + " Is not a valid material!!!");
 		
-		m = Material.getMaterial(plugin.files.getGunsConfig().getString("OthersMaterial"));
+		m = Material.getMaterial(conf.getFileConfiguration().getString("OthersMaterial"));
 		if(m != null)
 		{
 			GunTypeEnum.Others.setMaterial(m);
 			System.out.println(COMZombies.consoleprefix + "Set other's gun material to " + m.toString());
 		}
 		else
-			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for others! " + plugin.files.getGunsConfig().getString("OthersMaterial") + " Is not a valid material!!!");
+			Bukkit.broadcastMessage(COMZombies.prefix + "Unable to change the material for others! " + conf.getFileConfiguration().getString("OthersMaterial") + " Is not a valid material!!!");
 		
 		
-		for (String group : plugin.files.getGunsConfig().getConfigurationSection("Guns").getKeys(false))
+		for (String group : conf.getFileConfiguration().getConfigurationSection("Guns").getKeys(false))
 		{
-			for (String gun : plugin.files.getGunsConfig().getConfigurationSection("Guns." + group).getKeys(false))
+			for (String gun : conf.getFileConfiguration().getConfigurationSection("Guns." + group).getKeys(false))
 			{
-				String ammo = plugin.files.getGunsConfig().getString("Guns." + group + "." + gun + ".Ammo");
-				String packAmmo = plugin.files.getGunsConfig().getString("Guns." + group + "." + gun + ".PackAPunch.Ammo");
+				String ammo = conf.getFileConfiguration().getString("Guns." + group + "." + gun + ".Ammo");
+				String packAmmo = conf.getFileConfiguration().getString("Guns." + group + "." + gun + ".PackAPunch.Ammo");
 				int clipAmmo = Integer.parseInt(ammo.substring(0, ammo.indexOf("/")));
 				int totalAmmo = Integer.parseInt(ammo.substring(ammo.indexOf("/") + 1));
-				int damage = plugin.files.getGunsConfig().getInt("Guns." + group + "." + gun + ".Damage");
-				int fireDelay = plugin.files.getGunsConfig().getInt("Guns." + group + "." + gun + ".FireDelay");
+				int damage = conf.getFileConfiguration().getInt("Guns." + group + "." + gun + ".Damage");
+				int fireDelay = conf.getFileConfiguration().getInt("Guns." + group + "." + gun + ".FireDelay");
 				int pClip = Integer.parseInt(packAmmo.substring(0, packAmmo.indexOf("/")));
 				int pTotal = Integer.parseInt(packAmmo.substring(packAmmo.indexOf("/") + 1));
-				int packDamage = plugin.files.getGunsConfig().getInt("Guns." + group + "." + gun + ".PackAPunch.Damage");
-				String packGunName = plugin.files.getGunsConfig().getString("Guns." + group + "." + gun + ".PackAPunch.Name");
+				int packDamage = conf.getFileConfiguration().getInt("Guns." + group + "." + gun + ".PackAPunch.Damage");
+				String packGunName = conf.getFileConfiguration().getString("Guns." + group + "." + gun + ".PackAPunch.Name");
 				plugin.possibleGuns.add(new GunType(GunTypeEnum.getGun(group), gun, damage, fireDelay, clipAmmo, totalAmmo, pClip, pTotal, packDamage, packGunName));
 			}
 		}
@@ -223,9 +224,10 @@ public class ConfigSetup
 		
 		try
 		{
-			for(String a : plugin.files.getKillsFile().getConfigurationSection("Kills").getKeys(true))
+			CustomConfig killsconf = plugin.configManager.getConfig("kills");
+			for(String a : killsconf.getFileConfiguration().getConfigurationSection("Kills").getKeys(true))
 			{
-				PlayerStats stat = new PlayerStats(a, plugin.files.getKillsFile().getInt("Kills." + a));
+				PlayerStats stat = new PlayerStats(a, killsconf.getFileConfiguration().getInt("Kills." + a));
 				plugin.leaderboards.addPlayerStats(stat);
 			}
 		}catch(NullPointerException e)

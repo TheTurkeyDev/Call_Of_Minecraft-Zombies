@@ -38,7 +38,9 @@ public class KitManager
 
 	public void loadKits()
 	{
-		for (String key :plugin.files.getKitFile().getConfigurationSection("").getKeys(false))
+		System.out.println(plugin.configManager.getConfig("Kits").getFileConfiguration());
+		System.out.println(plugin.configManager.getConfig("Kits").getFileConfiguration().getConfigurationSection(""));
+		for (String key : plugin.configManager.getConfig("Kits").getFileConfiguration().getConfigurationSection("").getKeys(false))
 		{
 			Kit kit = new Kit(plugin, key);
 			kit.load();

@@ -5,20 +5,21 @@ import org.bukkit.entity.Player;
 
 import com.zombies.COMZombies;
 import com.zombies.CommandUtil;
+import com.zombies.CustomConfig;
 import com.zombies.game.Game;
-import com.zombies.game.GameManager;
 import com.zombies.game.Game.ArenaStatus;
+import com.zombies.game.GameManager;
 
 public class JoinCommand implements SubCommand
 {
-
+	
 	private COMZombies plugin;
-
+	
 	public JoinCommand(ZombiesCommand zom)
 	{
 		plugin = zom.plugin;
 	}
-
+	
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
@@ -38,15 +39,13 @@ public class JoinCommand implements SubCommand
 					{
 						if (manager.games.get(i).mode != ArenaStatus.DISABLED && manager.games.get(i).mode != ArenaStatus.INGAME)
 						{
-
+							
 							Game game = manager.games.get(i);
 							if (game.spawnManager.getPoints().size() == 0) continue;
-							if (!plugin.files.getArenasFile().contains(game.getName() + ".maxPlayers"))
-							{
-								plugin.files.getArenasFile().addDefault(game.getName() + ".maxPlayers", 8);
-								plugin.files.saveArenasConfig();
-							}
-							if (plugin.files.getArenasFile().getInt(game.getName() + ".maxPlayers") <= game.players.size()) continue;
+							CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+							conf.getFileConfiguration().getInt(game.getName() + ".maxPlayers", 8);
+							conf.saveConfig();
+							if (conf.getFileConfiguration().getInt(game.getName() + ".maxPlayers") <= game.players.size()) continue;
 							if (player.hasPermission("zombies.join." + game.getName()))
 							{
 								game.addPlayer(player);
@@ -85,7 +84,7 @@ public class JoinCommand implements SubCommand
 							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Arena has no spawn points!");
 							return true;
 						}
-						if (plugin.files.getArenasFile().getInt(game.getName() + ".maxPlayers") <= game.players.size())
+						if (plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getInt(game.getName() + ".maxPlayers") <= game.players.size())
 						{
 							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Game is full!");
 							return true;

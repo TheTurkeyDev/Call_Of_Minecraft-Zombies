@@ -302,7 +302,7 @@ public class OnSignInteractEvent implements Listener
 					}
 					else if (sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "power"))
 					{
-						if (plugin.files.getArenasFile().getBoolean(game.getName() + ".Power"))
+						if (plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getBoolean(game.getName() + ".Power"))
 						{
 							if (plugin.manager.isPlayerInGame(player))
 							{

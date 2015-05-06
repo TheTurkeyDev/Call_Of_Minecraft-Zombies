@@ -16,6 +16,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -24,6 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 
 import com.zombies.COMZombies;
+import com.zombies.CustomConfig;
 import com.zombies.game.Game;
 import com.zombies.game.Game.ArenaStatus;
 import com.zombies.game.features.Barrier;
@@ -50,14 +52,15 @@ public class SpawnManager
 	
 	public void loadAllSpawnsToGame()
 	{
+		FileConfiguration config = plugin.configManager.getConfig("ArenaConfig").getFileConfiguration();
 		points.clear();
 		try
 		{
-			for (String key : plugin.files.getArenasFile().getConfigurationSection(game.getName() + ".ZombieSpawns").getKeys(false))
+			for (String key : config.getConfigurationSection(game.getName() + ".ZombieSpawns").getKeys(false))
 			{
-				double x = plugin.files.getArenasFile().getDouble(game.getName() + ".ZombieSpawns." + key + ".x");
-				double y = plugin.files.getArenasFile().getDouble(game.getName() + ".ZombieSpawns." + key + ".y");
-				double z = plugin.files.getArenasFile().getDouble(game.getName() + ".ZombieSpawns." + key + ".z");
+				double x = config.getDouble(game.getName() + ".ZombieSpawns." + key + ".x");
+				double y = config.getDouble(game.getName() + ".ZombieSpawns." + key + ".y");
+				double z =config.getDouble(game.getName() + ".ZombieSpawns." + key + ".z");
 				Location loc = new Location(game.getWorld(), x, y, z);
 				SpawnPoint point = new SpawnPoint(loc, game, loc.getBlock().getType(), key);
 				points.add(point);
@@ -87,11 +90,12 @@ public class SpawnManager
 	
 	public void removePoint(Player player, SpawnPoint point)
 	{
+		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
 		if (points.contains(point))
 		{
 			Location loc = point.getLocation();
-			plugin.files.getArenasFile().set(game.getName() + ".ZombieSpawns." + point.getName(), null);
-			plugin.files.saveArenasConfig();
+			config.getFileConfiguration().set(game.getName() + ".ZombieSpawns." + point.getName(), null);
+			config.saveConfig();
 			loadAllSpawnsToGame();
 			player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Spawn point removed!");
 			Block block = loc.getBlock();
@@ -242,7 +246,12 @@ public class SpawnManager
 	public void smartSpawn(int wave, final List<Player> players)
 	{
 		if (game.mode != ArenaStatus.INGAME) return;
-		if (players.size() == 0) return;
+		if (players.size() == 0)
+		{
+			this.game.endGame();
+			Bukkit.broadcastMessage(COMZombies.prefix + "SmartSpawn was sent a players list with no players in it! Game was ended");
+			return;
+		}
 		zombiesToSpawn = (int) ((wave * 0.15) * 30) + (2 * players.size());
 		if (zombiesToSpawn <= zombiesSpawned)
 		{
@@ -250,7 +259,7 @@ public class SpawnManager
 			else updated = false;
 		}
 		if (plugin.config.maxZombies < zombiesToSpawn) zombiesToSpawn = plugin.config.maxZombies;
-		int selectPlayer = (int) (Math.random(1, players.size()));
+		int selectPlayer = (int) (Math.random() * players.size());
 		SpawnPoint selectPoint = null;
 		Player player = players.get(selectPlayer);
 		ArrayList<SpawnPoint> points = getNearestPoints(player.getLocation(), zombiesToSpawn);
@@ -260,12 +269,12 @@ public class SpawnManager
 		{
 			if (curr == points.size())
 			{
-				player = players.get((int) (Math.random(1, players.size())));
+				player = players.get((int) (Math.random() * players.size()));
 				points = getNearestPoints(player.getLocation(), zombiesToSpawn / players.size());
 				curr = 0;
 				continue;
 			}
-			selectPoint = points.get(((int) (Math.random() * points.size())));
+			selectPoint = points.get(((int) (Math.random() * players.size())));
 			if (!(canSpawn(selectPoint))) selectPoint = null;
 			curr++;
 			if (totalRetries > 1000) oopsWeHadAnError();

@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import com.zombies.COMZombies;
 import com.zombies.CommandUtil;
+import com.zombies.CustomConfig;
 import com.zombies.game.Game;
 import com.zombies.game.Game.ArenaStatus;
 
@@ -38,12 +39,13 @@ public class DisablePowerCommand implements SubCommand
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must disable this arena first!");
 						return true;
 					}
-					plugin.files.getArenasFile().addDefault(game.getName() + ".Power", false);
-					plugin.files.getArenasFile().set(game.getName() + ".Power", false);
+					CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+					conf.getFileConfiguration().addDefault(game.getName() + ".Power", false);
+					conf.getFileConfiguration().set(game.getName() + ".Power", false);
 					game.enable();
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Power diabled!");
-					plugin.files.saveArenasConfig();
-					plugin.files.reloadArenas();
+					conf.saveConfig();
+					conf.reloadConfig();
 				}
 				else
 				{

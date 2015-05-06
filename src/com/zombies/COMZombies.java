@@ -1,7 +1,6 @@
 package com.zombies;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -158,28 +157,19 @@ public class COMZombies extends JavaPlugin
 	 */
 	public ConfigSetup config;
 	/**
-	 * Configuration file for the arenas.
-	 */
-	public File ArenaConfigFile = null;
-	public File signFile = null;
-	/**
-	 * Configuration file for the guns.
-	 */
-	public File GunConfigFile = null;
-	/**
 	 * Enables the plugin.
 	 * 
 	 * @category Custom constructor
 	 */
 	public SignManager signManager;
-	public Files files;
+	public ConfigManager configManager;
 	
 	public Vault vault;
 	
 	public void onEnable()
 	{
 		instance = this;
-		files = new Files();
+		configManager = new ConfigManager();
 		reloadConfig();
 		config = new ConfigSetup(this);
 		manager = new GameManager(this);
@@ -277,15 +267,8 @@ public class COMZombies extends JavaPlugin
 	{
 		saveDefaultConfig();
 		reloadConfig();
-		files.reloadArenas();
-		files.reloadGuns();
-		files.reloadSignsConfig();
-		files.getArenasFile();
-		files.getGunsConfig();
-		files.getSignsFile();
-		files.saveArenasConfig();
-		files.saveGunsConfig();
-		files.saveSignsConfig();
+		configManager.reloadALL();
+		configManager.saveALL();
 		getConfig().getClass();
 	}
 	
@@ -334,9 +317,7 @@ public class COMZombies extends JavaPlugin
 	public void onDisable()
 	{
 		reloadConfig();
-		files.reloadArenas();
-		files.reloadGuns();
-		files.reloadSignsConfig();
+		configManager.reloadALL();
 		for (Game g : manager.games)
 		{
 			g.endGame();

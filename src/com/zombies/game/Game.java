@@ -22,6 +22,7 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.v1_7_R4.CraftServer;
 import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
 import org.bukkit.entity.Entity;
@@ -35,6 +36,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.zombies.COMZombies;
 import com.zombies.CommandUtil;
+import com.zombies.CustomConfig;
 import com.zombies.game.features.Door;
 import com.zombies.game.features.DownedPlayer;
 import com.zombies.game.features.RandomBox;
@@ -252,7 +254,7 @@ public class Game
 		plugin = zombies;
 		arenaName = name;
 		
-		powerEnabled = plugin.files.getArenasFile().getBoolean(name + ".Power");
+		powerEnabled = plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getBoolean(name + ".Power");
 		
 		starter = new AutoStart(plugin, this, 60);
 		
@@ -280,7 +282,7 @@ public class Game
 		} catch (NullPointerException e)
 		{
 		}
-		if (plugin.files.getArenasFile().getBoolean(arenaName + ".IsForceNight"))
+		if (plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getBoolean(arenaName + ".IsForceNight"))
 		{
 			forceNight();
 		}
@@ -653,7 +655,7 @@ public class Game
 			plugin.pointManager.setPoints(player, 500);
 			assignPlayerInventory(player);
 			player.setGameMode(GameMode.SURVIVAL);
-			String gunName = plugin.files.getGunsConfig().getString("StartingGun");
+			String gunName = plugin.configManager.getConfig("GunConfig").getFileConfiguration().getString("StartingGun");
 			waveNumber = 0;
 			for (Player pl : players)
 			{
@@ -682,7 +684,7 @@ public class Game
 			{
 				CommandUtil.sendMessageToPlayer(pl, player.getName() + " has joined with " + players.size() + "/" + maxPlayers + "!");
 			}
-			if (players.size() >= plugin.files.getArenasFile().getInt(arenaName + ".minPlayers"))
+			if (players.size() >= plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getInt(arenaName + ".minPlayers"))
 			{
 				if (starter == null)
 				{
@@ -724,7 +726,7 @@ public class Game
 		players.remove(player);
 		for (Player pl : players)
 		{
-			CommandUtil.sendMessageToPlayer(pl, player.getName() + " has left the game! Only " + players.size() + "/" + plugin.files.getArenasFile().getInt(arenaName + ".maxPlayers") + " players left!");
+			CommandUtil.sendMessageToPlayer(pl, player.getName() + " has left the game! Only " + players.size() + "/" + plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getInt(arenaName + ".maxPlayers") + " players left!");
 		}
 		if (players.size() == 0)
 		{
@@ -817,7 +819,7 @@ public class Game
 		players.remove(player);
 		for (Player pl : players)
 		{
-			if (!isDisabled) CommandUtil.sendMessageToPlayer(pl, player.getName() + " has left the game! Only " + players.size() + "/" + plugin.files.getArenasFile().getInt(arenaName + ".maxPlayers") + " players left!");
+			if (!isDisabled) CommandUtil.sendMessageToPlayer(pl, player.getName() + " has left the game! Only " + players.size() + "/" + plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getInt(arenaName + ".maxPlayers") + " players left!");
 		}
 		if (players.size() == 0)
 		{
@@ -896,7 +898,7 @@ public class Game
 	 */
 	public World getWorld()
 	{
-		return plugin.getServer().getWorld(plugin.files.getArenasFile().getString(arenaName + ".Location.world"));
+		return plugin.getServer().getWorld(plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getString(arenaName + ".Location.world"));
 	}
 	
 	/**
@@ -1062,35 +1064,38 @@ public class Game
 	 */
 	public void saveLocationsInConfig(Player player)
 	{
+		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		FileConfiguration config = conf.getFileConfiguration();
+		
 		if (min.getWorld().getName() != null)
 		{
-			plugin.files.getArenasFile().set(arenaName + ".Location.world", min.getWorld().getName());
+			config.set(arenaName + ".Location.world", min.getWorld().getName());
 		}
 		try
 		{
-			plugin.files.getArenasFile().set(arenaName + ".Location.P1.x", min.getBlockX());
-			plugin.files.getArenasFile().set(arenaName + ".Location.P1.y", min.getBlockY());
-			plugin.files.getArenasFile().set(arenaName + ".Location.P1.z", min.getBlockZ());
-			plugin.files.getArenasFile().set(arenaName + ".Location.P2.x", max.getBlockX());
-			plugin.files.getArenasFile().set(arenaName + ".Location.P2.y", max.getBlockY());
-			plugin.files.getArenasFile().set(arenaName + ".Location.P2.z", max.getBlockZ());
-			plugin.files.getArenasFile().set(arenaName + ".PlayerSpawn.x", playerTPLocation.getBlockX());
-			plugin.files.getArenasFile().set(arenaName + ".PlayerSpawn.y", playerTPLocation.getBlockY());
-			plugin.files.getArenasFile().set(arenaName + ".PlayerSpawn.z", playerTPLocation.getBlockZ());
-			plugin.files.getArenasFile().set(arenaName + ".PlayerSpawn.pitch", playerTPLocation.getPitch());
-			plugin.files.getArenasFile().set(arenaName + ".PlayerSpawn.yaw", playerTPLocation.getYaw());
-			plugin.files.getArenasFile().set(arenaName + ".SpectatorSpawn.x", spectateLocation.getBlockX());
-			plugin.files.getArenasFile().set(arenaName + ".SpectatorSpawn.y", spectateLocation.getBlockY());
-			plugin.files.getArenasFile().set(arenaName + ".SpectatorSpawn.z", spectateLocation.getBlockZ());
-			plugin.files.getArenasFile().set(arenaName + ".SpectatorSpawn.pitch", spectateLocation.getPitch());
-			plugin.files.getArenasFile().set(arenaName + ".SpectatorSpawn.yaw", spectateLocation.getYaw());
-			plugin.files.getArenasFile().set(arenaName + ".LobbySpawn.x", lobbyLocation.getBlockX());
-			plugin.files.getArenasFile().set(arenaName + ".LobbySpawn.y", lobbyLocation.getBlockY());
-			plugin.files.getArenasFile().set(arenaName + ".LobbySpawn.z", lobbyLocation.getBlockZ());
-			plugin.files.getArenasFile().set(arenaName + ".LobbySpawn.pitch", lobbyLocation.getPitch());
-			plugin.files.getArenasFile().set(arenaName + ".LobbySpawn.yaw", lobbyLocation.getYaw());
-			plugin.files.saveArenasConfig();
-			plugin.files.reloadArenas();
+			config.set(arenaName + ".Location.P1.x", min.getBlockX());
+			config.set(arenaName + ".Location.P1.y", min.getBlockY());
+			config.set(arenaName + ".Location.P1.z", min.getBlockZ());
+			config.set(arenaName + ".Location.P2.x", max.getBlockX());
+			config.set(arenaName + ".Location.P2.y", max.getBlockY());
+			config.set(arenaName + ".Location.P2.z", max.getBlockZ());
+			config.set(arenaName + ".PlayerSpawn.x", playerTPLocation.getBlockX());
+			config.set(arenaName + ".PlayerSpawn.y", playerTPLocation.getBlockY());
+			config.set(arenaName + ".PlayerSpawn.z", playerTPLocation.getBlockZ());
+			config.set(arenaName + ".PlayerSpawn.pitch", playerTPLocation.getPitch());
+			config.set(arenaName + ".PlayerSpawn.yaw", playerTPLocation.getYaw());
+			config.set(arenaName + ".SpectatorSpawn.x", spectateLocation.getBlockX());
+			config.set(arenaName + ".SpectatorSpawn.y", spectateLocation.getBlockY());
+			config.set(arenaName + ".SpectatorSpawn.z", spectateLocation.getBlockZ());
+			config.set(arenaName + ".SpectatorSpawn.pitch", spectateLocation.getPitch());
+			config.set(arenaName + ".SpectatorSpawn.yaw", spectateLocation.getYaw());
+			config.set(arenaName + ".LobbySpawn.x", lobbyLocation.getBlockX());
+			config.set(arenaName + ".LobbySpawn.y", lobbyLocation.getBlockY());
+			config.set(arenaName + ".LobbySpawn.z", lobbyLocation.getBlockZ());
+			config.set(arenaName + ".LobbySpawn.pitch", lobbyLocation.getPitch());
+			config.set(arenaName + ".LobbySpawn.yaw", lobbyLocation.getYaw());
+			conf.saveConfig();
+			conf.reloadConfig();
 			
 			CommandUtil.sendMessageToPlayer(player, "Arena " + arenaName + " setup!");
 			plugin.isArenaSetup.remove(player);
@@ -1106,31 +1111,33 @@ public class Game
 	 */
 	public void enable()
 	{
-		plugin.files.reloadArenas();
-		if (plugin.files.getArenasFile().getString(arenaName + ".Location.world") == null) worldName = arena.getWorld();
-		else worldName = plugin.files.getArenasFile().getString(arenaName + ".Location.world");
-		int x1 = plugin.files.getArenasFile().getInt(arenaName + ".Location.P1.x");
-		int y1 = plugin.files.getArenasFile().getInt(arenaName + ".Location.P1.y");
-		int z1 = plugin.files.getArenasFile().getInt(arenaName + ".Location.P1.z");
-		int x2 = plugin.files.getArenasFile().getInt(arenaName + ".Location.P2.x");
-		int y2 = plugin.files.getArenasFile().getInt(arenaName + ".Location.P2.y");
-		int z2 = plugin.files.getArenasFile().getInt(arenaName + ".Location.P2.z");
-		int x3 = plugin.files.getArenasFile().getInt(arenaName + ".PlayerSpawn.x");
-		int y3 = plugin.files.getArenasFile().getInt(arenaName + ".PlayerSpawn.y");
-		int z3 = plugin.files.getArenasFile().getInt(arenaName + ".PlayerSpawn.z");
-		int pitch3 = plugin.files.getArenasFile().getInt(arenaName + ".PlayerSpawn.pitch");
-		int yaw3 = plugin.files.getArenasFile().getInt(arenaName + ".PlayerSpawn.yaw");
-		int x4 = plugin.files.getArenasFile().getInt(arenaName + ".SpectatorSpawn.x");
-		int y4 = plugin.files.getArenasFile().getInt(arenaName + ".SpectatorSpawn.y");
-		int z4 = plugin.files.getArenasFile().getInt(arenaName + ".SpectatorSpawn.z");
-		int pitch4 = plugin.files.getArenasFile().getInt(arenaName + ".SpectatorSpawn.pitch");
-		int yaw4 = plugin.files.getArenasFile().getInt(arenaName + ".SpectatorSpawn.yaw");
-		int x5 = plugin.files.getArenasFile().getInt(arenaName + ".LobbySpawn.x");
-		int y5 = plugin.files.getArenasFile().getInt(arenaName + ".LobbySpawn.y");
-		int z5 = plugin.files.getArenasFile().getInt(arenaName + ".LobbySpawn.z");
-		int pitch5 = plugin.files.getArenasFile().getInt(arenaName + ".LobbySpawn.pitch");
-		int yaw5 = plugin.files.getArenasFile().getInt(arenaName + ".LobbySpawn.yaw");
-		maxPlayers = plugin.files.getArenasFile().getInt(arenaName + ".maxPlayers");
+		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		FileConfiguration config = conf.getFileConfiguration();
+		conf.reloadConfig();
+		if (config.getString(arenaName + ".Location.world") == null) worldName = arena.getWorld();
+		else worldName = config.getString(arenaName + ".Location.world");
+		int x1 = config.getInt(arenaName + ".Location.P1.x");
+		int y1 = config.getInt(arenaName + ".Location.P1.y");
+		int z1 = config.getInt(arenaName + ".Location.P1.z");
+		int x2 = config.getInt(arenaName + ".Location.P2.x");
+		int y2 = config.getInt(arenaName + ".Location.P2.y");
+		int z2 = config.getInt(arenaName + ".Location.P2.z");
+		int x3 = config.getInt(arenaName + ".PlayerSpawn.x");
+		int y3 = config.getInt(arenaName + ".PlayerSpawn.y");
+		int z3 = config.getInt(arenaName + ".PlayerSpawn.z");
+		int pitch3 = config.getInt(arenaName + ".PlayerSpawn.pitch");
+		int yaw3 = config.getInt(arenaName + ".PlayerSpawn.yaw");
+		int x4 = config.getInt(arenaName + ".SpectatorSpawn.x");
+		int y4 = config.getInt(arenaName + ".SpectatorSpawn.y");
+		int z4 = config.getInt(arenaName + ".SpectatorSpawn.z");
+		int pitch4 = config.getInt(arenaName + ".SpectatorSpawn.pitch");
+		int yaw4 = config.getInt(arenaName + ".SpectatorSpawn.yaw");
+		int x5 = config.getInt(arenaName + ".LobbySpawn.x");
+		int y5 = config.getInt(arenaName + ".LobbySpawn.y");
+		int z5 = config.getInt(arenaName + ".LobbySpawn.z");
+		int pitch5 = config.getInt(arenaName + ".LobbySpawn.pitch");
+		int yaw5 = config.getInt(arenaName + ".LobbySpawn.yaw");
+		maxPlayers = config.getInt(arenaName + ".maxPlayers");
 		Location minLoc = new Location(Bukkit.getWorld(worldName), x1, y1, z1);
 		Location maxLoc = new Location(Bukkit.getWorld(worldName), x2, y2, z2);
 		Location pwarp = new Location(Bukkit.getWorld(worldName), x3, y3, z3, yaw3, pitch3);
@@ -1153,100 +1160,99 @@ public class Game
 	{
 		
 		// Sets up ArenaConfig
-		
+		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		FileConfiguration config = conf.getFileConfiguration();
 		// Adding ArenaName
 		String loc = arenaName;
-		plugin.files.getArenasFile().addDefault(loc + ".Power", false);
-		plugin.files.getArenasFile().set(loc + ".Power", false);
-		plugin.files.getArenasFile().addDefault(loc, null);
+		config.addDefault(loc + ".Power", false);
+		config.set(loc + ".Power", false);
+		config.addDefault(loc, null);
 		// Adds Location
 		String locL = loc + ".Location";
-		plugin.files.getArenasFile().addDefault(locL, null);
+		config.addDefault(locL, null);
 		// adds arenas world
-		plugin.files.getArenasFile().addDefault(locL + ".World", null);
+		config.addDefault(locL + ".World", null);
 		// Adds p1
 		String locP1 = locL + ".P1";
-		plugin.files.getArenasFile().addDefault(locP1, null);
+		config.addDefault(locP1, null);
 		// Adds p2
 		String locP2 = locL + ".P2";
-		plugin.files.getArenasFile().addDefault(locP2, null);
+		config.addDefault(locP2, null);
 		// adds point1x
-		plugin.files.getArenasFile().addDefault(locP1 + ".x", null);
+		config.addDefault(locP1 + ".x", null);
 		// adds point1y
-		plugin.files.getArenasFile().addDefault(locP1 + ".y", null);
+		config.addDefault(locP1 + ".y", null);
 		// adds point1z
-		plugin.files.getArenasFile().addDefault(locP1 + ".z", null);
+		config.addDefault(locP1 + ".z", null);
 		// adds point2x
-		plugin.files.getArenasFile().addDefault(locP2 + ".x", null);
+		config.addDefault(locP2 + ".x", null);
 		// adds point2y
-		plugin.files.getArenasFile().addDefault(locP2 + ".y", null);
+		config.addDefault(locP2 + ".y", null);
 		// adds point2z
-		plugin.files.getArenasFile().addDefault(locP2 + ".z", null);
+		config.addDefault(locP2 + ".z", null);
 		// adds arenas dificulty
 		// plugin.files.getArenasFile().addDefault(, "EASY");
 		// adds the playerwarp main
 		String locPS = loc + ".PlayerSpawn";
-		plugin.files.getArenasFile().addDefault(locPS, null);
+		config.addDefault(locPS, null);
 		// adds the playerwarpsx
-		plugin.files.getArenasFile().addDefault(locPS + ".x", null);
+		config.addDefault(locPS + ".x", null);
 		// adds the playerwarpsy
-		plugin.files.getArenasFile().addDefault(locPS + ".y", null);
+		config.addDefault(locPS + ".y", null);
 		// adds the playerwarpsz
-		plugin.files.getArenasFile().addDefault(locPS + ".z", null);
+		config.addDefault(locPS + ".z", null);
 		
 		String locLB = loc + ".LobbySpawn";
 		// adds the lobby LB spawn
-		plugin.files.getArenasFile().addDefault(locLB, null);
+		config.addDefault(locLB, null);
 		// adds the lobby LB spawn for the X coord
-		plugin.files.getArenasFile().addDefault(locLB + ".x", null);
+		config.addDefault(locLB + ".x", null);
 		// adds the lobby LB spawn for the Y coord
-		plugin.files.getArenasFile().addDefault(locLB + ".y", null);
+		config.addDefault(locLB + ".y", null);
 		// adds the lobby LB spawn for the Z coord
-		plugin.files.getArenasFile().addDefault(locLB + ".z", null);
+		config.addDefault(locLB + ".z", null);
 		// adds specatorMain
 		String locSS = loc + ".SpectatorSpawn";
-		plugin.files.getArenasFile().addDefault(locSS, 0);
+		config.addDefault(locSS, 0);
 		// adds specatorx
-		plugin.files.getArenasFile().addDefault(locSS + ".x", 0);
+		config.addDefault(locSS + ".x", 0);
 		// adds specatory
-		plugin.files.getArenasFile().addDefault(locSS + ".y", 0);
+		config.addDefault(locSS + ".y", 0);
 		// adds specatorz
-		plugin.files.getArenasFile().addDefault(locSS + ".z", 0);
+		config.addDefault(locSS + ".z", 0);
 		// adds ZombieSpawn Main
 		String locZS = loc + ".ZombieSpawns";
-		plugin.files.getArenasFile().addDefault(locZS, null);
+		config.addDefault(locZS, null);
 		// adds PerkMachine main
 		String locPMS = locL + ".PerkMachines";
-		plugin.files.getArenasFile().addDefault(locPMS, null);
+		config.addDefault(locPMS, null);
 		// adds PerkMachine main
 		String locMBL = locL + ".MysteryBoxLocations";
-		plugin.files.getArenasFile().addDefault(locMBL, null);
+		config.addDefault(locMBL, null);
 		// adds Door Locations main
 		String locD = loc + ".Doors";
-		plugin.files.getArenasFile().addDefault(locD, null);
+		config.addDefault(locD, null);
 		
 		String isForceNight = loc + ".IsForceNight";
-		plugin.files.getArenasFile().addDefault(isForceNight, false);
-		plugin.files.getArenasFile().set(isForceNight, false);
+		config.addDefault(isForceNight, false);
+		config.set(isForceNight, false);
 		
 		String minToStart = loc + ".minPlayers";
-		plugin.files.getArenasFile().addDefault(minToStart, 1);
-		plugin.files.getArenasFile().set(minToStart, 1);
+		config.addDefault(minToStart, 1);
+		config.set(minToStart, 1);
 		
 		String spawnDelay = loc + ".ZombieSpawnDelay";
-		plugin.files.getArenasFile().addDefault(spawnDelay, 15);
-		plugin.files.getArenasFile().set(spawnDelay, 15);
+		config.addDefault(spawnDelay, 15);
+		config.set(spawnDelay, 15);
 		// Setup starting items data, default vaules added.
 		ArrayList<String> startItems = new ArrayList<String>();
-		plugin.files.getArenasFile().addDefault(loc + ".StartingItems", startItems);
-		plugin.files.getArenasFile().set(loc + ".StartingItems", startItems);
-		plugin.files.getArenasFile().set(loc, null);
-		plugin.files.getArenasFile().addDefault(loc + ".maxPlayers", 8);
-		plugin.files.getArenasFile().set(loc + ".maxPlayers", 8);
+		config.addDefault(loc + ".StartingItems", startItems);
+		config.set(loc + ".StartingItems", startItems);
+		config.set(loc, null);
+		config.addDefault(loc + ".maxPlayers", 8);
+		config.set(loc + ".maxPlayers", 8);
 		// Saves and reloads Arenaconfig
-		plugin.files.saveArenasConfig();
-		plugin.files.reloadArenas();
-		
+		conf.saveConfig();	
 	}
 	
 	/**
@@ -1259,7 +1265,7 @@ public class Game
 		try
 		{
 			for (@SuppressWarnings("unused")
-			String key : plugin.files.getArenasFile().getConfigurationSection(arenaName + ".ZombieSpawns").getKeys(false))
+			String key :plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getConfigurationSection(arenaName + ".ZombieSpawns").getKeys(false))
 			{
 				spawnNum++;
 			}
@@ -1277,6 +1283,8 @@ public class Game
 	public void addSpawnToConfig(SpawnPoint spawn)
 	{
 		World world = null;
+		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		FileConfiguration config = conf.getFileConfiguration();
 		try
 		{
 			world = spawn.getLocation().getWorld();
@@ -1289,17 +1297,16 @@ public class Game
 		double y = spawn.getLocation().getBlockY();
 		double z = spawn.getLocation().getBlockZ();
 		int spawnNum = getCurrentSpawnPoint();
-		plugin.files.getArenasFile().addDefault(arenaName + ".ZombieSpawns.spawn" + spawnNum, null);
-		plugin.files.getArenasFile().addDefault(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".x", x);
-		plugin.files.getArenasFile().addDefault(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".y", y);
-		plugin.files.getArenasFile().addDefault(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".z", z);
-		plugin.files.getArenasFile().set(arenaName + ".ZombieSpawns.spawn" + spawnNum, null);
-		plugin.files.getArenasFile().set(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".x", x);
-		plugin.files.getArenasFile().set(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".y", y);
-		plugin.files.getArenasFile().set(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".z", z);
+		config.addDefault(arenaName + ".ZombieSpawns.spawn" + spawnNum, null);
+		config.addDefault(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".x", x);
+		config.addDefault(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".y", y);
+		config.addDefault(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".z", z);
+		config.set(arenaName + ".ZombieSpawns.spawn" + spawnNum, null);
+		config.set(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".x", x);
+		config.set(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".y", y);
+		config.set(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".z", z);
 		
-		plugin.files.saveArenasConfig();
-		plugin.files.reloadArenas();
+		conf.saveConfig();
 	}
 	
 	/**
@@ -1307,11 +1314,13 @@ public class Game
 	 */
 	public void removeFromConfig()
 	{
+		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		FileConfiguration config = conf.getFileConfiguration();
 		try
 		{
-			plugin.files.getArenasFile().addDefault(arenaName, null);
-			plugin.files.getArenasFile().set(arenaName, null);
-			plugin.files.saveArenasConfig();
+			config.addDefault(arenaName, null);
+			config.set(arenaName, null);
+			conf.saveConfig();
 		} catch (Exception e)
 		{
 			return;
@@ -1337,7 +1346,7 @@ public class Game
 		try
 		{
 			for (@SuppressWarnings("unused")
-			String s : plugin.files.getArenasFile().getConfigurationSection(arenaName + ".Doors").getKeys(false))
+			String s : plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getConfigurationSection(arenaName + ".Doors").getKeys(false))
 			{
 				i++;
 			}
@@ -1358,7 +1367,7 @@ public class Game
 		try
 		{
 			for (@SuppressWarnings("unused")
-			String s : plugin.files.getArenasFile().getConfigurationSection(arenaName + ".Doors.door" + doorNumber + ".Signs").getKeys(false))
+			String s : plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getConfigurationSection(arenaName + ".Doors.door" + doorNumber + ".Signs").getKeys(false))
 			{
 				i++;
 			}
@@ -1376,13 +1385,14 @@ public class Game
 	 */
 	public void addDoorSpawnPointToConfig(Door door, SpawnPoint spawnPoint)
 	{
-		List<String> spawnPoints = plugin.files.getArenasFile().getStringList(arenaName + ".Doors.door" + door.doorNumber + ".SpawnPoints");
+		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		FileConfiguration config = conf.getFileConfiguration();
+		List<String> spawnPoints = config.getStringList(arenaName + ".Doors.door" + door.doorNumber + ".SpawnPoints");
 		if (spawnPoints.contains(spawnPoint.getName())) return;
 		spawnPoints.add(spawnPoint.getName());
-		plugin.files.getArenasFile().set(arenaName + ".Doors.door" + door.doorNumber + ".SpawnPoints", spawnPoints);
+		config.set(arenaName + ".Doors.door" + door.doorNumber + ".SpawnPoints", spawnPoints);
 		
-		plugin.files.saveArenasConfig();
-		plugin.files.reloadArenas();
+		conf.saveConfig();
 	}
 	
 	/**
@@ -1392,19 +1402,20 @@ public class Game
 	 */
 	public void addDoorSignToConfig(Door door, Location location)
 	{
+		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		FileConfiguration config = conf.getFileConfiguration();
 		int x = location.getBlockX();
 		int y = location.getBlockY();
 		int z = location.getBlockZ();
 		int num = getCurrentDoorSignNumber(door.doorNumber);
-		plugin.files.getArenasFile().addDefault(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".x", x);
-		plugin.files.getArenasFile().addDefault(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".y", y);
-		plugin.files.getArenasFile().addDefault(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".z", z);
-		plugin.files.getArenasFile().set(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".x", x);
-		plugin.files.getArenasFile().set(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".y", y);
-		plugin.files.getArenasFile().set(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".z", z);
+		config.addDefault(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".x", x);
+		config.addDefault(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".y", y);
+		config.addDefault(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".z", z);
+		config.set(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".x", x);
+		config.set(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".y", y);
+		config.set(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".z", z);
 		
-		plugin.files.saveArenasConfig();
-		plugin.files.reloadArenas();
+		conf.saveConfig();
 	}
 	
 	/**
@@ -1574,12 +1585,14 @@ public class Game
 	
 	public void zombieKilled(Player player)
 	{
+		CustomConfig conf = plugin.configManager.getConfig("kills");
+		FileConfiguration config = conf.getFileConfiguration();
 		Leaderboards lb = plugin.leaderboards;
-		if(plugin.files.getKillsFile().contains("Kills." + player.getName()))
+		if(config.contains("Kills." + player.getName()))
 		{
-			int kills = plugin.files.getKillsFile().getInt("Kills." + player.getName());
+			int kills =config.getInt("Kills." + player.getName());
 			kills++;
-			plugin.files.getKillsFile().set("Kills." + player.getName(), kills);
+			config.set("Kills." + player.getName(), kills);
 			PlayerStats stat = lb.getPlayerStatFromPlayer(player);
 			if(stat == null)
 			{
@@ -1593,7 +1606,7 @@ public class Game
 		}
 		else
 		{
-			plugin.files.getKillsFile().set("Kills." + player.getName(), 1);
+			config.set("Kills." + player.getName(), 1);
 			PlayerStats stat = new PlayerStats(player.getName(), 1);
 			lb.addPlayerStats(stat);
 			
@@ -1606,8 +1619,7 @@ public class Game
 				plugin.vault.addMoney(player.getName(), (double)plugin.config.KillMoney);
 			}catch(NullPointerException e){}
 		}
-		plugin.files.saveKillsConfig();
-		plugin.files.reloadKillsConfig();
+		conf.saveConfig();
 	}
 	
 	public void updateBarrierDamage(int damage, Block block)

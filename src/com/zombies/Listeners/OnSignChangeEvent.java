@@ -2,6 +2,7 @@ package com.zombies.listeners;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,6 +10,7 @@ import org.bukkit.event.block.SignChangeEvent;
 
 import com.zombies.COMZombies;
 import com.zombies.CommandUtil;
+import com.zombies.CustomConfig;
 import com.zombies.game.Game;
 import com.zombies.game.features.PerkType;
 import com.zombies.game.features.RandomBox;
@@ -125,11 +127,14 @@ public class OnSignChangeEvent implements Listener
 					sign.setLine(0, ChatColor.RED + "[Zombies]");
 					sign.setLine(1, ChatColor.AQUA + "power");
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type /z removepower " + game.getName() + " to disable the power!");
-					plugin.files.getArenasFile().addDefault(game.getName() + ".Power", null);
-					plugin.files.getArenasFile().set(game.getName() + ".Power", true);
+					
+					CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+					FileConfiguration config = conf.getFileConfiguration();
+					
+					config.addDefault(game.getName() + ".Power", null);
+					config.set(game.getName() + ".Power", true);
 
-					plugin.files.saveArenasConfig();
-					plugin.files.reloadArenas();
+					conf.saveConfig();
 				}
 			}
 			else if (secondLine.equalsIgnoreCase("pack") || secondLine.equalsIgnoreCase("pack-a-punch") || secondLine.equalsIgnoreCase("pack a punch"))

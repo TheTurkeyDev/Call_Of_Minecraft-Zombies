@@ -12,9 +12,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import com.zombies.COMZombies;
+import com.zombies.CustomConfig;
 import com.zombies.game.Game;
 import com.zombies.game.Game.ArenaStatus;
 import com.zombies.game.features.RandomBox;
@@ -37,15 +39,16 @@ public class BoxManager
 
 	public void loadAllBoxesToGame()
 	{
+		FileConfiguration config = plugin.configManager.getConfig("ArenaConfig").getFileConfiguration();
 		boxes.clear();
 		try
 		{
-			for (String key : plugin.files.getArenasFile().getConfigurationSection(game.getName() + ".MysteryBoxs").getKeys(false))
+			for (String key : config.getConfigurationSection(game.getName() + ".MysteryBoxs").getKeys(false))
 			{
-				double x = plugin.files.getArenasFile().getDouble(game.getName() + ".MysteryBoxs." + key + ".x");
-				double y = plugin.files.getArenasFile().getDouble(game.getName() + ".MysteryBoxs." + key + ".y");
-				double z = plugin.files.getArenasFile().getDouble(game.getName() + ".MysteryBoxs." + key + ".z");
-				int cost = plugin.files.getArenasFile().getInt(game.getName() + ".MysteryBoxs." + key + ".Cost");
+				double x = config.getDouble(game.getName() + ".MysteryBoxs." + key + ".x");
+				double y =config.getDouble(game.getName() + ".MysteryBoxs." + key + ".y");
+				double z = config.getDouble(game.getName() + ".MysteryBoxs." + key + ".z");
+				int cost = config.getInt(game.getName() + ".MysteryBoxs." + key + ".Cost");
 				Location loc = new Location(game.getWorld(), x, y, z);
 				RandomBox point = new RandomBox(loc, game, plugin, key, cost);
 				boxes.add(point);
@@ -87,11 +90,12 @@ public class BoxManager
 
 	public void removeBox(Player player, RandomBox box)
 	{
+		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
 		if (boxes.contains(box))
 		{
 			Location loc = box.getLocation();
-			plugin.files.getArenasFile().set(game.getName() + ".MysteryBoxs." + box.getName(), null);
-			plugin.files.saveArenasConfig();
+			conf.getFileConfiguration().set(game.getName() + ".MysteryBoxs." + box.getName(), null);
+			conf.saveConfig();
 			loadAllBoxesToGame();
 			player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "MysteryBox removed!");
 			Block block = loc.getBlock();
@@ -101,6 +105,8 @@ public class BoxManager
 	}
 	public void addBox(RandomBox box)
 	{
+		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		FileConfiguration config = conf.getFileConfiguration();
 		if (game.mode == ArenaStatus.DISABLED || game.mode == ArenaStatus.WAITING)
 		{
 			boolean same = false;
@@ -115,13 +121,12 @@ public class BoxManager
 			{
 				Location loc = box.getLocation();
 				String name = box.getName();
-				plugin.files.getArenasFile().set(game.getName() + ".MysteryBoxs." + name + ".x", loc.getBlockX());
-				plugin.files.getArenasFile().set(game.getName() + ".MysteryBoxs." + name + ".y", loc.getBlockY());
-				plugin.files.getArenasFile().set(game.getName() + ".MysteryBoxs." + name + ".z", loc.getBlockZ());
-				plugin.files.getArenasFile().set(game.getName() + ".MysteryBoxs." + name + ".Cost", box.getCost());
-				plugin.files.getArenasFile().set(game.getName() + ".MysteryBoxs." + name + ".Face", "");
-				plugin.files.saveArenasConfig();
-				plugin.files.reloadArenas();
+				config.set(game.getName() + ".MysteryBoxs." + name + ".x", loc.getBlockX());
+				config.set(game.getName() + ".MysteryBoxs." + name + ".y", loc.getBlockY());
+				config.set(game.getName() + ".MysteryBoxs." + name + ".z", loc.getBlockZ());
+				config.set(game.getName() + ".MysteryBoxs." + name + ".Cost", box.getCost());
+				config.set(game.getName() + ".MysteryBoxs." + name + ".Face", "");
+				conf.saveConfig();
 				boxes.add(box);
 			}
 		}

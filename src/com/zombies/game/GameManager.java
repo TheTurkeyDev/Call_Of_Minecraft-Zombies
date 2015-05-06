@@ -60,7 +60,7 @@ public class GameManager
 	{
 		int i = 0;
 		games.clear();
-		for (String key : plugin.files.getArenasFile().getConfigurationSection("").getKeys(false))
+		for (String key : plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getConfigurationSection("").getKeys(false))
 		{
 			games.add(new Game(plugin, key));
 			games.get(i).enable();

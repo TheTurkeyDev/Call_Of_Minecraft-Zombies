@@ -26,7 +26,7 @@ public class ReloadCommand implements SubCommand
 			{
 				Bukkit.getServer().getPluginManager().disablePlugin(plugin);
 				Bukkit.getServer().getPluginManager().enablePlugin(plugin);
-				plugin.files.reloadArenas();
+				plugin.configManager.getConfig("ArenaConfig").reloadConfig();
 				plugin.reloadConfig();
 				for (Game gl : plugin.manager.games)
 				{

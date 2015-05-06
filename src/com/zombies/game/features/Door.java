@@ -10,8 +10,10 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import com.zombies.COMZombies;
+import com.zombies.CustomConfig;
 import com.zombies.game.Game;
 import com.zombies.spawning.SpawnPoint;
 
@@ -66,7 +68,7 @@ public class Door
 	private void loadDoor()
 	{
 		String location = game.getName() + ".Doors.door" + doorNumber;
-		ArrayList<String> spawns = (ArrayList<String>) plugin.files.getArenasFile().getStringList(location + ".SpawnPoints");
+		ArrayList<String> spawns = (ArrayList<String>)plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getStringList(location + ".SpawnPoints");
 		ArrayList<SpawnPoint> points = new ArrayList<SpawnPoint>();
 		for (int i = 0; i < spawns.size(); i++)
 		{
@@ -94,15 +96,16 @@ public class Door
 
 	private void loadSigns()
 	{
+		FileConfiguration config = plugin.configManager.getConfig("ArenaConfig").getFileConfiguration();
 		String location = game.getName() + ".Doors.door" + doorNumber;
 		try
 		{
-			for (String key : plugin.files.getArenasFile().getConfigurationSection(location + ".Signs").getKeys(false))
+			for (String key : config.getConfigurationSection(location + ".Signs").getKeys(false))
 			{
-				int x = plugin.files.getArenasFile().getInt(location + ".Signs." + key + ".x");
-				int y = plugin.files.getArenasFile().getInt(location + ".Signs." + key + ".y");
-				int z = plugin.files.getArenasFile().getInt(location + ".Signs." + key + ".z");
-				World world = Bukkit.getWorld(plugin.files.getArenasFile().getString(game.getName() + ".Location.world"));
+				int x = config.getInt(location + ".Signs." + key + ".x");
+				int y = config.getInt(location + ".Signs." + key + ".y");
+				int z = config.getInt(location + ".Signs." + key + ".z");
+				World world = Bukkit.getWorld(config.getString(game.getName() + ".Location.world"));
 				Location loc = new Location(world, x, y, z);
 				Block block = loc.getBlock();
 				if (block.getType().equals(Material.WALL_SIGN) || block.getType().equals(Material.SIGN_POST) || block.getType().equals(Material.SIGN))
@@ -187,16 +190,17 @@ public class Door
 
 	public void closeDoor()
 	{
+		FileConfiguration config = plugin.configManager.getConfig("ArenaConfig").getFileConfiguration();
 		try
 		{
-			for (String key : plugin.files.getArenasFile().getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Blocks").getKeys(false))
+			for (String key : config.getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Blocks").getKeys(false))
 			{
-				int x = plugin.files.getArenasFile().getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".x");
-				int y = plugin.files.getArenasFile().getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".y");
-				int z = plugin.files.getArenasFile().getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".z");
+				int x = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".x");
+				int y = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".y");
+				int z = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".z");
 				Location loc = new Location(game.getWorld(), x, y, z);
 				Block block = loc.getBlock();
-				block.setTypeId(plugin.files.getArenasFile().getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".ID"));
+				block.setTypeId(config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".ID"));
 			}
 			for (Sign sign : signs)
 			{
@@ -238,14 +242,15 @@ public class Door
 
 	private void loadBlocks()
 	{
+		FileConfiguration config = plugin.configManager.getConfig("ArenaConfig").getFileConfiguration();
 		try
 		{
-			for (String key : plugin.files.getArenasFile().getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Blocks").getKeys(false))
+			for (String key : config.getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Blocks").getKeys(false))
 			{
-				int ID = plugin.files.getArenasFile().getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".ID");
-				int x = plugin.files.getArenasFile().getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".x");
-				int y = plugin.files.getArenasFile().getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".y");
-				int z = plugin.files.getArenasFile().getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".z");
+				int ID = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".ID");
+				int x = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".x");
+				int y = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".y");
+				int z = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".z");
 				Location loc = new Location(game.getWorld(), x, y, z);
 				loc.getBlock().setTypeId(ID);
 				blocks.add(loc.getBlock());
@@ -266,6 +271,7 @@ public class Door
 
 	public void saveBlocks(Location p1, Location p2)
 	{
+		FileConfiguration config = plugin.configManager.getConfig("ArenaConfig").getFileConfiguration();
 		if (p1 != null && p2 != null)
 		{
 			int x1 = Math.min(p1.getBlockX(), p2.getBlockX()); // Eg. 5
@@ -289,20 +295,19 @@ public class Door
 		}
 		for (int i = 0; i < blocks.size(); i++)
 		{
-			plugin.files.getArenasFile().addDefault(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1), null);
-			plugin.files.getArenasFile().addDefault(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".x", blocks.get(i).getLocation().getBlockX());
-			plugin.files.getArenasFile().addDefault(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".y", blocks.get(i).getLocation().getBlockY());
-			plugin.files.getArenasFile().addDefault(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".z", blocks.get(i).getLocation().getBlockZ());
-			plugin.files.getArenasFile().addDefault(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".ID", blocks.get(i).getTypeId());
-			plugin.files.getArenasFile().set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1), null);
-			plugin.files.getArenasFile().set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".x", blocks.get(i).getLocation().getBlockX());
-			plugin.files.getArenasFile().set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".y", blocks.get(i).getLocation().getBlockY());
-			plugin.files.getArenasFile().set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".z", blocks.get(i).getLocation().getBlockZ());
-			plugin.files.getArenasFile().set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".ID", blocks.get(i).getTypeId());
+			config.addDefault(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1), null);
+			config.addDefault(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".x", blocks.get(i).getLocation().getBlockX());
+			config.addDefault(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".y", blocks.get(i).getLocation().getBlockY());
+			config.addDefault(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".z", blocks.get(i).getLocation().getBlockZ());
+			config.addDefault(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".ID", blocks.get(i).getTypeId());
+			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1), null);
+			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".x", blocks.get(i).getLocation().getBlockX());
+			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".y", blocks.get(i).getLocation().getBlockY());
+			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".z", blocks.get(i).getLocation().getBlockZ());
+			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".ID", blocks.get(i).getTypeId());
 		}
 
-		plugin.files.saveArenasConfig();
-		plugin.files.reloadArenas();
+		 plugin.configManager.getConfig("ArenaConfig").saveConfig();
 	}
 
 	public ArrayList<Block> getBlocks()
@@ -323,9 +328,9 @@ public class Door
 
 	public void removeSelfFromConfig()
 	{
-		plugin.files.getArenasFile().set(game.getName() + ".Doors.door" + doorNumber, null);
-		plugin.files.saveArenasConfig();
-		plugin.files.reloadArenas();
+		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
+		config.getFileConfiguration().set(game.getName() + ".Doors.door" + doorNumber, null);
+		config.saveConfig();
 	}
 
 	public void loadSpawns()

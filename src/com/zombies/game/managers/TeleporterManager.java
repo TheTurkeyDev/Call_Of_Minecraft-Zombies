@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Location;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import com.zombies.COMZombies;
+import com.zombies.CustomConfig;
 import com.zombies.game.Game;
 
 public class TeleporterManager
@@ -24,16 +26,17 @@ public class TeleporterManager
 	
 	public void loadAllTeleportersToGame()
 	{
+		FileConfiguration config = plugin.configManager.getConfig("ArenaConfig").getFileConfiguration();
 		String location = game.getName() + ".Teleporters";
 		try
 		{
-			for (String key : plugin.files.getArenasFile().getConfigurationSection(location).getKeys(false))
+			for (String key : config.getConfigurationSection(location).getKeys(false))
 			{
-				double x = plugin.files.getArenasFile().getDouble(game.getName() + ".Teleporters." + key + ".x");
-				double y = plugin.files.getArenasFile().getDouble(game.getName() + ".Teleporters." + key + ".y");
-				double z = plugin.files.getArenasFile().getDouble(game.getName() + ".Teleporters." + key + ".z");
-				float pitch = plugin.files.getArenasFile().getLong(game.getName() + ".Teleporters." + key + ".pitch");
-				float yaw = plugin.files.getArenasFile().getLong(game.getName() + ".Teleporters." + key + ".yaw");
+				double x = config.getDouble(game.getName() + ".Teleporters." + key + ".x");
+				double y = config.getDouble(game.getName() + ".Teleporters." + key + ".y");
+				double z = config.getDouble(game.getName() + ".Teleporters." + key + ".z");
+				float pitch = config.getLong(game.getName() + ".Teleporters." + key + ".pitch");
+				float yaw = config.getLong(game.getName() + ".Teleporters." + key + ".yaw");
 				ArrayList<Location> temp = new ArrayList<Location>();
 				if(teleporters.containsKey(key))
 				{
@@ -49,6 +52,8 @@ public class TeleporterManager
 	
 	public void saveTeleporterSpot(String teleName, Location to)
 	{
+		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		FileConfiguration config = conf.getFileConfiguration();
 		ArrayList<Location> temp = new ArrayList<Location>();
 		teleName = teleName.toLowerCase();
 		if(teleporters.containsKey(teleName))
@@ -64,32 +69,31 @@ public class TeleporterManager
 		float pitch = to.getPitch();
 		float yaw = to.getYaw();
 		
-		plugin.files.getArenasFile().addDefault(game.getName() + ".Teleporters." + teleName + ".x", x);
-		plugin.files.getArenasFile().addDefault(game.getName() + ".Teleporters." + teleName + ".y", y);
-		plugin.files.getArenasFile().addDefault(game.getName() + ".Teleporters." + teleName + ".z", z);
-		plugin.files.getArenasFile().addDefault(game.getName() + ".Teleporters." + teleName + ".pitch", pitch);
-		plugin.files.getArenasFile().addDefault(game.getName() + ".Teleporters." + teleName + ".yaw", yaw);
-		plugin.files.getArenasFile().set(game.getName() + ".Teleporters." + teleName + ".x", x);
-		plugin.files.getArenasFile().set(game.getName() + ".Teleporters." + teleName + ".y", y);
-		plugin.files.getArenasFile().set(game.getName() + ".Teleporters." + teleName + ".z", z);
-		plugin.files.getArenasFile().set(game.getName() + ".Teleporters." + teleName + ".pitch", pitch);
-		plugin.files.getArenasFile().set(game.getName() + ".Teleporters." + teleName + ".yaw", yaw);
+		config.addDefault(game.getName() + ".Teleporters." + teleName + ".x", x);
+		config.addDefault(game.getName() + ".Teleporters." + teleName + ".y", y);
+		config.addDefault(game.getName() + ".Teleporters." + teleName + ".z", z);
+		config.addDefault(game.getName() + ".Teleporters." + teleName + ".pitch", pitch);
+		config.addDefault(game.getName() + ".Teleporters." + teleName + ".yaw", yaw);
+		config.set(game.getName() + ".Teleporters." + teleName + ".x", x);
+		config.set(game.getName() + ".Teleporters." + teleName + ".y", y);
+		config.set(game.getName() + ".Teleporters." + teleName + ".z", z);
+		config.set(game.getName() + ".Teleporters." + teleName + ".pitch", pitch);
+		config.set(game.getName() + ".Teleporters." + teleName + ".yaw", yaw);
 		
-		plugin.files.saveArenasConfig();
-		plugin.files.reloadArenas();
+		conf.saveConfig();
 	}
 	
 	public void removedTeleporter(String teleName, Player player)
 	{
+		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
 		teleName = teleName.toLowerCase();
 		if(teleporters.containsKey(teleName))
 		{
 			teleporters.remove(teleName);
 			
-			plugin.files.getArenasFile().set(game.getName() + ".Teleporters." + teleName, null);
+			conf.getFileConfiguration().set(game.getName() + ".Teleporters." + teleName, null);
 			
-			plugin.files.saveArenasConfig();
-			plugin.files.reloadArenas();
+			conf.saveConfig();
 		}
 		else
 		{

@@ -17,7 +17,7 @@ public class EasterEggManager
 
 	public void test()
 	{
-		plugin.files.getEasterEggFile();
+		plugin.configManager.getConfig("EasterEggs");
 		game.getName();
 	}
 }

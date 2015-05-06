@@ -2,6 +2,7 @@ package com.zombies.kits;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -36,10 +37,10 @@ public class Kit
 
 	public void load()
 	{
-
-		if(plugin.files.getKitFile().getString(name + ".Guns") != null)
+		FileConfiguration config = plugin.configManager.getConfig("Kits").getFileConfiguration();
+		if(config.getString(name + ".Guns") != null)
 		{
-			String[] guns = plugin.files.getKitFile().getString(name + ".Guns").split(",");
+			String[] guns = config.getString(name + ".Guns").split(",");
 			try
 			{
 				if(guns[0] != null)
@@ -77,9 +78,9 @@ public class Kit
 			catch(ArrayIndexOutOfBoundsException e){}
 		}
 
-		if(plugin.files.getKitFile().getString(name + ".Perks") != null)
+		if(config.getString(name + ".Perks") != null)
 		{
-			String[] perks = plugin.files.getKitFile().getString(name + ".Perks").split(",");
+			String[] perks = config.getString(name + ".Perks").split(",");
 
 			try
 			{
@@ -138,7 +139,7 @@ public class Kit
 			catch(ArrayIndexOutOfBoundsException e){}
 		}
 
-		points = plugin.files.getKitFile().getInt(name + ".Points");
+		points = config.getInt(name + ".Points");
 	}
 
 	@SuppressWarnings("deprecation")
