@@ -551,7 +551,7 @@ public class Game
 			this.endGame();
 			return;
 		}
-		if (!(spawnManager.mobs.size() == 0) || !(spawnManager.zombiesToSpawn <= spawnManager.zombiesSpawned)) return;
+		if (!(spawnManager.getZombiesAlive() == 0) || !(spawnManager.getZombiesToSpawn() <= spawnManager.getZombiesSpawned())) return;
 		if(changingRound)
 			return;
 		changingRound = true;
@@ -576,24 +576,21 @@ public class Game
 				pl.playSound(pl.getLocation(), Sound.PORTAL, 1, 1);
 				CommandUtil.sendMessageToPlayer(pl, "Round " + waveNumber + " will start is 10 seconds!");
 			}
+			
+			spawnManager.nextWave();
+			
 			final Game game = this;
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 			{
 				public void run()
 				{
-					spawnManager.zombiesSpawned = 0;
 					for (Player pl : players)
 					{
 						pl.playSound(pl.getLocation(), Sound.PORTAL_TRAVEL, 1, 1);
 						CommandUtil.sendMessageToPlayer(pl, "Round " + waveNumber + "!");
 					}
 					
-					spawnManager.setSpawnInterval((int) (spawnManager.zombieSpawnInterval / 1.05));
-					if (spawnManager.zombieSpawnInterval < 1)
-					{
-						spawnManager.zombieSpawnInterval = 1;
-					}
-					spawnManager.smartSpawn(waveNumber, players);
+					spawnManager.startWave(waveNumber, players);
 					game.signManager.updateGame();
 					updateJoinSigns();
 					changingRound = false;
@@ -602,18 +599,13 @@ public class Game
 		}
 		else
 		{
-			spawnManager.zombiesSpawned = 0;
 			for (Player pl : players)
 			{
 				CommandUtil.sendMessageToPlayer(pl, "Round " + waveNumber + "!");
 			}
 			
-			spawnManager.setSpawnInterval((int) (spawnManager.zombieSpawnInterval / 1.05));
-			if (spawnManager.zombieSpawnInterval < 1)
-			{
-				spawnManager.zombieSpawnInterval = 1;
-			}
-			spawnManager.smartSpawn(waveNumber, players);
+			spawnManager.nextWave();
+			spawnManager.startWave(waveNumber, players);
 			signManager.updateGame();
 			updateJoinSigns();
 			changingRound = false;
@@ -983,9 +975,7 @@ public class Game
 			playerLeave(players.get(i));
 		}
 		spawnManager.killAll(false);
-		spawnManager.zombiesSpawned = 0;
-		spawnManager.zombiesToSpawn = 0;
-		spawnManager.mobs.clear();
+		spawnManager.reset();
 		for (Door door : doorManager.getDoors())
 		{
 			door.closeDoor();
@@ -1004,7 +994,6 @@ public class Game
 		instaKill = false;
 		doublePoints = false;
 		waveNumber = 0;
-		spawnManager.zombieSpawnInterval = plugin.getConfig().getInt("config.gameSettings.waveSpawnInterval");
 		clearArena();
 		clearArenaItems();
 		for (Player pl : Bukkit.getOnlinePlayers())

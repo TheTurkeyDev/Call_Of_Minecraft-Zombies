@@ -14,6 +14,7 @@ Guns:
       Ammo: 15/105
       Damage: 3
       FireDelay: 10
+      ProjectileSpeed: 1
       PackAPunch:
         Damage: 15
         Name: B34R
@@ -22,6 +23,7 @@ Guns:
       Ammo: 5/75
       Damage: 23
       FireDelay: 10
+      ProjectileSpeed: 1	  
       PackAPunch:
         Damage: 40
         Name: Voice of Justice
@@ -30,6 +32,7 @@ Guns:
       Ammo: 20/120
       Damage: 3
       FireDelay: 10
+      ProjectileSpeed: 1
       PackAPunch:
         Damage: 15
         Name: Ultra
@@ -38,6 +41,7 @@ Guns:
       Ammo: 12/96
       Damage: 3
       FireDelay: 10
+      ProjectileSpeed: 1
       PackAPunch:
         Damage: 12
         Name: Karmic Atom Perforator-4000
@@ -46,6 +50,7 @@ Guns:
       Ammo: 8/80
       Damage: 2
       FireDelay: 10
+      ProjectileSpeed: 1
       PackAPunch:
         Damage: 30
         Name: C-3000 b1at-ch35
@@ -54,6 +59,7 @@ Guns:
       Ammo: 6/84
       Damage: 30
       FireDelay: 10
+      ProjectileSpeed: 1
       PackAPunch:
         Damage: 50
         Name: Cobra

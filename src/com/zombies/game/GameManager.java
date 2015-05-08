@@ -159,7 +159,7 @@ public class GameManager
 	{
 		for (int i = 0; i < games.size(); i++)
 		{
-			if (games.get(i).spawnManager.mobs.contains(entity)) { return true; }
+			if (games.get(i).spawnManager.isEntitySpawned(entity)) { return true; }
 		}
 		return false;
 	}

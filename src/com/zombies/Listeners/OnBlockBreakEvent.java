@@ -109,7 +109,10 @@ public class OnBlockBreakEvent implements Listener
 					Game game = manager.getGame(player);
 					Barrier b = game.barrierManager.getBarrierFromRepair(sign.getLocation());
 					if(b != null)
+					{
 						b.repair();
+						plugin.pointManager.addPoints(player, b.getReward());
+					}
 					else
 					{
 						CommandUtil.sendMessageToPlayer(player, "Congrats! You broke the plugin! JK its all fixed now.");

@@ -36,10 +36,11 @@ public class SpawnManager
 	private Game game;
 	private HashMap<Entity, Integer> health = new HashMap<Entity, Integer>();
 	private ArrayList<SpawnPoint> points = new ArrayList<SpawnPoint>();
-	public ArrayList<Entity> mobs = new ArrayList<Entity>();
-	public int zombieSpawnInterval;
-	public int zombiesSpawned = 0;
-	public int zombiesToSpawn = 0;
+	private ArrayList<Entity> mobs = new ArrayList<Entity>();
+	private boolean canSpawn = false;
+	private int zombieSpawnInterval;
+	private int zombiesSpawned = 0;
+	private int zombiesToSpawn = 0;
 	private boolean updated = false;
 	
 	public SpawnManager(COMZombies plugin, Game game)
@@ -244,6 +245,7 @@ public class SpawnManager
 	
 	public void smartSpawn(int wave, final List<Player> players)
 	{
+		if(!this.canSpawn || wave < game.waveNumber) return;
 		if (game.mode != ArenaStatus.INGAME) return;
 		if (players.size() == 0)
 		{
@@ -284,6 +286,7 @@ public class SpawnManager
 	
 	private void scheduleSpawn(int time, SpawnPoint loc, final int wave, final List<Player> players)
 	{
+		if(!this.canSpawn || wave < game.waveNumber) return;
 		int strength = (int) (((wave * 100) + 50) / 50);
 		Location location = new Location(loc.getLocation().getWorld(), loc.getLocation().getBlockX(), loc.getLocation().getBlockY(), loc.getLocation().getBlockZ());
 		location.add(0.5, 0, 0.5);
@@ -354,6 +357,7 @@ public class SpawnManager
 					Player closest = getNearestPlayer(zomb);
 					Zombie z = (Zombie) zomb;
 					z.setTarget(closest);
+					Bukkit.broadcastMessage("Zombie at: " + z.getLocation().toString());
 				}
 				if (game.mode != ArenaStatus.INGAME) return;
 				Iterator<Entity> mobsIter = mobs.iterator();
@@ -438,4 +442,51 @@ public class SpawnManager
 		game.endGame();
 	}
 	
+	public void nextWave()
+	{
+		canSpawn = false;
+		zombiesSpawned = 0;
+		setSpawnInterval((int) (zombieSpawnInterval / 1.05));
+		if (zombieSpawnInterval < 1)
+		{
+			zombieSpawnInterval = 1;
+		}
+	}
+	
+	public void startWave(int wave, final List<Player> players)
+	{
+		canSpawn = true;
+		this.smartSpawn(wave, players);
+	}
+	
+	public int getZombiesToSpawn()
+	{
+		return this.zombiesToSpawn;
+	}
+	public int getZombiesSpawned()
+	{
+		return this.zombiesSpawned;
+	}
+	public int getZombiesAlive()
+	{
+		return this.mobs.size();
+	}
+	public int getSpawnInterval()
+	{
+		return this.zombieSpawnInterval;
+	}
+	
+	public boolean isEntitySpawned(Entity ent)
+	{
+		return this.mobs.contains(ent);
+	}
+	
+	public void reset()
+	{
+		this.mobs.clear();
+		this.canSpawn = false;
+		this.zombiesSpawned = 0;
+		this.zombiesToSpawn = 0;
+		this.zombieSpawnInterval = plugin.getConfig().getInt("config.gameSettings.waveSpawnInterval");
+	}
 }

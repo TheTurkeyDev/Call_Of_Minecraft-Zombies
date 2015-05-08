@@ -162,6 +162,7 @@ public class OnEntityDamageEvent implements Listener
 							}
 							else if (totalHealth < 1 || totalHealth - damageAmount <= 1)
 							{
+								e.setCancelled(true);
 								OnZombiePerkDrop perkdrop = new OnZombiePerkDrop(plugin);
 								perkdrop.perkDrop(zombie1, player);
 								zombie1.remove();

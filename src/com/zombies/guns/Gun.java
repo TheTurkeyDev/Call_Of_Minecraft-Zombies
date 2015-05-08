@@ -301,32 +301,32 @@ public class Gun
 		if (getType().type.equals(GunTypeEnum.Pistols))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
-			ls.setVelocity(ls.getVelocity().multiply(1));
+			ls.setVelocity(ls.getVelocity().multiply(this.gun.speed));
 		}
 		if (getType().type.equals(GunTypeEnum.AssaultRifles))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
-			ls.setVelocity(ls.getVelocity().multiply(1.5));
+			ls.setVelocity(ls.getVelocity().multiply(this.gun.speed));
 		}
 		if (getType().type.equals(GunTypeEnum.SniperRifles))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
-			ls.setVelocity(ls.getVelocity().multiply(7));
+			ls.setVelocity(ls.getVelocity().multiply(this.gun.speed));
 		}
 		if (getType().type.equals(GunTypeEnum.LightMachineGuns))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
-			ls.setVelocity(ls.getVelocity().multiply(2));
+			ls.setVelocity(ls.getVelocity().multiply(this.gun.speed));
 		}
 		if (getType().type.equals(GunTypeEnum.SubMachineGuns))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
-			ls.setVelocity(ls.getVelocity().multiply(3));
+			ls.setVelocity(ls.getVelocity().multiply(this.gun.speed));
 		}
 		if(getType().type.equals(GunTypeEnum.Others))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
-			ls.setVelocity(ls.getVelocity().multiply(4));
+			ls.setVelocity(ls.getVelocity().multiply(this.gun.speed));
 		}
 		if(plugin.configManager.getConfig("GunConfig").getString("Resource Sounds").equalsIgnoreCase("on"))
 		{

@@ -193,12 +193,13 @@ public class ConfigSetup
 				int clipAmmo = Integer.parseInt(ammo.substring(0, ammo.indexOf("/")));
 				int totalAmmo = Integer.parseInt(ammo.substring(ammo.indexOf("/") + 1));
 				int damage = conf.getInt("Guns." + group + "." + gun + ".Damage");
-				int fireDelay = conf.getInt("Guns." + group + "." + gun + ".FireDelay");
+				int fireDelay = conf.getInt("Guns." + group + "." + gun + ".FireDelay", 5);
+				double speed = conf.getDouble("Guns." + group + "." + gun + ".ProjectileSpeed", 3);
 				int pClip = Integer.parseInt(packAmmo.substring(0, packAmmo.indexOf("/")));
 				int pTotal = Integer.parseInt(packAmmo.substring(packAmmo.indexOf("/") + 1));
 				int packDamage = conf.getInt("Guns." + group + "." + gun + ".PackAPunch.Damage");
 				String packGunName = conf.getString("Guns." + group + "." + gun + ".PackAPunch.Name");
-				plugin.possibleGuns.add(new GunType(GunTypeEnum.getGun(group), gun, damage, fireDelay, clipAmmo, totalAmmo, pClip, pTotal, packDamage, packGunName));
+				plugin.possibleGuns.add(new GunType(GunTypeEnum.getGun(group), gun, damage, fireDelay, speed, clipAmmo, totalAmmo, pClip, pTotal, packDamage, packGunName));
 			}
 		}
 		maxAmmo = plugin.getConfig().getBoolean("config.Perks.MaxAmmo");
