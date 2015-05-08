@@ -9,7 +9,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import com.zombies.COMZombies;
 import com.zombies.CustomConfig;
@@ -23,28 +22,26 @@ public class SignManager
 	
 	private Game game;
 	
-	CustomConfig conf;
-	FileConfiguration config;
+	private CustomConfig conf;
 	
 	public SignManager(Game game)
 	{
 		this.game = game;
 		conf = pl.configManager.getConfig("Signs");
-		config = conf.getFileConfiguration();
 		load();
 	}
 	
 	private void load()
 	{
-		ConfigurationSection sec = config.getConfigurationSection("signs." + game.getName());
+		ConfigurationSection sec = conf.getConfigurationSection("signs." + game.getName());
 		if (sec == null) return;
 		
 		for (String s : sec.getKeys(false))
 		{
-			int x = config.getInt("signs." + game.getName() + "." + s + ".x");
-			int y = config.getInt("signs." + game.getName() + "."  + s + ".y");
-			int z = config.getInt("signs." + game.getName() + "."  + s + ".z");
-			World world = Bukkit.getWorld(config.getString("signs." + game.getName() + "."  + s + ".world"));
+			int x = conf.getInt("signs." + game.getName() + "." + s + ".x");
+			int y = conf.getInt("signs." + game.getName() + "."  + s + ".y");
+			int z = conf.getInt("signs." + game.getName() + "."  + s + ".z");
+			World world = Bukkit.getWorld(conf.getString("signs." + game.getName() + "."  + s + ".world"));
 			
 			Block block = world.getBlockAt(x, y, z);
 			if (block.getState() instanceof Sign)
@@ -107,16 +104,11 @@ public class SignManager
 		
 		String signInfo = "sign(" + sign.getX() + "," +  sign.getY() + "," + sign.getZ() + "," + sign.getWorld().getName() + ")";
 		
-		config.addDefault("signs." + game.getName() + "." + signInfo, null);
-		config.addDefault("signs." + game.getName() + "." + signInfo + ".x", sign.getX());
-		config.addDefault("signs." + game.getName() + "." + signInfo + ".y", sign.getY());
-		config.addDefault("signs." + game.getName() + "." + signInfo + ".z", sign.getZ());
-		config.addDefault("signs." + game.getName() + "." + signInfo + ".world", sign.getWorld().getName());
-		config.set("signs." + game.getName() + "." + signInfo, null);
-		config.set("signs." + game.getName() + "." + signInfo + ".x", sign.getX());
-		config.set("signs." + game.getName() + "." + signInfo + ".y", sign.getY());
-		config.set("signs." + game.getName() + "." + signInfo + ".z", sign.getZ());
-		config.set("signs." + game.getName() + "." + signInfo + ".world", sign.getWorld().getName());
+		conf.set("signs." + game.getName() + "." + signInfo, null);
+		conf.set("signs." + game.getName() + "." + signInfo + ".x", sign.getX());
+		conf.set("signs." + game.getName() + "." + signInfo + ".y", sign.getY());
+		conf.set("signs." + game.getName() + "." + signInfo + ".z", sign.getZ());
+		conf.set("signs." + game.getName() + "." + signInfo + ".world", sign.getWorld().getName());
 		
 		conf.saveConfig();
 		
@@ -134,8 +126,7 @@ public class SignManager
 		
 		String signInfo = "sign(" + sign.getX() + "," +  sign.getY() + "," + sign.getZ() + "," + sign.getWorld() + ")";
 		
-		config.set("signs." + game.getName() + "." + signInfo, null);
-		config.addDefault("signs." + game.getName() + "." + signInfo, null);
+		conf.set("signs." + game.getName() + "." + signInfo, null);
 		
 		conf.saveConfig();
 		

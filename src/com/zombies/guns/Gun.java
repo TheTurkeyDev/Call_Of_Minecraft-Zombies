@@ -155,7 +155,7 @@ public class Gun
 	 */
 	public void reload()
 	{
-		if (plugin.configManager.getConfig("GunConfig").getFileConfiguration().getString("Resource Sounds").equalsIgnoreCase("on"))
+		if (plugin.configManager.getConfig("GunConfig").getString("Resource Sounds").equalsIgnoreCase("on"))
 		{
 			player.getLocation().getWorld().playSound(player.getLocation(), Sound.ANVIL_USE, 1, 1);
 		}
@@ -328,7 +328,7 @@ public class Gun
 			Projectile ls = player.launchProjectile(Snowball.class);
 			ls.setVelocity(ls.getVelocity().multiply(4));
 		}
-		if(plugin.configManager.getConfig("GunConfig").getFileConfiguration().getString("Resource Sounds").equalsIgnoreCase("on"))
+		if(plugin.configManager.getConfig("GunConfig").getString("Resource Sounds").equalsIgnoreCase("on"))
 		{
 			switch (gun.name)
 			{

@@ -2,12 +2,12 @@ package com.zombies.kits;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.zombies.COMZombies;
+import com.zombies.CustomConfig;
 import com.zombies.game.Game;
 import com.zombies.game.features.PerkType;
 import com.zombies.guns.Gun;
@@ -37,7 +37,7 @@ public class Kit
 
 	public void load()
 	{
-		FileConfiguration config = plugin.configManager.getConfig("Kits").getFileConfiguration();
+		CustomConfig config = plugin.configManager.getConfig("Kits");
 		if(config.getString(name + ".Guns") != null)
 		{
 			String[] guns = config.getString(name + ".Guns").split(",");

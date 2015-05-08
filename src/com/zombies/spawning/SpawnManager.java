@@ -16,7 +16,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -52,7 +51,7 @@ public class SpawnManager
 	
 	public void loadAllSpawnsToGame()
 	{
-		FileConfiguration config = plugin.configManager.getConfig("ArenaConfig").getFileConfiguration();
+		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
 		points.clear();
 		try
 		{
@@ -94,7 +93,7 @@ public class SpawnManager
 		if (points.contains(point))
 		{
 			Location loc = point.getLocation();
-			config.getFileConfiguration().set(game.getName() + ".ZombieSpawns." + point.getName(), null);
+			config.set(game.getName() + ".ZombieSpawns." + point.getName(), null);
 			config.saveConfig();
 			loadAllSpawnsToGame();
 			player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Spawn point removed!");

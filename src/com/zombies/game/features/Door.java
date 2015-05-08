@@ -10,7 +10,6 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import com.zombies.COMZombies;
 import com.zombies.CustomConfig;
@@ -68,7 +67,7 @@ public class Door
 	private void loadDoor()
 	{
 		String location = game.getName() + ".Doors.door" + doorNumber;
-		ArrayList<String> spawns = (ArrayList<String>)plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getStringList(location + ".SpawnPoints");
+		ArrayList<String> spawns = (ArrayList<String>)plugin.configManager.getConfig("ArenaConfig").getStringList(location + ".SpawnPoints");
 		ArrayList<SpawnPoint> points = new ArrayList<SpawnPoint>();
 		for (int i = 0; i < spawns.size(); i++)
 		{
@@ -96,7 +95,7 @@ public class Door
 
 	private void loadSigns()
 	{
-		FileConfiguration config = plugin.configManager.getConfig("ArenaConfig").getFileConfiguration();
+		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
 		String location = game.getName() + ".Doors.door" + doorNumber;
 		try
 		{
@@ -190,7 +189,7 @@ public class Door
 
 	public void closeDoor()
 	{
-		FileConfiguration config = plugin.configManager.getConfig("ArenaConfig").getFileConfiguration();
+		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
 		try
 		{
 			for (String key : config.getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Blocks").getKeys(false))
@@ -242,7 +241,7 @@ public class Door
 
 	private void loadBlocks()
 	{
-		FileConfiguration config = plugin.configManager.getConfig("ArenaConfig").getFileConfiguration();
+		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
 		try
 		{
 			for (String key : config.getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Blocks").getKeys(false))
@@ -271,7 +270,7 @@ public class Door
 
 	public void saveBlocks(Location p1, Location p2)
 	{
-		FileConfiguration config = plugin.configManager.getConfig("ArenaConfig").getFileConfiguration();
+		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
 		if (p1 != null && p2 != null)
 		{
 			int x1 = Math.min(p1.getBlockX(), p2.getBlockX()); // Eg. 5
@@ -295,16 +294,12 @@ public class Door
 		}
 		for (int i = 0; i < blocks.size(); i++)
 		{
-			config.addDefault(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1), null);
-			config.addDefault(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".x", blocks.get(i).getLocation().getBlockX());
-			config.addDefault(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".y", blocks.get(i).getLocation().getBlockY());
-			config.addDefault(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".z", blocks.get(i).getLocation().getBlockZ());
-			config.addDefault(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".ID", blocks.get(i).getTypeId());
 			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1), null);
 			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".x", blocks.get(i).getLocation().getBlockX());
 			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".y", blocks.get(i).getLocation().getBlockY());
 			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".z", blocks.get(i).getLocation().getBlockZ());
 			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".ID", blocks.get(i).getTypeId());
+			config.saveConfig();
 		}
 
 		 plugin.configManager.getConfig("ArenaConfig").saveConfig();
@@ -329,7 +324,7 @@ public class Door
 	public void removeSelfFromConfig()
 	{
 		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
-		config.getFileConfiguration().set(game.getName() + ".Doors.door" + doorNumber, null);
+		config.set(game.getName() + ".Doors.door" + doorNumber, null);
 		config.saveConfig();
 	}
 

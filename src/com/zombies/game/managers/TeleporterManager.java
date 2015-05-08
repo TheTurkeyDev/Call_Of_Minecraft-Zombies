@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Location;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import com.zombies.COMZombies;
@@ -26,7 +25,7 @@ public class TeleporterManager
 	
 	public void loadAllTeleportersToGame()
 	{
-		FileConfiguration config = plugin.configManager.getConfig("ArenaConfig").getFileConfiguration();
+		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
 		String location = game.getName() + ".Teleporters";
 		try
 		{
@@ -53,7 +52,6 @@ public class TeleporterManager
 	public void saveTeleporterSpot(String teleName, Location to)
 	{
 		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
-		FileConfiguration config = conf.getFileConfiguration();
 		ArrayList<Location> temp = new ArrayList<Location>();
 		teleName = teleName.toLowerCase();
 		if(teleporters.containsKey(teleName))
@@ -69,16 +67,11 @@ public class TeleporterManager
 		float pitch = to.getPitch();
 		float yaw = to.getYaw();
 		
-		config.addDefault(game.getName() + ".Teleporters." + teleName + ".x", x);
-		config.addDefault(game.getName() + ".Teleporters." + teleName + ".y", y);
-		config.addDefault(game.getName() + ".Teleporters." + teleName + ".z", z);
-		config.addDefault(game.getName() + ".Teleporters." + teleName + ".pitch", pitch);
-		config.addDefault(game.getName() + ".Teleporters." + teleName + ".yaw", yaw);
-		config.set(game.getName() + ".Teleporters." + teleName + ".x", x);
-		config.set(game.getName() + ".Teleporters." + teleName + ".y", y);
-		config.set(game.getName() + ".Teleporters." + teleName + ".z", z);
-		config.set(game.getName() + ".Teleporters." + teleName + ".pitch", pitch);
-		config.set(game.getName() + ".Teleporters." + teleName + ".yaw", yaw);
+		conf.set(game.getName() + ".Teleporters." + teleName + ".x", x);
+		conf.set(game.getName() + ".Teleporters." + teleName + ".y", y);
+		conf.set(game.getName() + ".Teleporters." + teleName + ".z", z);
+		conf.set(game.getName() + ".Teleporters." + teleName + ".pitch", pitch);
+		conf.set(game.getName() + ".Teleporters." + teleName + ".yaw", yaw);
 		
 		conf.saveConfig();
 	}
@@ -91,7 +84,7 @@ public class TeleporterManager
 		{
 			teleporters.remove(teleName);
 			
-			conf.getFileConfiguration().set(game.getName() + ".Teleporters." + teleName, null);
+			conf.set(game.getName() + ".Teleporters." + teleName, null);
 			
 			conf.saveConfig();
 		}

@@ -40,8 +40,7 @@ public class DisablePowerCommand implements SubCommand
 						return true;
 					}
 					CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
-					conf.getFileConfiguration().addDefault(game.getName() + ".Power", false);
-					conf.getFileConfiguration().set(game.getName() + ".Power", false);
+					conf.set(game.getName() + ".Power", false);
 					game.enable();
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Power diabled!");
 					conf.saveConfig();

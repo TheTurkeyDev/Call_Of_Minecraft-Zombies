@@ -51,7 +51,7 @@ public class DoorManager
 		String location = game.getName() + ".Doors";
 		try
 		{
-			for (String key : plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getConfigurationSection(location).getKeys(false))
+			for (String key : plugin.configManager.getConfig("ArenaConfig").getConfigurationSection(location).getKeys(false))
 			{
 				Door door = new Door(plugin, game, Integer.parseInt(key.substring(4)));
 				door.loadAll();

@@ -43,9 +43,7 @@ public class JoinCommand implements SubCommand
 							Game game = manager.games.get(i);
 							if (game.spawnManager.getPoints().size() == 0) continue;
 							CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
-							conf.getFileConfiguration().getInt(game.getName() + ".maxPlayers", 8);
-							conf.saveConfig();
-							if (conf.getFileConfiguration().getInt(game.getName() + ".maxPlayers") <= game.players.size()) continue;
+							if (conf.getInt(game.getName() + ".maxPlayers", 8) <= game.players.size()) continue;
 							if (player.hasPermission("zombies.join." + game.getName()))
 							{
 								game.addPlayer(player);
@@ -84,7 +82,7 @@ public class JoinCommand implements SubCommand
 							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Arena has no spawn points!");
 							return true;
 						}
-						if (plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getInt(game.getName() + ".maxPlayers") <= game.players.size())
+						if (plugin.configManager.getConfig("ArenaConfig").getInt(game.getName() + ".maxPlayers", 8) <= game.players.size())
 						{
 							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Game is full!");
 							return true;

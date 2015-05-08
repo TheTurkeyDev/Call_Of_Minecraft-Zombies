@@ -12,7 +12,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import com.zombies.COMZombies;
@@ -39,7 +38,7 @@ public class BoxManager
 
 	public void loadAllBoxesToGame()
 	{
-		FileConfiguration config = plugin.configManager.getConfig("ArenaConfig").getFileConfiguration();
+		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
 		boxes.clear();
 		try
 		{
@@ -94,7 +93,7 @@ public class BoxManager
 		if (boxes.contains(box))
 		{
 			Location loc = box.getLocation();
-			conf.getFileConfiguration().set(game.getName() + ".MysteryBoxs." + box.getName(), null);
+			conf.set(game.getName() + ".MysteryBoxs." + box.getName(), null);
 			conf.saveConfig();
 			loadAllBoxesToGame();
 			player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "MysteryBox removed!");
@@ -106,7 +105,6 @@ public class BoxManager
 	public void addBox(RandomBox box)
 	{
 		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
-		FileConfiguration config = conf.getFileConfiguration();
 		if (game.mode == ArenaStatus.DISABLED || game.mode == ArenaStatus.WAITING)
 		{
 			boolean same = false;
@@ -121,11 +119,11 @@ public class BoxManager
 			{
 				Location loc = box.getLocation();
 				String name = box.getName();
-				config.set(game.getName() + ".MysteryBoxs." + name + ".x", loc.getBlockX());
-				config.set(game.getName() + ".MysteryBoxs." + name + ".y", loc.getBlockY());
-				config.set(game.getName() + ".MysteryBoxs." + name + ".z", loc.getBlockZ());
-				config.set(game.getName() + ".MysteryBoxs." + name + ".Cost", box.getCost());
-				config.set(game.getName() + ".MysteryBoxs." + name + ".Face", "");
+				conf.set(game.getName() + ".MysteryBoxs." + name + ".x", loc.getBlockX());
+				conf.set(game.getName() + ".MysteryBoxs." + name + ".y", loc.getBlockY());
+				conf.set(game.getName() + ".MysteryBoxs." + name + ".z", loc.getBlockZ());
+				conf.set(game.getName() + ".MysteryBoxs." + name + ".Cost", box.getCost());
+				conf.set(game.getName() + ".MysteryBoxs." + name + ".Face", "");
 				conf.saveConfig();
 				boxes.add(box);
 			}

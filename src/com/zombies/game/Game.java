@@ -22,7 +22,6 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.v1_7_R4.CraftServer;
 import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
 import org.bukkit.entity.Entity;
@@ -254,7 +253,7 @@ public class Game
 		plugin = zombies;
 		arenaName = name;
 		
-		powerEnabled = plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getBoolean(name + ".Power");
+		powerEnabled = plugin.configManager.getConfig("ArenaConfig").getBoolean(name + ".Power", false);
 		
 		starter = new AutoStart(plugin, this, 60);
 		
@@ -276,13 +275,7 @@ public class Game
 		doorManager.loadAllDoorsToGame();
 		teleporterManager.loadAllTeleportersToGame();
 		
-		try
-		{
-			enable();
-		} catch (NullPointerException e)
-		{
-		}
-		if (plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getBoolean(arenaName + ".IsForceNight"))
+		if (plugin.configManager.getConfig("ArenaConfig").getBoolean(arenaName + ".IsForceNight", false))
 		{
 			forceNight();
 		}
@@ -655,7 +648,7 @@ public class Game
 			plugin.pointManager.setPoints(player, 500);
 			assignPlayerInventory(player);
 			player.setGameMode(GameMode.SURVIVAL);
-			String gunName = plugin.configManager.getConfig("GunConfig").getFileConfiguration().getString("StartingGun");
+			String gunName = plugin.configManager.getConfig("GunConfig").getString("StartingGun", "M1911");
 			waveNumber = 0;
 			for (Player pl : players)
 			{
@@ -684,7 +677,7 @@ public class Game
 			{
 				CommandUtil.sendMessageToPlayer(pl, player.getName() + " has joined with " + players.size() + "/" + maxPlayers + "!");
 			}
-			if (players.size() >= plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getInt(arenaName + ".minPlayers"))
+			if (players.size() >= plugin.configManager.getConfig("ArenaConfig").getInt(arenaName + ".minPlayers"))
 			{
 				if (starter == null)
 				{
@@ -726,7 +719,7 @@ public class Game
 		players.remove(player);
 		for (Player pl : players)
 		{
-			CommandUtil.sendMessageToPlayer(pl, player.getName() + " has left the game! Only " + players.size() + "/" + plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getInt(arenaName + ".maxPlayers") + " players left!");
+			CommandUtil.sendMessageToPlayer(pl, player.getName() + " has left the game! Only " + players.size() + "/" + this.maxPlayers + " players left!");
 		}
 		if (players.size() == 0)
 		{
@@ -819,7 +812,7 @@ public class Game
 		players.remove(player);
 		for (Player pl : players)
 		{
-			if (!isDisabled) CommandUtil.sendMessageToPlayer(pl, player.getName() + " has left the game! Only " + players.size() + "/" + plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getInt(arenaName + ".maxPlayers") + " players left!");
+			if (!isDisabled) CommandUtil.sendMessageToPlayer(pl, player.getName() + " has left the game! Only " + players.size() + "/" + this.maxPlayers + " players left!");
 		}
 		if (players.size() == 0)
 		{
@@ -898,7 +891,7 @@ public class Game
 	 */
 	public World getWorld()
 	{
-		return plugin.getServer().getWorld(plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getString(arenaName + ".Location.world"));
+		return plugin.getServer().getWorld(plugin.configManager.getConfig("ArenaConfig").getString(arenaName + ".Location.world"));
 	}
 	
 	/**
@@ -1065,35 +1058,34 @@ public class Game
 	public void saveLocationsInConfig(Player player)
 	{
 		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
-		FileConfiguration config = conf.getFileConfiguration();
 		
 		if (min.getWorld().getName() != null)
 		{
-			config.set(arenaName + ".Location.world", min.getWorld().getName());
+			conf.set(arenaName + ".Location.world", min.getWorld().getName());
 		}
 		try
 		{
-			config.set(arenaName + ".Location.P1.x", min.getBlockX());
-			config.set(arenaName + ".Location.P1.y", min.getBlockY());
-			config.set(arenaName + ".Location.P1.z", min.getBlockZ());
-			config.set(arenaName + ".Location.P2.x", max.getBlockX());
-			config.set(arenaName + ".Location.P2.y", max.getBlockY());
-			config.set(arenaName + ".Location.P2.z", max.getBlockZ());
-			config.set(arenaName + ".PlayerSpawn.x", playerTPLocation.getBlockX());
-			config.set(arenaName + ".PlayerSpawn.y", playerTPLocation.getBlockY());
-			config.set(arenaName + ".PlayerSpawn.z", playerTPLocation.getBlockZ());
-			config.set(arenaName + ".PlayerSpawn.pitch", playerTPLocation.getPitch());
-			config.set(arenaName + ".PlayerSpawn.yaw", playerTPLocation.getYaw());
-			config.set(arenaName + ".SpectatorSpawn.x", spectateLocation.getBlockX());
-			config.set(arenaName + ".SpectatorSpawn.y", spectateLocation.getBlockY());
-			config.set(arenaName + ".SpectatorSpawn.z", spectateLocation.getBlockZ());
-			config.set(arenaName + ".SpectatorSpawn.pitch", spectateLocation.getPitch());
-			config.set(arenaName + ".SpectatorSpawn.yaw", spectateLocation.getYaw());
-			config.set(arenaName + ".LobbySpawn.x", lobbyLocation.getBlockX());
-			config.set(arenaName + ".LobbySpawn.y", lobbyLocation.getBlockY());
-			config.set(arenaName + ".LobbySpawn.z", lobbyLocation.getBlockZ());
-			config.set(arenaName + ".LobbySpawn.pitch", lobbyLocation.getPitch());
-			config.set(arenaName + ".LobbySpawn.yaw", lobbyLocation.getYaw());
+			conf.set(arenaName + ".Location.P1.x", min.getBlockX());
+			conf.set(arenaName + ".Location.P1.y", min.getBlockY());
+			conf.set(arenaName + ".Location.P1.z", min.getBlockZ());
+			conf.set(arenaName + ".Location.P2.x", max.getBlockX());
+			conf.set(arenaName + ".Location.P2.y", max.getBlockY());
+			conf.set(arenaName + ".Location.P2.z", max.getBlockZ());
+			conf.set(arenaName + ".PlayerSpawn.x", playerTPLocation.getBlockX());
+			conf.set(arenaName + ".PlayerSpawn.y", playerTPLocation.getBlockY());
+			conf.set(arenaName + ".PlayerSpawn.z", playerTPLocation.getBlockZ());
+			conf.set(arenaName + ".PlayerSpawn.pitch", playerTPLocation.getPitch());
+			conf.set(arenaName + ".PlayerSpawn.yaw", playerTPLocation.getYaw());
+			conf.set(arenaName + ".SpectatorSpawn.x", spectateLocation.getBlockX());
+			conf.set(arenaName + ".SpectatorSpawn.y", spectateLocation.getBlockY());
+			conf.set(arenaName + ".SpectatorSpawn.z", spectateLocation.getBlockZ());
+			conf.set(arenaName + ".SpectatorSpawn.pitch", spectateLocation.getPitch());
+			conf.set(arenaName + ".SpectatorSpawn.yaw", spectateLocation.getYaw());
+			conf.set(arenaName + ".LobbySpawn.x", lobbyLocation.getBlockX());
+			conf.set(arenaName + ".LobbySpawn.y", lobbyLocation.getBlockY());
+			conf.set(arenaName + ".LobbySpawn.z", lobbyLocation.getBlockZ());
+			conf.set(arenaName + ".LobbySpawn.pitch", lobbyLocation.getPitch());
+			conf.set(arenaName + ".LobbySpawn.yaw", lobbyLocation.getYaw());
 			conf.saveConfig();
 			conf.reloadConfig();
 			
@@ -1112,32 +1104,31 @@ public class Game
 	public void enable()
 	{
 		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
-		FileConfiguration config = conf.getFileConfiguration();
 		conf.reloadConfig();
-		if (config.getString(arenaName + ".Location.world") == null) worldName = arena.getWorld();
-		else worldName = config.getString(arenaName + ".Location.world");
-		int x1 = config.getInt(arenaName + ".Location.P1.x");
-		int y1 = config.getInt(arenaName + ".Location.P1.y");
-		int z1 = config.getInt(arenaName + ".Location.P1.z");
-		int x2 = config.getInt(arenaName + ".Location.P2.x");
-		int y2 = config.getInt(arenaName + ".Location.P2.y");
-		int z2 = config.getInt(arenaName + ".Location.P2.z");
-		int x3 = config.getInt(arenaName + ".PlayerSpawn.x");
-		int y3 = config.getInt(arenaName + ".PlayerSpawn.y");
-		int z3 = config.getInt(arenaName + ".PlayerSpawn.z");
-		int pitch3 = config.getInt(arenaName + ".PlayerSpawn.pitch");
-		int yaw3 = config.getInt(arenaName + ".PlayerSpawn.yaw");
-		int x4 = config.getInt(arenaName + ".SpectatorSpawn.x");
-		int y4 = config.getInt(arenaName + ".SpectatorSpawn.y");
-		int z4 = config.getInt(arenaName + ".SpectatorSpawn.z");
-		int pitch4 = config.getInt(arenaName + ".SpectatorSpawn.pitch");
-		int yaw4 = config.getInt(arenaName + ".SpectatorSpawn.yaw");
-		int x5 = config.getInt(arenaName + ".LobbySpawn.x");
-		int y5 = config.getInt(arenaName + ".LobbySpawn.y");
-		int z5 = config.getInt(arenaName + ".LobbySpawn.z");
-		int pitch5 = config.getInt(arenaName + ".LobbySpawn.pitch");
-		int yaw5 = config.getInt(arenaName + ".LobbySpawn.yaw");
-		maxPlayers = config.getInt(arenaName + ".maxPlayers");
+		if (conf.getString(arenaName + ".Location.world") == null) worldName = arena.getWorld();
+		else worldName = conf.getString(arenaName + ".Location.world");
+		int x1 = conf.getInt(arenaName + ".Location.P1.x");
+		int y1 = conf.getInt(arenaName + ".Location.P1.y");
+		int z1 = conf.getInt(arenaName + ".Location.P1.z");
+		int x2 = conf.getInt(arenaName + ".Location.P2.x");
+		int y2 = conf.getInt(arenaName + ".Location.P2.y");
+		int z2 = conf.getInt(arenaName + ".Location.P2.z");
+		int x3 = conf.getInt(arenaName + ".PlayerSpawn.x");
+		int y3 = conf.getInt(arenaName + ".PlayerSpawn.y");
+		int z3 = conf.getInt(arenaName + ".PlayerSpawn.z");
+		int pitch3 = conf.getInt(arenaName + ".PlayerSpawn.pitch");
+		int yaw3 = conf.getInt(arenaName + ".PlayerSpawn.yaw");
+		int x4 = conf.getInt(arenaName + ".SpectatorSpawn.x");
+		int y4 = conf.getInt(arenaName + ".SpectatorSpawn.y");
+		int z4 = conf.getInt(arenaName + ".SpectatorSpawn.z");
+		int pitch4 = conf.getInt(arenaName + ".SpectatorSpawn.pitch");
+		int yaw4 = conf.getInt(arenaName + ".SpectatorSpawn.yaw");
+		int x5 = conf.getInt(arenaName + ".LobbySpawn.x");
+		int y5 = conf.getInt(arenaName + ".LobbySpawn.y");
+		int z5 = conf.getInt(arenaName + ".LobbySpawn.z");
+		int pitch5 = conf.getInt(arenaName + ".LobbySpawn.pitch");
+		int yaw5 = conf.getInt(arenaName + ".LobbySpawn.yaw");
+		maxPlayers = conf.getInt(arenaName + ".maxPlayers", 8);
 		Location minLoc = new Location(Bukkit.getWorld(worldName), x1, y1, z1);
 		Location maxLoc = new Location(Bukkit.getWorld(worldName), x2, y2, z2);
 		Location pwarp = new Location(Bukkit.getWorld(worldName), x3, y3, z3, yaw3, pitch3);
@@ -1161,96 +1152,88 @@ public class Game
 		
 		// Sets up ArenaConfig
 		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
-		FileConfiguration config = conf.getFileConfiguration();
 		// Adding ArenaName
 		String loc = arenaName;
-		config.addDefault(loc + ".Power", false);
-		config.set(loc + ".Power", false);
-		config.addDefault(loc, null);
+		conf.set(loc + ".Power", false);
 		// Adds Location
 		String locL = loc + ".Location";
-		config.addDefault(locL, null);
+		conf.set(locL, null);
 		// adds arenas world
-		config.addDefault(locL + ".World", null);
+		conf.set(locL + ".World", null);
 		// Adds p1
 		String locP1 = locL + ".P1";
-		config.addDefault(locP1, null);
+		conf.set(locP1, null);
 		// Adds p2
 		String locP2 = locL + ".P2";
-		config.addDefault(locP2, null);
+		conf.set(locP2, null);
 		// adds point1x
-		config.addDefault(locP1 + ".x", null);
+		conf.set(locP1 + ".x", null);
 		// adds point1y
-		config.addDefault(locP1 + ".y", null);
+		conf.set(locP1 + ".y", null);
 		// adds point1z
-		config.addDefault(locP1 + ".z", null);
+		conf.set(locP1 + ".z", null);
 		// adds point2x
-		config.addDefault(locP2 + ".x", null);
+		conf.set(locP2 + ".x", null);
 		// adds point2y
-		config.addDefault(locP2 + ".y", null);
+		conf.set(locP2 + ".y", null);
 		// adds point2z
-		config.addDefault(locP2 + ".z", null);
+		conf.set(locP2 + ".z", null);
 		// adds arenas dificulty
 		// plugin.files.getArenasFile().addDefault(, "EASY");
 		// adds the playerwarp main
 		String locPS = loc + ".PlayerSpawn";
-		config.addDefault(locPS, null);
+		conf.set(locPS, null);
 		// adds the playerwarpsx
-		config.addDefault(locPS + ".x", null);
+		conf.set(locPS + ".x", null);
 		// adds the playerwarpsy
-		config.addDefault(locPS + ".y", null);
+		conf.set(locPS + ".y", null);
 		// adds the playerwarpsz
-		config.addDefault(locPS + ".z", null);
+		conf.set(locPS + ".z", null);
 		
 		String locLB = loc + ".LobbySpawn";
 		// adds the lobby LB spawn
-		config.addDefault(locLB, null);
+		conf.set(locLB, null);
 		// adds the lobby LB spawn for the X coord
-		config.addDefault(locLB + ".x", null);
+		conf.set(locLB + ".x", null);
 		// adds the lobby LB spawn for the Y coord
-		config.addDefault(locLB + ".y", null);
+		conf.set(locLB + ".y", null);
 		// adds the lobby LB spawn for the Z coord
-		config.addDefault(locLB + ".z", null);
+		conf.set(locLB + ".z", null);
 		// adds specatorMain
 		String locSS = loc + ".SpectatorSpawn";
-		config.addDefault(locSS, 0);
+		conf.set(locSS, 0);
 		// adds specatorx
-		config.addDefault(locSS + ".x", 0);
+		conf.set(locSS + ".x", 0);
 		// adds specatory
-		config.addDefault(locSS + ".y", 0);
+		conf.set(locSS + ".y", 0);
 		// adds specatorz
-		config.addDefault(locSS + ".z", 0);
+		conf.set(locSS + ".z", 0);
 		// adds ZombieSpawn Main
 		String locZS = loc + ".ZombieSpawns";
-		config.addDefault(locZS, null);
+		conf.set(locZS, null);
 		// adds PerkMachine main
 		String locPMS = locL + ".PerkMachines";
-		config.addDefault(locPMS, null);
+		conf.set(locPMS, null);
 		// adds PerkMachine main
 		String locMBL = locL + ".MysteryBoxLocations";
-		config.addDefault(locMBL, null);
+		conf.set(locMBL, null);
 		// adds Door Locations main
 		String locD = loc + ".Doors";
-		config.addDefault(locD, null);
+		conf.set(locD, null);
 		
 		String isForceNight = loc + ".IsForceNight";
-		config.addDefault(isForceNight, false);
-		config.set(isForceNight, false);
+		conf.set(isForceNight, false);
 		
 		String minToStart = loc + ".minPlayers";
-		config.addDefault(minToStart, 1);
-		config.set(minToStart, 1);
+		conf.set(minToStart, 1);
 		
 		String spawnDelay = loc + ".ZombieSpawnDelay";
-		config.addDefault(spawnDelay, 15);
-		config.set(spawnDelay, 15);
+		conf.set(spawnDelay, 15);
 		// Setup starting items data, default vaules added.
 		ArrayList<String> startItems = new ArrayList<String>();
-		config.addDefault(loc + ".StartingItems", startItems);
-		config.set(loc + ".StartingItems", startItems);
-		config.set(loc, null);
-		config.addDefault(loc + ".maxPlayers", 8);
-		config.set(loc + ".maxPlayers", 8);
+		conf.set(loc + ".StartingItems", startItems);
+		conf.set(loc, null);
+		conf.set(loc + ".maxPlayers", 8);
 		// Saves and reloads Arenaconfig
 		conf.saveConfig();	
 	}
@@ -1265,7 +1248,7 @@ public class Game
 		try
 		{
 			for (@SuppressWarnings("unused")
-			String key :plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getConfigurationSection(arenaName + ".ZombieSpawns").getKeys(false))
+			String key :plugin.configManager.getConfig("ArenaConfig").getConfigurationSection(arenaName + ".ZombieSpawns").getKeys(false))
 			{
 				spawnNum++;
 			}
@@ -1284,7 +1267,6 @@ public class Game
 	{
 		World world = null;
 		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
-		FileConfiguration config = conf.getFileConfiguration();
 		try
 		{
 			world = spawn.getLocation().getWorld();
@@ -1297,14 +1279,10 @@ public class Game
 		double y = spawn.getLocation().getBlockY();
 		double z = spawn.getLocation().getBlockZ();
 		int spawnNum = getCurrentSpawnPoint();
-		config.addDefault(arenaName + ".ZombieSpawns.spawn" + spawnNum, null);
-		config.addDefault(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".x", x);
-		config.addDefault(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".y", y);
-		config.addDefault(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".z", z);
-		config.set(arenaName + ".ZombieSpawns.spawn" + spawnNum, null);
-		config.set(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".x", x);
-		config.set(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".y", y);
-		config.set(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".z", z);
+		conf.set(arenaName + ".ZombieSpawns.spawn" + spawnNum, null);
+		conf.set(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".x", x);
+		conf.set(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".y", y);
+		conf.set(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".z", z);
 		
 		conf.saveConfig();
 	}
@@ -1315,11 +1293,9 @@ public class Game
 	public void removeFromConfig()
 	{
 		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
-		FileConfiguration config = conf.getFileConfiguration();
 		try
 		{
-			config.addDefault(arenaName, null);
-			config.set(arenaName, null);
+			conf.set(arenaName, null);
 			conf.saveConfig();
 		} catch (Exception e)
 		{
@@ -1346,7 +1322,7 @@ public class Game
 		try
 		{
 			for (@SuppressWarnings("unused")
-			String s : plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getConfigurationSection(arenaName + ".Doors").getKeys(false))
+			String s : plugin.configManager.getConfig("ArenaConfig").getConfigurationSection(arenaName + ".Doors").getKeys(false))
 			{
 				i++;
 			}
@@ -1367,7 +1343,7 @@ public class Game
 		try
 		{
 			for (@SuppressWarnings("unused")
-			String s : plugin.configManager.getConfig("ArenaConfig").getFileConfiguration().getConfigurationSection(arenaName + ".Doors.door" + doorNumber + ".Signs").getKeys(false))
+			String s : plugin.configManager.getConfig("ArenaConfig").getConfigurationSection(arenaName + ".Doors.door" + doorNumber + ".Signs").getKeys(false))
 			{
 				i++;
 			}
@@ -1386,11 +1362,10 @@ public class Game
 	public void addDoorSpawnPointToConfig(Door door, SpawnPoint spawnPoint)
 	{
 		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
-		FileConfiguration config = conf.getFileConfiguration();
-		List<String> spawnPoints = config.getStringList(arenaName + ".Doors.door" + door.doorNumber + ".SpawnPoints");
+		List<String> spawnPoints = conf.getStringList(arenaName + ".Doors.door" + door.doorNumber + ".SpawnPoints");
 		if (spawnPoints.contains(spawnPoint.getName())) return;
 		spawnPoints.add(spawnPoint.getName());
-		config.set(arenaName + ".Doors.door" + door.doorNumber + ".SpawnPoints", spawnPoints);
+		conf.set(arenaName + ".Doors.door" + door.doorNumber + ".SpawnPoints", spawnPoints);
 		
 		conf.saveConfig();
 	}
@@ -1403,17 +1378,13 @@ public class Game
 	public void addDoorSignToConfig(Door door, Location location)
 	{
 		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
-		FileConfiguration config = conf.getFileConfiguration();
 		int x = location.getBlockX();
 		int y = location.getBlockY();
 		int z = location.getBlockZ();
 		int num = getCurrentDoorSignNumber(door.doorNumber);
-		config.addDefault(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".x", x);
-		config.addDefault(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".y", y);
-		config.addDefault(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".z", z);
-		config.set(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".x", x);
-		config.set(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".y", y);
-		config.set(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".z", z);
+		conf.set(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".x", x);
+		conf.set(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".y", y);
+		conf.set(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".z", z);
 		
 		conf.saveConfig();
 	}
@@ -1586,13 +1557,12 @@ public class Game
 	public void zombieKilled(Player player)
 	{
 		CustomConfig conf = plugin.configManager.getConfig("kills");
-		FileConfiguration config = conf.getFileConfiguration();
 		Leaderboards lb = plugin.leaderboards;
-		if(config.contains("Kills." + player.getName()))
+		if(conf.contains("Kills." + player.getName()))
 		{
-			int kills =config.getInt("Kills." + player.getName());
+			int kills =conf.getInt("Kills." + player.getName());
 			kills++;
-			config.set("Kills." + player.getName(), kills);
+			conf.set("Kills." + player.getName(), kills);
 			PlayerStats stat = lb.getPlayerStatFromPlayer(player);
 			if(stat == null)
 			{
@@ -1606,7 +1576,7 @@ public class Game
 		}
 		else
 		{
-			config.set("Kills." + player.getName(), 1);
+			conf.set("Kills." + player.getName(), 1);
 			PlayerStats stat = new PlayerStats(player.getName(), 1);
 			lb.addPlayerStats(stat);
 			

@@ -2,7 +2,6 @@ package com.zombies.listeners;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -129,10 +128,8 @@ public class OnSignChangeEvent implements Listener
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type /z removepower " + game.getName() + " to disable the power!");
 					
 					CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
-					FileConfiguration config = conf.getFileConfiguration();
 					
-					config.addDefault(game.getName() + ".Power", null);
-					config.set(game.getName() + ".Power", true);
+					conf.set(game.getName() + ".Power", true);
 
 					conf.saveConfig();
 				}
