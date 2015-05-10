@@ -46,7 +46,7 @@ public class KickCommand implements SubCommand
 								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You may not kick yourself! " + ChatColor.GOLD + "Type /z leave to leave!");
 								return true;
 							}
-							game.playerLeave(kick);
+							game.playerLeave(kick, false);
 							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You kicked " + ChatColor.GOLD + kick.getName() + ChatColor.RED + " from the arena " + ChatColor.GOLD + game.getName() + ChatColor.RED + "!");
 							return true;
 						}

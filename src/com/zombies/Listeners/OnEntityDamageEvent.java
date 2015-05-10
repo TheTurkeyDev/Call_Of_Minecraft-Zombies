@@ -267,7 +267,15 @@ public class OnEntityDamageEvent implements Listener
 		{
 			player.setFireTicks(0);
 		}
-		if(game.downedPlayerManager.getDownedPlayers().size() + 1 == game.players.size())
+		if (!game.downedPlayerManager.isPlayerDowned(player))
+		{
+			Bukkit.broadcastMessage(COMZombies.prefix + player.getName() + " Has gone down! Stand close and right click him to revive");
+			DownedPlayer down = new DownedPlayer(player, game);
+			down.setPlayerDown(true);
+			game.downedPlayerManager.addDownedPlayer(down);
+			player.setHealth(1);
+		}
+		if(game.downedPlayerManager.getDownedPlayers().size() == game.players.size())
 		{
 			for (DownedPlayer downedPlayer : game.downedPlayerManager.getDownedPlayers())
 			{
@@ -275,13 +283,6 @@ public class OnEntityDamageEvent implements Listener
 			}
 			game.endGame();
 			return;
-		}
-		if (!game.downedPlayerManager.isPlayerDowned(player))
-		{
-			DownedPlayer down = new DownedPlayer(player, game);
-			down.setPlayerDown(true);
-			game.downedPlayerManager.addDownedPlayer(down);
-			player.setHealth(1);
 		}
 	}
 	

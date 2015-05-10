@@ -33,7 +33,7 @@ config:
     #This is multiplied by a factor of 1.2
     waveSpawnInterval: 7
     #Interval between zombies spawning, value decreases as rounds go up
-    zombieSpawnDelay: 15
+    zombieSpawnDelay: 10
     #Time it takes for an arena to start
     arenaStartTime: 60
     #Apply Scope when zooming in if textured

@@ -180,7 +180,7 @@ public class Game
 	 * Auto start timer, constructed upon join.
 	 */
 	public AutoStart starter;
-
+	
 	/**
 	 * contains all of the Mysteryboxes in the game
 	 */
@@ -454,7 +454,7 @@ public class Game
 	public boolean startArena()
 	{
 		if (mode == ArenaStatus.INGAME) { return false; }
-		
+		mode = ArenaStatus.INGAME;
 		for (Player player : players)
 		{
 			player.teleport(playerTPLocation);
@@ -523,7 +523,6 @@ public class Game
 		} catch (Exception e)
 		{
 		}
-		mode = ArenaStatus.INGAME;
 		this.waveNumber = 0;
 		nextWave();
 		updateJoinSigns();
@@ -706,35 +705,34 @@ public class Game
 	 * Removes the given player from the game
 	 * @param player to be removed from the game
 	 */
-	public void playerLeave(Player player)
+	public void playerLeave(Player player, boolean endGame)
 	{
-		players.remove(player);
-		for (Player pl : players)
+		if(!endGame)
 		{
-			CommandUtil.sendMessageToPlayer(pl, player.getName() + " has left the game! Only " + players.size() + "/" + this.maxPlayers + " players left!");
-		}
-		if (players.size() == 0)
-		{
-			if (!isDisabled)
+			players.remove(player);
+			if (players.size() == 0)
 			{
-				mode = ArenaStatus.WAITING;
-				starter = null;
-				players.clear();
-				waveNumber = 0;
-				plugin.pointManager.clearGamePoints(this);
-				endGame();
-				for (int i = 0; i < doorManager.getDoors().size(); i++)
+				if (!isDisabled)
 				{
-					doorManager.getDoors().get(i).closeDoor();
+					mode = ArenaStatus.WAITING;
+					starter = null;
+					players.clear();
+					waveNumber = 0;
+					plugin.pointManager.clearGamePoints(this);
+					endGame();
+					for (int i = 0; i < doorManager.getDoors().size(); i++)
+					{
+						doorManager.getDoors().get(i).closeDoor();
+					}
 				}
 			}
-		}
-		try
-		{
 			if (downedPlayerManager.isPlayerDowned(player))
 			{
 				downedPlayerManager.removeDownedPlayer(player);
 			}
+		}
+		try
+		{
 			resetPlayer(player);
 			playersGuns.remove(player);
 			try
@@ -966,13 +964,14 @@ public class Game
 	 */
 	public void endGame()
 	{
-		for (int i = 0; i < players.size(); i++)
+		this.mode = ArenaStatus.WAITING;
+		for (Player p: players)
 		{
 			double points = waveNumber;
-			plugin.vault.addMoney(players.get(i).getName(), points);
-			CommandUtil.sendMessageToPlayer(players.get(i), "You got " + points + " for getting to round: " + waveNumber + "!");
-			scoreboard.removePlayer(players.get(i));
-			playerLeave(players.get(i));
+			plugin.vault.addMoney(p.getName(), points);
+			CommandUtil.sendMessageToPlayer(p, "You got " + points + " for getting to round: " + waveNumber + "!");
+			scoreboard.removePlayer(p);
+			playerLeave(p, true);
 		}
 		spawnManager.killAll(false);
 		spawnManager.reset();
@@ -990,6 +989,7 @@ public class Game
 		boxManager.unloadAllBoxes();
 		barrierManager.unloadAllBarriers();
 		players.clear();
+		this.starter = null;
 		scoreboard = new GameScoreboard(this);
 		instaKill = false;
 		doublePoints = false;

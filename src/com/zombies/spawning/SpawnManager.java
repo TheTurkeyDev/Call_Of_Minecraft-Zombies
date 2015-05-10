@@ -1,6 +1,7 @@
 package com.zombies.spawning;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -346,9 +347,9 @@ public class SpawnManager
 	
 	public void update()
 	{
+		if (game.mode != ArenaStatus.INGAME){ Bukkit.broadcastMessage("[COM:Z Error] The game mode was not ingame! it was: " + game.mode + " Report this to the COM:Z devs"); return;}
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 		{
-			
 			@Override
 			public void run()
 			{
@@ -357,14 +358,20 @@ public class SpawnManager
 					Player closest = getNearestPlayer(zomb);
 					Zombie z = (Zombie) zomb;
 					z.setTarget(closest);
-					Bukkit.broadcastMessage("Zombie at: " + z.getLocation().toString());
 				}
-				if (game.mode != ArenaStatus.INGAME) return;
 				Iterator<Entity> mobsIter = mobs.iterator();
 				while(mobsIter.hasNext())
 				{
-					Entity ent = mobsIter.next();
-					if (ent.isDead())
+					try{
+						Entity ent = mobsIter.next();
+						if (ent.isDead())
+						{
+							zombiesSpawned--;
+							mobsIter.remove();
+							smartSpawn(game.waveNumber, game.players);
+							updated = true;
+						}
+					}catch(ConcurrentModificationException e)
 					{
 						zombiesSpawned--;
 						mobsIter.remove();
