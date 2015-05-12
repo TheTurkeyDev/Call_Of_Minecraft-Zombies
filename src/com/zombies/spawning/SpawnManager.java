@@ -265,7 +265,7 @@ public class SpawnManager
 				curr = 0;
 				continue;
 			}
-			selectPoint = points.get(((int) (Math.random() * points.size())));
+			selectPoint = points.get(((int) (Math.random(1, points.size())));
 			if (!(canSpawn(selectPoint))) selectPoint = null;
 			curr++;
 			if (totalRetries > 1000) oopsWeHadAnError();
@@ -286,7 +286,7 @@ public class SpawnManager
 		zomb.setHealth(strength<=20?strength:20);
 		if (game.waveNumber > 4)
 		{
-			if (((int) (Math.random() * 100)) < game.waveNumber * 5) setSpeed(zomb, (float) (Math.random()));
+			if (((int) (Math.random(1, 100)) < game.waveNumber * 5) setSpeed(zomb, (float) (Math.random()));
 		}
 		mobs.add(zomb);
 		zombiesSpawned++;
