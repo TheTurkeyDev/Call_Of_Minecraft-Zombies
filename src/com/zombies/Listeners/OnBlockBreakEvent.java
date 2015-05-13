@@ -128,16 +128,9 @@ public class OnBlockBreakEvent implements Listener
 				interact.setCancelled(true);
 			return;
 		}
-		try
+		if (manager.isLocationInGame(interact.getBlock().getLocation()))
 		{
-			if (manager.isLocationInGame(interact.getBlock().getLocation()))
-			{
-				interact.setCancelled(true);
-				return;
-			}
-		} catch (Exception e)
-		{
-			return;
+			interact.setCancelled(true);
 		}
 		if (interact.getBlock().getType().getId() == Material.WALL_SIGN.getId() || interact.getBlock().getType().getId() == Material.SIGN.getId() || interact.getBlock().getType().getId() == Material.SIGN_POST.getId())
 		{

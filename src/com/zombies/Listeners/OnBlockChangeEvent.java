@@ -9,20 +9,20 @@ import com.zombies.COMZombies;
 
 public class OnBlockChangeEvent implements Listener
 {
-
+	
 	private COMZombies plugin;
-
+	
 	public OnBlockChangeEvent(COMZombies pl)
 	{
 		plugin = pl;
 	}
-
+	
 	@EventHandler
 	public void onBlockChange(BlockDamageEvent event)
 	{
 		Location loc = event.getBlock().getLocation();
 		if (plugin.manager.isLocationInGame(loc))
-		{
+		{	
 			event.setCancelled(true);
 		}
 	}

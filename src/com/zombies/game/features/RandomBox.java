@@ -21,7 +21,7 @@ public class RandomBox
 	private Game boxGame;
 	private String boxNum;
 	private int boxCost;
-
+	
 	public RandomBox(Location loc, Game game, COMZombies plugin, String key, int cost)
 	{
 		this.plugin = plugin;
@@ -30,7 +30,7 @@ public class RandomBox
 		boxNum = key;
 		boxCost = cost;
 	}
-
+	
 	public void Start(final Player player, int PointsNeeded)
 	{
 		if (!(plugin.manager.isPlayerInGame(player))) { return; }
@@ -43,7 +43,7 @@ public class RandomBox
 		GunType gun = plugin.possibleGuns.get(0);
 		int randID = (int) (Math.random() * plugin.possibleGuns.size() + 1);
 		try{
-		gun = plugin.possibleGuns.get(randID);
+			gun = plugin.possibleGuns.get(randID);
 		}catch(IndexOutOfBoundsException e){if(!boxGame.isFireSale()){CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "TeadyBear!!!!!!");boxGame.boxManager.teddyBear();return;}else{randID = (int) Math.random() * plugin.possibleGuns.size();}}
 		GunManager manager = boxGame.getPlayersGun(player);
 		int slot = manager.getCorrectSlot();
@@ -54,12 +54,12 @@ public class RandomBox
 		plugin.pointManager.notifyPlayer(player);
 		/*plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
 		{
-			int time = 20;
+			int time = 15;
 			Item temp = null;
-			Location loc = boxLoc.add(0,1,0);
+			Location loc = boxLoc.add(.5,.2,.5);
 			Game game = plugin.manager.getGame(player);
-
-			/*public void run()
+			
+			public void run()
 			{
 				if (time != -1 && game.mode == ArenaStatus.INGAME)
 				{
@@ -69,11 +69,13 @@ public class RandomBox
 						GunType gun = plugin.possibleGuns.get(0);
 						int randID = (int) (Math.random() * plugin.possibleGuns.size() + 1);
 						try{
-						gun = plugin.possibleGuns.get(randID);
+							gun = plugin.possibleGuns.get(randID);
 						}catch(IndexOutOfBoundsException e){}
 						if (temp != null) temp.remove();
 						temp = Bukkit.getServer().getWorld(player.getWorld().getName()).dropItem(loc, new ItemStack(gun.categorizeGun()));
+						temp.setTicksLived(5960);
 						temp.setPickupDelay(1000);
+						temp.setVelocity(new Vector(0,0,0));
 						time--;
 					}
 					else
@@ -82,9 +84,9 @@ public class RandomBox
 					}
 				}
 			}
-		}, 0L, 20L);*/
+		}, 0L, 3L);*/
 	}
-
+	
 	public void loadBox()
 	{
 		boxLoc.getBlock().setType( Material.WALL_SIGN); 
@@ -99,17 +101,17 @@ public class RandomBox
 	{
 		boxLoc.getBlock().setType(Material.AIR);
 	}
-
+	
 	public Location getLocation()
 	{
 		return boxLoc;
 	}
-
+	
 	public String getName()
 	{
 		return boxNum;
 	}
-
+	
 	public int getCost()
 	{
 		return boxCost;

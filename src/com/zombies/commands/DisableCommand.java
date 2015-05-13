@@ -40,9 +40,6 @@ public class DisableCommand implements SubCommand
 					else
 					{
 						game.setDisabled();
-						game.endGame();
-						game.updateJoinSigns();
-						game.signManager.updateGame();
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Arena " + game.getName() + " has been disabled!");
 						return true;
 					}

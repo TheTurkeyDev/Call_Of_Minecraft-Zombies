@@ -941,10 +941,9 @@ public class Game
 	 */
 	public void setDisabled()
 	{
-		isDisabled = true;
 		endGame();
+		isDisabled = true;
 		mode = ArenaStatus.DISABLED;
-		updateJoinSigns();
 	}
 	
 	/**
@@ -986,7 +985,7 @@ public class Game
 		}
 		downedPlayerManager.clearDownedPlayers();
 		turnOffPower();
-		boxManager.unloadAllBoxes();
+		boxManager.loadAllBoxes();
 		barrierManager.unloadAllBarriers();
 		players.clear();
 		this.starter = null;

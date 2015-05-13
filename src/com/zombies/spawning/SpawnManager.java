@@ -130,7 +130,6 @@ public class SpawnManager
 	public void nuke()
 	{
 		killAll(false);
-		game.clearArena();
 	}
 	
 	public void killAll(boolean nextWave)
@@ -139,26 +138,6 @@ public class SpawnManager
 		for (int i = 0; i < mobs.size(); i++)
 		{
 			killMob(mobs.get(i));
-		}
-		ArrayList<LivingEntity> allMobs;
-		try
-		{
-			allMobs = (ArrayList<LivingEntity>) game.getWorld().getLivingEntities();
-		} catch (NullPointerException ex)
-		{
-			allMobs = new ArrayList<LivingEntity>();
-		}
-		try
-		{
-			for (int i = 0; i < allMobs.size(); i++)
-			{
-				if (game.arena.containsBlock(allMobs.get(i).getLocation()))
-				{
-					killMob((Entity) allMobs.get(i));
-				}
-			}
-		} catch (NullPointerException e)
-		{
 		}
 		if (nextWave) game.nextWave();
 		mobs.clear();
@@ -347,6 +326,7 @@ public class SpawnManager
 	
 	public void update()
 	{
+		if(!this.canSpawn)return;
 		if (game.mode != ArenaStatus.INGAME){ Bukkit.broadcastMessage("[COM:Z Error] The game mode was not ingame! it was: " + game.mode + " Report this to the COM:Z devs"); return;}
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 		{
