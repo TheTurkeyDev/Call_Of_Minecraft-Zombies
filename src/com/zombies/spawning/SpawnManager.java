@@ -250,7 +250,7 @@ public class SpawnManager
 			else updated = false;
 		}
 		if (plugin.config.maxZombies < zombiesToSpawn) zombiesToSpawn = plugin.config.maxZombies;
-		int selectPlayer = (int) (Math.random(1, players.size()));
+		int selectPlayer = (int) (Math.random() * players.size()) + 1);
 		SpawnPoint selectPoint = null;
 		Player player = players.get(selectPlayer);
 		ArrayList<SpawnPoint> points = getNearestPoints(player.getLocation(), zombiesToSpawn);
@@ -260,12 +260,12 @@ public class SpawnManager
 		{
 			if (curr == points.size())
 			{
-				player = players.get((int) (Math.random(1, players.size())));
+				player = players.get((int) ((Math.random() * players.size()) + 1));
 				points = getNearestPoints(player.getLocation(), zombiesToSpawn / players.size());
 				curr = 0;
 				continue;
 			}
-			selectPoint = points.get(((int) (Math.random(1, points.size())));
+			selectPoint = points.get(((int) ((Math.random() * points.size()) + 1)));
 			if (!(canSpawn(selectPoint))) selectPoint = null;
 			curr++;
 			if (totalRetries > 1000) oopsWeHadAnError();
@@ -286,7 +286,7 @@ public class SpawnManager
 		zomb.setHealth(strength<=20?strength:20);
 		if (game.waveNumber > 4)
 		{
-			if (((int) (Math.random(1, 100)) < game.waveNumber * 5) setSpeed(zomb, (float) (Math.random()));
+			if (((int) (((Math.random() * players.size()) + 1) < game.waveNumber * 5) setSpeed(zomb, (float) (Math.random()));
 		}
 		mobs.add(zomb);
 		zombiesSpawned++;
