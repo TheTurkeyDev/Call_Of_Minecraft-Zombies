@@ -5,7 +5,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import com.zombies.COMZombies;
-import com.zombies.CommandUtil;
 import com.zombies.game.Game;
 import com.zombies.game.features.Door;
 

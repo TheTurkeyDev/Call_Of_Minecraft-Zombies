@@ -1,6 +1,6 @@
-name: COM Zombies
+name: COM_Zombies
 main: com.zombies.COMZombies
-authors: [IModZombies4Fun, Turkey2349]
+authors: [Turkey2349]
 description: Beta
 version: 1.2.0
 load: POSTWORLD

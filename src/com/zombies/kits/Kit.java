@@ -7,7 +7,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.zombies.COMZombies;
-import com.zombies.CustomConfig;
+import com.zombies.config.CustomConfig;
 import com.zombies.game.Game;
 import com.zombies.game.features.PerkType;
 import com.zombies.guns.Gun;

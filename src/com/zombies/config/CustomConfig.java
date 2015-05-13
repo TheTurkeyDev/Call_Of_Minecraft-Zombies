@@ -1,13 +1,20 @@
-package com.zombies;
+package com.zombies.config;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import com.zombies.COMZombies;
 
 public class CustomConfig
 {	
@@ -22,13 +29,13 @@ public class CustomConfig
 	{
 		this.plugin = plugin;
 		this.name = name;
-		file = new File(plugin.getDataFolder(), name + ".yml");
 		if(loadFromExist)
 		{
 			this.loadConfigFromExisting();
 		}
 		else
 		{
+			file = new File(plugin.getDataFolder(), name + ".yml");
 			if (!file.exists())
 			{
 				try
@@ -46,18 +53,28 @@ public class CustomConfig
 	
 	private void loadConfigFromExisting()
 	{
-		if (file == null) {
+		if (file == null) 
+		{
 			file = new File(plugin.getDataFolder(), name + ".yml");
 		}
-		fileConfig = YamlConfiguration.loadConfiguration(file);
 		
-		InputStream defConfigStream = plugin.getResource(name + ".yml");
-		
-		if (defConfigStream != null) {
-			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(file);
-			fileConfig.setDefaults(defConfig);
+		try{
+			Reader defConfigStream = new InputStreamReader(plugin.getResource(name + ".yml"), "UTF8");
+			BufferedWriter writter = new  BufferedWriter(new FileWriter(file.getAbsolutePath()));
+			BufferedReader reader = new BufferedReader(defConfigStream);
+			String line = "";
+			while((line = reader.readLine()) != null)
+			{
+				writter.write(line + "\n");
+			}
+			reader.close();
+			writter.close();
+		}catch(IOException e)
+		{
+			plugin.log.log(Level.SEVERE, COMZombies.consoleprefix + " Unable to load the COM:Z default guns config! THIS IS BAD!!!");
 		}
-		this.saveConfig();
+		
+		fileConfig = YamlConfiguration.loadConfiguration(file);
 	}
 	
 	public void saveConfig()

@@ -4,8 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import com.zombies.COMZombies;
-import com.zombies.CommandUtil;
-import com.zombies.CustomConfig;
+import com.zombies.config.CustomConfig;
 import com.zombies.game.Game;
 import com.zombies.game.Game.ArenaStatus;
 

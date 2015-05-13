@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.zombies.COMZombies;
-import com.zombies.CommandUtil;
+import com.zombies.commands.CommandUtil;
 import com.zombies.game.Game;
 import com.zombies.game.features.PerkType;
 import com.zombies.listeners.OnZombiePerkDrop;

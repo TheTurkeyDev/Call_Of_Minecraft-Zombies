@@ -7,7 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.zombies.COMZombies;
-import com.zombies.CustomConfig;
+import com.zombies.config.CustomConfig;
 import com.zombies.game.Game;
 
 public class TeleporterManager

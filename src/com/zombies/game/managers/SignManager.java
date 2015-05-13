@@ -11,7 +11,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.zombies.COMZombies;
-import com.zombies.CustomConfig;
+import com.zombies.config.CustomConfig;
 import com.zombies.game.Game;
 import com.zombies.game.Game.ArenaStatus;
 

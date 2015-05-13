@@ -3,7 +3,7 @@ package com.zombies.game;
 import org.bukkit.entity.Player;
 
 import com.zombies.COMZombies;
-import com.zombies.CommandUtil;
+import com.zombies.commands.CommandUtil;
 import com.zombies.game.Game.ArenaStatus;
 import com.zombies.listeners.customEvents.GameStartEvent;
 

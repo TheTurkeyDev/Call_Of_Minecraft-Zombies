@@ -34,8 +34,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
 
 import com.zombies.COMZombies;
-import com.zombies.CommandUtil;
-import com.zombies.CustomConfig;
+import com.zombies.commands.CommandUtil;
+import com.zombies.config.CustomConfig;
 import com.zombies.game.features.Door;
 import com.zombies.game.features.DownedPlayer;
 import com.zombies.game.features.RandomBox;

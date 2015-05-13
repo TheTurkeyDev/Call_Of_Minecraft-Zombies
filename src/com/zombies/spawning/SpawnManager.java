@@ -25,7 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 
 import com.zombies.COMZombies;
-import com.zombies.CustomConfig;
+import com.zombies.config.CustomConfig;
 import com.zombies.game.Game;
 import com.zombies.game.Game.ArenaStatus;
 import com.zombies.game.features.Barrier;

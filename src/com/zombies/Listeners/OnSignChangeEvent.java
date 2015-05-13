@@ -8,8 +8,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.zombies.COMZombies;
-import com.zombies.CommandUtil;
-import com.zombies.CustomConfig;
+import com.zombies.commands.CommandUtil;
+import com.zombies.config.CustomConfig;
 import com.zombies.game.Game;
 import com.zombies.game.features.PerkType;
 import com.zombies.game.features.RandomBox;

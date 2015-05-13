@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import com.zombies.COMZombies;
-import com.zombies.CommandUtil;
+import com.zombies.commands.CommandUtil;
 
 public class OnPreCommandEvent implements Listener
 {

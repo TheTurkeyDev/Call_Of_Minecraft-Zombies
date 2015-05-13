@@ -12,7 +12,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.zombies.COMZombies;
-import com.zombies.CommandUtil;
+import com.zombies.commands.CommandUtil;
 import com.zombies.game.Game;
 import com.zombies.game.features.Barrier;
 import com.zombies.game.features.Door;

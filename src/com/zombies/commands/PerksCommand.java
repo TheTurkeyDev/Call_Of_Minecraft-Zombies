@@ -3,8 +3,6 @@ package com.zombies.commands;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import com.zombies.CommandUtil;
-
 public class PerksCommand implements SubCommand {
 
 	@Override

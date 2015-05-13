@@ -22,6 +22,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import com.zombies.commands.ZombiesCommand;
+import com.zombies.config.ConfigManager;
+import com.zombies.config.ConfigSetup;
 import com.zombies.economy.PointManager;
 import com.zombies.game.ArenaAntiBreak;
 import com.zombies.game.Game;

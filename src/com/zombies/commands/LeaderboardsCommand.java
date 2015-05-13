@@ -6,7 +6,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import com.zombies.COMZombies;
-import com.zombies.CommandUtil;
 import com.zombies.leaderboards.Leaderboards;
 import com.zombies.leaderboards.PlayerStats;
 

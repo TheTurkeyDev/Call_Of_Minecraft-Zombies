@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.zombies.COMZombies;
-import com.zombies.CommandUtil;
 import com.zombies.game.Game;
 import com.zombies.game.features.Door;
 import com.zombies.spawning.SpawnPoint;

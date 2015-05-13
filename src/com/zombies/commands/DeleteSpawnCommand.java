@@ -8,7 +8,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import com.zombies.COMZombies;
-import com.zombies.CommandUtil;
 import com.zombies.game.Game;
 import com.zombies.spawning.SpawnPoint;
 

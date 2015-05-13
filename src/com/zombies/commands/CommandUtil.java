@@ -1,9 +1,10 @@
-package com.zombies;
+package com.zombies.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import com.zombies.COMZombies;
 import com.zombies.game.Game;
 
 public class CommandUtil

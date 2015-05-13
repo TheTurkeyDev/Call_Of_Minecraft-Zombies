@@ -1,8 +1,9 @@
-package com.zombies;
+package com.zombies.config;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
+import com.zombies.COMZombies;
 import com.zombies.guns.GunType;
 import com.zombies.guns.GunTypeEnum;
 import com.zombies.leaderboards.PlayerStats;

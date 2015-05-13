@@ -12,7 +12,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import com.zombies.COMZombies;
-import com.zombies.CommandUtil;
+import com.zombies.commands.CommandUtil;
 import com.zombies.game.Game;
 import com.zombies.game.Game.ArenaStatus;
 import com.zombies.game.features.Barrier;

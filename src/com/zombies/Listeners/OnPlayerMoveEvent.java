@@ -7,7 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.zombies.COMZombies;
-import com.zombies.CommandUtil;
+import com.zombies.commands.CommandUtil;
 import com.zombies.game.Game;
 import com.zombies.game.GameManager;
 import com.zombies.game.Game.ArenaStatus;

@@ -1,7 +1,9 @@
-package com.zombies;
+package com.zombies.config;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.zombies.COMZombies;
 
 public class ConfigManager
 {	

@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.zombies.COMZombies;
-import com.zombies.CommandUtil;
 import com.zombies.game.Game;
 
 public class ZombiesCommand implements CommandExecutor

@@ -6,7 +6,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
 import com.zombies.COMZombies;
-import com.zombies.CommandUtil;
 import com.zombies.game.Game;
 import com.zombies.game.features.Barrier;
 
