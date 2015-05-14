@@ -48,7 +48,7 @@ public class OnBlockInteractEvent implements Listener
 							SpawnPoint point = game.spawnManager.getSpawnPoint(event.getClickedBlock().getLocation());
 							if (point == null) { return; }
 							door.addSpawnPoint(point);
-							game.addDoorSpawnPointToConfig(door, point);
+							game.doorManager.addDoorSpawnPointToConfig(door, point);
 							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn point selected!");
 							event.setCancelled(true);
 						}
@@ -66,7 +66,7 @@ public class OnBlockInteractEvent implements Listener
 							Sign sign = (Sign) event.getClickedBlock().getState();
 							door.addSign(sign);
 							Game game = plugin.manager.getGame(door);
-							game.addDoorSignToConfig(door, sign.getLocation());
+							game.doorManager.addDoorSignToConfig(door, sign.getLocation());
 							event.setCancelled(true);
 							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Sign selected!");
 						}

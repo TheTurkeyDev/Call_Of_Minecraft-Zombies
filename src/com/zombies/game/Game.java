@@ -21,7 +21,6 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.v1_7_R4.CraftServer;
 import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
 import org.bukkit.entity.Entity;
@@ -53,7 +52,6 @@ import com.zombies.kits.KitManager;
 import com.zombies.leaderboards.Leaderboards;
 import com.zombies.leaderboards.PlayerStats;
 import com.zombies.spawning.SpawnManager;
-import com.zombies.spawning.SpawnPoint;
 
 /**
  * Main game class.
@@ -525,7 +523,7 @@ public class Game
 		}
 		this.waveNumber = 0;
 		nextWave();
-		updateJoinSigns();
+		signManager.updateGame();
 		kitManager.giveOutKits(this);
 		return true;
 	}
@@ -590,8 +588,7 @@ public class Game
 					}
 					
 					spawnManager.startWave(waveNumber, players);
-					game.signManager.updateGame();
-					updateJoinSigns();
+					signManager.updateGame();
 					changingRound = false;
 				}
 			}, 200L);
@@ -606,7 +603,6 @@ public class Game
 			spawnManager.nextWave();
 			spawnManager.startWave(waveNumber, players);
 			signManager.updateGame();
-			updateJoinSigns();
 			changingRound = false;
 		}
 	}
@@ -698,7 +694,7 @@ public class Game
 		{
 			CommandUtil.sendMessageToPlayer(player, "Something could have went wrong here, COM Zombies has picked this up and will continue without error.");
 		}
-		updateJoinSigns();
+		signManager.updateGame();
 	}
 	
 	/**
@@ -746,7 +742,7 @@ public class Game
 		{
 			plugin.manager.loadAllGames();
 		}
-		updateJoinSigns();
+		signManager.updateGame();
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -790,7 +786,7 @@ public class Game
 				pl.hidePlayer(player);
 			}
 		}
-		updateJoinSigns();
+		signManager.updateGame();
 	}
 	
 	/**
@@ -835,7 +831,7 @@ public class Game
 		{
 			plugin.manager.loadAllGames();
 		}
-		updateJoinSigns();
+		signManager.updateGame();
 	}
 	
 	/**
@@ -955,7 +951,7 @@ public class Game
 		isDisabled = false;
 		if (mode == ArenaStatus.INGAME) { return; }
 		mode = ArenaStatus.WAITING;
-		updateJoinSigns();
+		signManager.updateGame();
 	}
 	
 	/**
@@ -1003,7 +999,7 @@ public class Game
 				pl.showPlayer(p);
 			}
 		}
-		updateJoinSigns();
+		signManager.updateGame();
 	}
 	
 	/**
@@ -1227,55 +1223,6 @@ public class Game
 	}
 	
 	/**
-	 * gets the current config that the game is on
-	 * @return the spawn point that the game is on
-	 */
-	public int getCurrentSpawnPoint()
-	{
-		int spawnNum = 0;
-		try
-		{
-			for (@SuppressWarnings("unused")
-			String key :plugin.configManager.getConfig("ArenaConfig").getConfigurationSection(arenaName + ".ZombieSpawns").getKeys(false))
-			{
-				spawnNum++;
-			}
-		} catch (NullPointerException e)
-		{
-		}
-		return spawnNum + 1;
-	}
-	
-	/**
-	 * Adds a spawnPoint to the Arena config file.
-	 * 
-	 * @param spawn
-	 */
-	public void addSpawnToConfig(SpawnPoint spawn)
-	{
-		World world = null;
-		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
-		try
-		{
-			world = spawn.getLocation().getWorld();
-		} catch (Exception e)
-		{
-			Bukkit.broadcastMessage(ChatColor.RED + "" + ChatColor.BOLD + "[Zombies] Could not retrieve the world " + world.getName());
-			return;
-		}
-		double x = spawn.getLocation().getBlockX();
-		double y = spawn.getLocation().getBlockY();
-		double z = spawn.getLocation().getBlockZ();
-		int spawnNum = getCurrentSpawnPoint();
-		conf.set(arenaName + ".ZombieSpawns.spawn" + spawnNum, null);
-		conf.set(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".x", x);
-		conf.set(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".y", y);
-		conf.set(arenaName + ".ZombieSpawns.spawn" + spawnNum + ".z", z);
-		
-		conf.saveConfig();
-	}
-	
-	/**
 	 * Takes a spawn point out of the config file.
 	 */
 	public void removeFromConfig()
@@ -1300,82 +1247,7 @@ public class Game
 		return arenaName;
 	}
 	
-	/**
-	 * gets the current door number the game is on
-	 * @return the number of the current door
-	 */
-	public int getCurrentDoorNumber()
-	{
-		int i = 1;
-		try
-		{
-			for (@SuppressWarnings("unused")
-			String s : plugin.configManager.getConfig("ArenaConfig").getConfigurationSection(arenaName + ".Doors").getKeys(false))
-			{
-				i++;
-			}
-		} catch (Exception ex)
-		{
-			return 1;
-		}
-		return i;
-	}
-	
-	/**
-	 * gets the current door sign number the game is on
-	 * @return the number of the current sign number
-	 */
-	private int getCurrentDoorSignNumber(int doorNumber)
-	{
-		int i = 1;
-		try
-		{
-			for (@SuppressWarnings("unused")
-			String s : plugin.configManager.getConfig("ArenaConfig").getConfigurationSection(arenaName + ".Doors.door" + doorNumber + ".Signs").getKeys(false))
-			{
-				i++;
-			}
-		} catch (Exception ex)
-		{
-			return 1;
-		}
-		return i;
-	}
-	
-	/**
-	 * Adds a spawn point dehind a door to the config
-	 * @param door to add the spawn point to
-	 * @param spawnPoint to be added
-	 */
-	public void addDoorSpawnPointToConfig(Door door, SpawnPoint spawnPoint)
-	{
-		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
-		List<String> spawnPoints = conf.getStringList(arenaName + ".Doors.door" + door.doorNumber + ".SpawnPoints");
-		if (spawnPoints.contains(spawnPoint.getName())) return;
-		spawnPoints.add(spawnPoint.getName());
-		conf.set(arenaName + ".Doors.door" + door.doorNumber + ".SpawnPoints", spawnPoints);
-		
-		conf.saveConfig();
-	}
-	
-	/**
-	 * Adds a soor sign to the config
-	 * @param door that contains the sign
-	 * @param location of the sign
-	 */
-	public void addDoorSignToConfig(Door door, Location location)
-	{
-		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
-		int x = location.getBlockX();
-		int y = location.getBlockY();
-		int z = location.getBlockZ();
-		int num = getCurrentDoorSignNumber(door.doorNumber);
-		conf.set(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".x", x);
-		conf.set(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".y", y);
-		conf.set(arenaName + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".z", z);
-		
-		conf.saveConfig();
-	}
+
 	
 	/**
 	 * Sets up the players inventory in  game
@@ -1500,15 +1372,6 @@ public class Game
 		}
 	}
 	
-	/**
-	 * gets the scoreboard 
-	 * @return GameScoreboard
-	 */
-	public GameScoreboard getScoreboard()
-	{
-		return scoreboard;
-	}
-	
 	public void setFireSale(boolean b)
 	{
 		isFireSale = b;
@@ -1517,29 +1380,6 @@ public class Game
 	public boolean isFireSale()
 	{
 		return isFireSale;
-	}
-	
-	public void addJoinSign(Sign sign)
-	{
-		signManager.addSign(sign);
-	}
-	
-	public boolean isJoinSign(Sign sign)
-	{
-		return signManager.isSign(sign);
-	}
-	
-	public void updateJoinSigns()
-	{
-		signManager.updateGame();
-	}
-	public void removeJoinSign(Sign sign)
-	{
-		signManager.removeSign(sign);
-	}
-	public void removeAllJoinSigns()
-	{
-		signManager.removeAllSigns();
 	}
 	
 	public void zombieKilled(Player player)

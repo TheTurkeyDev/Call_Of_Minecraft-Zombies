@@ -204,7 +204,7 @@ public class OnSignChangeEvent implements Listener
 					return;
 				}
 				Game game = plugin.manager.getGame(thirdLine);
-				game.addJoinSign((Sign) sign.getBlock().getState());
+				game.signManager.addSign((Sign) sign.getBlock().getState());
 				return;
 			}
 			else if (secondLine.equalsIgnoreCase("teleporter") || secondLine.equalsIgnoreCase("t"))

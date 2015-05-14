@@ -34,7 +34,7 @@ public class AddDoorCommand implements SubCommand
 				if (plugin.manager.isValidArena(args[1]))
 				{
 					Game game = plugin.manager.getGame(args[1]);
-					Door door = new Door(plugin, game, game.getCurrentDoorNumber());
+					Door door = new Door(plugin, game, game.doorManager.getCurrentDoorNumber());
 					game.doorManager.addDoor(door);
 					plugin.isCreatingDoor.put(player, door);
 					for (SpawnPoint point : game.spawnManager.getPoints())

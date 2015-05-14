@@ -40,7 +40,6 @@ public class EnableCommand implements SubCommand
 					else
 					{
 						game.setEnabled();
-						game.updateJoinSigns();
 						game.signManager.updateGame();
 						CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Arena " + game.getName() + " has been enabled!");
 						return true;

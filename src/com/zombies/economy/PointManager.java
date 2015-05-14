@@ -71,7 +71,7 @@ public class PointManager
 	{
 		Game game = plugin.manager.getGame(player);
 		if (game == null) return;
-		game.getScoreboard().update();
+		game.scoreboard.update();
 	}
 
 	public void takePoints(Player player, int amount)

@@ -48,9 +48,9 @@ public class AddSpawnCommand implements SubCommand
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You cannot add spawn points to an arena unless it is disabled!");
 						return true;
 					}
-					SpawnPoint point = new SpawnPoint(player.getLocation(), game, player.getLocation().getBlock().getType(), "spawn" + game.getCurrentSpawnPoint());
+					SpawnPoint point = new SpawnPoint(player.getLocation(), game, player.getLocation().getBlock().getType(), "spawn" + game.spawnManager.getCurrentSpawnPoint());
 					game.spawnManager.addPoint(point);
-					game.addSpawnToConfig(point);
+					game.spawnManager.addSpawnToConfig(point);
 					int currentSpawn = game.spawnManager.getCurrentSpawn();
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Spawn point " + ChatColor.BLUE + currentSpawn + ChatColor.GREEN + " added to arena " + ChatColor.BLUE + game.getName() + ChatColor.GREEN + "!");
 					game.spawnManager.loadAllSpawnsToGame();

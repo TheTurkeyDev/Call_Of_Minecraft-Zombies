@@ -16,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
@@ -475,5 +476,54 @@ public class SpawnManager
 		this.zombiesSpawned = 0;
 		this.zombiesToSpawn = 0;
 		this.zombieSpawnInterval = plugin.getConfig().getInt("config.gameSettings.waveSpawnInterval");
+	}
+	
+	/**
+	 * gets the current config that the game is on
+	 * @return the spawn point that the game is on
+	 */
+	public int getCurrentSpawnPoint()
+	{
+		int spawnNum = 0;
+		try
+		{
+			for (@SuppressWarnings("unused")
+			String key :plugin.configManager.getConfig("ArenaConfig").getConfigurationSection(game.getName() + ".ZombieSpawns").getKeys(false))
+			{
+				spawnNum++;
+			}
+		} catch (NullPointerException e)
+		{
+		}
+		return spawnNum + 1;
+	}
+	
+	/**
+	 * Adds a spawnPoint to the Arena config file.
+	 * 
+	 * @param spawn
+	 */
+	public void addSpawnToConfig(SpawnPoint spawn)
+	{
+		World world = null;
+		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		try
+		{
+			world = spawn.getLocation().getWorld();
+		} catch (Exception e)
+		{
+			Bukkit.broadcastMessage(ChatColor.RED + "" + ChatColor.BOLD + "[Zombies] Could not retrieve the world " + world.getName());
+			return;
+		}
+		double x = spawn.getLocation().getBlockX();
+		double y = spawn.getLocation().getBlockY();
+		double z = spawn.getLocation().getBlockZ();
+		int spawnNum = getCurrentSpawnPoint();
+		conf.set(game.getName() + ".ZombieSpawns.spawn" + spawnNum, null);
+		conf.set(game.getName() + ".ZombieSpawns.spawn" + spawnNum + ".x", x);
+		conf.set(game.getName() + ".ZombieSpawns.spawn" + spawnNum + ".y", y);
+		conf.set(game.getName() + ".ZombieSpawns.spawn" + spawnNum + ".z", z);
+		
+		conf.saveConfig();
 	}
 }

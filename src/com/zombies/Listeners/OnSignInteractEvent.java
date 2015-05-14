@@ -68,16 +68,16 @@ public class OnSignInteractEvent implements Listener
 						if (plugin.manager.isValidArena(sign.getLine(2)))
 						{
 							Game game = plugin.manager.getGame(sign.getLine(2));
-							if(!game.isJoinSign(sign))
+							if(!game.signManager.isSign(sign))
 							{
-								game.addJoinSign(sign);
+								game.signManager.addSign(sign);
 							}
 							String[] args = new String[2];
 							args[0] = "join";
 							args[1] = game.getName();
 							player.getLocation().getWorld().playSound(player.getLocation(), Sound.ZOMBIE_IDLE, 1, 1);
 							plugin.command.onRemoteCommand(player, args);
-							game.updateJoinSigns();
+							game.signManager.updateGame();
 							return;
 						}
 						else
