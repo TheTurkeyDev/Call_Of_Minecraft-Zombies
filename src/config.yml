@@ -44,7 +44,3 @@ config:
   Economy:
     CostPerJoin: 0
     MoneyPerKill: 1
-    MoneyPerKill: 1
-    MoneyPerKill: 1
-  Guns:
-    PistalMaterial: WOOD_AXE

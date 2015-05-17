@@ -2,7 +2,7 @@ name: COM_Zombies
 main: com.zombies.COMZombies
 authors: [Turkey2349]
 description: Beta
-version: 1.2.0
+version: 1.2.2
 load: POSTWORLD
 softdepend: [PermissionsEx, Permissions, Essentials, EssentialsChat, HeroChat, iChat, LocalAreaChat, LWC, nChat, ChatManager, CAPI, AuthMe, Vault, Spout, WorldEdit, WorldGuard, AuthDB, CaptureThePoints, CombatTag]
 commands:

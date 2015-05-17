@@ -8,6 +8,8 @@ SubMachineGunsMaterial: STICK
 SniperRiflesMaterial: BLAZE_ROD
 OthersMaterial: DIAMOND_HOE
 
+Resource Sounds: off
+
 Guns:
   Pistols:
     B23R:
