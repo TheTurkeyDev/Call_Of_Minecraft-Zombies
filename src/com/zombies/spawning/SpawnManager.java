@@ -5,6 +5,7 @@ import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import net.minecraft.server.v1_7_R4.AttributeInstance;
@@ -44,12 +45,14 @@ public class SpawnManager
 	private int zombiesSpawned = 0;
 	private int zombiesToSpawn = 0;
 	private boolean updated = false;
+	private Random random;
 	
 	public SpawnManager(COMZombies plugin, Game game)
 	{
 		this.plugin = plugin;
 		this.game = game;
 		zombieSpawnInterval = plugin.getConfig().getInt("config.gameSettings.zombieSpawnDelay");
+		random = new Random();
 	}
 	
 	public void loadAllSpawnsToGame()
@@ -62,21 +65,24 @@ public class SpawnManager
 			{
 				double x = config.getDouble(game.getName() + ".ZombieSpawns." + key + ".x");
 				double y = config.getDouble(game.getName() + ".ZombieSpawns." + key + ".y");
-				double z =config.getDouble(game.getName() + ".ZombieSpawns." + key + ".z");
+				double z = config.getDouble(game.getName() + ".ZombieSpawns." + key + ".z");
 				Location loc = new Location(game.getWorld(), x, y, z);
 				SpawnPoint point = new SpawnPoint(loc, game, loc.getBlock().getType(), key);
 				points.add(point);
 			}
-		} catch (NullPointerException e)
-		{
 		}
+		catch (NullPointerException e)
+		{}
 	}
 	
 	public SpawnPoint getSpawnPoint(String name)
 	{
 		for (SpawnPoint p : points)
 		{
-			if (name.equalsIgnoreCase(p.getName())) { return p; }
+			if (name.equalsIgnoreCase(p.getName()))
+			{
+				return p;
+			}
 		}
 		return null;
 	}
@@ -85,7 +91,10 @@ public class SpawnManager
 	{
 		for (SpawnPoint point : points)
 		{
-			if (point.getLocation().equals(loc)) { return point; }
+			if (point.getLocation().equals(loc))
+			{
+				return point;
+			}
 		}
 		return null;
 	}
@@ -118,14 +127,18 @@ public class SpawnManager
 	
 	public void killMob(Entity entity)
 	{
-		if (entity instanceof Player) return;
-		if (entity.isEmpty()) return;
+		if (entity instanceof Player)
+			return;
+		if (entity.isEmpty())
+			return;
 		while (!entity.isDead())
 		{
 			entity.remove();
 		}
-		if (mobs.contains(entity)) mobs.remove(entity);
-		if (getEntities().size() < 1) game.nextWave();
+		if (mobs.contains(entity))
+			mobs.remove(entity);
+		if (getEntities().size() < 1)
+			game.nextWave();
 	}
 	
 	public void nuke()
@@ -140,7 +153,8 @@ public class SpawnManager
 		{
 			killMob(mobs.get(i));
 		}
-		if (nextWave) game.nextWave();
+		if (nextWave)
+			game.nextWave();
 		mobs.clear();
 	}
 	
@@ -170,7 +184,8 @@ public class SpawnManager
 	
 	public void addPoint(SpawnPoint point)
 	{
-		if (game.mode == ArenaStatus.DISABLED) points.add(point);
+		if (game.mode == ArenaStatus.DISABLED)
+			points.add(point);
 	}
 	
 	// Finds the closest locations to point loc, it results numToGet amount of
@@ -189,7 +204,10 @@ public class SpawnManager
 	private ArrayList<SpawnPoint> getNearestPoints(Location loc, int numToGet)
 	{
 		ArrayList<SpawnPoint> points = game.spawnManager.getPoints();
-		if (numToGet <= 0 || points.size() == 0) { return null; }
+		if (numToGet <= 0 || points.size() == 0)
+		{
+			return null;
+		}
 		int numPoints = Math.min(numToGet, points.size());
 		ArrayList<SpawnPoint> results = new ArrayList<SpawnPoint>(numPoints);
 		for (int i = 0; i < numPoints; i++)
@@ -226,22 +244,28 @@ public class SpawnManager
 	
 	public void smartSpawn(int wave, final List<Player> players)
 	{
-		if(!this.canSpawn || wave < game.waveNumber) return;
-		if (game.mode != ArenaStatus.INGAME) return;
+		if (!this.canSpawn || wave < game.waveNumber)
+			return;
+		if (game.mode != ArenaStatus.INGAME)
+			return;
 		if (players.size() == 0)
 		{
 			this.game.endGame();
 			Bukkit.broadcastMessage(COMZombies.prefix + "SmartSpawn was sent a players list with no players in it! Game was ended");
 			return;
 		}
-		zombiesToSpawn = (int) ((wave * 0.15) * 30) + (2 * players.size());
+		int playersSize = players.size();
+		zombiesToSpawn = (int) ((wave * 0.15) * 30) + (2 * playersSize);
 		if (zombiesToSpawn <= zombiesSpawned)
 		{
-			if (!updated) return;
-			else updated = false;
+			if (!updated)
+				return;
+			else
+				updated = false;
 		}
-		if (plugin.config.maxZombies < zombiesToSpawn) zombiesToSpawn = plugin.config.maxZombies;
-		int selectPlayer = (int) (Math.random() * players.size());
+		if (plugin.config.maxZombies < zombiesToSpawn)
+			zombiesToSpawn = plugin.config.maxZombies;
+		int selectPlayer = random.nextInt(playersSize);
 		SpawnPoint selectPoint = null;
 		Player player = players.get(selectPlayer);
 		ArrayList<SpawnPoint> points = getNearestPoints(player.getLocation(), zombiesToSpawn);
@@ -251,15 +275,17 @@ public class SpawnManager
 		{
 			if (curr == points.size())
 			{
-				player = players.get((int) (Math.random() * players.size()));
-				points = getNearestPoints(player.getLocation(), zombiesToSpawn / players.size());
+				player = players.get(random.nextInt(playersSize));
+				points = getNearestPoints(player.getLocation(), zombiesToSpawn / playersSize);
 				curr = 0;
 				continue;
 			}
-			selectPoint = points.get(((int) (Math.random() * players.size())));
-			if (!(canSpawn(selectPoint))) selectPoint = null;
+			selectPoint = points.get(random.nextInt(playersSize));
+			if (!(canSpawn(selectPoint)))
+				selectPoint = null;
 			curr++;
-			if (totalRetries > 1000) oopsWeHadAnError();
+			if (totalRetries > 1000)
+				oopsWeHadAnError();
 			totalRetries++;
 		}
 		scheduleSpawn(zombieSpawnInterval, selectPoint, wave, players);
@@ -267,7 +293,8 @@ public class SpawnManager
 	
 	private void scheduleSpawn(int time, SpawnPoint loc, final int wave, final List<Player> players)
 	{
-		if(!this.canSpawn || wave < game.waveNumber) return;
+		if (!this.canSpawn || wave < game.waveNumber)
+			return;
 		int strength = (int) (((wave * 100) + 50) / 50);
 		Location location = new Location(loc.getLocation().getWorld(), loc.getLocation().getBlockX(), loc.getLocation().getBlockY(), loc.getLocation().getBlockZ());
 		location.add(0.5, 0, 0.5);
@@ -275,20 +302,20 @@ public class SpawnManager
 		zomb.setBaby(false);
 		setFollowDistance(zomb);
 		setTotalHealth(zomb, strength);
-		zomb.setHealth(strength<=20?strength:20);
+		zomb.setHealth(strength <= 20 ? strength : 20);
 		if (game.waveNumber > 4)
 		{
-			if (((int) (Math.random() * 100)) < game.waveNumber * 5) setSpeed(zomb, (float) (Math.random()));
+			if (((int) (Math.random() * 100)) < game.waveNumber * 5)
+				setSpeed(zomb, (float) (Math.random()));
 		}
 		mobs.add(zomb);
 		zombiesSpawned++;
 		
 		Barrier b = game.barrierManager.getBarrier(loc);
-		if(b != null)
+		if (b != null)
 			b.initBarrier(zomb);
 		
-		Runnable delayedSpawnFunc = new Runnable()
-		{
+		Runnable delayedSpawnFunc = new Runnable() {
 			
 			public void run()
 			{
@@ -327,10 +354,14 @@ public class SpawnManager
 	
 	public void update()
 	{
-		if(!this.canSpawn)return;
-		if (game.mode != ArenaStatus.INGAME){ Bukkit.broadcastMessage("[COM:Z Error] The game mode was not ingame! it was: " + game.mode + " Report this to the COM:Z devs"); return;}
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+		if (!this.canSpawn)
+			return;
+		if (game.mode != ArenaStatus.INGAME)
 		{
+			Bukkit.broadcastMessage("[COM:Z Error] The game mode was not ingame! it was: " + game.mode + " Report this to the COM:Z devs");
+			return;
+		}
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			@Override
 			public void run()
 			{
@@ -341,9 +372,10 @@ public class SpawnManager
 					z.setTarget(closest);
 				}
 				Iterator<Entity> mobsIter = mobs.iterator();
-				while(mobsIter.hasNext())
+				while (mobsIter.hasNext())
 				{
-					try{
+					try
+					{
 						Entity ent = mobsIter.next();
 						if (ent.isDead())
 						{
@@ -352,7 +384,8 @@ public class SpawnManager
 							smartSpawn(game.waveNumber, game.players);
 							updated = true;
 						}
-					}catch(ConcurrentModificationException e)
+					}
+					catch (ConcurrentModificationException e)
 					{
 						zombiesSpawned--;
 						mobsIter.remove();
@@ -391,7 +424,8 @@ public class SpawnManager
 	
 	private boolean canSpawn(SpawnPoint point)
 	{
-		if (point == null) return false;
+		if (point == null)
+			return false;
 		boolean isContained = false;
 		boolean maySpawn = false;
 		for (Door door : game.doorManager.getDoors())
@@ -408,7 +442,10 @@ public class SpawnManager
 				}
 			}
 		}
-		if (!(isContained)) { return true; }
+		if (!(isContained))
+		{
+			return true;
+		}
 		return maySpawn;
 	}
 	
@@ -451,14 +488,17 @@ public class SpawnManager
 	{
 		return this.zombiesToSpawn;
 	}
+	
 	public int getZombiesSpawned()
 	{
 		return this.zombiesSpawned;
 	}
+	
 	public int getZombiesAlive()
 	{
 		return this.mobs.size();
 	}
+	
 	public int getSpawnInterval()
 	{
 		return this.zombieSpawnInterval;
@@ -480,6 +520,7 @@ public class SpawnManager
 	
 	/**
 	 * gets the current config that the game is on
+	 * 
 	 * @return the spawn point that the game is on
 	 */
 	public int getCurrentSpawnPoint()
@@ -488,13 +529,13 @@ public class SpawnManager
 		try
 		{
 			for (@SuppressWarnings("unused")
-			String key :plugin.configManager.getConfig("ArenaConfig").getConfigurationSection(game.getName() + ".ZombieSpawns").getKeys(false))
+			String key : plugin.configManager.getConfig("ArenaConfig").getConfigurationSection(game.getName() + ".ZombieSpawns").getKeys(false))
 			{
 				spawnNum++;
 			}
-		} catch (NullPointerException e)
-		{
 		}
+		catch (NullPointerException e)
+		{}
 		return spawnNum + 1;
 	}
 	
@@ -510,7 +551,8 @@ public class SpawnManager
 		try
 		{
 			world = spawn.getLocation().getWorld();
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			Bukkit.broadcastMessage(ChatColor.RED + "" + ChatColor.BOLD + "[Zombies] Could not retrieve the world " + world.getName());
 			return;

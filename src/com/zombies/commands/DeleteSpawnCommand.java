@@ -57,7 +57,7 @@ public class DeleteSpawnCommand implements SubCommand
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------" + ChatColor.DARK_RED + "Spawn Point Removal" + ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------");
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Find blocks that are ender portal frames.");
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "If you break one of these blocks, the spawn point at that location will be removed.");
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type /zombies cancel removespawn to cancel this operation.");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type /zombies cancel removespawns to cancel this operation.");
 					return true;
 				}
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.RED + arena + " is not a valid arena! Type /z la for a list of arenas!");

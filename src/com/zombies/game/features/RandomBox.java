@@ -1,5 +1,6 @@
 package com.zombies.game.features;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -89,7 +90,12 @@ public class RandomBox
 	
 	public void loadBox()
 	{
-		boxLoc.getBlock().setType( Material.WALL_SIGN); 
+		if(boxLoc == null)
+		{
+			Bukkit.getServer().broadcastMessage("Mysterybox " + this.getName() + "Is broken and has no location!! what did you do!!");
+			return;
+		}
+		boxLoc.getBlock().setType(Material.WALL_SIGN); 
 		Sign sign = (Sign) boxLoc.getBlock().getState();
 		sign.setLine(0, ChatColor.RED + "[Zombies]");
 		sign.setLine(1, ChatColor.AQUA + "MysteryBox");

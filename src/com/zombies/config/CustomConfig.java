@@ -58,20 +58,27 @@ public class CustomConfig
 			file = new File(plugin.getDataFolder(), name + ".yml");
 		}
 		
-		try{
-			Reader defConfigStream = new InputStreamReader(plugin.getResource(name + ".yml"), "UTF8");
-			BufferedWriter writter = new  BufferedWriter(new FileWriter(file.getAbsolutePath()));
-			BufferedReader reader = new BufferedReader(defConfigStream);
-			String line = "";
-			while((line = reader.readLine()) != null)
-			{
-				writter.write(line + "\n");
-			}
-			reader.close();
-			writter.close();
-		}catch(IOException e)
+		if (!file.exists())
 		{
-			plugin.log.log(Level.SEVERE, COMZombies.consoleprefix + " Unable to load the COM:Z default guns config! THIS IS BAD!!!");
+			try
+			{
+				file.createNewFile();
+				Reader defConfigStream = new InputStreamReader(plugin.getResource(name + ".yml"), "UTF8");
+				BufferedWriter writter = new  BufferedWriter(new FileWriter(file.getAbsolutePath()));
+				BufferedReader reader = new BufferedReader(defConfigStream);
+				String line = "";
+				while((line = reader.readLine()) != null)
+				{
+					writter.write(line + "\n");
+				}
+				reader.close();
+				writter.close();
+			}
+			catch (IOException e)
+			{
+				plugin.log.log(Level.SEVERE, COMZombies.consoleprefix + " Unable to load the COM:Z default guns config! THIS IS BAD!!!");
+				e.printStackTrace();
+			}
 		}
 		
 		fileConfig = YamlConfiguration.loadConfiguration(file);

@@ -576,7 +576,6 @@ public class Game
 			
 			spawnManager.nextWave();
 			
-			final Game game = this;
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 			{
 				public void run()

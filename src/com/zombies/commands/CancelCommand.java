@@ -57,7 +57,7 @@ public class CancelCommand implements SubCommand
 					return true;
 				}
 			}
-			else if (args[1].equalsIgnoreCase("removespawn"))
+			else if (args[1].equalsIgnoreCase("removespawns"))
 			{
 				if (plugin.isRemovingSpawns.containsKey(player))
 				{
