@@ -111,8 +111,8 @@ public class ZombiesCommand implements CommandExecutor
 																// operation:
 																// Perm -
 																// zombies.deletespawns
-		commandList.put("removespawns", commandList.get("rs"));
-		commandList.put("deletespawns", commandList.get("rs"));
+		commandList.put("removespawn", commandList.get("rs"));
+		commandList.put("deletespawn", commandList.get("rs"));
 		commandList.put("kick", new KickCommand(this)); // Kicks a player from
 														// the given arena: Perm
 														// - zombies.kick

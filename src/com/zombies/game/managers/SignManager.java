@@ -89,8 +89,7 @@ public class SignManager
 			}
 			
 		}, 20L);
-		}catch(Exception e){System.out.println(COMZombies.consoleprefix + "Failed to update signs. Could be due to the server closing or updating");}
-		
+		}catch(Exception e){System.out.println(COMZombies.consoleprefix + "Failed to update signs. Could be due to the server closing or restarting");}
 	}
 	
 	public void enable()

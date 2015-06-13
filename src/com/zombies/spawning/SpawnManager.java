@@ -280,7 +280,7 @@ public class SpawnManager
 				curr = 0;
 				continue;
 			}
-			selectPoint = points.get(random.nextInt(playersSize));
+			selectPoint = points.get(random.nextInt(points.size()));
 			if (!(canSpawn(selectPoint)))
 				selectPoint = null;
 			curr++;

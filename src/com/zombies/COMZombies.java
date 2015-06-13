@@ -226,7 +226,7 @@ public class COMZombies extends JavaPlugin
 				// Parse the array of files from the query's response
 				JSONArray array = (JSONArray) JSONValue.parse(response);
 				
-				if (array.size() > 0) 
+				if (array.size() > 0)
 				{
 					JSONObject latest = (JSONObject) array.get(array.size() - 1);
 					String versionName = (String) latest.get("name");
