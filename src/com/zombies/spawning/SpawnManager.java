@@ -1,9 +1,7 @@
 package com.zombies.spawning;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -40,11 +38,11 @@ public class SpawnManager
 	private HashMap<Entity, Integer> health = new HashMap<Entity, Integer>();
 	private ArrayList<SpawnPoint> points = new ArrayList<SpawnPoint>();
 	private ArrayList<Entity> mobs = new ArrayList<Entity>();
+	private ArrayList<Entity> mobsToRemove = new ArrayList<Entity>();
 	private boolean canSpawn = false;
 	private int zombieSpawnInterval;
 	private int zombiesSpawned = 0;
 	private int zombiesToSpawn = 0;
-	private boolean updated = false;
 	private Random random;
 	
 	public SpawnManager(COMZombies plugin, Game game)
@@ -127,18 +125,17 @@ public class SpawnManager
 	
 	public void killMob(Entity entity)
 	{
+		Bukkit.broadcastMessage("KILL 1");
 		if (entity instanceof Player)
 			return;
-		if (entity.isEmpty())
-			return;
+		
 		while (!entity.isDead())
 		{
+			Bukkit.broadcastMessage("KILL 2");
 			entity.remove();
 		}
-		if (mobs.contains(entity))
-			mobs.remove(entity);
-		if (getEntities().size() < 1)
-			game.nextWave();
+		
+		this.removeEntity(entity);
 	}
 	
 	public void nuke()
@@ -165,15 +162,23 @@ public class SpawnManager
 	
 	public void removeEntity(Entity entity)
 	{
-		
 		if (mobs.contains(entity))
 		{
-			health.remove(entity);
-			mobs.remove(entity);
-			if ((mobs.size() < 1) && (zombiesSpawned == zombiesToSpawn))
-			{
-				game.nextWave();
-			}
+			mobsToRemove.add(entity);
+		}
+	}
+	
+	public void updateEntityList()
+	{
+		for(Entity ent: mobsToRemove)
+		{
+			health.remove(ent);
+			mobs.remove(ent);
+		}
+		
+		if ((mobs.size() < 1) && (zombiesSpawned == zombiesToSpawn))
+		{
+			game.nextWave();
 		}
 	}
 	
@@ -242,29 +247,29 @@ public class SpawnManager
 		return results;
 	}
 	
-	public void smartSpawn(int wave, final List<Player> players)
+	private void smartSpawn(final int wave, final List<Player> players)
 	{
-		if (!this.canSpawn || wave < game.waveNumber)
+		if (!this.canSpawn || wave != game.waveNumber)
 			return;
 		if (game.mode != ArenaStatus.INGAME)
 			return;
-		if (players.size() == 0)
+		
+		if(mobs.size() >= plugin.config.maxZombies)
 		{
-			this.game.endGame();
-			Bukkit.broadcastMessage(COMZombies.prefix + "SmartSpawn was sent a players list with no players in it! Game was ended");
+			Runnable delayedSpawnFunc = new Runnable() 
+			{
+				public void run()
+				{
+					smartSpawn(wave, players);
+				}
+			};
+			
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delayedSpawnFunc, zombieSpawnInterval * 20L);
 			return;
 		}
+		
 		int playersSize = players.size();
-		zombiesToSpawn = (int) ((wave * 0.15) * 30) + (2 * playersSize);
-		if (zombiesToSpawn <= zombiesSpawned)
-		{
-			if (!updated)
-				return;
-			else
-				updated = false;
-		}
-		if (plugin.config.maxZombies < zombiesToSpawn)
-			zombiesToSpawn = plugin.config.maxZombies;
+		
 		int selectPlayer = random.nextInt(playersSize);
 		SpawnPoint selectPoint = null;
 		Player player = players.get(selectPlayer);
@@ -308,6 +313,7 @@ public class SpawnManager
 			if (((int) (Math.random() * 100)) < game.waveNumber * 5)
 				setSpeed(zomb, (float) (Math.random()));
 		}
+		
 		mobs.add(zomb);
 		zombiesSpawned++;
 		
@@ -315,8 +321,8 @@ public class SpawnManager
 		if (b != null)
 			b.initBarrier(zomb);
 		
-		Runnable delayedSpawnFunc = new Runnable() {
-			
+		Runnable delayedSpawnFunc = new Runnable() 
+		{
 			public void run()
 			{
 				smartSpawn(wave, players);
@@ -354,50 +360,30 @@ public class SpawnManager
 	
 	public void update()
 	{
-		if (!this.canSpawn)
-			return;
 		if (game.mode != ArenaStatus.INGAME)
 		{
-			Bukkit.broadcastMessage("[COM:Z Error] The game mode was not ingame! it was: " + game.mode + " Report this to the COM:Z devs");
 			return;
 		}
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+		{
 			@Override
 			public void run()
 			{
 				for (Entity zomb : mobs)
 				{
-					Player closest = getNearestPlayer(zomb);
-					Zombie z = (Zombie) zomb;
-					z.setTarget(closest);
-				}
-				Iterator<Entity> mobsIter = mobs.iterator();
-				while (mobsIter.hasNext())
-				{
-					try
+					if (zomb.isDead())
 					{
-						Entity ent = mobsIter.next();
-						if (ent.isDead())
-						{
-							zombiesSpawned--;
-							mobsIter.remove();
-							smartSpawn(game.waveNumber, game.players);
-							updated = true;
-						}
+						removeEntity(zomb);
 					}
-					catch (ConcurrentModificationException e)
+					else
 					{
-						zombiesSpawned--;
-						mobsIter.remove();
-						smartSpawn(game.waveNumber, game.players);
-						updated = true;
+						Player closest = getNearestPlayer(zomb);
+						Zombie z = (Zombie) zomb;
+						z.setTarget(closest);
 					}
 				}
 				
-				if ((mobs.size() == 0) && zombiesSpawned >= zombiesToSpawn)
-				{
-					game.nextWave();
-				}
+				updateEntityList();
 				update();
 			}
 			
@@ -481,6 +467,14 @@ public class SpawnManager
 	public void startWave(int wave, final List<Player> players)
 	{
 		canSpawn = true;
+		
+		if (players.size() == 0)
+		{
+			this.game.endGame();
+			Bukkit.broadcastMessage(COMZombies.prefix + "SmartSpawn was sent a players list with no players in it! Game was ended");
+			return;
+		}
+		zombiesToSpawn = (int) ((wave * 0.15) * 30) + (2 * players.size());
 		this.smartSpawn(wave, players);
 	}
 	
