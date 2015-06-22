@@ -125,13 +125,11 @@ public class SpawnManager
 	
 	public void killMob(Entity entity)
 	{
-		Bukkit.broadcastMessage("KILL 1");
 		if (entity instanceof Player)
 			return;
 		
 		while (!entity.isDead())
 		{
-			Bukkit.broadcastMessage("KILL 2");
 			entity.remove();
 		}
 		
@@ -176,7 +174,7 @@ public class SpawnManager
 			mobs.remove(ent);
 		}
 		
-		if ((mobs.size() < 1) && (zombiesSpawned == zombiesToSpawn))
+		if ((mobs.size() == 0) && (zombiesSpawned >= zombiesToSpawn))
 		{
 			game.nextWave();
 		}
@@ -253,6 +251,8 @@ public class SpawnManager
 			return;
 		if (game.mode != ArenaStatus.INGAME)
 			return;
+		if(this.zombiesSpawned >= this.zombiesToSpawn)
+		return;
 		
 		if(mobs.size() >= plugin.config.maxZombies)
 		{
@@ -428,10 +428,8 @@ public class SpawnManager
 				}
 			}
 		}
-		if (!(isContained))
-		{
+		if (!isContained)
 			return true;
-		}
 		return maySpawn;
 	}
 	

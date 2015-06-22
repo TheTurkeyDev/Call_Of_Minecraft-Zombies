@@ -195,7 +195,8 @@ public class Game
 	public DoorManager doorManager;
 	
 	/**
-	 * contains all of the perks in the game as well as the perks that are currently dropped in the map
+	 * contains all of the perks in the game as well as the perks that are
+	 * currently dropped in the map
 	 */
 	public PerkManager perkManager;
 	
@@ -281,15 +282,17 @@ public class Game
 	
 	/**
 	 * Gets the guns the player currently has
-	 * @param player to get the guns of
+	 * 
+	 * @param player
+	 *            to get the guns of
 	 * @return GunManager of the players guns
 	 */
 	public GunManager getPlayersGun(Player player)
 	{
-		if (playersGuns.containsKey(player)) 
+		if (playersGuns.containsKey(player))
 			return playersGuns.get(player);
 		playersGuns.put(player, new GunManager(plugin, player));
-		return playersGuns.get(player); 
+		return playersGuns.get(player);
 	}
 	
 	/**
@@ -387,9 +390,9 @@ public class Game
 				Location loc = pl.getLocation();
 				loc.getWorld().playSound(loc, Sound.AMBIENCE_THUNDER, 1L, 1L);
 			}
-		} catch (NullPointerException e)
-		{
 		}
+		catch (NullPointerException e)
+		{}
 	}
 	
 	/**
@@ -398,7 +401,8 @@ public class Game
 	 */
 	public boolean containsPower()
 	{
-		if (!powerEnabled) return false;
+		if (!powerEnabled)
+			return false;
 		return true;
 	}
 	
@@ -420,8 +424,14 @@ public class Game
 	 */
 	public boolean isCreated()
 	{
-		if (isDisabled) { return false; }
-		if (hasPoints == true && hasWarps == true && !isDisabled) { return true; }
+		if (isDisabled)
+		{
+			return false;
+		}
+		if (hasPoints == true && hasWarps == true && !isDisabled)
+		{
+			return true;
+		}
 		return false;
 	}
 	
@@ -430,13 +440,20 @@ public class Game
 	 */
 	public void forceStart()
 	{
-		if (mode == ArenaStatus.INGAME) { return; }
-		if (starter.forced) { return; }
+		if (mode == ArenaStatus.INGAME)
+		{
+			return;
+		}
+		if (starter.forced)
+		{
+			return;
+		}
 		for (Player pl : players)
 		{
 			CommandUtil.sendMessageToPlayer(pl, "Game force started!");
 		}
-		if (starter == null) starter = new AutoStart(plugin, this, 60);
+		if (starter == null)
+			starter = new AutoStart(plugin, this, 60);
 		starter.endTimer();
 		starter = new AutoStart(plugin, this, 6);
 		starter.startTimer();
@@ -447,11 +464,15 @@ public class Game
 	
 	/**
 	 * starts the game normally
+	 * 
 	 * @return if the game starts correct
 	 */
 	public boolean startArena()
 	{
-		if (mode == ArenaStatus.INGAME) { return false; }
+		if (mode == ArenaStatus.INGAME)
+		{
+			return false;
+		}
 		mode = ArenaStatus.INGAME;
 		for (Player player : players)
 		{
@@ -460,9 +481,9 @@ public class Game
 			{
 				player.setAllowFlight(false);
 				player.setFlying(false);
-			} catch (Exception ex)
-			{
 			}
+			catch (Exception ex)
+			{}
 			
 			player.setHealth(20);
 			player.setFoodLevel(20);
@@ -471,7 +492,7 @@ public class Game
 		}
 		
 		scoreboard.update();
-		if(plugin.config.MultiBox)
+		if (plugin.config.MultiBox)
 		{
 			for (Player player : players)
 			{
@@ -483,7 +504,7 @@ public class Game
 		{
 			this.boxManager.unloadAllBoxes();
 			RandomBox b = this.boxManager.getRandomBox();
-			if(b!=null)
+			if (b != null)
 			{
 				this.boxManager.setCurrentBox(b);
 				this.boxManager.getCurrentbox().loadBox();
@@ -518,9 +539,9 @@ public class Game
 					}
 				}
 			}
-		} catch (Exception e)
-		{
 		}
+		catch (Exception e)
+		{}
 		this.waveNumber = 0;
 		nextWave();
 		signManager.updateGame();
@@ -530,8 +551,11 @@ public class Game
 	
 	/**
 	 * Starts a delayed task
-	 * @param run Runnable that runs the task
-	 * @param delayInSeconds delay for the task
+	 * 
+	 * @param run
+	 *            Runnable that runs the task
+	 * @param delayInSeconds
+	 *            delay for the task
 	 */
 	public void scheduleSyncTask(Runnable run, int delayInSeconds)
 	{
@@ -543,13 +567,14 @@ public class Game
 	 */
 	public void nextWave()
 	{
-		if(players.size() == 0)
+		if (players.size() == 0)
 		{
 			this.endGame();
 			return;
 		}
-		if (!(spawnManager.getZombiesAlive() == 0) || !(spawnManager.getZombiesToSpawn() <= spawnManager.getZombiesSpawned())) return;
-		if(changingRound)
+		if (!(spawnManager.getZombiesAlive() == 0) || !(spawnManager.getZombiesToSpawn() <= spawnManager.getZombiesSpawned()))
+			return;
+		if (changingRound)
 			return;
 		changingRound = true;
 		scoreboard.update();
@@ -566,7 +591,7 @@ public class Game
 			return;
 		}
 		waveNumber++;
-		if(waveNumber != 1)
+		if (waveNumber != 1)
 		{
 			for (Player pl : players)
 			{
@@ -576,8 +601,7 @@ public class Game
 			
 			spawnManager.nextWave();
 			
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
-			{
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				public void run()
 				{
 					for (Player pl : players)
@@ -608,7 +632,9 @@ public class Game
 	
 	/**
 	 * Adds a player to the game
-	 * @param player to be added to the game
+	 * 
+	 * @param player
+	 *            to be added to the game
 	 */
 	public void addPlayer(Player player)
 	{
@@ -677,7 +703,10 @@ public class Game
 				}
 				else
 				{
-					if (starter.started) { return; }
+					if (starter.started)
+					{
+						return;
+					}
 					starter = new AutoStart(plugin, this, plugin.config.arenaStartTime + 1);
 					starter.startTimer();
 					for (Player pl : players)
@@ -698,11 +727,13 @@ public class Game
 	
 	/**
 	 * Removes the given player from the game
-	 * @param player to be removed from the game
+	 * 
+	 * @param player
+	 *            to be removed from the game
 	 */
 	public void playerLeave(Player player, boolean endGame)
 	{
-		if(!endGame)
+		if (!endGame)
 		{
 			players.remove(player);
 			if (players.size() == 0)
@@ -733,11 +764,12 @@ public class Game
 			try
 			{
 				player.setFlying(pInfo.getFly(player));
-			} catch (Exception e)
-			{
 			}
+			catch (Exception e)
+			{}
 			plugin.pointManager.playerLeaveGame(player);
-		} catch (NullPointerException e)
+		}
+		catch (NullPointerException e)
 		{
 			plugin.manager.loadAllGames();
 		}
@@ -753,9 +785,9 @@ public class Game
 			{
 				player.removePotionEffect(t);
 			}
-		} catch (Exception e)
-		{
 		}
+		catch (Exception e)
+		{}
 		player.removePotionEffect(PotionEffectType.SPEED);
 		player.getInventory().clear();
 		player.teleport(pInfo.getOldLocation(player));
@@ -764,9 +796,9 @@ public class Game
 		try
 		{
 			player.setFlying(pInfo.getFly(player));
-		} catch (Exception e)
-		{
 		}
+		catch (Exception e)
+		{}
 		player.getInventory().setContents(pInfo.getContents(player));
 		player.getInventory().setArmorContents(pInfo.getArmor(player));
 		player.setExp(pInfo.getExp(player));
@@ -790,14 +822,17 @@ public class Game
 	
 	/**
 	 * Removes a player from the game
-	 * @param player to be removed
+	 * 
+	 * @param player
+	 *            to be removed
 	 */
 	public void removePlayer(Player player)
 	{
 		players.remove(player);
 		for (Player pl : players)
 		{
-			if (!isDisabled) CommandUtil.sendMessageToPlayer(pl, player.getName() + " has left the game! Only " + players.size() + "/" + this.maxPlayers + " players left!");
+			if (!isDisabled)
+				CommandUtil.sendMessageToPlayer(pl, player.getName() + " has left the game! Only " + players.size() + "/" + this.maxPlayers + " players left!");
 		}
 		if (players.size() == 0)
 		{
@@ -822,11 +857,12 @@ public class Game
 			try
 			{
 				player.setFlying(pInfo.getFly(player));
-			} catch (Exception e)
-			{
 			}
+			catch (Exception e)
+			{}
 			plugin.pointManager.playerLeaveGame(player);
-		} catch (NullPointerException e)
+		}
+		catch (NullPointerException e)
 		{
 			plugin.manager.loadAllGames();
 		}
@@ -835,8 +871,11 @@ public class Game
 	
 	/**
 	 * Sets the spectator warp location
-	 * @param p player the set the location
-	 * @param loc location where the warp will be
+	 * 
+	 * @param p
+	 *            player the set the location
+	 * @param loc
+	 *            location where the warp will be
 	 * @return if the spawn was set or not
 	 */
 	public boolean setSpectateLocation(Player p, Location loc)
@@ -858,8 +897,7 @@ public class Game
 	 */
 	public void forceNight()
 	{
-		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
-		{
+		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 			
 			@Override
 			public void run()
@@ -872,6 +910,7 @@ public class Game
 	
 	/**
 	 * Gets the world where the map is located
+	 * 
 	 * @return
 	 */
 	public World getWorld()
@@ -881,8 +920,11 @@ public class Game
 	
 	/**
 	 * Sets the lobby spawn location
-	 * @param player that set the spawn
-	 * @param loc location where the spawn wll be
+	 * 
+	 * @param player
+	 *            that set the spawn
+	 * @param loc
+	 *            location where the spawn wll be
 	 * @return if the spawn was set or not
 	 */
 	public boolean setLobbySpawn(Player player, Location loc)
@@ -898,8 +940,11 @@ public class Game
 	
 	/**
 	 * Sets the first point in the arena
-	 * @param p player that set the point
-	 * @param loc location that
+	 * 
+	 * @param p
+	 *            player that set the point
+	 * @param loc
+	 *            location that
 	 * @return if the point was set or not
 	 */
 	public boolean addPointOne(Player p, Location loc)
@@ -912,8 +957,11 @@ public class Game
 	
 	/**
 	 * Sets the Second point in the arena
-	 * @param p player that set the point
-	 * @param loc location that
+	 * 
+	 * @param p
+	 *            player that set the point
+	 * @param loc
+	 *            location that
 	 * @return if the point was set or not
 	 */
 	public boolean addPointTwo(Player p, Location loc)
@@ -948,7 +996,10 @@ public class Game
 	{
 		resetSpawnLocationBlocks();
 		isDisabled = false;
-		if (mode == ArenaStatus.INGAME) { return; }
+		if (mode == ArenaStatus.INGAME)
+		{
+			return;
+		}
 		mode = ArenaStatus.WAITING;
 		signManager.updateGame();
 	}
@@ -959,7 +1010,7 @@ public class Game
 	public void endGame()
 	{
 		this.mode = ArenaStatus.WAITING;
-		for (Player p: players)
+		for (Player p : players)
 		{
 			double points = waveNumber;
 			plugin.vault.addMoney(p.getName(), points);
@@ -1004,8 +1055,10 @@ public class Game
 	/**
 	 * Sets the players warp location in game.
 	 * 
-	 * @param p player that set the point
-	 * @param loc location where the point will be set
+	 * @param p
+	 *            player that set the point
+	 * @param loc
+	 *            location where the point will be set
 	 * @return if the point was set or not
 	 */
 	public boolean setPlayerTPLocation(Player p, Location loc)
@@ -1022,7 +1075,9 @@ public class Game
 	
 	/**
 	 * Sets the name of the game
-	 * @param name Name of the arena to be set to
+	 * 
+	 * @param name
+	 *            Name of the arena to be set to
 	 */
 	public void setName(String name)
 	{
@@ -1036,7 +1091,9 @@ public class Game
 	
 	/**
 	 * Saves all locations to the config
-	 * @param player that saved the locations
+	 * 
+	 * @param player
+	 *            that saved the locations
 	 */
 	public void saveLocationsInConfig(Player player)
 	{
@@ -1075,7 +1132,8 @@ public class Game
 			CommandUtil.sendMessageToPlayer(player, "Arena " + arenaName + " setup!");
 			plugin.isArenaSetup.remove(player);
 			hasWarps = true;
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			return;
 		}
@@ -1088,8 +1146,10 @@ public class Game
 	{
 		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
 		conf.reloadConfig();
-		if (conf.getString(arenaName + ".Location.world") == null) worldName = arena.getWorld();
-		else worldName = conf.getString(arenaName + ".Location.world");
+		if (conf.getString(arenaName + ".Location.world") == null)
+			worldName = arena.getWorld();
+		else
+			worldName = conf.getString(arenaName + ".Location.world");
 		int x1 = conf.getInt(arenaName + ".Location.P1.x");
 		int y1 = conf.getInt(arenaName + ".Location.P1.y");
 		int z1 = conf.getInt(arenaName + ".Location.P1.z");
@@ -1218,7 +1278,7 @@ public class Game
 		conf.set(loc, null);
 		conf.set(loc + ".maxPlayers", 8);
 		// Saves and reloads Arenaconfig
-		conf.saveConfig();	
+		conf.saveConfig();
 	}
 	
 	/**
@@ -1231,7 +1291,8 @@ public class Game
 		{
 			conf.set(arenaName, null);
 			conf.saveConfig();
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			return;
 		}
@@ -1239,6 +1300,7 @@ public class Game
 	
 	/**
 	 * gets the name of the game
+	 * 
 	 * @return
 	 */
 	public String getName()
@@ -1246,12 +1308,13 @@ public class Game
 		return arenaName;
 	}
 	
-
-	
 	/**
-	 * Sets up the players inventory in  game
-	 * @param slot of the item
-	 * @param item to be set up
+	 * Sets up the players inventory in game
+	 * 
+	 * @param slot
+	 *            of the item
+	 * @param item
+	 *            to be set up
 	 * @return the item after set up
 	 */
 	private ItemStack setItemMeta(int slot, ItemStack item)
@@ -1321,7 +1384,8 @@ public class Game
 		player.getInventory().setLeggings(pants);
 		player.getInventory().setBoots(boots);
 		player.getInventory().setItem(0, knife);
-		//player.getInventory().setItem(8, new ItemStack(Material.MAGMA_CREAM, 4));
+		// player.getInventory().setItem(8, new ItemStack(Material.MAGMA_CREAM,
+		// 4));
 		player.getInventory().setItem(27, setItemMeta(27, ib));
 		player.getInventory().setItem(28, setItemMeta(28, ib));
 		player.getInventory().setItem(29, setItemMeta(29, ib));
@@ -1339,7 +1403,8 @@ public class Game
 	 */
 	public void clearArena()
 	{
-		if (this.getWorld() == null) return;
+		if (this.getWorld() == null)
+			return;
 		for (Entity entity : this.getWorld().getEntities())
 		{
 			if (arena.containsBlock(entity.getLocation()))
@@ -1358,14 +1423,19 @@ public class Game
 	 */
 	public void clearArenaItems()
 	{
-		if (this.getWorld() == null) return;
-		List<Entity> entList = getWorld().getEntities();//get all entities in the world
+		if (this.getWorld() == null)
+			return;
+		List<Entity> entList = getWorld().getEntities();// get all entities in
+														// the world
 		
-		for(Entity current : entList){//loop through the list
-			if (current instanceof Item){//make sure we are only deleting what we want to delete
-				current.remove();//remove it
+		for (Entity current : entList)
+		{// loop through the list
+			if (current instanceof Item)
+			{// make sure we are only deleting what we want to delete
+				current.remove();// remove it
 			}
-			if(current instanceof Zombie){
+			if (current instanceof Zombie)
+			{
 				current.remove();
 			}
 		}
@@ -1385,20 +1455,20 @@ public class Game
 	{
 		CustomConfig conf = plugin.configManager.getConfig("kills");
 		Leaderboards lb = plugin.leaderboards;
-		if(conf.contains("Kills." + player.getName()))
+		if (conf.contains("Kills." + player.getName()))
 		{
-			int kills =conf.getInt("Kills." + player.getName());
+			int kills = conf.getInt("Kills." + player.getName());
 			kills++;
 			conf.set("Kills." + player.getName(), kills);
 			PlayerStats stat = lb.getPlayerStatFromPlayer(player);
-			if(stat == null)
+			if (stat == null)
 			{
 				PlayerStats newstat = new PlayerStats(player.getName(), 1);
 				lb.addPlayerStats(newstat);
 			}
 			else
 			{
-				stat.setKills(stat.getKills()+1);
+				stat.setKills(stat.getKills() + 1);
 			}
 		}
 		else
@@ -1408,20 +1478,23 @@ public class Game
 			lb.addPlayerStats(stat);
 			
 		}
-		if(plugin.vault != null)
+		if (plugin.vault != null)
 		{
-			try{
-				if(!plugin.vault.hasAccount(player.getName()))
+			try
+			{
+				if (!plugin.vault.hasAccount(player.getName()))
 					plugin.vault.newAccount(player.getName());
-				plugin.vault.addMoney(player.getName(), (double)plugin.config.KillMoney);
-			}catch(NullPointerException e){}
+				plugin.vault.addMoney(player.getName(), (double) plugin.config.KillMoney);
+			}
+			catch (NullPointerException e)
+			{}
 		}
 		conf.saveConfig();
 	}
 	
 	public void updateBarrierDamage(int damage, Block block)
 	{
-		for(Player player: this.players)
+		for (Player player : this.players)
 		{
 			PacketPlayOutBlockBreakAnimation packet = new PacketPlayOutBlockBreakAnimation(0, block.getX(), block.getY(), block.getZ(), damage);
 			int dimension = ((CraftWorld) player.getWorld()).getHandle().dimension;

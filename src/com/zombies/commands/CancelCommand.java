@@ -37,7 +37,7 @@ public class CancelCommand implements SubCommand
 				if (plugin.isRemovingSpawns.containsKey(player))
 				{
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Remove Spawn Editor");
-					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Type /z cancel removespawn to get out of this mode!");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Type /z cancel removespawns to get out of this mode!");
 				}
 				return true;
 			}

@@ -70,8 +70,17 @@ public class OnPlayerChatEvent implements Listener
 				}
 				else
 				{
-					Game game = b.getGame();
-					game.resetSpawnLocationBlocks();
+					final Game game = b.getGame();
+					
+					Runnable delayedSpawnFunc = new Runnable() 
+					{
+						public void run()
+						{
+							game.resetSpawnLocationBlocks();
+						}
+					};
+					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delayedSpawnFunc, 1);
+					
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn point for barrier number " + b.getNum() + " set!");
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now type in the ammount the player will receive per repairation level of the barrier.");
 					playerChat.setCancelled(true);
@@ -115,8 +124,17 @@ public class OnPlayerChatEvent implements Listener
 					{
 						door.addSpawnPoint(null);
 					}
-					Game game = plugin.manager.getGame(door);
-					game.resetSpawnLocationBlocks();
+					final Game game = plugin.manager.getGame(door);
+					
+					Runnable delayedSpawnFunc = new Runnable() 
+					{
+						public void run()
+						{
+							game.resetSpawnLocationBlocks();
+						}
+					};
+					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delayedSpawnFunc, 1);
+					
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn points for door number " + door.doorNumber + " set!");
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now select any signs that can open this door.");
 					playerChat.setCancelled(true);
@@ -231,7 +249,7 @@ public class OnPlayerChatEvent implements Listener
 			{
 				String[] args = new String[2];
 				args[0] = "cancel";
-				args[1] = "removespawn";
+				args[1] = "removespawns";
 				plugin.command.onRemoteCommand(player, args);
 				playerChat.setCancelled(true);
 			}
