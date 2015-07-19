@@ -444,7 +444,7 @@ public class Game
 		{
 			return;
 		}
-		if (starter.forced)
+		if (starter != null && starter.forced)
 		{
 			return;
 		}
@@ -452,9 +452,8 @@ public class Game
 		{
 			CommandUtil.sendMessageToPlayer(pl, "Game force started!");
 		}
-		if (starter == null)
-			starter = new AutoStart(plugin, this, 60);
-		starter.endTimer();
+		if (starter != null)
+			starter.endTimer();
 		starter = new AutoStart(plugin, this, 6);
 		starter.startTimer();
 		mode = ArenaStatus.STARTING;

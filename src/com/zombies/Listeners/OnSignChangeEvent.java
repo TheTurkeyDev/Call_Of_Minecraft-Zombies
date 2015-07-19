@@ -17,14 +17,14 @@ import com.zombies.kits.Kit;
 
 public class OnSignChangeEvent implements Listener
 {
-
+	
 	public COMZombies plugin;
-
+	
 	public OnSignChangeEvent(COMZombies zombies)
 	{
 		plugin = zombies;
 	}
-
+	
 	@EventHandler
 	public void eventSignChanged(SignChangeEvent sign)
 	{
@@ -32,7 +32,7 @@ public class OnSignChangeEvent implements Listener
 		String secondLine = ChatColor.stripColor(sign.getLine(1));
 		String thirdLine = ChatColor.stripColor(sign.getLine(2));
 		String fourthLine = ChatColor.stripColor(sign.getLine(3));
-
+		
 		if (firstLine.equalsIgnoreCase("[zombies]") || firstLine.equalsIgnoreCase("[zombie]"))
 		{
 			if (sign.getLine(1).equalsIgnoreCase("") && sign.getLine(2).equalsIgnoreCase("") && sign.getLine(3).equalsIgnoreCase(""))
@@ -63,12 +63,15 @@ public class OnSignChangeEvent implements Listener
 					sign.getPlayer().sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Random Weapon Box Created!");
 					return;
 				}
-				sign.setLine(0, ChatColor.RED + "[Zombies]");
-				sign.setLine(1, ChatColor.AQUA + "MysteryBox");
-				sign.setLine(2, thirdLine);
-				RandomBox box = new RandomBox(sign.getBlock().getLocation(), game, plugin, game.boxManager.getNextBoxName(), Integer.parseInt(thirdLine));
-				game.boxManager.addBox(box);
-				sign.getPlayer().sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Random Weapon Box Created!");
+				else
+				{
+					sign.setLine(0, ChatColor.RED + "[Zombies]");
+					sign.setLine(1, ChatColor.AQUA + "MysteryBox");
+					sign.setLine(2, thirdLine);
+					RandomBox box = new RandomBox(sign.getBlock().getLocation(), game, plugin, game.boxManager.getNextBoxName(), Integer.parseInt(thirdLine));
+					game.boxManager.addBox(box);
+					sign.getPlayer().sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Random Weapon Box Created!");
+				}
 				return;
 			}
 			else if (secondLine.equalsIgnoreCase("perk"))
@@ -130,7 +133,7 @@ public class OnSignChangeEvent implements Listener
 					CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
 					
 					conf.set(game.getName() + ".Power", true);
-
+					
 					conf.saveConfig();
 				}
 			}

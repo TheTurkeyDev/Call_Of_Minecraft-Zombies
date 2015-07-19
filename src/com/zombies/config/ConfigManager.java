@@ -26,7 +26,6 @@ public class ConfigManager
 		configs.add(new CustomConfig(plugin, plugin.getDataFolder(), "GunConfig", true));
 		configs.add(new CustomConfig(plugin, plugin.getDataFolder(), "ArenaConfig", false));
 		configs.add(new CustomConfig(plugin, plugin.getDataFolder(), "Signs", false));
-		configs.add(new CustomConfig(plugin, plugin.getDataFolder(), "EasterEggs", false));
 		configs.add(new CustomConfig(plugin, plugin.getDataFolder(), "Kits", false));
 		configs.add(new CustomConfig(plugin, plugin.getDataFolder(), "kills", false));
 	}

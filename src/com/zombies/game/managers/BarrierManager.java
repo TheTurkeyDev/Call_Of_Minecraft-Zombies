@@ -19,7 +19,6 @@ public class BarrierManager
 	private COMZombies plugin;
 	private Game game;
 	private ArrayList<Barrier> barriers = new ArrayList<Barrier>();
-	private ArrayList<Integer> numbers = new ArrayList<Integer>();
 	
 	public BarrierManager(COMZombies plugin, Game game)
 	{
@@ -40,7 +39,7 @@ public class BarrierManager
 				double z = conf.getDouble(game.getName() + ".Barriers." + key + ".z");
 				Location loc = new Location(game.getWorld(), x, y, z);
 				int number = Integer.parseInt(key);
-				Barrier barrier = new Barrier(loc,loc.getWorld().getBlockAt(loc), number, game);
+				Barrier barrier = new Barrier(loc, loc.getWorld().getBlockAt(loc), number, game);
 				
 				loc.getBlock().setTypeId(conf.getInt(game.getName() + ".Barriers." + key + ".bb"));
 				
@@ -55,18 +54,32 @@ public class BarrierManager
 				barrier.setReward(conf.getInt(game.getName() + ".Barriers." + key + ".reward"));
 				
 				barriers.add(barrier);
-				numbers.add(number);
 			}
-		} catch (NullPointerException e)
-		{
 		}
+		catch (NullPointerException e)
+		{}
 	}
 	
 	public Barrier getBarrier(Location loc)
 	{
 		for (Barrier b : barriers)
 		{
-			if (b.getLocation().equals(loc)) { return b; }
+			if (b.getLocation().equals(loc))
+			{
+				return b;
+			}
+		}
+		return null;
+	}
+	
+	public Barrier getBarrier(int num)
+	{
+		for (Barrier b : barriers)
+		{
+			if (b.getNum() == num)
+			{
+				return b;
+			}
 		}
 		return null;
 	}
@@ -75,7 +88,10 @@ public class BarrierManager
 	{
 		for (Barrier b : barriers)
 		{
-			if (b.getRepairLoc().equals(loc)) { return b; }
+			if (b.getRepairLoc().equals(loc))
+			{
+				return b;
+			}
 		}
 		return null;
 	}
@@ -84,7 +100,10 @@ public class BarrierManager
 	{
 		for (Barrier b : barriers)
 		{
-			if (b.getSpawnPoint().getLocation().equals(p.getLocation())) { return b; }
+			if (b.getSpawnPoint().getLocation().equals(p.getLocation()))
+			{
+				return b;
+			}
 		}
 		return null;
 	}
@@ -102,20 +121,21 @@ public class BarrierManager
 			barriers.remove(barrier);
 		}
 	}
+	
 	public void addBarrier(Barrier barrier)
 	{
 		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
 		if (game.mode == ArenaStatus.DISABLED || game.mode == ArenaStatus.WAITING)
 		{
 			boolean same = false;
-			for(Barrier b: barriers)
+			for (Barrier b : barriers)
 			{
-				if(b.getLocation().equals(b.getLocation()))
+				if (b.getLocation().equals(b.getLocation()))
 				{
 					same = true;
 				}
 			}
-			if(!same)
+			if (!same)
 			{
 				Location loc = barrier.getLocation();
 				Location loc2 = barrier.getRepairLoc();
@@ -143,14 +163,14 @@ public class BarrierManager
 		if (game.mode == ArenaStatus.DISABLED || game.mode == ArenaStatus.WAITING)
 		{
 			boolean same = false;
-			for(Barrier b: barriers)
+			for (Barrier b : barriers)
 			{
-				if(b.getLocation().equals(b.getLocation()))
+				if (b.getLocation().equals(b.getLocation()))
 				{
 					same = true;
 				}
 			}
-			if(!same)
+			if (!same)
 			{
 				Location loc = barrier.getLocation();
 				Location loc2 = barrier.getRepairLoc();
@@ -189,16 +209,16 @@ public class BarrierManager
 	public int getNextBarrierNumber()
 	{
 		int a = 0;
-		while(numbers.contains(a))
+		while (this.getBarrier(a) != null)
 		{
 			a++;
 		}
 		return a;
 	}
-
+	
 	public void unloadAllBarriers()
 	{
-		for(Barrier b: barriers)
+		for (Barrier b : barriers)
 		{
 			b.repairFull();
 		}

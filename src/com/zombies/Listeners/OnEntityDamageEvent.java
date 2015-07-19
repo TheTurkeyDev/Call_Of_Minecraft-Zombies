@@ -117,14 +117,11 @@ public class OnEntityDamageEvent implements Listener
 							Zombie zombie1 = (Zombie) entity;
 							double damageAmount = e.getDamage();
 							int totalHealth;
-							int px = (int) player.getLocation().getX();
-							int py = (int) player.getLocation().getY();
-							int pz = (int) player.getLocation().getZ();
-							int zx = (int) zombie1.getLocation().getX();
-							int zy = (int) zombie1.getLocation().getY();
-							int zz = (int) zombie1.getLocation().getZ();
+							double cx = player.getLocation().getX() - zombie1.getLocation().getX();
+							double cy = player.getLocation().getY() - zombie1.getLocation().getY();
+							double cz = player.getLocation().getZ() - zombie1.getLocation().getZ();
 							
-							if (Math.abs(px - zx) <= 1 && Math.abs(py - zy) <= 1 && Math.abs(pz - zz) <= 1)
+							if (Math.sqrt(Math.pow(cx, 2) + Math.pow(cy, 2) + Math.pow(cz, 2)) <= 1.5)
 							{
 								damageAmount = 5;
 							}
