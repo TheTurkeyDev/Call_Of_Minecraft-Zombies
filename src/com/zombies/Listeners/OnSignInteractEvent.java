@@ -32,14 +32,15 @@ import com.zombies.particleutilities.ParticleEffects;
 
 public class OnSignInteractEvent implements Listener
 {
-
+	
 	private final COMZombies plugin;
-
+	
 	public OnSignInteractEvent(COMZombies zombies)
 	{
 		plugin = zombies;
 	}
 	
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void RightClickSign(PlayerInteractEvent event)
 	{
@@ -108,8 +109,11 @@ public class OnSignInteractEvent implements Listener
 						if (plugin.pointManager.canBuy(player, points))
 						{
 							RandomBox box = game.boxManager.getBox(sign.getLocation());
-							box.Start(player, points);
-							player.getLocation().getWorld().playSound(player.getLocation(), Sound.CHEST_OPEN, 1, 1);
+							if(box != null)
+							{
+								box.Start(player, points);
+								player.getLocation().getWorld().playSound(player.getLocation(), Sound.CHEST_OPEN, 1, 1);
+							}
 							return;
 						}
 						else
@@ -128,7 +132,7 @@ public class OnSignInteractEvent implements Listener
 							if (!game.isPowered())
 							{
 								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must turn on the power first!");
-								perk.noPower(plugin, player);
+								PerkType.noPower(plugin, player);
 								return;
 							}
 						}
@@ -259,8 +263,8 @@ public class OnSignInteractEvent implements Listener
 					}
 					else if (sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "Gun"))
 					{
-						int Buypoints = Integer.parseInt(sign.getLine(3).substring(0, sign.getLine(3).indexOf("/") - 1));
-						int Refilpoints = Integer.parseInt(sign.getLine(3).substring(sign.getLine(3).indexOf("/") + 2));
+						int Buypoints = Integer.parseInt(sign.getLine(3).substring(0, sign.getLine(3).indexOf("/") - 1).trim());
+						int Refilpoints = Integer.parseInt(sign.getLine(3).substring(sign.getLine(3).indexOf("/") + 2).trim());
 						GunType guntype = plugin.getGun(sign.getLine(2));
 						GunManager manager = game.getPlayersGun(player);
 						int slot = manager.getCorrectSlot();
@@ -356,7 +360,7 @@ public class OnSignInteractEvent implements Listener
 									player.teleport(loc);
 									player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 30));
 									ParticleEffects eff = ParticleEffects.MOB_SPELL;
-
+									
 									for (int i = 0; i < 50; i++)
 									{
 										for (Player pl : Bukkit.getOnlinePlayers())
@@ -370,7 +374,7 @@ public class OnSignInteractEvent implements Listener
 											}
 										}
 									}
-
+									
 									plugin.pointManager.takePoints(player, points);
 									plugin.pointManager.notifyPlayer(player);
 								}

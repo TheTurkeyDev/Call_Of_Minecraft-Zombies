@@ -33,6 +33,7 @@ public class OnBlockBreakEvent implements Listener
 		manager = z.manager;
 	}
 	
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreakEvent(BlockBreakEvent interact)
 	{

@@ -24,11 +24,6 @@ public enum GunTypeEnum
 	{
 		return this.material;
 	}
-	
-	public void setMaterial(Material material)
-	{
-		this.material = material;
-	}
 
 	public static GunTypeEnum getGun(String name)
 	{

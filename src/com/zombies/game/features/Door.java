@@ -187,6 +187,7 @@ public class Door
 		return false;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void closeDoor()
 	{
 		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
@@ -239,6 +240,7 @@ public class Door
 	 * Loads all the blocks to the block list
 	 */
 
+	@SuppressWarnings("deprecation")
 	private void loadBlocks()
 	{
 		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
@@ -268,6 +270,7 @@ public class Door
 	 *            - Point two for the block locations
 	 */
 
+	@SuppressWarnings("deprecation")
 	public void saveBlocks(Location p1, Location p2)
 	{
 		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");

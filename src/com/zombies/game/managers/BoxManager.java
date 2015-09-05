@@ -40,6 +40,7 @@ public class BoxManager
 	{
 		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
 		boxes.clear();
+		numbers.clear();
 		try
 		{
 			for (String key : config.getConfigurationSection(game.getName() + ".MysteryBoxs").getKeys(false))
@@ -100,6 +101,7 @@ public class BoxManager
 			Block block = loc.getBlock();
 			block.setType(Material.AIR);
 			boxes.remove(box);
+			numbers.remove(Integer.parseInt(box.getName().substring(3)));
 		}
 	}
 	public void addBox(RandomBox box)
@@ -126,6 +128,7 @@ public class BoxManager
 				conf.set(game.getName() + ".MysteryBoxs." + name + ".Face", "");
 				conf.saveConfig();
 				boxes.add(box);
+				numbers.add(Integer.parseInt(box.getName().substring(3)));
 			}
 		}
 	}

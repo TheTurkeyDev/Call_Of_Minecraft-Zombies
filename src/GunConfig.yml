@@ -1,13 +1,4 @@
 StartingGun: M1911
-
-PistolsMaterial: WOOD_HOE
-ShotgunsMaterial: STONE_HOE
-AssaultRiflesMaterial: GOLD_HOE
-LightMachineGunsMaterial: IRON_HOE
-SubMachineGunsMaterial: STICK
-SniperRiflesMaterial: BLAZE_ROD
-OthersMaterial: DIAMOND_HOE
-
 Resource Sounds: off
 
 Guns:

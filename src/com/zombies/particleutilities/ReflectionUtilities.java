@@ -1,10 +1,13 @@
 package com.zombies.particleutilities;
 
 import java.lang.reflect.Field;
+import java.util.logging.Level;
+
+import com.zombies.COMZombies;
 
 public class ReflectionUtilities
 {
-
+	
 	/**
 	 * sets a value of an {@link Object} via reflection
 	 * 
@@ -18,11 +21,18 @@ public class ReflectionUtilities
 	 */
 	public static void setValue(Object instance, String fieldName, Object value) throws Exception
 	{
-		Field field = instance.getClass().getDeclaredField(fieldName);
-		field.setAccessible(true);
-		field.set(instance, value);
+		try
+		{
+			Field field = instance.getClass().getDeclaredField(fieldName);
+			field.setAccessible(true);
+			field.set(instance, value);
+		}
+		catch (Exception e)
+		{
+			COMZombies.getInstance().log.log(Level.WARNING, COMZombies.consoleprefix + " Failed on particles!");
+		}
 	}
-
+	
 	/**
 	 * get a value of an {@link Object}'s {@link Field}
 	 * 
@@ -40,5 +50,5 @@ public class ReflectionUtilities
 		field.setAccessible(true);
 		return field.get(instance);
 	}
-
+	
 }

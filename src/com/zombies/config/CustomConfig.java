@@ -121,6 +121,7 @@ public class CustomConfig
 		else
 		{
 			this.fileConfig.addDefault(path, def);
+			this.fileConfig.set(path, def);
 			this.saveConfig();
 			return def;
 		}

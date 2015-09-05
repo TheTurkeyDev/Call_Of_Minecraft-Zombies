@@ -118,6 +118,8 @@ public class Barrier implements Runnable
 			game.getWorld().getBlockAt(loc).setType(blockMat);
 		
 		game.getWorld().getBlockAt(this.repairLoc).setType(Material.AIR);
+		
+		this.breaking = false;
 	}
 	
 	public Location getLocation()
@@ -194,6 +196,8 @@ public class Barrier implements Runnable
 				entsToAdd.clear();
 				Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getInstance(), this, 3 * 20L);
 			}
+			else
+				this.breaking = false;
 		}
 		else if(entsToAdd.size() > 0)
 		{

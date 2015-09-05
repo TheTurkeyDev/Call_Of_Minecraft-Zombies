@@ -128,7 +128,7 @@ public class OnSignChangeEvent implements Listener
 					Player player = sign.getPlayer();
 					sign.setLine(0, ChatColor.RED + "[Zombies]");
 					sign.setLine(1, ChatColor.AQUA + "power");
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type /z removepower " + game.getName() + " to disable the power!");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type /z disablepower " + game.getName() + " to disable the power!");
 					
 					CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
 					
@@ -186,9 +186,9 @@ public class OnSignChangeEvent implements Listener
 				String price = "";
 				try
 				{
-					price += sign.getLine(3).substring(0, sign.getLine(3).indexOf("/"));
+					price += sign.getLine(3).substring(0, sign.getLine(3).indexOf("/")).trim();
 					price += " / ";
-					price += sign.getLine(3).substring(sign.getLine(3).indexOf("/") + 1);
+					price += sign.getLine(3).substring(sign.getLine(3).indexOf("/") + 1).trim();
 				} catch (Exception ex)
 				{
 					price = "200 / 100";
