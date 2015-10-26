@@ -121,20 +121,10 @@ public class ConfigSetup
 		pointsOnKill = plugin.getConfig().getInt("config.gameSettings.defaultPointsOnKill");
 		maxWave = plugin.getConfig().getInt("config.gameSettings.maxWave");
 		reviveTimer = plugin.getConfig().getInt("config.ReviveSettings.ReviveTimer");
-		try {
-			reviveRange = plugin.getConfig().getInt("config.ReviveSettings.ReviveRange");
-			if (reviveRange > 6)
-				reviveRange = 6;
-		}
-		catch (NullPointerException e){
-			reviveRange = 2;
-		}
-		try {
-			meleeRange = plugin.getConfig().getFloat("config.ReviveSettings.MeleeRange");
-		}
-		catch (NullPointerException e){
-			meleeRange = 1.5;
-		}
+		reviveRange = plugin.getConfig().getInt("config.ReviveSettings.ReviveRange");
+		if (reviveRange > 6)
+			reviveRange = 6;
+		meleeRange = plugin.getConfig().getFloat("config.ReviveSettings.MeleeRange");
 		configVersion = plugin.getConfig().getString("vID");
 		reloadTime = plugin.getConfig().getInt("config.gameSettings.reloadTime");
 		if (plugin.possibleGuns.size() != 0)
