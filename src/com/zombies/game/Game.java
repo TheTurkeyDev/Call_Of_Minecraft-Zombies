@@ -1369,6 +1369,7 @@ public class Game
 	@SuppressWarnings("deprecation")
 	public void assignPlayerInventory(Player player)
 	{
+		player.getInventory().clear();
 		ItemStack helmet = new ItemStack(Material.LEATHER_HELMET, 1);
 		ItemStack chestPlate = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
 		ItemStack pants = new ItemStack(Material.LEATHER_LEGGINGS, 1);
