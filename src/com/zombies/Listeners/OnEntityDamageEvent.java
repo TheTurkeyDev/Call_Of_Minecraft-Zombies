@@ -102,7 +102,7 @@ public class OnEntityDamageEvent implements Listener
 		{
 			Entity entity = e.getEntity();
 			int damage = 0;
-			if (!(plugin.manager.isEntityInGame(entity))) { return; }
+			if (!(plugin.manager.isEntityInGame(entity))) return;
 			Game game = plugin.manager.getGame(entity);
 			if (game != null)
 			{
@@ -121,7 +121,7 @@ public class OnEntityDamageEvent implements Listener
 							double cy = player.getLocation().getY() - zombie1.getLocation().getY();
 							double cz = player.getLocation().getZ() - zombie1.getLocation().getZ();
 							
-							if (Math.sqrt(Math.pow(cx, 2) + Math.pow(cy, 2) + Math.pow(cz, 2)) <= 1.5)
+							if (Math.sqrt(Math.pow(cx, 2) + Math.pow(cy, 2) + Math.pow(cz, 2)) <= plugin.config.meleeRange)
 							{
 								damageAmount = 5;
 							}

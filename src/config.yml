@@ -12,6 +12,8 @@ config:
     DoublePoints: true
     maxPerks: 4
   gameSettings:
+    #Range to allow knife attacks. (Values over 6 are set to 6, the vanilla value.)
+    MeleeRange: 1.5
     #Have all or only one Mystery Box be spawned at a time
     MultipleMysteryBoxes: false
     #Double points length in seconds
@@ -40,6 +42,7 @@ config:
     ZoomTexture: false
   ReviveSettings:
     ReviveTimer: 4
+    ReviveRange: 2
     MaxDownTime: 60
   Economy:
     CostPerJoin: 0

@@ -59,6 +59,14 @@ public class ConfigSetup
 	 */
 	public int instaKillTimer;
 	/**
+	 * Maximum range the Reviver can remove from whoever (s)he is reviving.
+	 */
+	public int reviveRange;
+	/**
+	 * Maximum range melees are allowed for. Values over 6 -> 6 (Maximum vanilla reach) for now.
+	 */
+	public float meleeRange;
+	/**
 	 * Time Fire salse is active for.
 	 */
 	public int fireSaleTimer;
@@ -113,6 +121,10 @@ public class ConfigSetup
 		pointsOnKill = plugin.getConfig().getInt("config.gameSettings.defaultPointsOnKill");
 		maxWave = plugin.getConfig().getInt("config.gameSettings.maxWave");
 		reviveTimer = plugin.getConfig().getInt("config.ReviveSettings.ReviveTimer");
+		reviveRange = plugin.getConfig().getInt("config.ReviveSettings.ReviveRange");
+		if (reviveRange > 6)
+			reviveRange = 6;
+		meleeRange = plugin.getConfig().getFloat("config.ReviveSettings.MeleeRange");
 		configVersion = plugin.getConfig().getString("vID");
 		reloadTime = plugin.getConfig().getInt("config.gameSettings.reloadTime");
 		if (plugin.possibleGuns.size() != 0)

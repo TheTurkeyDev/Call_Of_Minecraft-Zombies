@@ -133,7 +133,7 @@ public class DownedPlayer implements Listener
 		Player tmp = event.getPlayer();
 		try
 		{
-			if (player.getLocation().distance(tmp.getLocation()) > 2) return;
+			if (player.getLocation().distance(tmp.getLocation()) > plugin.config.reviveRange) return;
 		} catch (Exception e)
 		{
 			return;
