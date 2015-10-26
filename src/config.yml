@@ -13,7 +13,7 @@ config:
     maxPerks: 4
   gameSettings:
     #Range to allow knife attacks. (Values over 6 are set to 6, the vanilla value.)
-    doublePointsTimer: 2
+    MeleeRange: 1.5
     #Have all or only one Mystery Box be spawned at a time
     MultipleMysteryBoxes: false
     #Double points length in seconds

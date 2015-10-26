@@ -65,7 +65,7 @@ public class ConfigSetup
 	/**
 	 * Maximum range melees are allowed for. Values over 6 -> 6 (Maximum vanilla reach) for now.
 	 */
-	public int meleeRange;
+	public float meleeRange;
 	/**
 	 * Time Fire salse is active for.
 	 */
@@ -130,10 +130,10 @@ public class ConfigSetup
 			reviveRange = 2;
 		}
 		try {
-			meleeRange = plugin.getConfig().getInt("config.ReviveSettings.MeleeRange");
+			meleeRange = plugin.getConfig().getFloat("config.ReviveSettings.MeleeRange");
 		}
 		catch (NullPointerException e){
-			meleeRange = 2;
+			meleeRange = 1.5;
 		}
 		configVersion = plugin.getConfig().getString("vID");
 		reloadTime = plugin.getConfig().getInt("config.gameSettings.reloadTime");
