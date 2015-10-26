@@ -138,7 +138,7 @@ public class OnSignInteractEvent implements Listener
 						}
 						if (perk == null)
 						{
-							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "An error occured when trying to buy this perk! Leave the game an contact an admin please.");
+							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "An error occured when trying to buy this perk! Leave the game and contact an admin please.");
 							return;
 						}
 						else
