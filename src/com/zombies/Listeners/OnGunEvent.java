@@ -16,6 +16,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.projectiles.ProjectileSource;
 
 import com.zombies.COMZombies;
 import com.zombies.game.Game;
@@ -24,37 +25,45 @@ import com.zombies.guns.Gun;
 import com.zombies.guns.GunManager;
 import com.zombies.particleutilities.ParticleEffects;
 
-
 public class OnGunEvent implements Listener
 {
-	
+
 	private COMZombies plugin;
-	
+
 	public OnGunEvent(COMZombies pl)
 	{
 		plugin = pl;
 	}
-	
+
 	@EventHandler
 	public void onBlockInteractEvent(PlayerInteractEvent event)
 	{
-		if (!(event.getAction().equals(Action.RIGHT_CLICK_AIR)) || !(event.getAction().equals(Action.RIGHT_CLICK_AIR))) { return; }
-		if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+		if(!(event.getAction().equals(Action.RIGHT_CLICK_AIR)) || !(event.getAction().equals(Action.RIGHT_CLICK_AIR)))
 		{
-			if (event.getClickedBlock().getType().equals(Material.SIGN) || event.getClickedBlock().getType().equals(Material.SIGN_POST) || event.getClickedBlock().getType().equals(Material.WALL_SIGN)) { return; }
+			return;
+		}
+		if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+		{
+			if(event.getClickedBlock().getType().equals(Material.SIGN) || event.getClickedBlock().getType().equals(Material.SIGN_POST) || event.getClickedBlock().getType().equals(Material.WALL_SIGN))
+			{
+				return;
+			}
 		}
 		Player player = event.getPlayer();
-		if (plugin.manager.isPlayerInGame(player))
+		if(plugin.manager.isPlayerInGame(player))
 		{
 			Game game = plugin.manager.getGame(player);
-			if (!(game.mode == ArenaStatus.INGAME)) { return; }
-			if (game.getPlayersGun(player) != null)
+			if(!(game.mode == ArenaStatus.INGAME))
+			{
+				return;
+			}
+			if(game.getPlayersGun(player) != null)
 			{
 				GunManager gunManager = game.getPlayersGun(player);
-				if (gunManager.isGun())
+				if(gunManager.isGun())
 				{
 					Gun gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
-					if (gun.isReloading())
+					if(gun.isReloading())
 					{
 						player.getLocation().getWorld().playSound(player.getLocation(), Sound.CLICK, 1, 1);
 						return;
@@ -64,21 +73,24 @@ public class OnGunEvent implements Listener
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onGunReload(PlayerInteractEvent e)
 	{
-		if (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK))
+		if(e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK))
 		{
 			Player player = e.getPlayer();
-			if (plugin.manager.isPlayerInGame(player))
+			if(plugin.manager.isPlayerInGame(player))
 			{
 				Game game = plugin.manager.getGame(player);
-				if (!(game.mode == ArenaStatus.INGAME)) { return; }
-				if (game.getPlayersGun(player) != null)
+				if(!(game.mode == ArenaStatus.INGAME))
+				{
+					return;
+				}
+				if(game.getPlayersGun(player) != null)
 				{
 					GunManager gunManager = game.getPlayersGun(player);
-					if (gunManager.isGun())
+					if(gunManager.isGun())
 					{
 						Gun gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
 						gun.reload();
@@ -88,33 +100,37 @@ public class OnGunEvent implements Listener
 			}
 		}
 	}
+
 	@EventHandler
 	public void onZombieHitEvent(EntityDamageByEntityEvent event) throws Exception
 	{
-		if (event.getDamager() instanceof Snowball)
+		if(event.getDamager() instanceof Snowball)
 		{
 			Snowball snowball = (Snowball) event.getDamager();
-			if (snowball.getShooter() instanceof Player)
+			if(snowball.getShooter() instanceof ProjectileSource)
 			{
-				Player player = (Player) snowball.getShooter();
-				if (plugin.manager.isPlayerInGame(player))
+
+				ProjectileSource player = (ProjectileSource) snowball.getShooter();
+				if(plugin.manager.isPlayerInGame(player))
 				{
 					Game game = plugin.manager.getGame(player);
 					GunManager manager = game.getPlayersGun(player);
-					if (manager.isGun())
+					if(manager.isGun())
 					{
 						Gun gun = manager.getGun(player.getInventory().getHeldItemSlot());
 						int damage = 0;
-						if (gun.isPackOfPunched()) damage = gun.getType().packAPunchDamage;
-						else damage = gun.getType().damage;
-						if (event.getEntity() instanceof Zombie)
+						if(gun.isPackOfPunched())
+							damage = gun.getType().packAPunchDamage;
+						else
+							damage = gun.getType().damage;
+						if(event.getEntity() instanceof Zombie)
 						{
 							Zombie zomb = (Zombie) event.getEntity();
 							int totalHealth;
-							if (gun.getType().name.equalsIgnoreCase("Zombie BFF"))
+							if(gun.getType().name.equalsIgnoreCase("Zombie BFF"))
 							{
 								ParticleEffects eff = ParticleEffects.HEART;
-								for (int i = 0; i < 30; i++)
+								for(int i = 0; i < 30; i++)
 								{
 									float x = (float) (Math.random());
 									float y = (float) (Math.random());
@@ -122,11 +138,11 @@ public class OnGunEvent implements Listener
 									eff.sendToPlayer(player, zomb.getLocation(), x, y, z, 1, 1);
 								}
 							}
-							for (Player pl : game.players)
+							for(Player pl : game.players)
 							{
 								pl.playSound(pl.getLocation(), Sound.LAVA_POP, 1.0F, 0.0F);
 							}
-							if (game.spawnManager.totalHealth().containsKey(event.getEntity()))
+							if(game.spawnManager.totalHealth().containsKey(event.getEntity()))
 							{
 								totalHealth = game.spawnManager.totalHealth().get(event.getEntity());
 							}
@@ -135,10 +151,10 @@ public class OnGunEvent implements Listener
 								game.spawnManager.setTotalHealth(event.getEntity(), 20);
 								totalHealth = 20;
 							}
-							if (totalHealth >= 20)
+							if(totalHealth >= 20)
 							{
 								zomb.setHealth(20);
-								if (game.isDoublePoints())
+								if(game.isDoublePoints())
 								{
 									plugin.pointManager.addPoints(player, plugin.config.pointsOnHit * 2);
 								}
@@ -146,7 +162,7 @@ public class OnGunEvent implements Listener
 								{
 									plugin.pointManager.addPoints(player, plugin.config.pointsOnHit);
 								}
-								if (game.spawnManager.totalHealth().get(event.getEntity()) <= 20)
+								if(game.spawnManager.totalHealth().get(event.getEntity()) <= 20)
 								{
 									zomb.setHealth(game.spawnManager.totalHealth().get(event.getEntity()));
 								}
@@ -156,13 +172,13 @@ public class OnGunEvent implements Listener
 								}
 								plugin.pointManager.notifyPlayer(player);
 							}
-							else if (zomb.getHealth() - damage < 1)
+							else if(zomb.getHealth() - damage < 1)
 							{
 								OnZombiePerkDrop perkdrop = new OnZombiePerkDrop(plugin);
 								perkdrop.perkDrop(zomb, player);
 								zomb.remove();
 								boolean doublePoints = game.isDoublePoints();
-								if (doublePoints)
+								if(doublePoints)
 								{
 									plugin.pointManager.addPoints(player, plugin.config.pointsOnKill * 2);
 								}
@@ -170,12 +186,12 @@ public class OnGunEvent implements Listener
 								{
 									plugin.pointManager.addPoints(player, plugin.config.pointsOnKill);
 								}
-								
+
 								zomb.playEffect(EntityEffect.DEATH);
 								plugin.pointManager.notifyPlayer(player);
-								game.spawnManager.removeEntity((Entity)zomb);
+								game.spawnManager.removeEntity((Entity) zomb);
 								game.zombieKilled(player);
-								if (game.spawnManager.getEntities().size() <= 0)
+								if(game.spawnManager.getEntities().size() <= 0)
 								{
 									game.nextWave();
 								}
@@ -184,7 +200,7 @@ public class OnGunEvent implements Listener
 							{
 								event.setDamage(damage);
 								boolean doublePoints = game.isDoublePoints();
-								if (doublePoints)
+								if(doublePoints)
 								{
 									plugin.pointManager.addPoints(player, plugin.config.pointsOnHit * 2);
 								}
@@ -194,7 +210,7 @@ public class OnGunEvent implements Listener
 								}
 								plugin.pointManager.notifyPlayer(player);
 							}
-							if (game.isInstaKill())
+							if(game.isInstaKill())
 							{
 								zomb.remove();
 							}
@@ -204,31 +220,41 @@ public class OnGunEvent implements Listener
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onPlayerMonkeyBomb(PlayerInteractEvent event)
 	{
-		if (!(event.getAction().equals(Action.RIGHT_CLICK_AIR)) || !(event.getAction().equals(Action.RIGHT_CLICK_AIR))) { return; }
-		if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+		if(!(event.getAction().equals(Action.RIGHT_CLICK_AIR)) || !(event.getAction().equals(Action.RIGHT_CLICK_AIR)))
 		{
-			if (event.getClickedBlock().getType().equals(Material.SIGN) || event.getClickedBlock().getType().equals(Material.SIGN_POST) || event.getClickedBlock().getType().equals(Material.WALL_SIGN)) { return; }
+			return;
+		}
+		if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+		{
+			if(event.getClickedBlock().getType().equals(Material.SIGN) || event.getClickedBlock().getType().equals(Material.SIGN_POST) || event.getClickedBlock().getType().equals(Material.WALL_SIGN))
+			{
+				return;
+			}
 		}
 		final Player player = event.getPlayer();
-		if (plugin.manager.isPlayerInGame(player))
+		if(plugin.manager.isPlayerInGame(player))
 		{
 			Game game = plugin.manager.getGame(player);
-			if (!(game.mode == ArenaStatus.INGAME)) { return; }
-			if (player.getItemInHand().getType().equals(Material.MAGMA_CREAM))
+			if(!(game.mode == ArenaStatus.INGAME))
+			{
+				return;
+			}
+			if(player.getItemInHand().getType().equals(Material.MAGMA_CREAM))
 			{
 				player.getInventory().removeItem(new ItemStack(Material.MAGMA_CREAM, 1));
 				final Item item = player.getWorld().dropItemNaturally(player.getEyeLocation(), new ItemStack(Material.MAGMA_CREAM));
-				//Location Iloc = item.getLocation();
+				// Location Iloc = item.getLocation();
 				item.setVelocity(player.getLocation().getDirection().multiply(1));
 				item.setPickupDelay(1000);
-				/*for(Entity e: game.spawnManager.mobs)
-				{
-
-				}*/
+				/*
+				 * for(Entity e: game.spawnManager.mobs) {
+				 * 
+				 * }
+				 */
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 				{
 					@Override
@@ -241,5 +267,5 @@ public class OnGunEvent implements Listener
 				}, 140);
 			}
 		}
-	}         
+	}
 }

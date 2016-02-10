@@ -1,6 +1,7 @@
 package com.zombies.game.features;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,7 +44,10 @@ public class Door
 
 	public boolean canOpen(int moneyHas)
 	{
-		if (price <= moneyHas) { return true; }
+		if(price <= moneyHas)
+		{
+			return true;
+		}
 		return false;
 	}
 
@@ -67,12 +71,12 @@ public class Door
 	private void loadDoor()
 	{
 		String location = game.getName() + ".Doors.door" + doorNumber;
-		ArrayList<String> spawns = (ArrayList<String>)plugin.configManager.getConfig("ArenaConfig").getStringList(location + ".SpawnPoints");
+		ArrayList<String> spawns = (ArrayList<String>) plugin.configManager.getConfig("ArenaConfig").getStringList(location + ".SpawnPoints");
 		ArrayList<SpawnPoint> points = new ArrayList<SpawnPoint>();
-		for (int i = 0; i < spawns.size(); i++)
+		for(int i = 0; i < spawns.size(); i++)
 		{
 			SpawnPoint point = game.spawnManager.getSpawnPoint(spawns.get(i));
-			if (point == null)
+			if(point == null)
 			{
 				continue;
 			}
@@ -99,7 +103,7 @@ public class Door
 		String location = game.getName() + ".Doors.door" + doorNumber;
 		try
 		{
-			for (String key : config.getConfigurationSection(location + ".Signs").getKeys(false))
+			for(String key : config.getConfigurationSection(location + ".Signs").getKeys(false))
 			{
 				int x = config.getInt(location + ".Signs." + key + ".x");
 				int y = config.getInt(location + ".Signs." + key + ".y");
@@ -107,20 +111,20 @@ public class Door
 				World world = Bukkit.getWorld(config.getString(game.getName() + ".Location.world"));
 				Location loc = new Location(world, x, y, z);
 				Block block = loc.getBlock();
-				if (block.getType().equals(Material.WALL_SIGN) || block.getType().equals(Material.SIGN_POST) || block.getType().equals(Material.SIGN))
+				if(block.getType().equals(Material.WALL_SIGN) || block.getType().equals(Material.SIGN_POST) || block.getType().equals(Material.SIGN))
 				{
 					Sign sign = (Sign) block.getState();
 					try
 					{
 						price = Integer.parseInt(sign.getLine(3));
-					} catch (NumberFormatException e)
+					} catch(NumberFormatException e)
 					{
 						price = 750;
 					}
 					signs.add(sign);
 				}
 			}
-		} catch (NullPointerException e)
+		} catch(NullPointerException e)
 		{
 			System.out.println(e.getMessage());
 			return;
@@ -160,9 +164,9 @@ public class Door
 	public void openDoor()
 	{
 		int interval = 1;
-		for (final Block block : blocks)
+		for(final Block block : blocks)
 		{
-			if (block.getType().equals(Material.AIR))
+			if(block.getType().equals(Material.AIR))
 			{
 				continue;
 			}
@@ -183,7 +187,8 @@ public class Door
 
 	public boolean isOpened()
 	{
-		if (isOpened) return true;
+		if(isOpened)
+			return true;
 		return false;
 	}
 
@@ -193,7 +198,7 @@ public class Door
 		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
 		try
 		{
-			for (String key : config.getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Blocks").getKeys(false))
+			for(String key : config.getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Blocks").getKeys(false))
 			{
 				int x = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".x");
 				int y = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".y");
@@ -202,7 +207,7 @@ public class Door
 				Block block = loc.getBlock();
 				block.setTypeId(config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".ID"));
 			}
-			for (Sign sign : signs)
+			for(Sign sign : signs)
 			{
 				sign.setLine(0, ChatColor.RED + "[Zombies]");
 				sign.setLine(1, ChatColor.AQUA + "Door");
@@ -210,7 +215,7 @@ public class Door
 				sign.setLine(3, Integer.toString(price));
 				sign.update(true);
 			}
-		} catch (NullPointerException e)
+		} catch(NullPointerException e)
 		{
 		}
 		isOpened = false;
@@ -246,7 +251,7 @@ public class Door
 		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
 		try
 		{
-			for (String key : config.getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Blocks").getKeys(false))
+			for(String key : config.getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Blocks").getKeys(false))
 			{
 				int ID = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".ID");
 				int x = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".x");
@@ -256,8 +261,10 @@ public class Door
 				loc.getBlock().setTypeId(ID);
 				blocks.add(loc.getBlock());
 			}
-		} catch (NullPointerException e)
+		} catch(Exception e)
 		{
+			COMZombies.getInstance().log.log(Level.WARNING, "Failed to load one or more doors in the arena " + game.getName());
+			COMZombies.getInstance().log.log(Level.WARNING, "Please report this to the authors and include your arena config");
 		}
 	}
 
@@ -274,7 +281,7 @@ public class Door
 	public void saveBlocks(Location p1, Location p2)
 	{
 		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
-		if (p1 != null && p2 != null)
+		if(p1 != null && p2 != null)
 		{
 			int x1 = Math.min(p1.getBlockX(), p2.getBlockX()); // Eg. 5
 			int x2 = Math.max(p1.getBlockX(), p2.getBlockX()); // Eg. 6
@@ -282,11 +289,11 @@ public class Door
 			int y2 = Math.max(p1.getBlockY(), p2.getBlockY()); // Eg. 90
 			int z1 = Math.min(p1.getBlockZ(), p2.getBlockZ()); // Eg. 12
 			int z2 = Math.max(p1.getBlockZ(), p2.getBlockZ()); // Eg. 13
-			for (int x = 0; x <= x2 - x1; x++)
+			for(int x = 0; x <= x2 - x1; x++)
 			{
-				for (int y = 0; y <= y2 - y1; y++)
+				for(int y = 0; y <= y2 - y1; y++)
 				{
-					for (int z = 0; z <= z2 - z1; z++)
+					for(int z = 0; z <= z2 - z1; z++)
 					{
 						Location loc = new Location(p1.getWorld(), x + x1, y + y1, z + z1);
 						Block block = loc.getBlock();
@@ -295,7 +302,7 @@ public class Door
 				}
 			}
 		}
-		for (int i = 0; i < blocks.size(); i++)
+		for(int i = 0; i < blocks.size(); i++)
 		{
 			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1), null);
 			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".x", blocks.get(i).getLocation().getBlockX());
@@ -305,7 +312,7 @@ public class Door
 			config.saveConfig();
 		}
 
-		 plugin.configManager.getConfig("ArenaConfig").saveConfig();
+		plugin.configManager.getConfig("ArenaConfig").saveConfig();
 	}
 
 	public ArrayList<Block> getBlocks()
@@ -320,7 +327,10 @@ public class Door
 
 	public boolean hasBothLocations()
 	{
-		if (p1 != null && p2 != null) { return true; }
+		if(p1 != null && p2 != null)
+		{
+			return true;
+		}
 		return false;
 	}
 

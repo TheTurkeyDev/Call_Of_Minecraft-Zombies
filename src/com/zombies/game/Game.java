@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import net.minecraft.server.v1_7_R4.PacketPlayOutBlockBreakAnimation;
+import net.minecraft.server.v1_8_R3.BlockPosition;
+import net.minecraft.server.v1_8_R3.PacketPlayOutBlockBreakAnimation;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,8 +22,8 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_7_R4.CraftServer;
-import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -58,187 +59,185 @@ import com.zombies.spawning.SpawnManager;
  */
 public class Game
 {
-	
+
 	/**
 	 * Main class / plugin instance.
 	 */
 	private COMZombies plugin;
-	
+
 	/**
 	 * List of every player contained in game.
 	 */
 	public List<Player> players = new ArrayList<Player>();
-	
+
 	/**
 	 * Status of the game.
 	 */
 	public ArenaStatus mode = ArenaStatus.DISABLED;
-	
+
 	/**
 	 * Assuring that the game has every warp, spectator, game, and lobby.
 	 */
 	private boolean hasWarps = false;
-	
+
 	/**
-	 * Assuring that the game has every point, point one for the arena, and
-	 * point two.
+	 * Assuring that the game has every point, point one for the arena, and point two.
 	 */
 	private boolean hasPoints = false;
-	
+
 	/**
 	 * If the game is disabled / edit mode, true.
 	 */
 	private boolean isDisabled = false;
-	
+
 	/**
 	 * If double points is active.
 	 */
 	private boolean doublePoints = false;
-	
+
 	/**
 	 * If fire salse is active
 	 */
 	private boolean isFireSale = false;
-	
+
 	/**
 	 * If insta kill is active.
 	 */
 	private static boolean instaKill = false;
-	
+
 	/**
 	 * If the power is on
 	 */
 	private boolean power;
-	
+
 	/**
 	 * If the game has power enabled
 	 */
 	private boolean powerEnabled;
-	
+
 	/**
 	 * Contains a player and the gun manager corresponding to that player.
 	 */
 	private HashMap<Player, GunManager> playersGuns = new HashMap<Player, GunManager>();
-	
+
 	/**
 	 * Current wave number.
 	 */
 	public int waveNumber = 0;
-	
+
 	/**
 	 * World name for the game.
 	 */
 	public String worldName = "world";
-	
+
 	/**
 	 * Arena name for the game.
 	 */
 	private String arenaName;
-	
+
 	/**
 	 * Min point in which the game is contained.
 	 * 
 	 * @see field arena
 	 */
 	private Location min;
-	
+
 	/**
 	 * Max point in which the game is contained.
 	 * 
 	 * @see field arena
 	 */
 	private Location max;
-	
+
 	/**
 	 * Location players will teleport to when the game starts.
 	 */
 	private Location playerTPLocation;
-	
+
 	/**
 	 * Location players will teleport to when they leave or die.
 	 */
 	private Location spectateLocation;
-	
+
 	/**
 	 * Location in which players will teleport upon first join.
 	 */
 	private Location lobbyLocation;
-	
+
 	/**
 	 * Arena contained in the game.
 	 */
 	public Arena arena;
-	
+
 	/**
 	 * Manager controlling zombie spawing and spawn points for the game.
 	 */
 	public SpawnManager spawnManager;
-	
+
 	/**
 	 * Auto start timer, constructed upon join.
 	 */
 	public AutoStart starter;
-	
+
 	/**
 	 * contains all of the Mysteryboxes in the game
 	 */
 	public BoxManager boxManager;
-	
+
 	/**
 	 * contains all of the Barriers in the game
 	 */
 	public BarrierManager barrierManager;
-	
+
 	/**
 	 * contains all of the doors in the game
 	 */
 	public DoorManager doorManager;
-	
+
 	/**
-	 * contains all of the perks in the game as well as the perks that are
-	 * currently dropped in the map
+	 * contains all of the perks in the game as well as the perks that are currently dropped in the
+	 * map
 	 */
 	public PerkManager perkManager;
-	
+
 	/**
 	 * contains all of the teleporters in the game
 	 */
 	public TeleporterManager teleporterManager;
-	
+
 	/**
 	 * contains all of the downed palyers in the game
 	 */
 	public DownedPlayerManager downedPlayerManager;
-	
+
 	/**
 	 * contains all of the downed palyers in the game
 	 */
 	public SignManager signManager;
-	
+
 	/**
-	 * Information containing gamemode, and fly mode the player was in before
-	 * they joined the game.
+	 * Information containing gamemode, and fly mode the player was in before they joined the game.
 	 */
 	private PreJoinInformation pInfo = new PreJoinInformation();
-	
+
 	/**
 	 * Scoreboard used to manage players points
 	 */
 	public GameScoreboard scoreboard;
-	
+
 	/**
-	 * Max players is used to check for player count and if not to remove a
-	 * player if the game is full.
+	 * Max players is used to check for player count and if not to remove a player if the game is
+	 * full.
 	 */
 	public int maxPlayers;
-	
+
 	/**
 	 * contains all of the Kits in the game
 	 */
 	public KitManager kitManager;
-	
+
 	public boolean changingRound = false;
-	
+
 	/**
 	 * Creates a game based off of the parameters and arena configuration file.
 	 * 
@@ -251,11 +250,11 @@ public class Game
 	{
 		plugin = zombies;
 		arenaName = name;
-		
+
 		powerEnabled = plugin.configManager.getConfig("ArenaConfig").getBoolean(name + ".Power", false);
-		
+
 		starter = new AutoStart(plugin, this, 60);
-		
+
 		spawnManager = new SpawnManager(plugin, this);
 		boxManager = new BoxManager(plugin, this);
 		barrierManager = new BarrierManager(plugin, this);
@@ -265,21 +264,21 @@ public class Game
 		downedPlayerManager = new DownedPlayerManager();
 		signManager = new SignManager(this);
 		kitManager = plugin.kitManager;
-		
+
 		scoreboard = new GameScoreboard(this);
-		
+
 		spawnManager.loadAllSpawnsToGame();
 		boxManager.loadAllBoxesToGame();
 		barrierManager.loadAllBarriersToGame();
 		doorManager.loadAllDoorsToGame();
 		teleporterManager.loadAllTeleportersToGame();
-		
-		if (plugin.configManager.getConfig("ArenaConfig").getBoolean(arenaName + ".IsForceNight", false))
+
+		if(plugin.configManager.getConfig("ArenaConfig").getBoolean(arenaName + ".IsForceNight", false))
 		{
 			forceNight();
 		}
 	}
-	
+
 	/**
 	 * Gets the guns the player currently has
 	 * 
@@ -289,12 +288,12 @@ public class Game
 	 */
 	public GunManager getPlayersGun(Player player)
 	{
-		if (playersGuns.containsKey(player))
+		if(playersGuns.containsKey(player))
 			return playersGuns.get(player);
 		playersGuns.put(player, new GunManager(plugin, player));
 		return playersGuns.get(player);
 	}
-	
+
 	/**
 	 * 
 	 * @return the players spawn location on the map
@@ -303,7 +302,7 @@ public class Game
 	{
 		return playerTPLocation;
 	}
-	
+
 	/**
 	 * 
 	 * @return the spectators spawn location on the map
@@ -312,7 +311,7 @@ public class Game
 	{
 		return spectateLocation;
 	}
-	
+
 	/**
 	 * 
 	 * @return the lobby spawn location on the map
@@ -321,7 +320,7 @@ public class Game
 	{
 		return lobbyLocation;
 	}
-	
+
 	/**
 	 * 
 	 * @return if Double Points is active
@@ -330,7 +329,7 @@ public class Game
 	{
 		return doublePoints;
 	}
-	
+
 	/**
 	 * 
 	 * @return if Insta Kill is active
@@ -339,7 +338,7 @@ public class Game
 	{
 		return instaKill;
 	}
-	
+
 	/**
 	 * Turns on or off instakill.
 	 * 
@@ -349,7 +348,7 @@ public class Game
 	{
 		instaKill = isInstaKill;
 	}
-	
+
 	/**
 	 * Turns on double points.
 	 * 
@@ -359,16 +358,16 @@ public class Game
 	{
 		doublePoints = isDoublePoints;
 	}
-	
+
 	/**
-	 *
+	 * 
 	 * @return if the game currently has the power on
 	 */
 	public boolean isPowered()
 	{
 		return power;
 	}
-	
+
 	/**
 	 * Turns off the power for the game
 	 */
@@ -376,7 +375,7 @@ public class Game
 	{
 		power = false;
 	}
-	
+
 	/**
 	 * Turns on the power for the game
 	 */
@@ -385,82 +384,82 @@ public class Game
 		power = true;
 		try
 		{
-			for (Player pl : players)
+			for(Player pl : players)
 			{
 				Location loc = pl.getLocation();
 				loc.getWorld().playSound(loc, Sound.AMBIENCE_THUNDER, 1L, 1L);
 			}
+		} catch(NullPointerException e)
+		{
 		}
-		catch (NullPointerException e)
-		{}
 	}
-	
+
 	/**
 	 * 
 	 * @return if power is enabled for the game
 	 */
 	public boolean containsPower()
 	{
-		if (!powerEnabled)
+		if(!powerEnabled)
 			return false;
 		return true;
 	}
-	
+
 	/**
 	 * Resets the blocks to air at the spawn locations
 	 */
 	public void resetSpawnLocationBlocks()
 	{
-		for (int i = 0; i < spawnManager.getPoints().size(); i++)
+		for(int i = 0; i < spawnManager.getPoints().size(); i++)
 		{
 			Location loc = spawnManager.getPoints().get(i).getLocation();
 			loc.getBlock().setType(Material.AIR);
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @return if the game has been created fully
 	 */
 	public boolean isCreated()
 	{
-		if (isDisabled)
+		if(isDisabled)
 		{
 			return false;
 		}
-		if (hasPoints == true && hasWarps == true && !isDisabled)
+		if(hasPoints == true && hasWarps == true && !isDisabled)
 		{
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * force starts the arena
 	 */
 	public void forceStart()
 	{
-		if (mode == ArenaStatus.INGAME)
+		if(mode == ArenaStatus.INGAME)
 		{
 			return;
 		}
-		if (starter != null && starter.forced)
+		if(starter != null && starter.forced)
 		{
 			return;
 		}
-		for (Player pl : players)
+		for(Player pl : players)
 		{
 			CommandUtil.sendMessageToPlayer(pl, "Game force started!");
 		}
-		if (starter != null)
+		if(starter != null)
 			starter.endTimer();
 		starter = new AutoStart(plugin, this, 6);
 		starter.startTimer();
 		mode = ArenaStatus.STARTING;
 		starter.forced = true;
-		
+
 	}
-	
+
 	/**
 	 * starts the game normally
 	 * 
@@ -468,32 +467,32 @@ public class Game
 	 */
 	public boolean startArena()
 	{
-		if (mode == ArenaStatus.INGAME)
+		if(mode == ArenaStatus.INGAME)
 		{
 			return false;
 		}
 		mode = ArenaStatus.INGAME;
-		for (Player player : players)
+		for(Player player : players)
 		{
 			player.teleport(playerTPLocation);
 			try
 			{
 				player.setAllowFlight(false);
 				player.setFlying(false);
+			} catch(Exception ex)
+			{
 			}
-			catch (Exception ex)
-			{}
-			
-			player.setHealth(20);
+
+			player.setHealth(20D);
 			player.setFoodLevel(20);
 			player.setLevel(0);
 			plugin.pointManager.setPoints(player, 500);
 		}
-		
+
 		scoreboard.update();
-		if (plugin.config.MultiBox)
+		if(plugin.config.MultiBox)
 		{
-			for (Player player : players)
+			for(Player player : players)
 			{
 				player.sendMessage("" + ChatColor.RED + "[Zombies] All mysteryboxes are generating.");
 			}
@@ -503,34 +502,34 @@ public class Game
 		{
 			this.boxManager.unloadAllBoxes();
 			RandomBox b = this.boxManager.getRandomBox();
-			if (b != null)
+			if(b != null)
 			{
 				this.boxManager.setCurrentBox(b);
 				this.boxManager.getCurrentbox().loadBox();
 			}
 		}
 		spawnManager.update();
-		
-		for (Door door : doorManager.getDoors())
+
+		for(Door door : doorManager.getDoors())
 		{
 			door.loadSpawns();
 		}
-		
+
 		try
 		{
-			for (LivingEntity entity : getWorld().getLivingEntities())
+			for(LivingEntity entity : getWorld().getLivingEntities())
 			{
-				if (arena.containsBlock(entity.getLocation()))
+				if(arena.containsBlock(entity.getLocation()))
 				{
-					if (entity instanceof Player)
+					if(entity instanceof Player)
 					{
 						continue;
 					}
 					int times = 0;
-					while (!entity.isDead())
+					while(!entity.isDead())
 					{
-						entity.damage(Integer.MAX_VALUE);
-						if (times > 20)
+						entity.damage(20D);
+						if(times > 20)
 						{
 							break;
 						}
@@ -538,16 +537,16 @@ public class Game
 					}
 				}
 			}
+		} catch(Exception e)
+		{
 		}
-		catch (Exception e)
-		{}
 		this.waveNumber = 0;
 		nextWave();
 		signManager.updateGame();
 		kitManager.giveOutKits(this);
 		return true;
 	}
-	
+
 	/**
 	 * Starts a delayed task
 	 * 
@@ -560,55 +559,56 @@ public class Game
 	{
 		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, run, delayInSeconds);
 	}
-	
+
 	/**
 	 * Spawns in the next wave of zombies.
 	 */
 	public void nextWave()
 	{
-		if (players.size() == 0)
+		if(players.size() == 0)
 		{
 			this.endGame();
 			return;
 		}
-		if (!(spawnManager.getZombiesAlive() == 0) || !(spawnManager.getZombiesToSpawn() <= spawnManager.getZombiesSpawned()))
+		if(!(spawnManager.getZombiesAlive() == 0) || !(spawnManager.getZombiesToSpawn() <= spawnManager.getZombiesSpawned()))
 			return;
-		if (changingRound)
+		if(changingRound)
 			return;
 		changingRound = true;
 		scoreboard.update();
-		for (Player pl : players)
+		for(Player pl : players)
 		{
-			for (Player p : players)
+			for(Player p : players)
 			{
 				pl.showPlayer(p);
 			}
 		}
-		if (mode != ArenaStatus.INGAME)
+		if(mode != ArenaStatus.INGAME)
 		{
 			waveNumber = 0;
 			return;
 		}
 		waveNumber++;
-		if (waveNumber != 1)
+		if(waveNumber != 1)
 		{
-			for (Player pl : players)
+			for(Player pl : players)
 			{
 				pl.playSound(pl.getLocation(), Sound.PORTAL, 1, 1);
 				CommandUtil.sendMessageToPlayer(pl, "Round " + waveNumber + " will start is 10 seconds!");
 			}
-			
+
 			spawnManager.nextWave();
-			
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+			{
 				public void run()
 				{
-					for (Player pl : players)
+					for(Player pl : players)
 					{
 						pl.playSound(pl.getLocation(), Sound.PORTAL_TRAVEL, 1, 1);
 						CommandUtil.sendMessageToPlayer(pl, "Round " + waveNumber + "!");
 					}
-					
+
 					spawnManager.startWave(waveNumber, players);
 					signManager.updateGame();
 					changingRound = false;
@@ -617,18 +617,18 @@ public class Game
 		}
 		else
 		{
-			for (Player pl : players)
+			for(Player pl : players)
 			{
 				CommandUtil.sendMessageToPlayer(pl, "Round " + waveNumber + "!");
 			}
-			
+
 			spawnManager.nextWave();
 			spawnManager.startWave(waveNumber, players);
 			signManager.updateGame();
 			changingRound = false;
 		}
 	}
-	
+
 	/**
 	 * Adds a player to the game
 	 * 
@@ -637,7 +637,7 @@ public class Game
 	 */
 	public void addPlayer(Player player)
 	{
-		if (mode == ArenaStatus.WAITING || mode == ArenaStatus.STARTING)
+		if(mode == ArenaStatus.WAITING || mode == ArenaStatus.STARTING)
 		{
 			players.add(player);
 			pInfo.addPlayerFL(player, player.isFlying());
@@ -649,7 +649,7 @@ public class Game
 			pInfo.addPlayerOldLocation(player, player.getLocation());
 			scoreboard.addPlayer(player);
 			playersGuns.put(player, new GunManager(plugin, player));
-			player.setHealth(20);
+			player.setHealth(20D);
 			player.setFoodLevel(20);
 			player.getInventory().clear();
 			player.getInventory().setArmorContents(null);
@@ -661,11 +661,11 @@ public class Game
 			player.setGameMode(GameMode.SURVIVAL);
 			String gunName = plugin.configManager.getConfig("GunConfig").getString("StartingGun", "M1911");
 			waveNumber = 0;
-			for (Player pl : players)
+			for(Player pl : players)
 			{
-				for (Player p : Bukkit.getOnlinePlayers())
+				for(Player p : Bukkit.getOnlinePlayers())
 				{
-					if (!(players.contains(p)))
+					if(!(players.contains(p)))
 					{
 						pl.hidePlayer(p);
 					}
@@ -678,23 +678,23 @@ public class Game
 			GunType gun = null;
 			gun = plugin.getGun(gunName);
 			Game game = plugin.manager.getGame(player);
-			if (!(game == null))
+			if(!(game == null))
 			{
 				GunManager manager = game.getPlayersGun(player);
 				Gun gunType = new Gun(gun, player, 1);
 				manager.addGun(gunType);
 			}
-			for (Player pl : players)
+			for(Player pl : players)
 			{
 				CommandUtil.sendMessageToPlayer(pl, player.getName() + " has joined with " + players.size() + "/" + maxPlayers + "!");
 			}
-			if (players.size() >= plugin.configManager.getConfig("ArenaConfig").getInt(arenaName + ".minPlayers"))
+			if(players.size() >= plugin.configManager.getConfig("ArenaConfig").getInt(arenaName + ".minPlayers"))
 			{
-				if (starter == null)
+				if(starter == null)
 				{
 					starter = new AutoStart(plugin, this, plugin.config.arenaStartTime + 1);
 					starter.startTimer();
-					for (Player pl : players)
+					for(Player pl : players)
 					{
 						CommandUtil.sendMessageToPlayer(pl, ChatColor.RED + "" + ChatColor.BOLD + "Game starting soon!");
 					}
@@ -702,13 +702,13 @@ public class Game
 				}
 				else
 				{
-					if (starter.started)
+					if(starter.started)
 					{
 						return;
 					}
 					starter = new AutoStart(plugin, this, plugin.config.arenaStartTime + 1);
 					starter.startTimer();
-					for (Player pl : players)
+					for(Player pl : players)
 					{
 						CommandUtil.sendMessageToPlayer(pl, "Game starting soon!");
 					}
@@ -723,7 +723,7 @@ public class Game
 		}
 		signManager.updateGame();
 	}
-	
+
 	/**
 	 * Removes the given player from the game
 	 * 
@@ -732,12 +732,12 @@ public class Game
 	 */
 	public void playerLeave(Player player, boolean endGame)
 	{
-		if (!endGame)
+		if(!endGame)
 		{
 			players.remove(player);
-			if (players.size() == 0)
+			if(players.size() == 0)
 			{
-				if (!isDisabled)
+				if(!isDisabled)
 				{
 					mode = ArenaStatus.WAITING;
 					starter = null;
@@ -745,13 +745,13 @@ public class Game
 					waveNumber = 0;
 					plugin.pointManager.clearGamePoints(this);
 					endGame();
-					for (int i = 0; i < doorManager.getDoors().size(); i++)
+					for(int i = 0; i < doorManager.getDoors().size(); i++)
 					{
 						doorManager.getDoors().get(i).closeDoor();
 					}
 				}
 			}
-			if (downedPlayerManager.isPlayerDowned(player))
+			if(downedPlayerManager.isPlayerDowned(player))
 			{
 				downedPlayerManager.removeDownedPlayer(player);
 			}
@@ -763,30 +763,29 @@ public class Game
 			try
 			{
 				player.setFlying(pInfo.getFly(player));
+			} catch(Exception e)
+			{
 			}
-			catch (Exception e)
-			{}
 			plugin.pointManager.playerLeaveGame(player);
-		}
-		catch (NullPointerException e)
+		} catch(NullPointerException e)
 		{
 			plugin.manager.loadAllGames();
 		}
 		signManager.updateGame();
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	private void resetPlayer(Player player)
 	{
 		try
 		{
-			for (PotionEffectType t : PotionEffectType.values())
+			for(PotionEffectType t : PotionEffectType.values())
 			{
 				player.removePotionEffect(t);
 			}
+		} catch(Exception e)
+		{
 		}
-		catch (Exception e)
-		{}
 		player.removePotionEffect(PotionEffectType.SPEED);
 		player.getInventory().clear();
 		player.teleport(pInfo.getOldLocation(player));
@@ -795,9 +794,9 @@ public class Game
 		try
 		{
 			player.setFlying(pInfo.getFly(player));
+		} catch(Exception e)
+		{
 		}
-		catch (Exception e)
-		{}
 		player.getInventory().setContents(pInfo.getContents(player));
 		player.getInventory().setArmorContents(pInfo.getArmor(player));
 		player.setExp(pInfo.getExp(player));
@@ -805,9 +804,9 @@ public class Game
 		player.setWalkSpeed(0.2F);
 		scoreboard.removePlayer(player);
 		player.updateInventory();
-		for (Player pl : Bukkit.getOnlinePlayers())
+		for(Player pl : Bukkit.getOnlinePlayers())
 		{
-			if (!players.contains(pl))
+			if(!players.contains(pl))
 			{
 				player.showPlayer(pl);
 			}
@@ -818,7 +817,7 @@ public class Game
 		}
 		signManager.updateGame();
 	}
-	
+
 	/**
 	 * Removes a player from the game
 	 * 
@@ -828,14 +827,14 @@ public class Game
 	public void removePlayer(Player player)
 	{
 		players.remove(player);
-		for (Player pl : players)
+		for(Player pl : players)
 		{
-			if (!isDisabled)
+			if(!isDisabled)
 				CommandUtil.sendMessageToPlayer(pl, player.getName() + " has left the game! Only " + players.size() + "/" + this.maxPlayers + " players left!");
 		}
-		if (players.size() == 0)
+		if(players.size() == 0)
 		{
-			if (!isDisabled)
+			if(!isDisabled)
 			{
 				mode = ArenaStatus.WAITING;
 				starter = null;
@@ -843,7 +842,7 @@ public class Game
 				waveNumber = 0;
 				plugin.pointManager.clearGamePoints(this);
 				endGame();
-				for (int i = 0; i < doorManager.getDoors().size(); i++)
+				for(int i = 0; i < doorManager.getDoors().size(); i++)
 				{
 					doorManager.getDoors().get(i).closeDoor();
 				}
@@ -856,18 +855,17 @@ public class Game
 			try
 			{
 				player.setFlying(pInfo.getFly(player));
+			} catch(Exception e)
+			{
 			}
-			catch (Exception e)
-			{}
 			plugin.pointManager.playerLeaveGame(player);
-		}
-		catch (NullPointerException e)
+		} catch(NullPointerException e)
 		{
 			plugin.manager.loadAllGames();
 		}
 		signManager.updateGame();
 	}
-	
+
 	/**
 	 * Sets the spectator warp location
 	 * 
@@ -879,7 +877,7 @@ public class Game
 	 */
 	public boolean setSpectateLocation(Player p, Location loc)
 	{
-		if (min == null || max == null || playerTPLocation == null || lobbyLocation == null)
+		if(min == null || max == null || playerTPLocation == null || lobbyLocation == null)
 		{
 			CommandUtil.sendMessageToPlayer(p, "Set the spectator location last!");
 			return false;
@@ -890,23 +888,24 @@ public class Game
 		mode = ArenaStatus.WAITING;
 		return true;
 	}
-	
+
 	/**
 	 * Causes the game to always be at night time.
 	 */
 	public void forceNight()
 	{
-		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-			
+		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
+		{
+
 			@Override
 			public void run()
 			{
 				getWorld().setTime(14000L);
 			}
-			
+
 		}, 5L, 1200L);
 	}
-	
+
 	/**
 	 * Gets the world where the map is located
 	 * 
@@ -914,9 +913,9 @@ public class Game
 	 */
 	public World getWorld()
 	{
-		return plugin.getServer().getWorld(plugin.configManager.getConfig("ArenaConfig").getString(arenaName + ".Location.world"));
+		return plugin.getServer().getWorld(this.worldName);
 	}
-	
+
 	/**
 	 * Sets the lobby spawn location
 	 * 
@@ -928,7 +927,7 @@ public class Game
 	 */
 	public boolean setLobbySpawn(Player player, Location loc)
 	{
-		if (min == null || max == null)
+		if(min == null || max == null)
 		{
 			CommandUtil.sendMessageToPlayer(player, "Set arena points first!");
 			return false;
@@ -936,7 +935,7 @@ public class Game
 		lobbyLocation = loc;
 		return true;
 	}
-	
+
 	/**
 	 * Sets the first point in the arena
 	 * 
@@ -953,7 +952,7 @@ public class Game
 		worldName = loc.getWorld().getName();
 		return true;
 	}
-	
+
 	/**
 	 * Sets the Second point in the arena
 	 * 
@@ -965,7 +964,7 @@ public class Game
 	 */
 	public boolean addPointTwo(Player p, Location loc)
 	{
-		if (min == null)
+		if(min == null)
 		{
 			CommandUtil.sendMessageToPlayer(p, "Type p1 before p2!");
 			return false;
@@ -977,7 +976,7 @@ public class Game
 		hasPoints = true;
 		return true;
 	}
-	
+
 	/**
 	 * Disables the game
 	 */
@@ -987,7 +986,7 @@ public class Game
 		isDisabled = true;
 		mode = ArenaStatus.DISABLED;
 	}
-	
+
 	/**
 	 * Enables the game
 	 */
@@ -995,21 +994,21 @@ public class Game
 	{
 		resetSpawnLocationBlocks();
 		isDisabled = false;
-		if (mode == ArenaStatus.INGAME)
+		if(mode == ArenaStatus.INGAME)
 		{
 			return;
 		}
 		mode = ArenaStatus.WAITING;
 		signManager.updateGame();
 	}
-	
+
 	/**
 	 * Ends the game
 	 */
 	public void endGame()
 	{
 		this.mode = ArenaStatus.WAITING;
-		for (Player p : players)
+		for(Player p : players)
 		{
 			double points = waveNumber;
 			plugin.vault.addMoney(p.getName(), points);
@@ -1019,12 +1018,12 @@ public class Game
 		}
 		spawnManager.killAll(false);
 		spawnManager.reset();
-		for (Door door : doorManager.getDoors())
+		for(Door door : doorManager.getDoors())
 		{
 			door.closeDoor();
 		}
 		perkManager.clearPerks();
-		for (DownedPlayer pl : downedPlayerManager.getDownedPlayers())
+		for(DownedPlayer pl : downedPlayerManager.getDownedPlayers())
 		{
 			pl.setPlayerDown(false);
 		}
@@ -1040,9 +1039,9 @@ public class Game
 		waveNumber = 0;
 		clearArena();
 		clearArenaItems();
-		for (Player pl : Bukkit.getOnlinePlayers())
+		for(Player pl : Bukkit.getOnlinePlayers())
 		{
-			for (Player p : Bukkit.getOnlinePlayers())
+			for(Player p : Bukkit.getOnlinePlayers())
 			{
 				p.showPlayer(pl);
 				pl.showPlayer(p);
@@ -1050,7 +1049,7 @@ public class Game
 		}
 		signManager.updateGame();
 	}
-	
+
 	/**
 	 * Sets the players warp location in game.
 	 * 
@@ -1062,7 +1061,7 @@ public class Game
 	 */
 	public boolean setPlayerTPLocation(Player p, Location loc)
 	{
-		if (min == null || max == null)
+		if(min == null || max == null)
 		{
 			CommandUtil.sendMessageToPlayer(p, "Set the player warp after spawns are set!");
 			return false;
@@ -1071,7 +1070,7 @@ public class Game
 		saveLocationsInConfig(p);
 		return true;
 	}
-	
+
 	/**
 	 * Sets the name of the game
 	 * 
@@ -1082,12 +1081,12 @@ public class Game
 	{
 		arenaName = name;
 	}
-	
+
 	public static enum ArenaStatus
 	{
 		DISABLED, STARTING, WAITING, INGAME;
 	}
-	
+
 	/**
 	 * Saves all locations to the config
 	 * 
@@ -1097,8 +1096,8 @@ public class Game
 	public void saveLocationsInConfig(Player player)
 	{
 		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
-		
-		if (min.getWorld().getName() != null)
+
+		if(min.getWorld().getName() != null)
 		{
 			conf.set(arenaName + ".Location.world", min.getWorld().getName());
 		}
@@ -1127,17 +1126,16 @@ public class Game
 			conf.set(arenaName + ".LobbySpawn.yaw", lobbyLocation.getYaw());
 			conf.saveConfig();
 			conf.reloadConfig();
-			
+
 			CommandUtil.sendMessageToPlayer(player, "Arena " + arenaName + " setup!");
 			plugin.isArenaSetup.remove(player);
 			hasWarps = true;
-		}
-		catch (Exception e)
+		} catch(Exception e)
 		{
 			return;
 		}
 	}
-	
+
 	/**
 	 * Sets up the arena when the server loads
 	 */
@@ -1145,7 +1143,7 @@ public class Game
 	{
 		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
 		conf.reloadConfig();
-		if (conf.getString(arenaName + ".Location.world") == null)
+		if(conf.getString(arenaName + ".Location.world") == null)
 			worldName = arena.getWorld();
 		else
 			worldName = conf.getString(arenaName + ".Location.world");
@@ -1185,13 +1183,13 @@ public class Game
 		spawnManager.loadAllSpawnsToGame();
 		mode = ArenaStatus.WAITING;
 	}
-	
+
 	/**
 	 * Sets up the arena when the server loads
 	 */
 	public void setup()
 	{
-		
+
 		// Sets up ArenaConfig
 		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
 		// Adding ArenaName
@@ -1231,7 +1229,7 @@ public class Game
 		conf.set(locPS + ".y", null);
 		// adds the playerwarpsz
 		conf.set(locPS + ".z", null);
-		
+
 		String locLB = loc + ".LobbySpawn";
 		// adds the lobby LB spawn
 		conf.set(locLB, null);
@@ -1262,13 +1260,13 @@ public class Game
 		// adds Door Locations main
 		String locD = loc + ".Doors";
 		conf.set(locD, null);
-		
+
 		String isForceNight = loc + ".IsForceNight";
 		conf.set(isForceNight, false);
-		
+
 		String minToStart = loc + ".minPlayers";
 		conf.set(minToStart, 1);
-		
+
 		String spawnDelay = loc + ".ZombieSpawnDelay";
 		conf.set(spawnDelay, 15);
 		// Setup starting items data, default vaules added.
@@ -1279,7 +1277,7 @@ public class Game
 		// Saves and reloads Arenaconfig
 		conf.saveConfig();
 	}
-	
+
 	/**
 	 * Takes a spawn point out of the config file.
 	 */
@@ -1290,13 +1288,12 @@ public class Game
 		{
 			conf.set(arenaName, null);
 			conf.saveConfig();
-		}
-		catch (Exception e)
+		} catch(Exception e)
 		{
 			return;
 		}
 	}
-	
+
 	/**
 	 * gets the name of the game
 	 * 
@@ -1306,7 +1303,7 @@ public class Game
 	{
 		return arenaName;
 	}
-	
+
 	/**
 	 * Sets up the players inventory in game
 	 * 
@@ -1320,7 +1317,7 @@ public class Game
 	{
 		ItemMeta data = item.getItemMeta();
 		List<String> lore = new ArrayList<String>();
-		switch (slot)
+		switch(slot)
 		{
 			case 27:
 				data.setDisplayName("Knife slot");
@@ -1365,7 +1362,7 @@ public class Game
 		item.setItemMeta(data);
 		return item;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public void assignPlayerInventory(Player player)
 	{
@@ -1397,19 +1394,19 @@ public class Game
 		player.getInventory().setItem(35, setItemMeta(35, ib));
 		player.updateInventory();
 	}
-	
+
 	/**
 	 * Clears the arena
 	 */
 	public void clearArena()
 	{
-		if (this.getWorld() == null)
+		if(this.getWorld() == null)
 			return;
-		for (Entity entity : this.getWorld().getEntities())
+		for(Entity entity : this.getWorld().getEntities())
 		{
-			if (arena.containsBlock(entity.getLocation()))
+			if(arena.containsBlock(entity.getLocation()))
 			{
-				if (!(entity instanceof Player))
+				if(!(entity instanceof Player))
 				{
 					entity.setTicksLived(Integer.MAX_VALUE);
 					entity.remove();
@@ -1417,51 +1414,51 @@ public class Game
 			}
 		}
 	}
-	
+
 	/**
 	 * Clears items out of the arena
 	 */
 	public void clearArenaItems()
 	{
-		if (this.getWorld() == null)
+		if(this.getWorld() == null)
 			return;
 		List<Entity> entList = getWorld().getEntities();// get all entities in
 														// the world
-		
-		for (Entity current : entList)
+
+		for(Entity current : entList)
 		{// loop through the list
-			if (current instanceof Item)
+			if(current instanceof Item)
 			{// make sure we are only deleting what we want to delete
 				current.remove();// remove it
 			}
-			if (current instanceof Zombie)
+			if(current instanceof Zombie)
 			{
 				current.remove();
 			}
 		}
 	}
-	
+
 	public void setFireSale(boolean b)
 	{
 		isFireSale = b;
 	}
-	
+
 	public boolean isFireSale()
 	{
 		return isFireSale;
 	}
-	
+
 	public void zombieKilled(Player player)
 	{
 		CustomConfig conf = plugin.configManager.getConfig("kills");
 		Leaderboards lb = plugin.leaderboards;
-		if (conf.contains("Kills." + player.getName()))
+		if(conf.contains("Kills." + player.getName()))
 		{
 			int kills = conf.getInt("Kills." + player.getName());
 			kills++;
 			conf.set("Kills." + player.getName(), kills);
 			PlayerStats stat = lb.getPlayerStatFromPlayer(player);
-			if (stat == null)
+			if(stat == null)
 			{
 				PlayerStats newstat = new PlayerStats(player.getName(), 1);
 				lb.addPlayerStats(newstat);
@@ -1476,27 +1473,27 @@ public class Game
 			conf.set("Kills." + player.getName(), 1);
 			PlayerStats stat = new PlayerStats(player.getName(), 1);
 			lb.addPlayerStats(stat);
-			
+
 		}
-		if (plugin.vault != null)
+		if(plugin.vault != null)
 		{
 			try
 			{
-				if (!plugin.vault.hasAccount(player.getName()))
+				if(!plugin.vault.hasAccount(player.getName()))
 					plugin.vault.newAccount(player.getName());
 				plugin.vault.addMoney(player.getName(), (double) plugin.config.KillMoney);
+			} catch(NullPointerException e)
+			{
 			}
-			catch (NullPointerException e)
-			{}
 		}
 		conf.saveConfig();
 	}
-	
+
 	public void updateBarrierDamage(int damage, Block block)
 	{
-		for (Player player : this.players)
+		for(Player player : this.players)
 		{
-			PacketPlayOutBlockBreakAnimation packet = new PacketPlayOutBlockBreakAnimation(0, block.getX(), block.getY(), block.getZ(), damage);
+			PacketPlayOutBlockBreakAnimation packet = new PacketPlayOutBlockBreakAnimation(0, new BlockPosition(block.getX(), block.getY(), block.getZ()), damage);
 			int dimension = ((CraftWorld) player.getWorld()).getHandle().dimension;
 			((CraftServer) player.getServer()).getHandle().sendPacketNearby(block.getX(), block.getY(), block.getZ(), 120, dimension, packet);
 		}

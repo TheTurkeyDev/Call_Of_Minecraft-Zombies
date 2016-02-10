@@ -41,7 +41,7 @@ public class OnPlayerVelocityEvent implements Listener
 				if (!game.perkManager.getPlayersPerks().containsKey(player)) { return; }
 				if (game.perkManager.getPlayersPerks().get(player).contains(PerkType.PHD_FLOPPER))
 				{
-					int pHealth = (int) player.getHealth();
+					double pHealth = player.getHealth();
 					Location loc = player.getLocation();
 					loc.getWorld().playSound(loc, Sound.EXPLODE, 1, 1);
 					ParticleEffects eff = ParticleEffects.LAVA;
@@ -61,7 +61,7 @@ public class OnPlayerVelocityEvent implements Listener
 					{
 						if (e instanceof Zombie)
 						{
-							int totalHealth;
+							Double totalHealth;
 							if (game.spawnManager.totalHealth().containsKey(e))
 							{
 								totalHealth = game.spawnManager.totalHealth().get(e);
@@ -69,11 +69,11 @@ public class OnPlayerVelocityEvent implements Listener
 							else
 							{
 								game.spawnManager.setTotalHealth(e, 20);
-								totalHealth = 20;
+								totalHealth = 20D;
 							}
 							if (totalHealth >= 20)
 							{
-								((LivingEntity)e).setHealth(20);
+								((LivingEntity)e).setHealth(20D);
 								if (game.spawnManager.totalHealth().get(e) <= 20)
 								{
 									((LivingEntity)e).setHealth(game.spawnManager.totalHealth().get(e));
@@ -98,7 +98,7 @@ public class OnPlayerVelocityEvent implements Listener
 							}
 							else
 							{
-								((LivingEntity)e).damage(12);
+								((LivingEntity)e).damage(12D);
 							}
 						}
 					}

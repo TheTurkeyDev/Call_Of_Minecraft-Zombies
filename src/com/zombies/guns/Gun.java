@@ -211,7 +211,7 @@ public class Gun
 						{
 							World world = player.getWorld();
 							world.strikeLightningEffect(ent.getLocation());
-							int totalHealth;
+							Double totalHealth;
 							if (game.spawnManager.totalHealth().containsKey(ent))
 							{
 								totalHealth = game.spawnManager.totalHealth().get(ent);
@@ -219,11 +219,11 @@ public class Gun
 							else
 							{
 								game.spawnManager.setTotalHealth(ent, 20);
-								totalHealth = 20;
+								totalHealth = 20.0;
 							}
 							if (totalHealth >= 20)
 							{
-								((LivingEntity)ent).setHealth(20);
+								((LivingEntity)ent).setHealth(20D);
 								if (game.spawnManager.totalHealth().get(ent) <= 20)
 								{
 									((LivingEntity)ent).setHealth(game.spawnManager.totalHealth().get(ent));
@@ -248,7 +248,7 @@ public class Gun
 							}
 							else
 							{
-								((LivingEntity)ent).damage(10);
+								((LivingEntity)ent).damage(10D);
 							}
 						}
 					}

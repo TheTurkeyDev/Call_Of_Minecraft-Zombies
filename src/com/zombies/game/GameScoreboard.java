@@ -43,12 +43,13 @@ public class GameScoreboard
 
 	public void addPlayer(Player player)
 	{
-		team.addPlayer(player);
+		team.addEntry(player.getName());
 		Score s = objective.getScore(player.getName());
 		playerScores.put(player, s);
-		for (Player pl : game.players)
+		for(Player pl : game.players)
 		{
-			if (pl.isValid()) pl.setScoreboard(board);
+			if(pl.isValid())
+				pl.setScoreboard(board);
 			playerScores.get(player).setScore(500);
 		}
 		game.signManager.updateGame();
@@ -56,7 +57,7 @@ public class GameScoreboard
 
 	public void removePlayer(Player player)
 	{
-		team.removePlayer(player);
+		team.removeEntry(player.getName());
 		board.resetScores(player.getName());
 		player.setScoreboard(manager.getNewScoreboard());
 		playerScores.remove(player);
@@ -66,12 +67,12 @@ public class GameScoreboard
 	public void update()
 	{
 		round.setScore(game.waveNumber);
-		for (Player player : playerScores.keySet())
+		for(Player player : playerScores.keySet())
 		{
 			try
 			{
 				playerScores.get(player).setScore(plugin.pointManager.getPlayersPoints(player));
-			} catch (NullPointerException e)
+			} catch(NullPointerException e)
 			{
 				playerScores.get(player).setScore(500);
 			}
