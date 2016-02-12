@@ -494,7 +494,7 @@ public class Game
 		{
 			for(Player player : players)
 			{
-				player.sendMessage("" + ChatColor.RED + "[Zombies] All mysteryboxes are generating.");
+				player.sendMessage("" + ChatColor.RED + "[Zombies] All mystery boxes are being generated.");
 			}
 			this.boxManager.loadAllBoxes();
 		}
@@ -570,7 +570,8 @@ public class Game
 			this.endGame();
 			return;
 		}
-		if(!(spawnManager.getZombiesAlive() == 0) || !(spawnManager.getZombiesToSpawn() <= spawnManager.getZombiesSpawned()))
+		if(!(spawnManager.getZombiesAlive() == 0) || !(spawnManager.getZombiesToSpawn() <= 
+		spawnManager.getZombiesSpawned()))
 			return;
 		if(changingRound)
 			return;
@@ -594,7 +595,7 @@ public class Game
 			for(Player pl : players)
 			{
 				pl.playSound(pl.getLocation(), Sound.PORTAL, 1, 1);
-				CommandUtil.sendMessageToPlayer(pl, "Round " + waveNumber + " will start is 10 seconds!");
+				CommandUtil.sendMessageToPlayer(pl, "Round " + waveNumber + " will start in 10 seconds!");
 			}
 
 			spawnManager.nextWave();
@@ -606,7 +607,7 @@ public class Game
 					for(Player pl : players)
 					{
 						pl.playSound(pl.getLocation(), Sound.PORTAL_TRAVEL, 1, 1);
-						CommandUtil.sendMessageToPlayer(pl, "Round " + waveNumber + "!");
+						CommandUtil.sendMessageToPlayer(pl, "Round " + waveNumber + " has begun!");
 					}
 
 					spawnManager.startWave(waveNumber, players);
@@ -830,7 +831,7 @@ public class Game
 		for(Player pl : players)
 		{
 			if(!isDisabled)
-				CommandUtil.sendMessageToPlayer(pl, player.getName() + " has left the game! Only " + players.size() + "/" + this.maxPlayers + " players left!");
+				CommandUtil.sendMessageToPlayer(pl, player.getName() + " has left the game! Only " + players.size() + "/" + this.maxPlayers + " player(s) left!");
 		}
 		if(players.size() == 0)
 		{
@@ -1012,7 +1013,7 @@ public class Game
 		{
 			double points = waveNumber;
 			plugin.vault.addMoney(p.getName(), points);
-			CommandUtil.sendMessageToPlayer(p, "You got " + points + " for getting to round: " + waveNumber + "!");
+			CommandUtil.sendMessageToPlayer(p, "You got " + points + " for getting to round " + waveNumber + "!");
 			scoreboard.removePlayer(p);
 			playerLeave(p, true);
 		}
@@ -1493,9 +1494,11 @@ public class Game
 	{
 		for(Player player : this.players)
 		{
-			PacketPlayOutBlockBreakAnimation packet = new PacketPlayOutBlockBreakAnimation(0, new BlockPosition(block.getX(), block.getY(), block.getZ()), damage);
+			PacketPlayOutBlockBreakAnimation packet = new PacketPlayOutBlockBreakAnimation(
+				0, new BlockPosition(block.getX(), block.getY(), block.getZ()), damage);
 			int dimension = ((CraftWorld) player.getWorld()).getHandle().dimension;
-			((CraftServer) player.getServer()).getHandle().sendPacketNearby(block.getX(), block.getY(), block.getZ(), 120, dimension, packet);
+			((CraftServer) player.getServer()).getHandle().sendPacketNearby(
+				block.getX(), block.getY(), block.getZ(), 120, dimension, packet);
 		}
 	}
 }
