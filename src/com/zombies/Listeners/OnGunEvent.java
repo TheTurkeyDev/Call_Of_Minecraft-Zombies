@@ -1,5 +1,7 @@
 package com.zombies.listeners;
 
+import java.util.logging.Level;
+
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
@@ -109,7 +111,6 @@ public class OnGunEvent implements Listener
 			Snowball snowball = (Snowball) event.getDamager();
 			if(snowball.getShooter() instanceof ProjectileSource)
 			{
-
 				ProjectileSource player = (ProjectileSource) snowball.getShooter();
 				if(plugin.manager.isPlayerInGame(player))
 				{
