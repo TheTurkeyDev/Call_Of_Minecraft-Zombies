@@ -31,7 +31,7 @@ public class OnBlockInteractEvent implements Listener
 	@EventHandler
 	public void hitEvent(PlayerInteractEvent event)
 	{
-		if (event.getPlayer().getItemInHand().getType() == Material.WOOD_SWORD)
+		if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.WOOD_SWORD)
 		{
 			Player player = event.getPlayer();
 			if (plugin.isCreatingDoor.containsKey(player))
@@ -142,7 +142,7 @@ public class OnBlockInteractEvent implements Listener
 		Player player = event.getPlayer();
 		if (plugin.manager.isPlayerInGame(player))
 		{
-			if (player.getItemInHand().getType().equals(Material.MAGMA_CREAM))
+			if (player.getInventory().getItemInMainHand().getType().equals(Material.MAGMA_CREAM))
 			{
 				Game game = plugin.manager.getGame(player);
 				game.getName();

@@ -50,7 +50,7 @@ public class RandomBox
 		int slot = manager.getCorrectSlot();
 		manager.removeGun(manager.getGun(slot));
 		manager.addGun(new Gun(gun, player, slot));
-		player.getLocation().getWorld().playSound(player.getLocation(), Sound.LAVA_POP, 1, 1);
+		player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
 		plugin.pointManager.takePoints(player, PointsNeeded);
 		plugin.pointManager.notifyPlayer(player);
 		/*plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()

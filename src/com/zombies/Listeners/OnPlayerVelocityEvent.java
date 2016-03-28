@@ -19,36 +19,39 @@ import com.zombies.particleutilities.ParticleEffects;
 
 public class OnPlayerVelocityEvent implements Listener
 {
-	
+
 	private COMZombies plugin;
-	
+
 	public OnPlayerVelocityEvent(COMZombies pl)
 	{
 		plugin = pl;
 	}
-	
+
 	@EventHandler
 	public void OnPlyerVelocityEvent(PlayerMoveEvent event) throws Exception
 	{
 		Player player = event.getPlayer();
-		if (plugin.manager.isPlayerInGame(player))
+		if(plugin.manager.isPlayerInGame(player))
 		{
 			player.setFoodLevel(20);
 			int fallDistance = (int) player.getFallDistance();
-			if (fallDistance > 2)
+			if(fallDistance > 2)
 			{
 				Game game = plugin.manager.getGame(player);
-				if (!game.perkManager.getPlayersPerks().containsKey(player)) { return; }
-				if (game.perkManager.getPlayersPerks().get(player).contains(PerkType.PHD_FLOPPER))
+				if(!game.perkManager.getPlayersPerks().containsKey(player))
+				{
+					return;
+				}
+				if(game.perkManager.getPlayersPerks().get(player).contains(PerkType.PHD_FLOPPER))
 				{
 					double pHealth = player.getHealth();
 					Location loc = player.getLocation();
-					loc.getWorld().playSound(loc, Sound.EXPLODE, 1, 1);
+					loc.getWorld().playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
 					ParticleEffects eff = ParticleEffects.LAVA;
 					ParticleEffects eff1 = ParticleEffects.FIREWORKS_SPARK;
-					for (int i = 0; i < 30; i++)
+					for(int i = 0; i < 30; i++)
 					{
-						for (Player pl : game.players)
+						for(Player pl : game.players)
 						{
 							float x = (float) (Math.random() * 2);
 							float y = (float) (Math.random() * 2);
@@ -57,12 +60,12 @@ public class OnPlayerVelocityEvent implements Listener
 							eff1.sendToPlayer(pl, player.getLocation(), x, y, z, 1, 1);
 						}
 					}
-					for (Entity e : player.getNearbyEntities(5, 5, 5))
+					for(Entity e : player.getNearbyEntities(5, 5, 5))
 					{
-						if (e instanceof Zombie)
+						if(e instanceof Zombie)
 						{
 							Double totalHealth;
-							if (game.spawnManager.totalHealth().containsKey(e))
+							if(game.spawnManager.totalHealth().containsKey(e))
 							{
 								totalHealth = game.spawnManager.totalHealth().get(e);
 							}
@@ -71,12 +74,12 @@ public class OnPlayerVelocityEvent implements Listener
 								game.spawnManager.setTotalHealth(e, 20);
 								totalHealth = 20D;
 							}
-							if (totalHealth >= 20)
+							if(totalHealth >= 20)
 							{
-								((LivingEntity)e).setHealth(20D);
-								if (game.spawnManager.totalHealth().get(e) <= 20)
+								((LivingEntity) e).setHealth(20D);
+								if(game.spawnManager.totalHealth().get(e) <= 20)
 								{
-									((LivingEntity)e).setHealth(game.spawnManager.totalHealth().get(e));
+									((LivingEntity) e).setHealth(game.spawnManager.totalHealth().get(e));
 								}
 								else
 								{
@@ -91,14 +94,14 @@ public class OnPlayerVelocityEvent implements Listener
 								e.remove();
 								game.spawnManager.removeEntity(e);
 								game.zombieKilled(player);
-								if (game.spawnManager.getEntities().size() <= 0)
+								if(game.spawnManager.getEntities().size() <= 0)
 								{
 									game.nextWave();
 								}
 							}
 							else
 							{
-								((LivingEntity)e).damage(12D);
+								((LivingEntity) e).damage(12D);
 							}
 						}
 					}
@@ -107,29 +110,29 @@ public class OnPlayerVelocityEvent implements Listener
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void ProjectileHit(EntityDamageEvent event)
 	{
-		if (event.getCause().toString().equalsIgnoreCase("BLOCK_EXPLOSION") || event.getCause().toString().equalsIgnoreCase(DamageCause.ENTITY_EXPLOSION.toString()))
+		if(event.getCause().toString().equalsIgnoreCase("BLOCK_EXPLOSION") || event.getCause().toString().equalsIgnoreCase(DamageCause.ENTITY_EXPLOSION.toString()))
 		{
-			if (event.getEntity() instanceof Player)
+			if(event.getEntity() instanceof Player)
 			{
 				Player player = (Player) event.getEntity();
-				if (plugin.manager.isPlayerInGame(player))
+				if(plugin.manager.isPlayerInGame(player))
 				{
 					event.setCancelled(true);
 				}
 			}
 		}
-		else if (event.getCause().toString().equalsIgnoreCase("FALL"))
+		else if(event.getCause().toString().equalsIgnoreCase("FALL"))
 		{
-			if (event.getEntity() instanceof Player)
+			if(event.getEntity() instanceof Player)
 			{
 				Player player = (Player) event.getEntity();
-				if (plugin.manager.isPlayerInGame(player))
+				if(plugin.manager.isPlayerInGame(player))
 				{
-					if (plugin.manager.getGame(player).perkManager.hasPerk(player, PerkType.PHD_FLOPPER))
+					if(plugin.manager.getGame(player).perkManager.hasPerk(player, PerkType.PHD_FLOPPER))
 					{
 						event.setCancelled(true);
 					}

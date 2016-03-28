@@ -11,9 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import net.minecraft.server.v1_8_R3.BlockPosition;
-import net.minecraft.server.v1_8_R3.PacketPlayOutBlockBreakAnimation;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -22,8 +19,8 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -53,6 +50,9 @@ import com.zombies.kits.KitManager;
 import com.zombies.leaderboards.Leaderboards;
 import com.zombies.leaderboards.PlayerStats;
 import com.zombies.spawning.SpawnManager;
+
+import net.minecraft.server.v1_9_R1.BlockPosition;
+import net.minecraft.server.v1_9_R1.PacketPlayOutBlockBreakAnimation;
 
 /**
  * Main game class.
@@ -387,7 +387,7 @@ public class Game
 			for(Player pl : players)
 			{
 				Location loc = pl.getLocation();
-				loc.getWorld().playSound(loc, Sound.AMBIENCE_THUNDER, 1L, 1L);
+				loc.getWorld().playSound(loc, Sound.ENTITY_LIGHTNING_THUNDER, 1L, 1L);
 			}
 		} catch(NullPointerException e)
 		{
@@ -468,9 +468,7 @@ public class Game
 	public boolean startArena()
 	{
 		if(mode == ArenaStatus.INGAME)
-		{
 			return false;
-		}
 		mode = ArenaStatus.INGAME;
 		for(Player player : players)
 		{
@@ -493,9 +491,7 @@ public class Game
 		if(plugin.config.MultiBox)
 		{
 			for(Player player : players)
-			{
 				player.sendMessage("" + ChatColor.RED + "[Zombies] All mystery boxes are being generated.");
-			}
 			this.boxManager.loadAllBoxes();
 		}
 		else
@@ -511,10 +507,7 @@ public class Game
 		spawnManager.update();
 
 		for(Door door : doorManager.getDoors())
-		{
 			door.loadSpawns();
-		}
-
 		try
 		{
 			for(LivingEntity entity : getWorld().getLivingEntities())
@@ -570,8 +563,7 @@ public class Game
 			this.endGame();
 			return;
 		}
-		if(!(spawnManager.getZombiesAlive() == 0) || !(spawnManager.getZombiesToSpawn() <= 
-		spawnManager.getZombiesSpawned()))
+		if(!(spawnManager.getZombiesAlive() == 0) || !(spawnManager.getZombiesToSpawn() <= spawnManager.getZombiesSpawned()))
 			return;
 		if(changingRound)
 			return;
@@ -594,7 +586,7 @@ public class Game
 		{
 			for(Player pl : players)
 			{
-				pl.playSound(pl.getLocation(), Sound.PORTAL, 1, 1);
+				pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, 1, 1);
 				CommandUtil.sendMessageToPlayer(pl, "Round " + waveNumber + " will start in 10 seconds!");
 			}
 
@@ -604,15 +596,18 @@ public class Game
 			{
 				public void run()
 				{
-					for(Player pl : players)
+					synchronized(this)
 					{
-						pl.playSound(pl.getLocation(), Sound.PORTAL_TRAVEL, 1, 1);
-						CommandUtil.sendMessageToPlayer(pl, "Round " + waveNumber + " has begun!");
-					}
+						for(Player pl : players)
+						{
+							pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_TRAVEL, 1, 1);
+							CommandUtil.sendMessageToPlayer(pl, "Round " + waveNumber + " has begun!");
+						}
 
-					spawnManager.startWave(waveNumber, players);
-					signManager.updateGame();
-					changingRound = false;
+						spawnManager.startWave(waveNumber, players);
+						signManager.updateGame();
+						changingRound = false;
+					}
 				}
 			}, 200L);
 		}
@@ -1494,11 +1489,9 @@ public class Game
 	{
 		for(Player player : this.players)
 		{
-			PacketPlayOutBlockBreakAnimation packet = new PacketPlayOutBlockBreakAnimation(
-				0, new BlockPosition(block.getX(), block.getY(), block.getZ()), damage);
+			PacketPlayOutBlockBreakAnimation packet = new PacketPlayOutBlockBreakAnimation(0, new BlockPosition(block.getX(), block.getY(), block.getZ()), damage);
 			int dimension = ((CraftWorld) player.getWorld()).getHandle().dimension;
-			((CraftServer) player.getServer()).getHandle().sendPacketNearby(
-				block.getX(), block.getY(), block.getZ(), 120, dimension, packet);
+			((CraftServer) player.getServer()).getHandle().sendPacketNearby(null, block.getX(), block.getY(), block.getZ(), 120, dimension, packet);
 		}
 	}
 }

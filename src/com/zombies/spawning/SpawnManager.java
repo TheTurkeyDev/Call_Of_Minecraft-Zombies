@@ -7,18 +7,13 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import net.minecraft.server.v1_8_R3.AttributeInstance;
-import net.minecraft.server.v1_8_R3.AttributeModifier;
-import net.minecraft.server.v1_8_R3.EntityInsentient;
-import net.minecraft.server.v1_8_R3.GenericAttributes;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -31,6 +26,11 @@ import com.zombies.game.Game;
 import com.zombies.game.Game.ArenaStatus;
 import com.zombies.game.features.Barrier;
 import com.zombies.game.features.Door;
+
+import net.minecraft.server.v1_9_R1.AttributeInstance;
+import net.minecraft.server.v1_9_R1.AttributeModifier;
+import net.minecraft.server.v1_9_R1.EntityInsentient;
+import net.minecraft.server.v1_9_R1.GenericAttributes;
 
 public class SpawnManager
 {
@@ -250,6 +250,7 @@ public class SpawnManager
 
 	private void smartSpawn(final int wave, final List<Player> players)
 	{
+
 		if(!this.canSpawn || wave != game.waveNumber)
 			return;
 		if(game.mode != ArenaStatus.INGAME)
@@ -263,7 +264,10 @@ public class SpawnManager
 			{
 				public void run()
 				{
-					smartSpawn(wave, players);
+					synchronized(this)
+					{
+						smartSpawn(wave, players);
+					}
 				}
 			};
 
@@ -303,6 +307,7 @@ public class SpawnManager
 	{
 		if(!this.canSpawn || wave < game.waveNumber)
 			return;
+
 		double strength = (int) (((wave * 100) + 50) / 50);
 		Location location = new Location(loc.getLocation().getWorld(), loc.getLocation().getBlockX(), loc.getLocation().getBlockY(), loc.getLocation().getBlockZ());
 		location.add(0.5, 0, 0.5);
@@ -328,10 +333,12 @@ public class SpawnManager
 		{
 			public void run()
 			{
-				smartSpawn(wave, players);
+				synchronized(this)
+				{
+					smartSpawn(wave, players);
+				}
 			}
 		};
-
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delayedSpawnFunc, time * 20L);
 	}
 
@@ -364,34 +371,36 @@ public class SpawnManager
 	public void update()
 	{
 		if(game.mode != ArenaStatus.INGAME)
-		{
 			return;
-		}
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 		{
 			@Override
 			public void run()
 			{
-				for(Entity zomb : mobs)
+				synchronized(this)
 				{
-					if(zomb.isDead())
+					for(Entity zomb : mobs)
 					{
-						removeEntity(zomb);
+						if(zomb.isDead())
+						{
+							removeEntity(zomb);
+						}
+						else
+						{
+							Player closest = getNearestPlayer(zomb);
+							Zombie z = (Zombie) zomb;
+							z.setTarget(closest);
+						}
 					}
-					else
-					{
-						Player closest = getNearestPlayer(zomb);
-						Zombie z = (Zombie) zomb;
-						z.setTarget(closest);
-					}
-				}
 
-				updateEntityList();
-				update();
+					updateEntityList();
+					update();
+				}
 			}
 
 			private Player getNearestPlayer(Entity e)
 			{
+				System.out.println("here 4");
 				Player closest = null;
 				for(Player player : SpawnManager.this.game.players)
 				{
@@ -400,6 +409,7 @@ public class SpawnManager
 						closest = player;
 					}
 				}
+				System.out.println("here 5");
 				return closest;
 			}
 

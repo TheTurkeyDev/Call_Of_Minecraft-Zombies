@@ -30,8 +30,7 @@ public class GunManager
 	}
 
 	/**
-	 * Checks to see if a gun is being reloaded, if the gun is contained in the
-	 * manager.
+	 * Checks to see if a gun is being reloaded, if the gun is contained in the manager.
 	 * 
 	 * @param gun
 	 *            : Gun to check if being reloaded
@@ -39,7 +38,8 @@ public class GunManager
 	 */
 	public boolean isReloading(Gun gun)
 	{
-		if (guns.contains(gun)) return gun.isReloading();
+		if(guns.contains(gun))
+			return gun.isReloading();
 		return false;
 	}
 
@@ -51,27 +51,27 @@ public class GunManager
 	public int getCorrectSlot()
 	{
 		int current = player.getInventory().getHeldItemSlot();
-		if (plugin.manager.isPlayerInGame(player))
+		if(plugin.manager.isPlayerInGame(player))
 		{
 			Game game = plugin.manager.getGame(player);
-			if (game.perkManager.hasPerk(player, PerkType.MULE_KICK))
+			if(game.perkManager.hasPerk(player, PerkType.MULE_KICK))
 			{
-				if (current > 3)
+				if(current > 3)
 				{
 					current = 3;
 				}
-				if (current < 1)
+				if(current < 1)
 				{
 					current = 1;
 				}
 			}
 			else
 			{
-				if (current > 2)
+				if(current > 2)
 				{
 					current = 2;
 				}
-				if (current < 1)
+				if(current < 1)
 				{
 					current = 1;
 				}
@@ -100,9 +100,12 @@ public class GunManager
 	 */
 	public boolean isGun()
 	{
-		for (Gun gun : guns)
+		for(Gun gun : guns)
 		{
-			if (gun.getSlot() == player.getInventory().getHeldItemSlot()) { return true; }
+			if(gun.getSlot() == player.getInventory().getHeldItemSlot())
+			{
+				return true;
+			}
 		}
 		return false;
 	}
@@ -116,9 +119,12 @@ public class GunManager
 	 */
 	public Gun getGun(int slot)
 	{
-		for (Gun gun : guns)
+		for(Gun gun : guns)
 		{
-			if (gun.getSlot() == slot) { return gun; }
+			if(gun.getSlot() == slot)
+			{
+				return gun;
+			}
 		}
 		return null;
 	}
@@ -131,7 +137,7 @@ public class GunManager
 	 */
 	public void removeGun(Gun gun)
 	{
-		if (guns.contains(gun))
+		if(guns.contains(gun))
 		{
 			guns.remove(gun);
 		}
@@ -139,9 +145,12 @@ public class GunManager
 
 	public boolean hasGun(GunType gun)
 	{
-		for (Gun g : guns)
+		for(Gun g : guns)
 		{
-			if (g.getType().equals(gun)) { return true; }
+			if(g.getType().equals(gun))
+			{
+				return true;
+			}
 		}
 		return false;
 	}

@@ -38,35 +38,49 @@ public class OnZombiePerkDrop implements Listener
 
 	public void perkDrop(Entity zombie, Entity ent)
 	{
-		if (!(zombie instanceof Zombie)) { return; }
-		if (!(ent instanceof Player)) { return; }
+		if(!(zombie instanceof Zombie))
+		{
+			return;
+		}
+		if(!(ent instanceof Player))
+		{
+			return;
+		}
 		Player player = (Player) ent;
 		int chance = (int) (Math.random() * 100);
-		if (chance <= plugin.getConfig().getInt("config.Perks.PercentDropchance"))
+		if(chance <= plugin.getConfig().getInt("config.Perks.PercentDropchance"))
 		{
 			Game game;
 			int randomPerk = (int) (Math.random() * 6);
 			try
 			{
 				game = plugin.manager.getGame(zombie.getLocation());
-				if (!(game.mode == ArenaStatus.INGAME)) { return; }
-				if (!(plugin.manager.isPlayerInGame(player))) { return; }
-			} catch (NullPointerException e)
+				if(!(game.mode == ArenaStatus.INGAME))
+				{
+					return;
+				}
+				if(!(plugin.manager.isPlayerInGame(player)))
+				{
+					return;
+				}
+			} catch(NullPointerException e)
 			{
 				return;
 			}
-			if (randomPerk == 0)
+			if(randomPerk == 0)
 			{
-				if (!plugin.config.maxAmmo)perkDrop(zombie, player);
+				if(!plugin.config.maxAmmo)
+					perkDrop(zombie, player);
 				else
 				{
 					ItemStack drop = new ItemStack(Material.CHEST, 1);
 					dropItem((Zombie) zombie, drop);
 				}
 			}
-			if (randomPerk == 1)
+			if(randomPerk == 1)
 			{
-				if (!plugin.config.instaKill) perkDrop(zombie, player);
+				if(!plugin.config.instaKill)
+					perkDrop(zombie, player);
 				else
 				{
 					ItemStack drop = new ItemStack(Material.DIAMOND_SWORD, 1);
@@ -74,37 +88,41 @@ public class OnZombiePerkDrop implements Listener
 					game.perkManager.setCurrentPerkDrops(currentPerks);
 				}
 			}
-			if (randomPerk == 2)
+			if(randomPerk == 2)
 			{
-				if (!plugin.config.carpenter) perkDrop(zombie, player);
+				if(!plugin.config.carpenter)
+					perkDrop(zombie, player);
 				else
 				{
 					ItemStack drop = new ItemStack(Material.DIAMOND_PICKAXE, 1);
 					dropItem((Zombie) zombie, drop);
 				}
 			}
-			if (randomPerk == 3)
+			if(randomPerk == 3)
 			{
-				if (!plugin.config.nuke) perkDrop(zombie, player);
+				if(!plugin.config.nuke)
+					perkDrop(zombie, player);
 				else
 				{
 					ItemStack drop = new ItemStack(Material.TNT, 1);
 					dropItem((Zombie) zombie, drop);
 				}
 			}
-			if (randomPerk == 4)
+			if(randomPerk == 4)
 			{
-				if (!plugin.config.doublePoints) perkDrop(zombie, player);
+				if(!plugin.config.doublePoints)
+					perkDrop(zombie, player);
 				else
 				{
 					ItemStack drop = new ItemStack(Material.EXP_BOTTLE, 1);
 					dropItem((Zombie) zombie, drop);
 				}
 			}
-			if (randomPerk == 5)
+			if(randomPerk == 5)
 			{
 
-				if (!plugin.config.fireSale) perkDrop(zombie, player);
+				if(!plugin.config.fireSale)
+					perkDrop(zombie, player);
 				else
 				{
 					ItemStack drop = new ItemStack(Material.GOLD_INGOT, 1);
@@ -152,7 +170,7 @@ public class OnZombiePerkDrop implements Listener
 	private void onPerkPickup(PlayerPickupItemEvent event)
 	{
 		final Item eItem = event.getItem();
-		if (plugin.manager.isPlayerInGame(event.getPlayer()))
+		if(plugin.manager.isPlayerInGame(event.getPlayer()))
 		{
 			final Game game = plugin.manager.getGame(event.getPlayer());
 			Material MaxAmmo = Material.CHEST;
@@ -163,28 +181,28 @@ public class OnZombiePerkDrop implements Listener
 			Material fireSale = Material.GOLD_INGOT;
 			final Player player = event.getPlayer();
 
-			if (currentPerks.size() == 0)
+			if(currentPerks.size() == 0)
 			{
 				event.getItem().remove();
 				event.setCancelled(true);
 				return;
 			}
-			if (!currentPerks.contains(event.getItem().getItemStack()))
+			if(!currentPerks.contains(event.getItem().getItemStack()))
 			{
 				event.getItem().remove();
 				event.setCancelled(true);
 				return;
 			}
 			ItemStack item = event.getItem().getItemStack();
-			if (event.getItem().getItemStack().getType() == MaxAmmo)
+			if(event.getItem().getItemStack().getType() == MaxAmmo)
 			{
 				event.getPlayer().getInventory().remove(item);
 				notifyAll(game, "Max ammo!");
 				currentPerks.remove(event.getItem().getItemStack());
-				for (Player pl : game.players)
+				for(Player pl : game.players)
 				{
 					GunManager manager = game.getPlayersGun(pl);
-					for (Gun gun : manager.getGuns())
+					for(Gun gun : manager.getGuns())
 					{
 						gun.maxAmmo();
 					}
@@ -193,7 +211,7 @@ public class OnZombiePerkDrop implements Listener
 				event.setCancelled(true);
 				return;
 			}
-			if (event.getItem().getItemStack().getType() == InstaKill)
+			if(event.getItem().getItemStack().getType() == InstaKill)
 			{
 				currentPerks.remove(event.getItem().getItemStack());
 				event.getPlayer().getInventory().remove(item);
@@ -212,7 +230,7 @@ public class OnZombiePerkDrop implements Listener
 				event.setCancelled(true);
 				return;
 			}
-			if (event.getItem().getItemStack().getType() == Carpenter)
+			if(event.getItem().getItemStack().getType() == Carpenter)
 			{
 				currentPerks.remove(event.getItem().getItemStack());
 				event.getPlayer().getInventory().remove(item);
@@ -225,15 +243,17 @@ public class OnZombiePerkDrop implements Listener
 				event.setCancelled(true);
 				return;
 			}
-			if (event.getItem().getItemStack().getType() == Nuke)
+			if(event.getItem().getItemStack().getType() == Nuke)
 			{
 				currentPerks.remove(event.getItem().getItemStack());
 				event.getPlayer().getInventory().remove(item);
 				notifyAll(game, "Nuke!");
-				for (Player pl : game.players)
+				for(Player pl : game.players)
 				{
-					if (game.isDoublePoints()) plugin.pointManager.addPoints(player, 800);
-					else plugin.pointManager.addPoints(player, 400);
+					if(game.isDoublePoints())
+						plugin.pointManager.addPoints(player, 800);
+					else
+						plugin.pointManager.addPoints(player, 400);
 					plugin.pointManager.notifyPlayer(pl);
 				}
 				game.spawnManager.nuke();
@@ -241,7 +261,7 @@ public class OnZombiePerkDrop implements Listener
 				event.getItem().remove();
 				return;
 			}
-			if (event.getItem().getItemStack().getType() == DoublePoints)
+			if(event.getItem().getItemStack().getType() == DoublePoints)
 			{
 				currentPerks.remove(event.getItem().getItemStack());
 				event.getPlayer().getInventory().remove(item);
@@ -261,7 +281,7 @@ public class OnZombiePerkDrop implements Listener
 				event.setCancelled(true);
 				return;
 			}
-			if (event.getItem().getItemStack().getType() == fireSale)
+			if(event.getItem().getItemStack().getType() == fireSale)
 			{
 				currentPerks.remove(event.getItem().getItemStack());
 				event.getPlayer().getInventory().remove(item);
@@ -301,32 +321,32 @@ public class OnZombiePerkDrop implements Listener
 
 	public void notifyAll(Game game, String message)
 	{
-		for (Player pl : game.players)
+		for(Player pl : game.players)
 		{
 			pl.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + message);
-			if (message.equalsIgnoreCase("Max ammo!"))
+			if(message.equalsIgnoreCase("Max ammo!"))
 			{
-				pl.playSound(pl.getLocation(), Sound.FALL_BIG, 1, 1);
+				pl.playSound(pl.getLocation(), Sound.ENTITY_PLAYER_BIG_FALL, 1, 1);
 			}
-			if (message.equalsIgnoreCase("Insta-kill!"))
+			if(message.equalsIgnoreCase("Insta-kill!"))
 			{
-				pl.playSound(pl.getLocation(), Sound.AMBIENCE_THUNDER, 1, 1);
+				pl.playSound(pl.getLocation(), Sound.ENTITY_LIGHTNING_THUNDER, 1, 1);
 			}
-			if (message.equalsIgnoreCase("Carpenter!"))
+			if(message.equalsIgnoreCase("Carpenter!"))
 			{
-				pl.playSound(pl.getLocation(), Sound.DIG_STONE, 1, 1);
+				pl.playSound(pl.getLocation(), Sound.BLOCK_STONE_BREAK, 1, 1);
 			}
-			if (message.equalsIgnoreCase("Nuke!"))
+			if(message.equalsIgnoreCase("Nuke!"))
 			{
-				pl.playSound(pl.getLocation(), Sound.EXPLODE, 1, 1);
+				pl.playSound(pl.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
 			}
-			if (message.equalsIgnoreCase("Double points!"))
+			if(message.equalsIgnoreCase("Double points!"))
 			{
-				pl.playSound(pl.getLocation(), Sound.GLASS, 1, 1);
+				pl.playSound(pl.getLocation(), Sound.BLOCK_GLASS_BREAK, 1, 1);
 			}
-			if (message.equalsIgnoreCase("Fire sale!"))
+			if(message.equalsIgnoreCase("Fire sale!"))
 			{
-				pl.playSound(pl.getLocation(), Sound.FIRE_IGNITE, 1, 1);
+				pl.playSound(pl.getLocation(), Sound.ITEM_FLINTANDSTEEL_USE, 1, 1);
 			}
 		}
 	}
@@ -343,7 +363,7 @@ public class OnZombiePerkDrop implements Listener
 
 	public void removeItemFromList(ItemStack stack)
 	{
-		if (currentPerks.contains(stack))
+		if(currentPerks.contains(stack))
 		{
 			currentPerks.remove(stack);
 		}

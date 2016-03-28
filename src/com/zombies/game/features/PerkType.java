@@ -38,7 +38,7 @@ public enum PerkType
 			@Override
 			public void run()
 			{
-				world.playSound(player.getLocation(), Sound.DRINK, 1L, 1L);
+				world.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1L, 1L);
 			}
 
 		}, 5L);
@@ -48,7 +48,7 @@ public enum PerkType
 			@Override
 			public void run()
 			{
-				world.playSound(player.getLocation(), Sound.DRINK, 1L, 1L);
+				world.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1L, 1L);
 			}
 
 		}, 10L);
@@ -121,7 +121,7 @@ public enum PerkType
 	public static void noPower(COMZombies plugin, Player player)
 	{
 		World world = player.getLocation().getWorld();
-		world.playSound(player.getLocation(), Sound.GHAST_MOAN, 1L, 1L);
+		world.playSound(player.getLocation(), Sound.ENTITY_GHAST_AMBIENT, 1L, 1L);
 	}
 
 	private ItemStack setItemMeta(ItemStack item, String type)

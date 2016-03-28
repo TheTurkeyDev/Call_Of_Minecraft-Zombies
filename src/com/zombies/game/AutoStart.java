@@ -57,7 +57,10 @@ public class AutoStart
 	 */
 	public AutoStart(COMZombies zombies, Game game, int seconds)
 	{
-		if (seconds == -1) { return; }
+		if(seconds == -1)
+		{
+			return;
+		}
 		this.game = game;
 		plugin = zombies;
 		this.seconds = seconds;
@@ -70,21 +73,21 @@ public class AutoStart
 	{
 		try
 		{
-			if (seconds > 0 && !started)
+			if(seconds > 0 && !started)
 			{
 				started = true;
 				timer = new Countdown(seconds);
 				timer.run();
 			}
-		} catch (Exception e)
+		} catch(Exception e)
 		{
 			try
 			{
-				for (Player pl : game.players)
+				for(Player pl : game.players)
 				{
 					CommandUtil.sendMessageToPlayer(pl, "Error in joining " + game.getName() + ". Try rejoining!");
 				}
-			} catch (NullPointerException ex)
+			} catch(NullPointerException ex)
 			{
 			}
 		}
@@ -111,7 +114,7 @@ public class AutoStart
 		{
 			remain = seconds;
 
-			for (int i = 0; (i < warnings.length) && (seconds > warnings[i]); i++)
+			for(int i = 0; (i < warnings.length) && (seconds > warnings[i]); i++)
 			{
 				index = i;
 			}
@@ -121,9 +124,9 @@ public class AutoStart
 		@Override
 		public void run()
 		{
-			synchronized (this)
+			synchronized(this)
 			{
-				if (AutoStart.this.game.mode == ArenaStatus.INGAME || AutoStart.this.game.players.isEmpty())
+				if(AutoStart.this.game.mode == ArenaStatus.INGAME || AutoStart.this.game.players.isEmpty())
 				{
 					notifyAll();
 					return;
@@ -131,16 +134,16 @@ public class AutoStart
 
 				remain = remain - 1;
 
-				if (remain <= 0)
+				if(remain <= 0)
 				{
 					AutoStart.this.game.startArena();
 					AutoStart.this.plugin.getServer().getPluginManager().callEvent(new GameStartEvent(AutoStart.this.game));
 				}
 				else
 				{
-					if (remain == warnings[index])
+					if(remain == warnings[index])
 					{
-						for (Player pl : game.players)
+						for(Player pl : game.players)
 						{
 							CommandUtil.sendMessageToPlayer(pl, warnings[index] + " seconds!");
 						}
@@ -148,7 +151,8 @@ public class AutoStart
 					}
 					AutoStart.this.timeLeft = remain;
 					game.signManager.updateGame();
-					if (!stopped) AutoStart.this.game.scheduleSyncTask(this, 20);
+					if(!stopped)
+						AutoStart.this.game.scheduleSyncTask(this, 20);
 				}
 				notifyAll();
 			}

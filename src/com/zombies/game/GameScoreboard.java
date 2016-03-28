@@ -43,7 +43,7 @@ public class GameScoreboard
 
 	public void addPlayer(Player player)
 	{
-		team.addPlayer(player);
+		team.addEntry(player.getName());
 		Score s = objective.getScore(player.getName());
 		playerScores.put(player, s);
 		for(Player pl : game.players)
@@ -57,7 +57,7 @@ public class GameScoreboard
 
 	public void removePlayer(Player player)
 	{
-		team.removePlayer(player);
+		team.removeEntry(player.getName());
 		board.resetScores(player.getName());
 		player.setScoreboard(manager.getNewScoreboard());
 		playerScores.remove(player);

@@ -164,7 +164,7 @@ public class OnBlockBreakEvent implements Listener
 					if (copyI < 1)
 					{
 						sign.getLocation().getBlock().setType(Material.AIR);
-						sign.getWorld().playSound(sign.getLocation(), Sound.EXPLODE, 1, 1);
+						sign.getWorld().playSound(sign.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
 						sign.getWorld().playEffect(sign.getLocation(), Effect.MOBSPAWNER_FLAMES, 1);
 					}
 					else

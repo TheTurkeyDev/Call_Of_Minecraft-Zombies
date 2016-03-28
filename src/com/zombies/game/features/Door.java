@@ -94,7 +94,7 @@ public class Door
 	{
 		Location loc = blocks.get(0).getLocation();
 		World world = game.getWorld();
-		world.playSound(loc, Sound.DOOR_OPEN, 1L, 1L);
+		world.playSound(loc, Sound.BLOCK_WOODEN_DOOR_OPEN, 1L, 1L);
 	}
 
 	private void loadSigns()

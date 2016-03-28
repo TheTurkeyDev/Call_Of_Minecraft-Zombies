@@ -1,10 +1,10 @@
 package com.zombies.particleutilities;
 
-import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
-
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+
+import net.minecraft.server.v1_9_R1.PacketPlayOutWorldParticles;
 
 public enum ParticleEffects
 {
@@ -35,12 +35,12 @@ public enum ParticleEffects
 
 	public void sendToAllPlayers(Location loc, float offsetX, float offsetY, float offsetZ, float speed, int count)
 	{
-		for (Player player : loc.getWorld().getPlayers())
+		for(Player player : loc.getWorld().getPlayers())
 		{
 			try
 			{
 				sendToPlayer(player, loc, offsetX, offsetY, offsetZ, speed, count);
-			} catch (Exception e)
+			} catch(Exception e)
 			{
 				e.printStackTrace();
 			}

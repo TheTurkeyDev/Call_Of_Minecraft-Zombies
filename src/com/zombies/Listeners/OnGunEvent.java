@@ -1,12 +1,11 @@
 package com.zombies.listeners;
 
-import java.util.logging.Level;
-
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -67,7 +66,7 @@ public class OnGunEvent implements Listener
 					Gun gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
 					if(gun.isReloading())
 					{
-						player.getLocation().getWorld().playSound(player.getLocation(), Sound.CLICK, 1, 1);
+						player.getLocation().getWorld().playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
 						return;
 					}
 					gun.wasShot();
@@ -111,109 +110,112 @@ public class OnGunEvent implements Listener
 			Snowball snowball = (Snowball) event.getDamager();
 			if(snowball.getShooter() instanceof ProjectileSource)
 			{
-				ProjectileSource player = (ProjectileSource) snowball.getShooter();
-				if(plugin.manager.isPlayerInGame(player))
+				if(snowball.getShooter() instanceof CraftPlayer)
 				{
-					Game game = plugin.manager.getGame(player);
-					GunManager manager = game.getPlayersGun(player);
-					if(manager.isGun())
+					CraftPlayer player = (CraftPlayer) snowball.getShooter();
+					if(plugin.manager.isPlayerInGame(player))
 					{
-						Gun gun = manager.getGun(player.getInventory().getHeldItemSlot());
-						int damage = 0;
-						if(gun.isPackOfPunched())
-							damage = gun.getType().packAPunchDamage;
-						else
-							damage = gun.getType().damage;
-						if(event.getEntity() instanceof Zombie)
+						Game game = plugin.manager.getGame(player);
+						GunManager manager = game.getPlayersGun(player);
+						if(manager.isGun())
 						{
-							Zombie zomb = (Zombie) event.getEntity();
-							int totalHealth;
-							if(gun.getType().name.equalsIgnoreCase("Zombie BFF"))
-							{
-								ParticleEffects eff = ParticleEffects.HEART;
-								for(int i = 0; i < 30; i++)
-								{
-									float x = (float) (Math.random());
-									float y = (float) (Math.random());
-									float z = (float) (Math.random());
-									eff.sendToPlayer(player, zomb.getLocation(), x, y, z, 1, 1);
-								}
-							}
-							for(Player pl : game.players)
-							{
-								pl.playSound(pl.getLocation(), Sound.LAVA_POP, 1.0F, 0.0F);
-							}
-							if(game.spawnManager.totalHealth().containsKey(event.getEntity()))
-							{
-								totalHealth = game.spawnManager.totalHealth().get(event.getEntity());
-							}
+							Gun gun = manager.getGun(player.getInventory().getHeldItemSlot());
+							int damage = 0;
+							if(gun.isPackOfPunched())
+								damage = gun.getType().packAPunchDamage;
 							else
+								damage = gun.getType().damage;
+							if(event.getEntity() instanceof Zombie)
 							{
-								game.spawnManager.setTotalHealth(event.getEntity(), 20);
-								totalHealth = 20;
-							}
-							if(totalHealth >= 20)
-							{
-								zomb.setHealth(20);
-								if(game.isDoublePoints())
+								Zombie zomb = (Zombie) event.getEntity();
+								Double totalHealth;
+								if(gun.getType().name.equalsIgnoreCase("Zombie BFF"))
 								{
-									plugin.pointManager.addPoints(player, plugin.config.pointsOnHit * 2);
+									ParticleEffects eff = ParticleEffects.HEART;
+									for(int i = 0; i < 30; i++)
+									{
+										float x = (float) (Math.random());
+										float y = (float) (Math.random());
+										float z = (float) (Math.random());
+										eff.sendToPlayer(player, zomb.getLocation(), x, y, z, 1, 1);
+									}
+								}
+								for(Player pl : game.players)
+								{
+									pl.playSound(pl.getLocation(), Sound.BLOCK_LAVA_POP, 1.0F, 0.0F);
+								}
+								if(game.spawnManager.totalHealth().containsKey(event.getEntity()))
+								{
+									totalHealth = game.spawnManager.totalHealth().get(event.getEntity());
 								}
 								else
 								{
-									plugin.pointManager.addPoints(player, plugin.config.pointsOnHit);
+									game.spawnManager.setTotalHealth(event.getEntity(), 20);
+									totalHealth = 20.0;
 								}
-								if(game.spawnManager.totalHealth().get(event.getEntity()) <= 20)
+								if(totalHealth >= 20)
 								{
-									zomb.setHealth(game.spawnManager.totalHealth().get(event.getEntity()));
+									zomb.setHealth(20);
+									if(game.isDoublePoints())
+									{
+										plugin.pointManager.addPoints(player, plugin.config.pointsOnHit * 2);
+									}
+									else
+									{
+										plugin.pointManager.addPoints(player, plugin.config.pointsOnHit);
+									}
+									if(game.spawnManager.totalHealth().get(event.getEntity()) <= 20)
+									{
+										zomb.setHealth(game.spawnManager.totalHealth().get(event.getEntity()));
+									}
+									else
+									{
+										game.spawnManager.setTotalHealth(event.getEntity(), totalHealth - damage);
+									}
+									plugin.pointManager.notifyPlayer(player);
 								}
-								else
+								else if(zomb.getHealth() - damage < 1)
 								{
-									game.spawnManager.setTotalHealth(event.getEntity(), totalHealth - damage);
-								}
-								plugin.pointManager.notifyPlayer(player);
-							}
-							else if(zomb.getHealth() - damage < 1)
-							{
-								OnZombiePerkDrop perkdrop = new OnZombiePerkDrop(plugin);
-								perkdrop.perkDrop(zomb, player);
-								zomb.remove();
-								boolean doublePoints = game.isDoublePoints();
-								if(doublePoints)
-								{
-									plugin.pointManager.addPoints(player, plugin.config.pointsOnKill * 2);
-								}
-								else
-								{
-									plugin.pointManager.addPoints(player, plugin.config.pointsOnKill);
-								}
+									OnZombiePerkDrop perkdrop = new OnZombiePerkDrop(plugin);
+									perkdrop.perkDrop(zomb, player);
+									zomb.remove();
+									boolean doublePoints = game.isDoublePoints();
+									if(doublePoints)
+									{
+										plugin.pointManager.addPoints(player, plugin.config.pointsOnKill * 2);
+									}
+									else
+									{
+										plugin.pointManager.addPoints(player, plugin.config.pointsOnKill);
+									}
 
-								zomb.playEffect(EntityEffect.DEATH);
-								plugin.pointManager.notifyPlayer(player);
-								game.spawnManager.removeEntity((Entity) zomb);
-								game.zombieKilled(player);
-								if(game.spawnManager.getEntities().size() <= 0)
-								{
-									game.nextWave();
-								}
-							}
-							else
-							{
-								event.setDamage(damage);
-								boolean doublePoints = game.isDoublePoints();
-								if(doublePoints)
-								{
-									plugin.pointManager.addPoints(player, plugin.config.pointsOnHit * 2);
+									zomb.playEffect(EntityEffect.DEATH);
+									plugin.pointManager.notifyPlayer(player);
+									game.spawnManager.removeEntity((Entity) zomb);
+									game.zombieKilled(player);
+									if(game.spawnManager.getEntities().size() <= 0)
+									{
+										game.nextWave();
+									}
 								}
 								else
 								{
-									plugin.pointManager.addPoints(player, plugin.config.pointsOnHit);
+									event.setDamage(damage);
+									boolean doublePoints = game.isDoublePoints();
+									if(doublePoints)
+									{
+										plugin.pointManager.addPoints(player, plugin.config.pointsOnHit * 2);
+									}
+									else
+									{
+										plugin.pointManager.addPoints(player, plugin.config.pointsOnHit);
+									}
+									plugin.pointManager.notifyPlayer(player);
 								}
-								plugin.pointManager.notifyPlayer(player);
-							}
-							if(game.isInstaKill())
-							{
-								zomb.remove();
+								if(game.isInstaKill())
+								{
+									zomb.remove();
+								}
 							}
 						}
 					}
@@ -244,7 +246,7 @@ public class OnGunEvent implements Listener
 			{
 				return;
 			}
-			if(player.getItemInHand().getType().equals(Material.MAGMA_CREAM))
+			if(player.getInventory().getItemInMainHand().getType().equals(Material.MAGMA_CREAM))
 			{
 				player.getInventory().removeItem(new ItemStack(Material.MAGMA_CREAM, 1));
 				final Item item = player.getWorld().dropItemNaturally(player.getEyeLocation(), new ItemStack(Material.MAGMA_CREAM));
