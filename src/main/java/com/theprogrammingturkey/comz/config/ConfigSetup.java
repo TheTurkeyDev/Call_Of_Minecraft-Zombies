@@ -104,16 +104,12 @@ public class ConfigSetup
 		pointsOnKill = plugin.getConfig().getInt("config.gameSettings.defaultPointsOnKill");
 		maxWave = plugin.getConfig().getInt("config.gameSettings.maxWave");
 		reviveTimer = plugin.getConfig().getInt("config.ReviveSettings.ReviveTimer");
-		reviveRange = plugin.getConfig().getInt("config.ReviveSettings.ReviveRange");
-		if(reviveRange > 6)
-			reviveRange = 6;
+		reviveRange = Math.min(plugin.getConfig().getInt("config.ReviveSettings.ReviveRange"), 6);
 		meleeRange = (float) plugin.getConfig().getDouble("config.ReviveSettings.MeleeRange");
 		configVersion = plugin.getConfig().getString("vID");
 		reloadTime = plugin.getConfig().getInt("config.gameSettings.reloadTime");
-		if(plugin.possibleGuns.size() != 0)
-		{
-			plugin.possibleGuns.clear();
-		}
+
+		plugin.possibleGuns.clear();
 
 		for(String group : conf.getConfigurationSection("Guns").getKeys(false))
 		{
@@ -139,10 +135,7 @@ public class ConfigSetup
 		instaKill = plugin.getConfig().getBoolean("config.Perks.InstaKill");
 		carpenter = plugin.getConfig().getBoolean("config.Perks.Carpenter");
 		nuke = plugin.getConfig().getBoolean("config.Perks.Nuke");
-		if(!MultiBox)
-			fireSale = plugin.getConfig().getBoolean("config.Perks.FireSale");
-		else
-			fireSale = false;
+		fireSale = MultiBox && plugin.getConfig().getBoolean("config.Perks.FireSale");
 		doublePoints = plugin.getConfig().getBoolean("config.Perks.DoublePoints");
 		arenaStartTime = plugin.getConfig().getInt("config.gameSettings.arenaStartTime");
 		maxPerks = plugin.getConfig().getInt("config.Perks.maxPerks");

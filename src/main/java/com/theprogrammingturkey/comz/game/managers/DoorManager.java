@@ -8,6 +8,7 @@ import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,18 +52,18 @@ public class DoorManager
 	public void loadAllDoorsToGame()
 	{
 		String location = game.getName() + ".Doors";
-		try
+
+		ConfigurationSection doorsSec = ConfigManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(location);
+
+		if(doorsSec != null)
 		{
-			for(String key : ConfigManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(location).getKeys(false))
+			for(String key : doorsSec.getKeys(false))
 			{
 				Door door = new Door(game, Integer.parseInt(key.substring(4)));
 				door.loadAll();
 				door.closeDoor();
 				doors.add(door);
 			}
-		} catch(NullPointerException e)
-		{
-			e.printStackTrace();
 		}
 	}
 
