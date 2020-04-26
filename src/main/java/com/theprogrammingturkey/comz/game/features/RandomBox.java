@@ -17,15 +17,13 @@ import org.bukkit.entity.Player;
 
 public class RandomBox
 {
-	private final COMZombies plugin;
 	private Location boxLoc;
 	private Game boxGame;
 	private String boxNum;
 	private int boxCost;
 
-	public RandomBox(Location loc, Game game, COMZombies plugin, String key, int cost)
+	public RandomBox(Location loc, Game game, String key, int cost)
 	{
-		this.plugin = plugin;
 		boxLoc = loc;
 		boxGame = game;
 		boxNum = key;
@@ -38,17 +36,17 @@ public class RandomBox
 		{
 			return;
 		}
-		if(!plugin.pointManager.canBuy(player, PointsNeeded))
+		if(!COMZombies.getPlugin().pointManager.canBuy(player, PointsNeeded))
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You don't have enough points!");
 			return;
 		}
 		if(boxGame == null) return;
-		GunType gun = plugin.possibleGuns.get(0);
-		int randID = (int) (Math.random() * plugin.possibleGuns.size() + 1);
+		GunType gun = COMZombies.getPlugin().possibleGuns.get(0);
+		int randID = (int) (Math.random() * COMZombies.getPlugin().possibleGuns.size() + 1);
 		try
 		{
-			gun = plugin.possibleGuns.get(randID);
+			gun = COMZombies.getPlugin().possibleGuns.get(randID);
 		} catch(IndexOutOfBoundsException e)
 		{
 			if(!boxGame.isFireSale())
@@ -59,7 +57,7 @@ public class RandomBox
 			}
 			else
 			{
-				randID = (int) Math.random() * plugin.possibleGuns.size();
+				randID = (int) Math.random() * COMZombies.getPlugin().possibleGuns.size();
 			}
 		}
 		GunManager manager = boxGame.getPlayersGun(player);
@@ -67,8 +65,8 @@ public class RandomBox
 		manager.removeGun(manager.getGun(slot));
 		manager.addGun(new Gun(gun, player, slot));
 		player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
-		plugin.pointManager.takePoints(player, PointsNeeded);
-		plugin.pointManager.notifyPlayer(player);
+		COMZombies.getPlugin().pointManager.takePoints(player, PointsNeeded);
+		COMZombies.getPlugin().pointManager.notifyPlayer(player);
 		/*plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
 		{
 			int time = 15;

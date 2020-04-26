@@ -1,9 +1,11 @@
 package com.theprogrammingturkey.comz.game.features;
 
-import java.util.ArrayList;
-import java.util.logging.Level;
-
+import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.config.ConfigManager;
+import com.theprogrammingturkey.comz.config.CustomConfig;
+import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import com.theprogrammingturkey.comz.util.BlockUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,10 +16,8 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 
-import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.config.CustomConfig;
-import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.spawning.SpawnPoint;
+import java.util.ArrayList;
+import java.util.logging.Level;
 
 public class Door
 {
@@ -35,11 +35,8 @@ public class Door
 	private ArrayList<SpawnPoint> spawnsInRoomDoorLeadsTo = new ArrayList<>();
 	private boolean isOpened = false;
 
-	private COMZombies plugin;
-
-	public Door(COMZombies pl, Game game, int number)
+	public Door(Game game, int number)
 	{
-		plugin = pl;
 		this.game = game;
 		doorNumber = number;
 	}
@@ -69,7 +66,7 @@ public class Door
 	private void loadDoor()
 	{
 		String location = game.getName() + ".Doors.door" + doorNumber;
-		ArrayList<String> spawns = (ArrayList<String>) plugin.configManager.getConfig(COMZConfig.ARENAS).getStringList(location + ".SpawnPoints");
+		ArrayList<String> spawns = (ArrayList<String>) ConfigManager.getConfig(COMZConfig.ARENAS).getStringList(location + ".SpawnPoints");
 		ArrayList<SpawnPoint> points = new ArrayList<>();
 		for(String spawn : spawns)
 		{
@@ -97,7 +94,7 @@ public class Door
 
 	private void loadSigns()
 	{
-		CustomConfig config = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
 		String location = game.getName() + ".Doors.door" + doorNumber;
 		try
 		{
@@ -168,7 +165,7 @@ public class Door
 				continue;
 			}
 
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> block.setType(Material.AIR), interval);
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> block.setType(Material.AIR), interval);
 			interval += 1;
 		}
 		isOpened = true;
@@ -181,7 +178,7 @@ public class Door
 
 	public void closeDoor()
 	{
-		CustomConfig config = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
 		try
 		{
 			for(String key : config.getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Blocks").getKeys(false))
@@ -234,7 +231,7 @@ public class Door
 
 	private void loadBlocks()
 	{
-		CustomConfig config = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
 		try
 		{
 			for(String key : config.getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Blocks").getKeys(false))
@@ -262,7 +259,7 @@ public class Door
 	 */
 	public void saveBlocks(Location p1, Location p2)
 	{
-		CustomConfig config = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
 		if(p1 != null && p2 != null)
 		{
 			int x1 = Math.min(p1.getBlockX(), p2.getBlockX()); // Eg. 5
@@ -294,17 +291,12 @@ public class Door
 			config.saveConfig();
 		}
 
-		plugin.configManager.getConfig(COMZConfig.ARENAS).saveConfig();
+		ConfigManager.getConfig(COMZConfig.ARENAS).saveConfig();
 	}
 
 	public ArrayList<Block> getBlocks()
 	{
 		return blocks;
-	}
-
-	public COMZombies getPlugin()
-	{
-		return plugin;
 	}
 
 	public boolean hasBothLocations()
@@ -314,7 +306,7 @@ public class Door
 
 	public void removeSelfFromConfig()
 	{
-		CustomConfig config = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
 		config.set(game.getName() + ".Doors.door" + doorNumber, null);
 		config.saveConfig();
 	}

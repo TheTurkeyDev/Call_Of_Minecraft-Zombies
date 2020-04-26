@@ -78,7 +78,11 @@ public class Vault
 	public boolean hasEnough(Player player, double amount)
 	{
 		if(enabled)
+		{
+			if(!hasAccount(player))
+				return false;
 			return this.economy.has(Bukkit.getOfflinePlayer(player.getUniqueId()), amount);
+		}
 		return true;
 	}
 
@@ -162,6 +166,10 @@ public class Vault
 	public void addMoney(Player player, double amount)
 	{
 		if(enabled)
+		{
+			if(!hasAccount(player))
+				newAccount(player);
 			this.economy.depositPlayer(Bukkit.getOfflinePlayer(player.getUniqueId()), amount);
+		}
 	}
 }

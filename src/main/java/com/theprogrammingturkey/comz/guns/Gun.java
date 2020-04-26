@@ -1,13 +1,13 @@
 package com.theprogrammingturkey.comz.guns;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.theprogrammingturkey.comz.config.COMZConfig;
-import com.theprogrammingturkey.comz.game.GameManager;
-import com.theprogrammingturkey.comz.listeners.OnZombiePerkDrop;
+import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.commands.CommandUtil;
+import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.config.ConfigManager;
+import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
+import com.theprogrammingturkey.comz.listeners.OnZombiePerkDrop;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -22,8 +22,8 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.game.Game;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Gun
 {
@@ -149,7 +149,7 @@ public class Gun
 	public void reload()
 	{
 		COMZombies plugin = COMZombies.getPlugin();
-		if(plugin.configManager.getConfig(COMZConfig.GUNS).getString("Resource Sounds", "off").equalsIgnoreCase("on"))
+		if(ConfigManager.getConfig(COMZConfig.GUNS).getString("Resource Sounds", "off").equalsIgnoreCase("on"))
 		{
 			player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
 		}
@@ -159,8 +159,9 @@ public class Gun
 			if(gun.clipammo == clipAmmo) return;
 			Game game = GameManager.INSTANCE.getGame(player);
 			final int reloadTime;
-			if(game.perkManager.hasPerk(player, PerkType.SPEED_COLA)) reloadTime = (plugin.config.reloadTime) / 2;
-			else reloadTime = plugin.config.reloadTime;
+			if(game.perkManager.hasPerk(player, PerkType.SPEED_COLA))
+				reloadTime = (ConfigManager.getMainConfig().reloadTime) / 2;
+			else reloadTime = ConfigManager.getMainConfig().reloadTime;
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
 			{
 				try
@@ -319,7 +320,7 @@ public class Gun
 		}
 
 		COMZombies plugin = COMZombies.getPlugin();
-		if(plugin.configManager.getConfig(COMZConfig.GUNS).getString("Resource Sounds", "off").equalsIgnoreCase("on"))
+		if(ConfigManager.getConfig(COMZConfig.GUNS).getString("Resource Sounds", "off").equalsIgnoreCase("on"))
 		{
 			switch(gun.name)
 			{

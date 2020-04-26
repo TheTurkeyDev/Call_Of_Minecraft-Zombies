@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
@@ -148,11 +149,11 @@ public class OnGunEvent implements Listener
 									zomb.setHealth(20);
 									if(game.isDoublePoints())
 									{
-										plugin.pointManager.addPoints(player, plugin.config.pointsOnHit * 2);
+										plugin.pointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit * 2);
 									}
 									else
 									{
-										plugin.pointManager.addPoints(player, plugin.config.pointsOnHit);
+										plugin.pointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit);
 									}
 									if(game.spawnManager.totalHealth().get(event.getEntity()) <= 20)
 									{
@@ -172,11 +173,11 @@ public class OnGunEvent implements Listener
 									boolean doublePoints = game.isDoublePoints();
 									if(doublePoints)
 									{
-										plugin.pointManager.addPoints(player, plugin.config.pointsOnKill * 2);
+										plugin.pointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
 									}
 									else
 									{
-										plugin.pointManager.addPoints(player, plugin.config.pointsOnKill);
+										plugin.pointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
 									}
 
 									zomb.playEffect(EntityEffect.DEATH);
@@ -194,11 +195,11 @@ public class OnGunEvent implements Listener
 									boolean doublePoints = game.isDoublePoints();
 									if(doublePoints)
 									{
-										plugin.pointManager.addPoints(player, plugin.config.pointsOnHit * 2);
+										plugin.pointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit * 2);
 									}
 									else
 									{
-										plugin.pointManager.addPoints(player, plugin.config.pointsOnHit);
+										plugin.pointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit);
 									}
 									plugin.pointManager.notifyPlayer(player);
 								}

@@ -2,48 +2,50 @@ package com.theprogrammingturkey.comz.config;
 
 import com.theprogrammingturkey.comz.COMZombies;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ConfigManager
 {
-	private List<CustomConfig> configs = new ArrayList<>();
+	private static Map<COMZConfig, CustomConfig> configs = new HashMap<>();
+	private static ConfigSetup mainConfig;
 
-	public ConfigManager()
-	{
-		loadFiles();
-	}
-
-	private void loadFiles()
+	public static void loadFiles()
 	{
 		COMZombies plugin = COMZombies.getPlugin();
 		plugin.getConfig().options().copyDefaults(true);
 		plugin.saveDefaultConfig();
 
-		configs.add(new CustomConfig(plugin.getDataFolder(), COMZConfig.GUNS, true));
-		configs.add(new CustomConfig(plugin.getDataFolder(), COMZConfig.ARENAS, false));
-		configs.add(new CustomConfig(plugin.getDataFolder(), COMZConfig.SIGNS, false));
-		configs.add(new CustomConfig(plugin.getDataFolder(), COMZConfig.KITS, false));
-		configs.add(new CustomConfig(plugin.getDataFolder(), COMZConfig.KILLS, false));
+		mainConfig = new ConfigSetup();
+		mainConfig.setup();
+
+		configs.put(COMZConfig.GUNS, new CustomConfig(plugin.getDataFolder(), COMZConfig.GUNS, true));
+		configs.put(COMZConfig.ARENAS, new CustomConfig(plugin.getDataFolder(), COMZConfig.ARENAS, false));
+		configs.put(COMZConfig.SIGNS, new CustomConfig(plugin.getDataFolder(), COMZConfig.SIGNS, false));
+		configs.put(COMZConfig.KITS, new CustomConfig(plugin.getDataFolder(), COMZConfig.KITS, false));
+		configs.put(COMZConfig.KILLS, new CustomConfig(plugin.getDataFolder(), COMZConfig.KILLS, false));
 	}
 
-	public CustomConfig getConfig(COMZConfig comzConfig)
+	public static CustomConfig getConfig(COMZConfig comzConfig)
 	{
-		for(CustomConfig c : configs)
-			if(c.getConfig() == comzConfig)
-				return c;
-		return null;
+		//The default is just here so we don't get warnings in code about possible nulls really
+		return configs.getOrDefault(comzConfig, configs.get(COMZConfig.ARENAS));
 	}
 
-	public void reloadALL()
+	public static ConfigSetup getMainConfig()
 	{
-		for(CustomConfig c : configs)
+		return mainConfig;
+	}
+
+	public static void reloadALL()
+	{
+		for(CustomConfig c : configs.values())
 			c.reloadConfig();
 	}
 
-	public void saveALL()
+	public static void saveALL()
 	{
-		for(CustomConfig c : configs)
+		for(CustomConfig c : configs.values())
 			c.saveConfig();
 	}
 }

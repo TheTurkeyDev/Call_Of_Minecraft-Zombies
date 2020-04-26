@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.commands;
 
 import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -37,7 +38,7 @@ public class JoinCommand implements SubCommand
 					{
 						if(game.spawnManager.getPoints().size() == 0)
 							continue;
-						CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
+						CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 						if(conf.getInt(game.getName() + ".maxPlayers", 8) <= game.players.size())
 							continue;
 						if(player.hasPermission("zombies.join." + game.getName()))
@@ -71,7 +72,7 @@ public class JoinCommand implements SubCommand
 							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Arena has no spawn points!");
 							return true;
 						}
-						if(plugin.configManager.getConfig(COMZConfig.ARENAS).getInt(game.getName() + ".maxPlayers", 8) <= game.players.size())
+						if(ConfigManager.getConfig(COMZConfig.ARENAS).getInt(game.getName() + ".maxPlayers", 8) <= game.players.size())
 						{
 							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Game is full!");
 							return true;

@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.kits;
 
 import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
@@ -38,7 +39,7 @@ public class Kit
 	public void load()
 	{
 		COMZombies plugin = COMZombies.getPlugin();
-		CustomConfig config = plugin.configManager.getConfig(COMZConfig.KITS);
+		CustomConfig config = ConfigManager.getConfig(COMZConfig.KITS);
 		if(config.getString(name + ".Guns") != null)
 		{
 			String[] guns = config.getString(name + ".Guns").split(",");

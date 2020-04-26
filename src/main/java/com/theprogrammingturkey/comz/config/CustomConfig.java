@@ -22,7 +22,6 @@ public class CustomConfig
 
 	private COMZConfig config;
 
-
 	public CustomConfig(File folder, COMZConfig config, boolean loadFromExist)
 	{
 		COMZombies plugin = COMZombies.getPlugin();

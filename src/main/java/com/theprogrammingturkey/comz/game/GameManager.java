@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.game;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.features.Door;
 import org.bukkit.Bukkit;
@@ -67,9 +68,9 @@ public class GameManager
 		COMZombies plugin = COMZombies.getPlugin();
 		int i = 0;
 		games.clear();
-		for(String key : plugin.configManager.getConfig(COMZConfig.ARENAS).getConfigurationSection("").getKeys(false))
+		for(String key : ConfigManager.getConfig(COMZConfig.ARENAS).getConfigurationSection("").getKeys(false))
 		{
-			games.add(new Game(plugin, key));
+			games.add(new Game(key));
 			games.get(i).enable();
 			i++;
 		}

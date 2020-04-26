@@ -1,10 +1,7 @@
 package com.theprogrammingturkey.comz.game.managers;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.Door;
@@ -12,16 +9,16 @@ import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DoorManager
 {
-	private COMZombies plugin;
 	private Game game;
-
 	private ArrayList<Door> doors = new ArrayList<>();
 
-	public DoorManager(COMZombies plugin, Game game)
+	public DoorManager(Game game)
 	{
-		this.plugin = plugin;
 		this.game = game;
 	}
 
@@ -56,9 +53,9 @@ public class DoorManager
 		String location = game.getName() + ".Doors";
 		try
 		{
-			for(String key : plugin.configManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(location).getKeys(false))
+			for(String key : ConfigManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(location).getKeys(false))
 			{
-				Door door = new Door(plugin, game, Integer.parseInt(key.substring(4)));
+				Door door = new Door(game, Integer.parseInt(key.substring(4)));
 				door.loadAll();
 				door.closeDoor();
 				doors.add(door);
@@ -97,7 +94,7 @@ public class DoorManager
 	 */
 	public void addDoorSignToConfig(Door door, Location location)
 	{
-		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 		int x = location.getBlockX();
 		int y = location.getBlockY();
 		int z = location.getBlockZ();
@@ -117,7 +114,7 @@ public class DoorManager
 	 */
 	public void addDoorSpawnPointToConfig(Door door, SpawnPoint spawnPoint)
 	{
-		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 		List<String> spawnPoints = conf.getStringList(game.getName() + ".Doors.door" + door.doorNumber + ".SpawnPoints");
 		if(spawnPoints.contains(spawnPoint.getName())) return;
 		spawnPoints.add(spawnPoint.getName());
@@ -136,11 +133,7 @@ public class DoorManager
 		int i = 1;
 		try
 		{
-			for(@SuppressWarnings("unused")
-					String s : plugin.configManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Signs").getKeys(false))
-			{
-				i++;
-			}
+			i += ConfigManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Signs").getKeys(false).size();
 		} catch(Exception ex)
 		{
 			return 1;
@@ -158,11 +151,7 @@ public class DoorManager
 		int i = 1;
 		try
 		{
-			for(@SuppressWarnings("unused")
-					String s : plugin.configManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(game.getName() + ".Doors").getKeys(false))
-			{
-				i++;
-			}
+			i += ConfigManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(game.getName() + ".Doors").getKeys(false).size();
 		} catch(Exception ex)
 		{
 			return 1;

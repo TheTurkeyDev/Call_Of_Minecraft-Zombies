@@ -1,9 +1,7 @@
 package com.theprogrammingturkey.comz.game.managers;
 
-import java.util.ArrayList;
-
-import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.Barrier;
@@ -13,21 +11,21 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+
 public class BarrierManager
 {
-	private COMZombies plugin;
 	private Game game;
 	private ArrayList<Barrier> barriers = new ArrayList<>();
 
-	public BarrierManager(COMZombies plugin, Game game)
+	public BarrierManager(Game game)
 	{
-		this.plugin = plugin;
 		this.game = game;
 	}
 
 	public void loadAllBarriersToGame()
 	{
-		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 		barriers.clear();
 		try
 		{
@@ -112,7 +110,7 @@ public class BarrierManager
 	{
 		if(barriers.contains(barrier))
 		{
-			CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
+			CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 			conf.set(game.getName() + ".Barriers." + barrier.getNum(), null);
 			conf.saveConfig();
 			loadAllBarriersToGame();
@@ -124,7 +122,7 @@ public class BarrierManager
 
 	public void addBarrier(Barrier barrier)
 	{
-		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 		if(game.mode == Game.ArenaStatus.DISABLED || game.mode == Game.ArenaStatus.WAITING)
 		{
 			boolean same = false;
@@ -160,7 +158,7 @@ public class BarrierManager
 
 	public void UpdateBarrier(Barrier barrier)
 	{
-		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 		if(game.mode == Game.ArenaStatus.DISABLED || game.mode == Game.ArenaStatus.WAITING)
 		{
 			boolean same = false;

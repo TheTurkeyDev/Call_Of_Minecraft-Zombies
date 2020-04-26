@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import org.bukkit.Location;
@@ -13,20 +14,18 @@ import org.bukkit.entity.Player;
 
 public class TeleporterManager
 {
-	private COMZombies plugin;
 	private Game game;
 
 	private HashMap<String, ArrayList<Location>> teleporters = new HashMap<>();
 
-	public TeleporterManager(COMZombies plugin, Game game)
+	public TeleporterManager(Game game)
 	{
-		this.plugin = plugin;
 		this.game = game;
 	}
 
 	public void loadAllTeleportersToGame()
 	{
-		CustomConfig config = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
 		String location = game.getName() + ".Teleporters";
 		ConfigurationSection teleporterSec = config.getConfigurationSection(location);
 		if(teleporterSec != null)
@@ -51,7 +50,7 @@ public class TeleporterManager
 
 	public void saveTeleporterSpot(String teleName, Location to)
 	{
-		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 		ArrayList<Location> temp = new ArrayList<>();
 		teleName = teleName.toLowerCase();
 
@@ -78,7 +77,7 @@ public class TeleporterManager
 
 	public void removedTeleporter(String teleName, Player player)
 	{
-		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 		teleName = teleName.toLowerCase();
 		if(teleporters.containsKey(teleName))
 		{

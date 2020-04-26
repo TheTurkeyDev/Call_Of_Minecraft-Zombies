@@ -2,7 +2,6 @@ package com.theprogrammingturkey.comz;
 
 import com.theprogrammingturkey.comz.commands.ZombiesCommand;
 import com.theprogrammingturkey.comz.config.ConfigManager;
-import com.theprogrammingturkey.comz.config.ConfigSetup;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.ArenaAntiBreak;
 import com.theprogrammingturkey.comz.game.Game;
@@ -112,25 +111,18 @@ public class COMZombies extends JavaPlugin
 	 * List of every gun contained in the config.
 	 */
 	public ArrayList<GunType> possibleGuns = new ArrayList<>();
-	/**
-	 * Configuration setup, gathers all information from the configuration files
-	 * and stores them for later use.
-	 */
-	public ConfigSetup config;
+
 	/**
 	 * Enables the plugin.
 	 */
 	public SignManager signManager;
-	public ConfigManager configManager;
 
 	public Vault vault;
 
 	public void onEnable()
 	{
-		configManager = new ConfigManager();
 		reloadConfig();
-		config = new ConfigSetup();
-		config.setup();
+		ConfigManager.loadFiles();
 		kitManager = new KitManager();
 		kitManager.loadKits();
 		pointManager = new PointManager();
@@ -174,8 +166,8 @@ public class COMZombies extends JavaPlugin
 	{
 		saveDefaultConfig();
 		reloadConfig();
-		configManager.reloadALL();
-		configManager.saveALL();
+		ConfigManager.reloadALL();
+		ConfigManager.saveALL();
 	}
 
 	/**
@@ -219,7 +211,7 @@ public class COMZombies extends JavaPlugin
 	public void onDisable()
 	{
 		reloadConfig();
-		configManager.reloadALL();
+		ConfigManager.reloadALL();
 		GameManager.INSTANCE.endAll();
 		log.info(COMZombies.PREFIX + " has been disabled!");
 	}

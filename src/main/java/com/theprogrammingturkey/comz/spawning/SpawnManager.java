@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.Door;
 import net.minecraft.server.v1_15_R1.AttributeInstance;
@@ -35,7 +36,6 @@ import org.bukkit.inventory.ItemStack;
 
 public class SpawnManager
 {
-	private COMZombies plugin;
 	private Game game;
 	private HashMap<Entity, Double> health = new HashMap<>();
 	private ArrayList<SpawnPoint> points = new ArrayList<>();
@@ -47,17 +47,16 @@ public class SpawnManager
 	private int zombiesToSpawn = 0;
 	private Random random;
 
-	public SpawnManager(COMZombies plugin, Game game)
+	public SpawnManager(Game game)
 	{
-		this.plugin = plugin;
 		this.game = game;
-		zombieSpawnInterval = plugin.getConfig().getInt("config.gameSettings.zombieSpawnDelay");
+		zombieSpawnInterval = COMZombies.getPlugin().getConfig().getInt("config.gameSettings.zombieSpawnDelay");
 		random = new Random();
 	}
 
 	public void loadAllSpawnsToGame()
 	{
-		CustomConfig config = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
 		points.clear();
 		try
 		{
@@ -103,7 +102,7 @@ public class SpawnManager
 
 	public void removePoint(Player player, SpawnPoint point)
 	{
-		CustomConfig config = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
 		if(points.contains(point))
 		{
 			Location loc = point.getLocation();
@@ -259,7 +258,7 @@ public class SpawnManager
 		if(this.zombiesSpawned >= this.zombiesToSpawn)
 			return;
 
-		if(mobs.size() >= plugin.config.maxZombies)
+		if(mobs.size() >= ConfigManager.getMainConfig().maxZombies)
 		{
 			Runnable delayedSpawnFunc = new Runnable()
 			{
@@ -272,7 +271,7 @@ public class SpawnManager
 				}
 			};
 
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delayedSpawnFunc, zombieSpawnInterval * 20L);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), delayedSpawnFunc, zombieSpawnInterval * 20L);
 			return;
 		}
 
@@ -347,7 +346,7 @@ public class SpawnManager
 				}
 			}
 		};
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delayedSpawnFunc, time * 20L);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), delayedSpawnFunc, time * 20L);
 	}
 
 	public void setFollowDistance(Entity zomb)
@@ -380,7 +379,7 @@ public class SpawnManager
 	{
 		if(game.mode != ArenaStatus.INGAME)
 			return;
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+		Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), new Runnable()
 		{
 			@Override
 			public void run()
@@ -523,7 +522,7 @@ public class SpawnManager
 		this.canSpawn = false;
 		this.zombiesSpawned = 0;
 		this.zombiesToSpawn = 0;
-		this.zombieSpawnInterval = plugin.getConfig().getInt("config.gameSettings.waveSpawnInterval");
+		this.zombieSpawnInterval = COMZombies.getPlugin().getConfig().getInt("config.gameSettings.waveSpawnInterval");
 	}
 
 	/**
@@ -536,11 +535,7 @@ public class SpawnManager
 		int spawnNum = 0;
 		try
 		{
-			for(@SuppressWarnings("unused")
-					String key : plugin.configManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(game.getName() + ".ZombieSpawns").getKeys(false))
-			{
-				spawnNum++;
-			}
+			spawnNum = ConfigManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(game.getName() + ".ZombieSpawns").getKeys(false).size();
 		} catch(NullPointerException e)
 		{
 			e.printStackTrace();
@@ -554,7 +549,7 @@ public class SpawnManager
 	public void addSpawnToConfig(SpawnPoint spawn)
 	{
 		World world = null;
-		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 		try
 		{
 			world = spawn.getLocation().getWorld();

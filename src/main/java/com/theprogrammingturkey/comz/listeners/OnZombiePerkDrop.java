@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
@@ -61,7 +62,7 @@ public class OnZombiePerkDrop implements Listener
 			}
 			if(randomPerk == 0)
 			{
-				if(!COMZombies.getPlugin().config.maxAmmo)
+				if(!ConfigManager.getMainConfig().maxAmmo)
 					perkDrop(zombie, player);
 				else
 				{
@@ -71,7 +72,7 @@ public class OnZombiePerkDrop implements Listener
 			}
 			if(randomPerk == 1)
 			{
-				if(!COMZombies.getPlugin().config.instaKill)
+				if(!ConfigManager.getMainConfig().instaKill)
 					perkDrop(zombie, player);
 				else
 				{
@@ -82,7 +83,7 @@ public class OnZombiePerkDrop implements Listener
 			}
 			if(randomPerk == 2)
 			{
-				if(!COMZombies.getPlugin().config.carpenter)
+				if(!ConfigManager.getMainConfig().carpenter)
 					perkDrop(zombie, player);
 				else
 				{
@@ -92,7 +93,7 @@ public class OnZombiePerkDrop implements Listener
 			}
 			if(randomPerk == 3)
 			{
-				if(!COMZombies.getPlugin().config.nuke)
+				if(!ConfigManager.getMainConfig().nuke)
 					perkDrop(zombie, player);
 				else
 				{
@@ -102,7 +103,7 @@ public class OnZombiePerkDrop implements Listener
 			}
 			if(randomPerk == 4)
 			{
-				if(!COMZombies.getPlugin().config.doublePoints)
+				if(!ConfigManager.getMainConfig().doublePoints)
 					perkDrop(zombie, player);
 				else
 				{
@@ -113,7 +114,7 @@ public class OnZombiePerkDrop implements Listener
 			if(randomPerk == 5)
 			{
 
-				if(!COMZombies.getPlugin().config.fireSale)
+				if(!ConfigManager.getMainConfig().fireSale)
 					perkDrop(zombie, player);
 				else
 				{
@@ -194,7 +195,7 @@ public class OnZombiePerkDrop implements Listener
 					event.getPlayer().getInventory().remove(item);
 					game.setInstaKill(true);
 					notifyAll(game, PowerUp.INSTA_KILL);
-					Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> game.setInstaKill(false), COMZombies.getPlugin().config.instaKillTimer * 20);
+					Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> game.setInstaKill(false), ConfigManager.getMainConfig().instaKillTimer * 20);
 					event.getItem().remove();
 					event.setCancelled(true);
 					return;
@@ -228,7 +229,7 @@ public class OnZombiePerkDrop implements Listener
 					event.getPlayer().getInventory().remove(item);
 					game.setDoublePoints(true);
 					notifyAll(game, PowerUp.DOUBLE_POINTS);
-					Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> game.setDoublePoints(false), COMZombies.getPlugin().config.doublePointsTimer * 20);
+					Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> game.setDoublePoints(false), ConfigManager.getMainConfig().doublePointsTimer * 20);
 					event.getItem().remove();
 					event.setCancelled(true);
 					return;
@@ -242,7 +243,7 @@ public class OnZombiePerkDrop implements Listener
 					{
 						game.setFireSale(false);
 						game.boxManager.FireSale(false);
-					}, COMZombies.getPlugin().config.fireSaleTimer * 20);
+					}, ConfigManager.getMainConfig().fireSaleTimer * 20);
 					event.getItem().remove();
 					event.setCancelled(true);
 					return;

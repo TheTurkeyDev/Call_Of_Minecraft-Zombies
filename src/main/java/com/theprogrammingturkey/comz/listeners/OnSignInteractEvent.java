@@ -3,6 +3,7 @@ package com.theprogrammingturkey.comz.listeners;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.commands.CommandUtil;
 import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Door;
@@ -295,7 +296,7 @@ public class OnSignInteractEvent implements Listener
 					}
 					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "power"))
 					{
-						if(plugin.configManager.getConfig(COMZConfig.ARENAS).getBoolean(game.getName() + ".Power"))
+						if(ConfigManager.getConfig(COMZConfig.ARENAS).getBoolean(game.getName() + ".Power"))
 						{
 							if(GameManager.INSTANCE.isPlayerInGame(player))
 							{

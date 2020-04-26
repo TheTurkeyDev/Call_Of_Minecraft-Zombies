@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import org.bukkit.entity.Player;
 
@@ -33,7 +34,7 @@ public class KitManager
 
 	public void loadKits()
 	{
-		for(String key : COMZombies.getPlugin().configManager.getConfig(COMZConfig.KITS).getConfigurationSection("").getKeys(false))
+		for(String key : ConfigManager.getConfig(COMZConfig.KITS).getConfigurationSection("").getKeys(false))
 		{
 			Kit kit = new Kit(key);
 			kit.load();

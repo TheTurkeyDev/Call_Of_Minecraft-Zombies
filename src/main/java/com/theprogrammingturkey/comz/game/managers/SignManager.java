@@ -6,6 +6,7 @@ import java.util.logging.Level;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import org.bukkit.Bukkit;
@@ -26,7 +27,7 @@ public class SignManager
 	public SignManager(Game game)
 	{
 		this.game = game;
-		conf = COMZombies.getPlugin().configManager.getConfig(COMZConfig.SIGNS);
+		conf = ConfigManager.getConfig(COMZConfig.SIGNS);
 		load();
 	}
 

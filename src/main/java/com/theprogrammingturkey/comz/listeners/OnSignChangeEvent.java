@@ -1,21 +1,21 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.commands.CommandUtil;
 import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.config.ConfigManager;
+import com.theprogrammingturkey.comz.config.CustomConfig;
+import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.game.features.PerkType;
+import com.theprogrammingturkey.comz.game.features.RandomBox;
+import com.theprogrammingturkey.comz.kits.Kit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
-
-import com.theprogrammingturkey.comz.commands.CommandUtil;
-import com.theprogrammingturkey.comz.config.CustomConfig;
-import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.game.features.PerkType;
-import com.theprogrammingturkey.comz.game.features.RandomBox;
-import com.theprogrammingturkey.comz.kits.Kit;
 
 public class OnSignChangeEvent implements Listener
 {
@@ -54,7 +54,7 @@ public class OnSignChangeEvent implements Listener
 					sign.setLine(0, ChatColor.RED + "[Zombies]");
 					sign.setLine(1, ChatColor.AQUA + "MysteryBox");
 					sign.setLine(2, "950");
-					RandomBox box = new RandomBox(sign.getBlock().getLocation(), game, plugin, game.boxManager.getNextBoxName(), Integer.parseInt(thirdLine));
+					RandomBox box = new RandomBox(sign.getBlock().getLocation(), game, game.boxManager.getNextBoxName(), Integer.parseInt(thirdLine));
 					game.boxManager.addBox(box);
 					sign.getPlayer().sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Random Weapon Box Created!");
 					return;
@@ -64,7 +64,7 @@ public class OnSignChangeEvent implements Listener
 					sign.setLine(0, ChatColor.RED + "[Zombies]");
 					sign.setLine(1, ChatColor.AQUA + "MysteryBox");
 					sign.setLine(2, thirdLine);
-					RandomBox box = new RandomBox(sign.getBlock().getLocation(), game, plugin, game.boxManager.getNextBoxName(), Integer.parseInt(thirdLine));
+					RandomBox box = new RandomBox(sign.getBlock().getLocation(), game, game.boxManager.getNextBoxName(), Integer.parseInt(thirdLine));
 					game.boxManager.addBox(box);
 					sign.getPlayer().sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Random Weapon Box Created!");
 				}
@@ -124,7 +124,7 @@ public class OnSignChangeEvent implements Listener
 					sign.setLine(1, ChatColor.AQUA + "power");
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type /z disablepower " + game.getName() + " to disable the power!");
 
-					CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
+					CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 
 					conf.set(game.getName() + ".Power", true);
 

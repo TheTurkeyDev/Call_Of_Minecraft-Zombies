@@ -1,7 +1,9 @@
 package com.theprogrammingturkey.comz.listeners;
 
-import java.util.ArrayList;
-
+import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.config.ConfigManager;
+import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.DownedPlayer;
 import com.theprogrammingturkey.comz.game.features.PerkType;
@@ -19,9 +21,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
+import java.util.ArrayList;
 
 public class OnEntityDamageEvent implements Listener
 {
@@ -107,7 +107,7 @@ public class OnEntityDamageEvent implements Listener
 							double cy = player.getLocation().getY() - zombie1.getLocation().getY();
 							double cz = player.getLocation().getZ() - zombie1.getLocation().getZ();
 
-							if(Math.sqrt(Math.pow(cx, 2) + Math.pow(cy, 2) + Math.pow(cz, 2)) <= plugin.config.meleeRange)
+							if(Math.sqrt(Math.pow(cx, 2) + Math.pow(cy, 2) + Math.pow(cz, 2)) <= ConfigManager.getMainConfig().meleeRange)
 							{
 								damageAmount = 5;
 							}
@@ -130,11 +130,11 @@ public class OnEntityDamageEvent implements Listener
 								zombie1.setHealth(20D);
 								if(game.isDoublePoints())
 								{
-									plugin.pointManager.addPoints(player, plugin.config.pointsOnHit * 2);
+									plugin.pointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit * 2);
 								}
 								else
 								{
-									plugin.pointManager.addPoints(player, plugin.config.pointsOnHit);
+									plugin.pointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit);
 								}
 								game.spawnManager.setTotalHealth(e.getEntity(), (int) (totalHealth - damageAmount));
 								if(game.spawnManager.totalHealth().get(e.getEntity()) < 20)
@@ -152,11 +152,11 @@ public class OnEntityDamageEvent implements Listener
 								boolean doublePoints = game.isDoublePoints();
 								if(doublePoints)
 								{
-									plugin.pointManager.addPoints(player, plugin.config.pointsOnKill * 2);
+									plugin.pointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
 								}
 								else
 								{
-									plugin.pointManager.addPoints(player, plugin.config.pointsOnKill);
+									plugin.pointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
 								}
 								zombie1.playEffect(EntityEffect.DEATH);
 								plugin.pointManager.notifyPlayer(player);
@@ -168,11 +168,11 @@ public class OnEntityDamageEvent implements Listener
 								zombie1.damage(damage);
 								if(game.isDoublePoints())
 								{
-									plugin.pointManager.addPoints(player, plugin.config.pointsOnHit * 2);
+									plugin.pointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit * 2);
 								}
 								else
 								{
-									plugin.pointManager.addPoints(player, plugin.config.pointsOnHit);
+									plugin.pointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit);
 								}
 								plugin.pointManager.notifyPlayer(player);
 							}

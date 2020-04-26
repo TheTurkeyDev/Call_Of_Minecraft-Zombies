@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.game.managers;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.RandomBox;
@@ -16,23 +17,21 @@ import java.util.Random;
 
 public class BoxManager
 {
-	private COMZombies plugin;
 	private Game game;
 	private ArrayList<RandomBox> boxes = new ArrayList<>();
 	private ArrayList<Integer> numbers = new ArrayList<>();
 	private RandomBox currentBox;
 	private boolean multiBox;
 
-	public BoxManager(COMZombies plugin, Game game)
+	public BoxManager(Game game)
 	{
-		this.plugin = plugin;
 		this.game = game;
-		multiBox = plugin.config.MultiBox;
+		multiBox = ConfigManager.getMainConfig().MultiBox;
 	}
 
 	public void loadAllBoxesToGame()
 	{
-		CustomConfig config = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
 		boxes.clear();
 		numbers.clear();
 		try
@@ -44,7 +43,7 @@ public class BoxManager
 				double z = config.getDouble(game.getName() + ".MysteryBoxs." + key + ".z");
 				int cost = config.getInt(game.getName() + ".MysteryBoxs." + key + ".Cost");
 				Location loc = new Location(game.getWorld(), x, y, z);
-				RandomBox point = new RandomBox(loc, game, plugin, key, cost);
+				RandomBox point = new RandomBox(loc, game, key, cost);
 				boxes.add(point);
 				numbers.add(Integer.parseInt(key.substring(3)));
 			}
@@ -91,7 +90,7 @@ public class BoxManager
 
 	public void removeBox(Player player, RandomBox box)
 	{
-		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 		if(boxes.contains(box))
 		{
 			Location loc = box.getLocation();
@@ -108,7 +107,7 @@ public class BoxManager
 
 	public void addBox(RandomBox box)
 	{
-		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 		if(game.mode == Game.ArenaStatus.DISABLED || game.mode == Game.ArenaStatus.WAITING)
 		{
 			boolean same = false;

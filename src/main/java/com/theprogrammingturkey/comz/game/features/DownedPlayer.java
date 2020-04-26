@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.game.features;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.Bukkit;
@@ -97,7 +98,7 @@ public class DownedPlayer implements Listener
 	public void RevivePlayer(Player pl)
 	{
 		COMZombies plugin = COMZombies.getPlugin();
-		int reviveTime = plugin.config.reviveTimer * 20;
+		int reviveTime = ConfigManager.getMainConfig().reviveTimer * 20;
 		if(game.perkManager.getPlayersPerks().containsKey(pl))
 		{
 			if(game.perkManager.getPlayersPerks().get(pl).contains(PerkType.QUICK_REVIVE))
@@ -128,11 +129,10 @@ public class DownedPlayer implements Listener
 	@EventHandler
 	public void interact(PlayerInteractEvent event)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		Player tmp = event.getPlayer();
 		try
 		{
-			if(player.getLocation().distance(tmp.getLocation()) > plugin.config.reviveRange) return;
+			if(player.getLocation().distance(tmp.getLocation()) > ConfigManager.getMainConfig().reviveRange) return;
 		} catch(Exception e)
 		{
 			return;

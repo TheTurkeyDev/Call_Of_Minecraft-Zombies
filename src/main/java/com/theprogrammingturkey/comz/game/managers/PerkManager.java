@@ -1,26 +1,19 @@
 package com.theprogrammingturkey.comz.game.managers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class PerkManager
 {
-	private COMZombies plugin;
-
 	private HashMap<Player, ArrayList<PerkType>> playersPerks = new HashMap<>();
 
 	private ArrayList<ItemStack> currentPerkDrops = new ArrayList<>();
-
-	public PerkManager(COMZombies plugin)
-	{
-		this.plugin = plugin;
-	}
 
 	public void removePerkEffect(Player player, PerkType effect)
 	{
@@ -53,9 +46,9 @@ public class PerkManager
 		if(playersPerks.containsKey(player))
 		{
 			ArrayList<PerkType> current = playersPerks.get(player);
-			if(current.size() >= plugin.config.maxPerks)
+			if(current.size() >= ConfigManager.getMainConfig().maxPerks)
 			{
-				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You can only have " + plugin.config.maxPerks + " perks!");
+				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You can only have " + ConfigManager.getMainConfig().maxPerks + " perks!");
 				return false;
 			}
 			current.add(type);

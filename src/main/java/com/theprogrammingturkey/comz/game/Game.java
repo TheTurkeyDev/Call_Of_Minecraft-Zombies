@@ -10,6 +10,7 @@ package com.theprogrammingturkey.comz.game;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.commands.CommandUtil;
 import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.game.features.DownedPlayer;
@@ -58,11 +59,6 @@ import java.util.List;
  */
 public class Game
 {
-
-	/**
-	 * Main class / plugin instance.
-	 */
-	private COMZombies plugin;
 
 	/**
 	 * List of every player contained in game.
@@ -238,24 +234,23 @@ public class Game
 	 *
 	 * @param name of the game
 	 */
-	public Game(COMZombies zombies, String name)
+	public Game(String name)
 	{
-		plugin = zombies;
 		arenaName = name;
 
-		powerEnabled = plugin.configManager.getConfig(COMZConfig.ARENAS).getBoolean(name + ".Power", false);
+		powerEnabled = ConfigManager.getConfig(COMZConfig.ARENAS).getBoolean(name + ".Power", false);
 
 		starter = new AutoStart(this, 60);
 
-		spawnManager = new SpawnManager(plugin, this);
-		boxManager = new BoxManager(plugin, this);
-		barrierManager = new BarrierManager(plugin, this);
-		doorManager = new DoorManager(plugin, this);
-		perkManager = new PerkManager(plugin);
-		teleporterManager = new TeleporterManager(plugin, this);
+		spawnManager = new SpawnManager(this);
+		boxManager = new BoxManager(this);
+		barrierManager = new BarrierManager(this);
+		doorManager = new DoorManager(this);
+		perkManager = new PerkManager();
+		teleporterManager = new TeleporterManager(this);
 		downedPlayerManager = new DownedPlayerManager();
 		signManager = new SignManager(this);
-		kitManager = plugin.kitManager;
+		kitManager = COMZombies.getPlugin().kitManager;
 
 		scoreboard = new GameScoreboard(this);
 
@@ -265,7 +260,7 @@ public class Game
 		doorManager.loadAllDoorsToGame();
 		teleporterManager.loadAllTeleportersToGame();
 
-		if(plugin.configManager.getConfig(COMZConfig.ARENAS).getBoolean(arenaName + ".IsForceNight", false))
+		if(ConfigManager.getConfig(COMZConfig.ARENAS).getBoolean(arenaName + ".IsForceNight", false))
 		{
 			forceNight();
 		}
@@ -281,7 +276,7 @@ public class Game
 	{
 		if(playersGuns.containsKey(player))
 			return playersGuns.get(player);
-		playersGuns.put(player, new GunManager(plugin, player));
+		playersGuns.put(player, new GunManager(player));
 		return playersGuns.get(player);
 	}
 
@@ -447,6 +442,9 @@ public class Game
 	{
 		if(mode == ArenaStatus.INGAME)
 			return false;
+
+		COMZombies plugin = COMZombies.getPlugin();
+
 		mode = ArenaStatus.INGAME;
 		for(Player player : players)
 		{
@@ -467,7 +465,7 @@ public class Game
 		}
 
 		scoreboard.update();
-		if(plugin.config.MultiBox)
+		if(ConfigManager.getMainConfig().MultiBox)
 		{
 			for(Player player : players)
 				player.sendMessage("" + ChatColor.RED + "[Zombies] All mystery boxes are being generated.");
@@ -528,6 +526,7 @@ public class Game
 	 */
 	public void scheduleSyncTask(Runnable run, int delayInSeconds)
 	{
+		COMZombies plugin = COMZombies.getPlugin();
 		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, run, delayInSeconds);
 	}
 
@@ -570,6 +569,7 @@ public class Game
 
 			spawnManager.nextWave();
 
+			COMZombies plugin = COMZombies.getPlugin();
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () ->
 			{
 				for(Player pl : players)
@@ -615,7 +615,7 @@ public class Game
 			pInfo.addPlayerInventoryArmorContents(player, player.getInventory().getArmorContents());
 			pInfo.addPlayerOldLocation(player, player.getLocation());
 			scoreboard.addPlayer(player);
-			playersGuns.put(player, new GunManager(plugin, player));
+			playersGuns.put(player, new GunManager(player));
 			player.setHealth(20D);
 			player.setFoodLevel(20);
 			player.getInventory().clear();
@@ -623,10 +623,10 @@ public class Game
 			player.setLevel(0);
 			player.setExp(0);
 			player.teleport(lobbyLocation);
-			plugin.pointManager.setPoints(player, 500);
+			COMZombies.getPlugin().pointManager.setPoints(player, 500);
 			assignPlayerInventory(player);
 			player.setGameMode(GameMode.SURVIVAL);
-			String gunName = plugin.configManager.getConfig(COMZConfig.GUNS).getString("StartingGun", "M1911");
+			String gunName = ConfigManager.getConfig(COMZConfig.GUNS).getString("StartingGun", "M1911");
 			waveNumber = 0;
 			for(Player pl : players)
 			{
@@ -642,7 +642,7 @@ public class Game
 					}
 				}
 			}
-			GunType gun = plugin.getGun(gunName);
+			GunType gun = COMZombies.getPlugin().getGun(gunName);
 			Game game = GameManager.INSTANCE.getGame(player);
 			if(!(game == null))
 			{
@@ -654,11 +654,11 @@ public class Game
 			{
 				CommandUtil.sendMessageToPlayer(pl, player.getName() + " has joined with " + players.size() + "/" + maxPlayers + "!");
 			}
-			if(players.size() >= plugin.configManager.getConfig(COMZConfig.ARENAS).getInt(arenaName + ".minPlayers"))
+			if(players.size() >= ConfigManager.getConfig(COMZConfig.ARENAS).getInt(arenaName + ".minPlayers"))
 			{
 				if(starter == null)
 				{
-					starter = new AutoStart(this, plugin.config.arenaStartTime + 1);
+					starter = new AutoStart(this, ConfigManager.getMainConfig().arenaStartTime + 1);
 					starter.startTimer();
 					for(Player pl : players)
 					{
@@ -672,7 +672,7 @@ public class Game
 					{
 						return;
 					}
-					starter = new AutoStart(this, plugin.config.arenaStartTime + 1);
+					starter = new AutoStart(this, ConfigManager.getMainConfig().arenaStartTime + 1);
 					starter.startTimer();
 					for(Player pl : players)
 					{
@@ -708,7 +708,7 @@ public class Game
 					starter = null;
 					players.clear();
 					waveNumber = 0;
-					plugin.pointManager.clearGamePoints(this);
+					COMZombies.getPlugin().pointManager.clearGamePoints(this);
 					endGame();
 					for(int i = 0; i < doorManager.getDoors().size(); i++)
 					{
@@ -732,7 +732,7 @@ public class Game
 			{
 				e.printStackTrace();
 			}
-			plugin.pointManager.playerLeaveGame(player);
+			COMZombies.getPlugin().pointManager.playerLeaveGame(player);
 		} catch(NullPointerException e)
 		{
 			GameManager.INSTANCE.loadAllGames();
@@ -806,7 +806,7 @@ public class Game
 				starter = null;
 				players.clear();
 				waveNumber = 0;
-				plugin.pointManager.clearGamePoints(this);
+				COMZombies.getPlugin().pointManager.clearGamePoints(this);
 				endGame();
 				for(int i = 0; i < doorManager.getDoors().size(); i++)
 				{
@@ -825,7 +825,7 @@ public class Game
 			{
 				e.printStackTrace();
 			}
-			plugin.pointManager.playerLeaveGame(player);
+			COMZombies.getPlugin().pointManager.playerLeaveGame(player);
 		} catch(NullPointerException e)
 		{
 			GameManager.INSTANCE.loadAllGames();
@@ -859,7 +859,7 @@ public class Game
 	 */
 	public void forceNight()
 	{
-		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> getWorld().setTime(14000L), 5L, 1200L);
+		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(COMZombies.getPlugin(), () -> getWorld().setTime(14000L), 5L, 1200L);
 	}
 
 	/**
@@ -867,7 +867,7 @@ public class Game
 	 */
 	public World getWorld()
 	{
-		return plugin.getServer().getWorld(this.worldName);
+		return Bukkit.getServer().getWorld(this.worldName);
 	}
 
 	/**
@@ -957,7 +957,7 @@ public class Game
 		for(Player p : players)
 		{
 			double points = waveNumber;
-			plugin.vault.addMoney(p, points);
+			COMZombies.getPlugin().vault.addMoney(p, points);
 			CommandUtil.sendMessageToPlayer(p, "You got " + points + " for getting to round " + waveNumber + "!");
 			scoreboard.removePlayer(p);
 			playerLeave(p, true);
@@ -1037,7 +1037,7 @@ public class Game
 	 */
 	public void saveLocationsInConfig(Player player)
 	{
-		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 
 		if(min.getWorld() != null)
 			conf.set(arenaName + ".Location.world", min.getWorld().getName());
@@ -1069,7 +1069,7 @@ public class Game
 			conf.reloadConfig();
 
 			CommandUtil.sendMessageToPlayer(player, "Arena " + arenaName + " setup!");
-			plugin.isArenaSetup.remove(player);
+			COMZombies.getPlugin().isArenaSetup.remove(player);
 			hasWarps = true;
 		} catch(Exception e)
 		{
@@ -1082,7 +1082,7 @@ public class Game
 	 */
 	public void enable()
 	{
-		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 		conf.reloadConfig();
 		if(conf.getString(arenaName + ".Location.world") == null)
 			worldName = arena.getWorld();
@@ -1132,7 +1132,7 @@ public class Game
 	{
 
 		// Sets up ArenaConfig
-		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 		// Adding ArenaName
 		String loc = arenaName;
 		conf.set(loc + ".Power", false);
@@ -1224,7 +1224,7 @@ public class Game
 	 */
 	public void removeFromConfig()
 	{
-		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 		try
 		{
 			conf.set(arenaName, null);
@@ -1390,8 +1390,8 @@ public class Game
 
 	public void zombieKilled(Player player)
 	{
-		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.KILLS);
-		Leaderboards lb = plugin.leaderboards;
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.KILLS);
+		Leaderboards lb = COMZombies.getPlugin().leaderboards;
 		if(conf.contains("Kills." + player.getName()))
 		{
 			int kills = conf.getInt("Kills." + player.getName());
@@ -1415,13 +1415,11 @@ public class Game
 			lb.addPlayerStats(stat);
 
 		}
-		if(plugin.vault != null)
+		if(COMZombies.getPlugin().vault != null)
 		{
 			try
 			{
-				if(!plugin.vault.hasAccount(player))
-					plugin.vault.newAccount(player);
-				plugin.vault.addMoney(player, plugin.config.KillMoney);
+				COMZombies.getPlugin().vault.addMoney(player, ConfigManager.getMainConfig().KillMoney);
 			} catch(NullPointerException e)
 			{
 				e.printStackTrace();

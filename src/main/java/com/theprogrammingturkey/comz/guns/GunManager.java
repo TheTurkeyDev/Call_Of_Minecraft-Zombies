@@ -1,24 +1,20 @@
 package com.theprogrammingturkey.comz.guns;
 
-import java.util.ArrayList;
-
+import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
 import org.bukkit.entity.Player;
 
-import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.game.Game;
+import java.util.ArrayList;
 
 public class GunManager
 {
 
 	private ArrayList<Gun> guns = new ArrayList<>();
 	private Player player;
-	private COMZombies plugin;
 
-	public GunManager(COMZombies plugin, Player player)
+	public GunManager(Player player)
 	{
-		this.plugin = plugin;
 		this.player = player;
 	}
 
