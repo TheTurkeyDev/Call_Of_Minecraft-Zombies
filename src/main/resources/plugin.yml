@@ -1,8 +1,8 @@
 name: COM_Zombies
 main: com.theprogrammingturkey.comz.COMZombies
-authors: [Turkey2349]
 description: 'Call of Minecraft: Zombies'
-version: '${project.version}'
+version: ${project.version}
+authors: [Turkey2349]
 api-version: '1.15'
 load: POSTWORLD
 commands:
