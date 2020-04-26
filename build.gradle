@@ -1,0 +1,46 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'maven-publish'
+
+ext.buildnumber = 0
+if (System.getenv('BUILD_NUMBER') != null)
+    project.buildnumber = System.getenv('BUILD_NUMBER')
+else
+    logger.lifecycle "No build number detected, setting to 0"
+
+group = "com.theprogrammingturkey.comz"
+archivesBaseName = "comzombies"
+version = "${mc_version}-${mod_version}.${buildnumber}"
+
+sourceCompatibility = targetCompatibility = '1.8'
+
+repositories {
+    maven { url 'http://nexus.hc.to/content/repositories/pub_releases/' }
+
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    compile "net.milkbowl.vault:VaultAPI:1.7"
+    implementation name: "spigot-1.15.2"
+}
+
+//def reobfFile = file("$buildDir/reobfJar/output.jar")
+//def reobfArtifact = artifacts.add('default', reobfFile) {
+//    type 'jar'
+//    builtBy 'reobfJar'
+//}
+//publishing {
+//    publications {
+//        mavenJava(MavenPublication) {
+//            artifact reobfArtifact
+//        }
+//    }
+//    repositories {
+//        maven {
+//            url "file:///${project.projectDir}/mcmodsrepo"
+//        }
+//    }
+//}

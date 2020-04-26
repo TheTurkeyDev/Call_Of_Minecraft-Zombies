@@ -9,3 +9,5 @@
 .settings/org.eclipse.jdt.ui.prefs
 .classpath
 /bin1
+.gradle/
+.idea/

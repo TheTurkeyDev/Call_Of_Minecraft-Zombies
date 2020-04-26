@@ -1,0 +1,54 @@
+package com.theprogrammingturkey.comz.commands;
+
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+
+import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.GameManager;
+
+public class DisableCommand implements SubCommand
+{
+	@Override
+	public boolean onCommand(Player player, String[] args)
+	{
+		COMZombies plugin = COMZombies.getPlugin();
+
+		if(player.hasPermission("zombies.disable") || player.hasPermission("zombies.admin"))
+		{
+			if(args.length == 1)
+			{
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Incorrect usage! Please use /zombies disable [arena]");
+				return true;
+			}
+			else
+			{
+				GameManager manager = plugin.manager;
+				if(manager.isValidArena(args[1]))
+				{
+					Game game = manager.getGame(args[1]);
+					if(game == null)
+					{
+						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "That arena does not exist!");
+					}
+					else
+					{
+						game.setDisabled();
+						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Arena " + game.getName() + " has been disabled!");
+						return true;
+					}
+				}
+				else
+				{
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "That arena does not exist!");
+				}
+			}
+		}
+		else
+		{
+			plugin.command.noPerms(player, "disable this arena");
+		}
+		return false;
+	}
+
+}
