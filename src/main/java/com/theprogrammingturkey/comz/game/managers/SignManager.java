@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.game.managers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
@@ -42,6 +43,12 @@ public class SignManager
 			int z = conf.getInt("signs." + game.getName() + "." + s + ".z");
 			World world = Bukkit.getWorld(conf.getString("signs." + game.getName() + "." + s + ".world"));
 
+			if(world == null)
+			{
+				COMZombies.log.log(Level.SEVERE, COMZombies.PREFIX + ChatColor.DARK_RED + "World " + s + " Does not exist!");
+				COMZombies.log.log(Level.SEVERE, COMZombies.PREFIX + ChatColor.DARK_RED + "Thus, could not load the sign at " + x + "," + y + "," + z + "!");
+				continue;
+			}
 			Block block = world.getBlockAt(x, y, z);
 			if(block.getState() instanceof Sign)
 			{
