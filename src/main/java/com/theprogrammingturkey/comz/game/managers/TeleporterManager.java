@@ -8,6 +8,7 @@ import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 public class TeleporterManager
@@ -27,9 +28,10 @@ public class TeleporterManager
 	{
 		CustomConfig config = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		String location = game.getName() + ".Teleporters";
-		try
+		ConfigurationSection teleporterSec = config.getConfigurationSection(location);
+		if(teleporterSec != null)
 		{
-			for(String key : config.getConfigurationSection(location).getKeys(false))
+			for(String key : teleporterSec.getKeys(false))
 			{
 				double x = config.getDouble(game.getName() + ".Teleporters." + key + ".x");
 				double y = config.getDouble(game.getName() + ".Teleporters." + key + ".y");
@@ -37,16 +39,13 @@ public class TeleporterManager
 				float pitch = config.getLong(game.getName() + ".Teleporters." + key + ".pitch");
 				float yaw = config.getLong(game.getName() + ".Teleporters." + key + ".yaw");
 				ArrayList<Location> temp = new ArrayList<>();
+
 				if(teleporters.containsKey(key))
-				{
 					temp.addAll(teleporters.get(key));
-				}
+
 				temp.add(new Location(game.getWorld(), x, y, z, yaw, pitch));
 				teleporters.put(key, temp);
 			}
-		} catch(NullPointerException e)
-		{
-			e.printStackTrace();
 		}
 	}
 
@@ -55,10 +54,10 @@ public class TeleporterManager
 		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		ArrayList<Location> temp = new ArrayList<>();
 		teleName = teleName.toLowerCase();
+
 		if(teleporters.containsKey(teleName))
-		{
 			temp.addAll(teleporters.get(teleName));
-		}
+
 		temp.add(to);
 		teleporters.put(teleName, temp);
 
