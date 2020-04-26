@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.entity.Player;
 
 import com.theprogrammingturkey.comz.COMZombies;
@@ -59,7 +60,7 @@ public class PointManager
 	 */
 	public void notifyPlayer(Player player)
 	{
-		Game game = COMZombies.getPlugin().manager.getGame(player);
+		Game game = GameManager.INSTANCE.getGame(player);
 		if(game == null) return;
 		game.scoreboard.update();
 	}

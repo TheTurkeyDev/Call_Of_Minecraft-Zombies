@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
 import com.theprogrammingturkey.comz.particleutilities.ParticleEffects;
 import org.bukkit.Location;
@@ -24,13 +25,13 @@ public class OnPlayerVelocityEvent implements Listener
 	{
 		Player player = event.getPlayer();
 		COMZombies plugin = COMZombies.getPlugin();
-		if(plugin.manager.isPlayerInGame(player))
+		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
 			player.setFoodLevel(20);
 			int fallDistance = (int) player.getFallDistance();
 			if(fallDistance > 2)
 			{
-				Game game = plugin.manager.getGame(player);
+				Game game = GameManager.INSTANCE.getGame(player);
 				if(!game.perkManager.getPlayersPerks().containsKey(player))
 				{
 					return;
@@ -107,13 +108,12 @@ public class OnPlayerVelocityEvent implements Listener
 	@EventHandler
 	public void ProjectileHit(EntityDamageEvent event)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		if(event.getCause().toString().equalsIgnoreCase("BLOCK_EXPLOSION") || event.getCause().toString().equalsIgnoreCase(DamageCause.ENTITY_EXPLOSION.toString()))
 		{
 			if(event.getEntity() instanceof Player)
 			{
 				Player player = (Player) event.getEntity();
-				if(plugin.manager.isPlayerInGame(player))
+				if(GameManager.INSTANCE.isPlayerInGame(player))
 				{
 					event.setCancelled(true);
 				}
@@ -124,9 +124,9 @@ public class OnPlayerVelocityEvent implements Listener
 			if(event.getEntity() instanceof Player)
 			{
 				Player player = (Player) event.getEntity();
-				if(plugin.manager.isPlayerInGame(player))
+				if(GameManager.INSTANCE.isPlayerInGame(player))
 				{
-					if(plugin.manager.getGame(player).perkManager.hasPerk(player, PerkType.PHD_FLOPPER))
+					if(GameManager.INSTANCE.getGame(player).perkManager.hasPerk(player, PerkType.PHD_FLOPPER))
 					{
 						event.setCancelled(true);
 					}

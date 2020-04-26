@@ -33,7 +33,7 @@ public class GameScoreboard
 		team.setDisplayName(ChatColor.RED + game.getName());
 		team.setCanSeeFriendlyInvisibles(true);
 		team.setAllowFriendlyFire(false);
-		objective = board.registerNewObjective(this.game.getName(), "dummy");
+		objective = board.registerNewObjective(this.game.getName(), "dummy", "");
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		objective.setDisplayName(ChatColor.RED + this.game.getName());
 		round = objective.getScore(ChatColor.RED + "Round");

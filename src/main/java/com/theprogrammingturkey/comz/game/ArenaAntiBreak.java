@@ -1,6 +1,5 @@
 package com.theprogrammingturkey.comz.game;
 
-import com.theprogrammingturkey.comz.COMZombies;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,11 +27,8 @@ public class ArenaAntiBreak implements Listener
 	@EventHandler
 	public void blockBreak(BlockBreakEvent event)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
-		if(plugin.manager.isLocationInGame(event.getBlock().getLocation()))
-		{
+		if(GameManager.INSTANCE.isLocationInGame(event.getBlock().getLocation()))
 			event.setCancelled(true);
-		}
 	}
 
 	/**
@@ -43,11 +39,8 @@ public class ArenaAntiBreak implements Listener
 	@EventHandler
 	public void blockBurn(BlockBurnEvent event)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
-		if(plugin.manager.isLocationInGame(event.getBlock().getLocation()))
-		{
+		if(GameManager.INSTANCE.isLocationInGame(event.getBlock().getLocation()))
 			event.setCancelled(true);
-		}
 	}
 
 	/**
@@ -59,11 +52,8 @@ public class ArenaAntiBreak implements Listener
 	@EventHandler
 	public void blockForm(BlockFormEvent event)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
-		if(plugin.manager.isLocationInGame(event.getBlock().getLocation()))
-		{
+		if(GameManager.INSTANCE.isLocationInGame(event.getBlock().getLocation()))
 			event.setCancelled(true);
-		}
 	}
 
 	/**
@@ -75,11 +65,8 @@ public class ArenaAntiBreak implements Listener
 	@EventHandler
 	public void blockIgnite(BlockIgniteEvent event)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
-		if(plugin.manager.isLocationInGame(event.getBlock().getLocation()))
-		{
+		if(GameManager.INSTANCE.isLocationInGame(event.getBlock().getLocation()))
 			event.setCancelled(true);
-		}
 	}
 
 	/**
@@ -91,11 +78,8 @@ public class ArenaAntiBreak implements Listener
 	@EventHandler
 	public void entityChangeBlock(EntityChangeBlockEvent event)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
-		if(plugin.manager.isLocationInGame(event.getBlock().getLocation()))
-		{
+		if(GameManager.INSTANCE.isLocationInGame(event.getBlock().getLocation()))
 			event.setCancelled(true);
-		}
 	}
 
 	/**
@@ -107,11 +91,8 @@ public class ArenaAntiBreak implements Listener
 	@EventHandler
 	public void entityExplode(EntityExplodeEvent event)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
-		if(plugin.manager.isLocationInGame(event.getLocation()))
-		{
+		if(GameManager.INSTANCE.isLocationInGame(event.getLocation()))
 			event.setCancelled(true);
-		}
 	}
 
 	/**
@@ -122,12 +103,9 @@ public class ArenaAntiBreak implements Listener
 	@EventHandler
 	public void onBlockHangingBreak(HangingBreakByEntityEvent event)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		Player player = (Player) event.getRemover();
-		if(plugin.manager.isPlayerInGame(player))
-		{
+		if(GameManager.INSTANCE.isPlayerInGame(player))
 			event.setCancelled(true);
-		}
 	}
 
 	/**
@@ -138,7 +116,7 @@ public class ArenaAntiBreak implements Listener
 	@EventHandler
 	public void BucketEmptyEvent(PlayerBucketEmptyEvent event)
 	{
-		if(COMZombies.getPlugin().manager.isLocationInGame(event.getBlockClicked().getLocation()))
+		if(GameManager.INSTANCE.isLocationInGame(event.getBlockClicked().getLocation()))
 			event.setCancelled(true);
 	}
 }

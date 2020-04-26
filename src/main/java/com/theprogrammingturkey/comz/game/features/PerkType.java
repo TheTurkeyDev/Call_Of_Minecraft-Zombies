@@ -39,9 +39,12 @@ public enum PerkType
 	public void initialEffect(COMZombies plugin, final Player player, PerkType type, int slot)
 	{
 		final World world = player.getLocation().getWorld();
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> world.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1L, 1L), 5L);
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> world.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1L, 1L), 10L);
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> world.playEffect(player.getLocation(), Effect.POTION_BREAK, 1), 20L);
+		if(world != null)
+		{
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> world.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1L, 1L), 5L);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> world.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1L, 1L), 10L);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> world.playEffect(player.getLocation(), Effect.POTION_BREAK, 1), 20L);
+		}
 		ItemStack stack = new ItemStack(Material.AIR, 1);
 		String Perktype = "";
 		switch(type)

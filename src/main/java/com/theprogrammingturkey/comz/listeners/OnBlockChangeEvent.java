@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.listeners;
 
+import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,20 +10,13 @@ import com.theprogrammingturkey.comz.COMZombies;
 
 public class OnBlockChangeEvent implements Listener
 {
-	
-	private COMZombies plugin;
-	
-	public OnBlockChangeEvent(COMZombies pl)
-	{
-		plugin = pl;
-	}
-	
+
 	@EventHandler
 	public void onBlockChange(BlockDamageEvent event)
 	{
 		Location loc = event.getBlock().getLocation();
-		if (plugin.manager.isLocationInGame(loc))
-		{	
+		if(GameManager.INSTANCE.isLocationInGame(loc))
+		{
 			event.setCancelled(true);
 		}
 	}

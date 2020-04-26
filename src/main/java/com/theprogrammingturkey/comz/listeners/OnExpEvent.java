@@ -1,6 +1,6 @@
 package com.theprogrammingturkey.comz.listeners;
 
-import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
@@ -14,9 +14,8 @@ public class OnExpEvent implements Listener
 	@EventHandler
 	public void OnExpPickUp(PlayerExpChangeEvent e)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		Player player = e.getPlayer();
-		if(plugin.manager.isPlayerInGame(player))
+		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
 			e.setAmount(0);
 		}
@@ -25,11 +24,10 @@ public class OnExpEvent implements Listener
 	@EventHandler
 	public void OnExpDropEvent(EntityDeathEvent e)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		if(e.getEntity() instanceof Zombie)
 		{
 			Zombie zombie = (Zombie) e.getEntity();
-			if(plugin.manager.isEntityInGame(zombie))
+			if(GameManager.INSTANCE.isEntityInGame(zombie))
 			{
 				e.setDroppedExp(0);
 			}
@@ -37,7 +35,7 @@ public class OnExpEvent implements Listener
 		if(e.getEntity() instanceof Player)
 		{
 			Player player = (Player) e.getEntity();
-			if(plugin.manager.isPlayerInGame(player))
+			if(GameManager.INSTANCE.isPlayerInGame(player))
 			{
 				e.setDroppedExp(0);
 			}

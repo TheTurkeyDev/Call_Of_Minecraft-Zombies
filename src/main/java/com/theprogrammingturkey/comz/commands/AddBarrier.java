@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.commands;
 
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,9 +26,9 @@ public class AddBarrier implements SubCommand
 			}
 			else
 			{
-				if(plugin.manager.isValidArena(args[1]))
+				if(GameManager.INSTANCE.isValidArena(args[1]))
 				{
-					Game game = plugin.manager.getGame(args[1]);
+					Game game = GameManager.INSTANCE.getGame(args[1]);
 					plugin.isCreatingBarrier.put(player, null);
 					for(SpawnPoint point : game.spawnManager.getPoints())
 					{

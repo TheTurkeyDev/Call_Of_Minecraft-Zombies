@@ -3,6 +3,7 @@ package com.theprogrammingturkey.comz.listeners;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.guns.Gun;
 import com.theprogrammingturkey.comz.guns.GunManager;
 import com.theprogrammingturkey.comz.particleutilities.ParticleEffects;
@@ -37,11 +38,11 @@ public class OnGunEvent implements Listener
 			if(BlockUtils.isSign(event.getClickedBlock().getType()))
 				return;
 		}
-		COMZombies plugin = COMZombies.getPlugin();
+
 		Player player = event.getPlayer();
-		if(plugin.manager.isPlayerInGame(player))
+		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
-			Game game = plugin.manager.getGame(player);
+			Game game = GameManager.INSTANCE.getGame(player);
 			if(!(game.mode == ArenaStatus.INGAME))
 			{
 				return;
@@ -68,11 +69,10 @@ public class OnGunEvent implements Listener
 	{
 		if(e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK))
 		{
-			COMZombies plugin = COMZombies.getPlugin();
 			Player player = e.getPlayer();
-			if(plugin.manager.isPlayerInGame(player))
+			if(GameManager.INSTANCE.isPlayerInGame(player))
 			{
-				Game game = plugin.manager.getGame(player);
+				Game game = GameManager.INSTANCE.getGame(player);
 				if(!(game.mode == ArenaStatus.INGAME))
 				{
 					return;
@@ -103,9 +103,9 @@ public class OnGunEvent implements Listener
 				if(snowball.getShooter() instanceof Player)
 				{
 					Player player = (Player) snowball.getShooter();
-					if(plugin.manager.isPlayerInGame(player))
+					if(GameManager.INSTANCE.isPlayerInGame(player))
 					{
-						Game game = plugin.manager.getGame(player);
+						Game game = GameManager.INSTANCE.getGame(player);
 						GunManager manager = game.getPlayersGun(player);
 						if(manager.isGun())
 						{
@@ -228,9 +228,9 @@ public class OnGunEvent implements Listener
 				return;
 		}
 		final Player player = event.getPlayer();
-		if(plugin.manager.isPlayerInGame(player))
+		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
-			Game game = plugin.manager.getGame(player);
+			Game game = GameManager.INSTANCE.getGame(player);
 			if(!(game.mode == ArenaStatus.INGAME))
 			{
 				return;

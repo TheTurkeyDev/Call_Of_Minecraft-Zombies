@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -39,7 +40,7 @@ public class OnSignChangeEvent implements Listener
 			}
 			else if(secondLine.equalsIgnoreCase("mysterybox") || secondLine.equalsIgnoreCase("box") || secondLine.equalsIgnoreCase("randombox"))
 			{
-				Game game = plugin.manager.getGame(sign.getBlock().getLocation());
+				Game game = GameManager.INSTANCE.getGame(sign.getBlock().getLocation());
 				if(game == null)
 				{
 					sign.setLine(0, ChatColor.RED + "" + ChatColor.BOLD + "Sign is");
@@ -70,7 +71,7 @@ public class OnSignChangeEvent implements Listener
 			}
 			else if(secondLine.equalsIgnoreCase("perk"))
 			{
-				Game game = plugin.manager.getGame(sign.getBlock().getLocation());
+				Game game = GameManager.INSTANCE.getGame(sign.getBlock().getLocation());
 				if(game == null)
 				{
 					sign.setLine(0, ChatColor.RED + "" + ChatColor.BOLD + "Sign is");
@@ -108,7 +109,7 @@ public class OnSignChangeEvent implements Listener
 			}
 			else if(secondLine.equalsIgnoreCase("power"))
 			{
-				Game game = plugin.manager.getGame(sign.getBlock().getLocation());
+				Game game = GameManager.INSTANCE.getGame(sign.getBlock().getLocation());
 				if(game == null)
 				{
 					sign.setLine(0, ChatColor.RED + "" + ChatColor.BOLD + "Sign is");
@@ -189,7 +190,7 @@ public class OnSignChangeEvent implements Listener
 			}
 			else if(secondLine.equalsIgnoreCase("join") || secondLine.equalsIgnoreCase("j"))
 			{
-				if(!plugin.manager.isValidArena(thirdLine))
+				if(!GameManager.INSTANCE.isValidArena(thirdLine))
 				{
 					sign.setLine(0, ChatColor.DARK_RED + "No such");
 					sign.setLine(1, ChatColor.DARK_RED + "game!");
@@ -197,12 +198,12 @@ public class OnSignChangeEvent implements Listener
 					sign.setLine(3, "");
 					return;
 				}
-				Game game = plugin.manager.getGame(thirdLine);
+				Game game = GameManager.INSTANCE.getGame(thirdLine);
 				game.signManager.addSign((Sign) sign.getBlock().getState());
 			}
 			else if(secondLine.equalsIgnoreCase("teleporter") || secondLine.equalsIgnoreCase("t"))
 			{
-				Game g = plugin.manager.getGame(sign.getBlock().getLocation());
+				Game g = GameManager.INSTANCE.getGame(sign.getBlock().getLocation());
 				if(g == null)
 				{
 					sign.setLine(0, ChatColor.RED + "" + ChatColor.BOLD + "Sign is");
@@ -236,7 +237,7 @@ public class OnSignChangeEvent implements Listener
 			else if(secondLine.equalsIgnoreCase("Spectate") || secondLine.equalsIgnoreCase("spec"))
 			{
 				String name = sign.getLine(2);
-				Game g = plugin.manager.getGame(name);
+				Game g = GameManager.INSTANCE.getGame(name);
 				if(g == null)
 				{
 					sign.setLine(0, ChatColor.RED + "" + ChatColor.BOLD + "Arena name is");

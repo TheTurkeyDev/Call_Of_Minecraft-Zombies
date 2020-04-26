@@ -1,15 +1,14 @@
 package com.theprogrammingturkey.comz.listeners;
 
-import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
+import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.guns.Gun;
+import com.theprogrammingturkey.comz.guns.GunManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-
-import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
-import com.theprogrammingturkey.comz.guns.Gun;
-import com.theprogrammingturkey.comz.guns.GunManager;
 
 public class OnInventoryChangeEvent implements Listener
 {
@@ -17,13 +16,12 @@ public class OnInventoryChangeEvent implements Listener
 	@EventHandler
 	public void onInventoryChangeEvent(InventoryClickEvent event)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		Player player = (Player) event.getWhoClicked();
-		if(plugin.manager.isPlayerInGame(player))
+		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
 			event.setCancelled(true);
 		}
-		Game game = plugin.manager.getGame(player);
+		Game game = GameManager.INSTANCE.getGame(player);
 		if(game == null || !(game.mode == ArenaStatus.INGAME))
 			return;
 		if(game.getPlayersGun(player) != null)

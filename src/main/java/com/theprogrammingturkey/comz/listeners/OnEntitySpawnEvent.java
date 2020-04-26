@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,11 +14,10 @@ public class OnEntitySpawnEvent implements Listener
 	@EventHandler
 	public void spawn(CreatureSpawnEvent event)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		Entity entity = event.getEntity();
 		if(!event.getSpawnReason().equals(SpawnReason.CUSTOM))
 		{
-			if(plugin.manager.isLocationInGame(entity.getLocation()))
+			if(GameManager.INSTANCE.isLocationInGame(entity.getLocation()))
 			{
 				event.setCancelled(true);
 			}

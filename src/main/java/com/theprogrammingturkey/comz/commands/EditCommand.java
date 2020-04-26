@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.commands;
 
+import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -19,9 +20,9 @@ public class EditCommand implements SubCommand
 				return true;
 			}
 			String arena = args[1];
-			if(plugin.manager.isValidArena(arena))
+			if(GameManager.INSTANCE.isValidArena(arena))
 			{
-				Game game = plugin.manager.getGame(arena);
+				Game game = GameManager.INSTANCE.getGame(arena);
 				game.setDisabled();
 				plugin.isArenaSetup.put(player, game);
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------" + ChatColor.DARK_RED + "Arena Setup" + ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------");

@@ -1,21 +1,20 @@
 package com.theprogrammingturkey.comz.commands;
 
+import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-
-import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.game.Game;
 
 public class RemoveTeleporterCommand implements SubCommand
 {
 	public boolean onCommand(Player player, String[] args)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		if(player.hasPermission("zombies.removeteleporter") || player.hasPermission("zombies.admin"))
 		{
 			Location loc = player.getLocation();
-			Game arena = plugin.manager.getGame(loc);
+			Game arena = GameManager.INSTANCE.getGame(loc);
 			if(arena == null)
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must be in an arena!");

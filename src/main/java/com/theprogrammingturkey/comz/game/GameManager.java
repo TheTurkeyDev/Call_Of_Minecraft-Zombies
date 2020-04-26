@@ -16,16 +16,29 @@ import java.util.List;
 
 public class GameManager
 {
-	public List<Game> games = new ArrayList<>();
+	public static final GameManager INSTANCE = new GameManager();
+
+	private GameManager()
+	{
+
+	}
+
+	private List<Game> games = new ArrayList<>();
+
+	public List<Game> getGames()
+	{
+		return games;
+	}
+
+	public void removeGame(Game game)
+	{
+		this.games.remove(game);
+	}
 
 	public void endAll()
 	{
-		if(games.size() < 1)
-			return;
-		for(Game gl : games)
-		{
-			gl.endGame();
-		}
+		for(Game game : games)
+			game.endGame();
 	}
 
 	public Game getGame(Entity entity)
@@ -60,7 +73,13 @@ public class GameManager
 			games.get(i).enable();
 			i++;
 		}
-		Bukkit.broadcastMessage(ChatColor.RED + "" + ChatColor.BOLD + "[Zombies] Done loading arenas!");
+		Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.RED + ChatColor.BOLD + " Done loading arenas!");
+	}
+
+	public void enableAllGames()
+	{
+		for(Game game : games)
+			game.enable();
 	}
 
 	public void disableAllArenas()
@@ -216,9 +235,8 @@ public class GameManager
 	{
 		StringBuilder toString = new StringBuilder("GameManager, games: ");
 		for(Game game : this.games)
-		{
 			toString.append(" ").append(game.getName());
-		}
+
 		return toString.toString();
 	}
 }

@@ -1,14 +1,13 @@
 package com.theprogrammingturkey.comz.listeners;
 
-import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.commands.CommandUtil;
+import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-
-import com.theprogrammingturkey.comz.commands.CommandUtil;
 
 public class OnPreCommandEvent implements Listener
 {
@@ -25,7 +24,7 @@ public class OnPreCommandEvent implements Listener
 			{
 				return;
 			}
-			if(COMZombies.getPlugin().manager.isPlayerInGame(player))
+			if(GameManager.INSTANCE.isPlayerInGame(player))
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You are not allowed to use commands in game!");
 				event.setCancelled(true);

@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.commands;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -188,7 +189,7 @@ public class ZombiesCommand implements CommandExecutor
 			else if(args[0].equalsIgnoreCase("setround"))
 			{
 				if(!(player.isOp())) return true;
-				Game arena = COMZombies.getPlugin().manager.getGame(args[1]);
+				Game arena = GameManager.INSTANCE.getGame(args[1]);
 				if(arena == null) return true;
 				else
 				{

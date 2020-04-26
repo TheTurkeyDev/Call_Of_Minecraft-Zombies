@@ -4,6 +4,7 @@ import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.commands.CommandUtil;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.game.features.PerkType;
 import com.theprogrammingturkey.comz.game.features.RandomBox;
@@ -48,7 +49,7 @@ public class OnSignInteractEvent implements Listener
 			{
 				Player player = event.getPlayer();
 				String Line1 = ChatColor.stripColor(sign.getLine(0));
-				if(!plugin.isEditingASign.containsKey(player) && Line1.equalsIgnoreCase("[Zombies]") && !plugin.manager.isPlayerInGame(player))
+				if(!plugin.isEditingASign.containsKey(player) && Line1.equalsIgnoreCase("[Zombies]") && !GameManager.INSTANCE.isPlayerInGame(player))
 				{
 					plugin.isEditingASign.put(player, sign);
 					CommandUtil.sendMessageToPlayer(player, "You are now editing a sign!");
@@ -62,9 +63,9 @@ public class OnSignInteractEvent implements Listener
 					Player player = event.getPlayer();
 					if(sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "Join"))
 					{
-						if(plugin.manager.isValidArena(sign.getLine(2)))
+						if(GameManager.INSTANCE.isValidArena(sign.getLine(2)))
 						{
-							Game game = plugin.manager.getGame(sign.getLine(2));
+							Game game = GameManager.INSTANCE.getGame(sign.getLine(2));
 							if(!game.signManager.isSign(sign))
 							{
 								game.signManager.addSign(sign);
@@ -85,7 +86,7 @@ public class OnSignInteractEvent implements Listener
 					}
 					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "Spectate"))
 					{
-						Game g = plugin.manager.getGame(sign.getLine(3));
+						Game g = GameManager.INSTANCE.getGame(sign.getLine(3));
 						if(g == null)
 						{
 							CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "InvalidArena!");
@@ -93,11 +94,11 @@ public class OnSignInteractEvent implements Listener
 						}
 						event.getPlayer().performCommand("zombies spec " + g.getName());
 					}
-					else if(!plugin.manager.isPlayerInGame(player))
+					else if(!GameManager.INSTANCE.isPlayerInGame(player))
 					{
 						return;
 					}
-					Game game = plugin.manager.getGame(player);
+					Game game = GameManager.INSTANCE.getGame(player);
 					if(sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "MysteryBox"))
 					{
 						int points = Integer.parseInt(sign.getLine(2));
@@ -296,9 +297,9 @@ public class OnSignInteractEvent implements Listener
 					{
 						if(plugin.configManager.getConfig(COMZConfig.ARENAS).getBoolean(game.getName() + ".Power"))
 						{
-							if(plugin.manager.isPlayerInGame(player))
+							if(GameManager.INSTANCE.isPlayerInGame(player))
 							{
-								Game g = plugin.manager.getGame(player);
+								Game g = GameManager.INSTANCE.getGame(player);
 								if(g.isPowered())
 								{
 									CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "The power is already on!");
@@ -324,9 +325,9 @@ public class OnSignInteractEvent implements Listener
 					}
 					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "teleporter"))
 					{
-						if(plugin.manager.isPlayerInGame(player))
+						if(GameManager.INSTANCE.isPlayerInGame(player))
 						{
-							Game g = plugin.manager.getGame(player);
+							Game g = GameManager.INSTANCE.getGame(player);
 							if(g.teleporterManager.getTeleporters().containsKey(sign.getLine(2)))
 							{
 								if(!(g.isPowered()))

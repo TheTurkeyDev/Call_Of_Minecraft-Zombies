@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.commands;
 
 import java.util.ArrayList;
 
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -27,9 +28,9 @@ public class DeleteSpawnCommand implements SubCommand
 			else
 			{
 				String arena = args[1];
-				if(plugin.manager.isValidArena(arena))
+				if(GameManager.INSTANCE.isValidArena(arena))
 				{
-					Game game = plugin.manager.getGame(arena);
+					Game game = GameManager.INSTANCE.getGame(arena);
 					ArrayList<SpawnPoint> spawns = game.spawnManager.getPoints();
 					if(spawns.size() == 0)
 					{

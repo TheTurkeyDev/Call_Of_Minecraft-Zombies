@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.commands;
 
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.Door;
 import org.bukkit.ChatColor;
@@ -70,7 +71,7 @@ public class CancelCommand implements SubCommand
 			{
 				if(plugin.isCreatingDoor.containsKey(player))
 				{
-					Game game = plugin.manager.getGame(plugin.isCreatingDoor.get(player));
+					Game game = GameManager.INSTANCE.getGame(plugin.isCreatingDoor.get(player));
 					if(game == null)
 					{
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Error! The arena that contains this door does not exist!");

@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.commands;
 
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import org.bukkit.ChatColor;
@@ -24,9 +25,9 @@ public class AddDoorCommand implements SubCommand
 			}
 			else
 			{
-				if(plugin.manager.isValidArena(args[1]))
+				if(GameManager.INSTANCE.isValidArena(args[1]))
 				{
-					Game game = plugin.manager.getGame(args[1]);
+					Game game = GameManager.INSTANCE.getGame(args[1]);
 					Door door = new Door(plugin, game, game.doorManager.getCurrentDoorNumber());
 					game.doorManager.addDoor(door);
 					plugin.isCreatingDoor.put(player, door);

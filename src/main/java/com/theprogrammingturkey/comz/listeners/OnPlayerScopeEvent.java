@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.guns.Gun;
 import com.theprogrammingturkey.comz.guns.GunManager;
 import com.theprogrammingturkey.comz.guns.GunTypeEnum;
@@ -19,9 +20,9 @@ public class OnPlayerScopeEvent implements Listener
 	{
 		COMZombies plugin = COMZombies.getPlugin();
 		Player player = e.getPlayer();
-		if(plugin.manager.isPlayerInGame(player))
+		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
-			Game game = plugin.manager.getGame(player);
+			Game game = GameManager.INSTANCE.getGame(player);
 			GunManager manager = game.getPlayersGun(player);
 			if(!manager.isGun()) return;
 			Gun g = manager.getGun(player.getInventory().getHeldItemSlot());

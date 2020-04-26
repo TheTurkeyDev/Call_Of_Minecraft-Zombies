@@ -3,6 +3,7 @@ package com.theprogrammingturkey.comz.game.features;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.commands.CommandUtil;
 import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.guns.Gun;
 import com.theprogrammingturkey.comz.guns.GunManager;
 import com.theprogrammingturkey.comz.guns.GunType;
@@ -33,7 +34,7 @@ public class RandomBox
 
 	public void Start(final Player player, int PointsNeeded)
 	{
-		if(!(plugin.manager.isPlayerInGame(player)))
+		if(!(GameManager.INSTANCE.isPlayerInGame(player)))
 		{
 			return;
 		}

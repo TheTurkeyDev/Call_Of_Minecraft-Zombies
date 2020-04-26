@@ -130,9 +130,10 @@ public class BarrierManager
 			boolean same = false;
 			for(Barrier b : barriers)
 			{
-				if(b.getLocation().equals(b.getLocation()))
+				if(b.getLocation().equals(barrier.getLocation()))
 				{
 					same = true;
+					break;
 				}
 			}
 			if(!same)
@@ -165,9 +166,10 @@ public class BarrierManager
 			boolean same = false;
 			for(Barrier b : barriers)
 			{
-				if(b.getLocation().equals(b.getLocation()))
+				if(b.getLocation().equals(barrier.getLocation()))
 				{
 					same = true;
+					break;
 				}
 			}
 			if(!same)

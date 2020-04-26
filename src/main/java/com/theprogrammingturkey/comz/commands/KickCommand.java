@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.commands;
 
+import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -28,9 +29,9 @@ public class KickCommand implements SubCommand
 				if(Bukkit.getPlayer(toKick) != null)
 				{
 					Player kick = Bukkit.getPlayer(toKick);
-					if(plugin.manager.isPlayerInGame(kick))
+					if(GameManager.INSTANCE.isPlayerInGame(kick))
 					{
-						Game game = plugin.manager.getGame(kick);
+						Game game = GameManager.INSTANCE.getGame(kick);
 						if(game.mode != ArenaStatus.DISABLED)
 						{
 							if(kick.equals(player))

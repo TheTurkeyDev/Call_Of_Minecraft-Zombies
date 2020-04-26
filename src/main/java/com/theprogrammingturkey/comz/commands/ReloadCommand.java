@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.commands;
 
 import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -22,18 +23,14 @@ public class ReloadCommand implements SubCommand
 				Bukkit.getServer().getPluginManager().enablePlugin(plugin);
 				plugin.configManager.getConfig(COMZConfig.ARENAS).reloadConfig();
 				plugin.reloadConfig();
-				for(Game gl : plugin.manager.games)
+				for(Game game : GameManager.INSTANCE.getGames())
 				{
-					gl.endGame();
-					gl.setDisabled();
+					game.endGame();
+					game.setDisabled();
 				}
-				plugin.manager.games.clear();
-				plugin.manager.loadAllGames();
+				GameManager.INSTANCE.loadAllGames();
 				plugin.clearAllSetup();
-				for(Game gl : plugin.manager.games)
-				{
-					gl.enable();
-				}
+				GameManager.INSTANCE.enableAllGames();
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Zombies has been reloaded!");
 			} catch(org.bukkit.command.CommandException e)
 			{

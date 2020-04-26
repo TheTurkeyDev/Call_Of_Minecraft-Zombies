@@ -31,6 +31,7 @@ import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
+import org.bukkit.inventory.ItemStack;
 
 public class SpawnManager
 {
@@ -312,6 +313,13 @@ public class SpawnManager
 		Location location = new Location(loc.getLocation().getWorld(), loc.getLocation().getBlockX(), loc.getLocation().getBlockY(), loc.getLocation().getBlockZ());
 		location.add(0.5, 0, 0.5);
 		Zombie zomb = (Zombie) location.getWorld().spawnEntity(location, EntityType.ZOMBIE);
+		ItemStack air = new ItemStack(Material.AIR);
+		zomb.getEquipment().setHelmet(air.clone());
+		zomb.getEquipment().setChestplate(air.clone());
+		zomb.getEquipment().setLeggings(air.clone());
+		zomb.getEquipment().setBoots(air.clone());
+		zomb.getEquipment().setItemInMainHand(air.clone());
+		zomb.getEquipment().setItemInOffHand(air.clone());
 		zomb.setBaby(false);
 		setFollowDistance(zomb);
 		setTotalHealth(zomb, strength);

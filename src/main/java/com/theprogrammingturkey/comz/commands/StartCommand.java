@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.commands;
 
+import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -17,9 +18,9 @@ public class StartCommand implements SubCommand
 		{
 			if(args.length == 1)
 			{
-				if(plugin.manager.isPlayerInGame(player))
+				if(GameManager.INSTANCE.isPlayerInGame(player))
 				{
-					Game game = plugin.manager.getGame(player);
+					Game game = GameManager.INSTANCE.getGame(player);
 					if(game.mode == ArenaStatus.INGAME)
 					{
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Game already started!");
@@ -43,9 +44,9 @@ public class StartCommand implements SubCommand
 			}
 			else
 			{
-				if(plugin.manager.isValidArena(args[1]))
+				if(GameManager.INSTANCE.isValidArena(args[1]))
 				{
-					Game game = plugin.manager.getGame(args[1]);
+					Game game = GameManager.INSTANCE.getGame(args[1]);
 					game.forceStart();
 				}
 				else

@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.commands;
 
 import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -25,9 +26,9 @@ public class DisablePowerCommand implements SubCommand
 			}
 			else
 			{
-				if(plugin.manager.isValidArena(args[1]))
+				if(GameManager.INSTANCE.isValidArena(args[1]))
 				{
-					Game game = plugin.manager.getGame(args[1]);
+					Game game = GameManager.INSTANCE.getGame(args[1]);
 					if(!(game.mode == ArenaStatus.DISABLED))
 					{
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must disable this arena first!");

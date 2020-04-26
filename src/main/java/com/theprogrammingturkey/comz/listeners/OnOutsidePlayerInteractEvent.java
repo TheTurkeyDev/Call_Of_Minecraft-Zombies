@@ -1,8 +1,8 @@
 package com.theprogrammingturkey.comz.listeners;
 
-import java.util.ArrayList;
-
-import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
+import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -12,8 +12,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
+import java.util.ArrayList;
 
 public class OnOutsidePlayerInteractEvent implements Listener
 {
@@ -22,19 +21,18 @@ public class OnOutsidePlayerInteractEvent implements Listener
 	@EventHandler
 	public void onOusidePlayerItemPickUp(PlayerPickupItemEvent e)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		Player player = e.getPlayer();
-		Game game = plugin.manager.getGame(player.getLocation());
+		Game game = GameManager.INSTANCE.getGame(player.getLocation());
 		if(game == null || game.mode == null) return;
 		if(!(game.mode.equals(ArenaStatus.INGAME)))
 		{
 			return;
 		}
-		if(!plugin.manager.isPlayerInGame(player) && plugin.manager.isLocationInGame(player.getLocation()))
+		if(!GameManager.INSTANCE.isPlayerInGame(player) && GameManager.INSTANCE.isLocationInGame(player.getLocation()))
 		{
 			e.setCancelled(true);
 		}
-		if(plugin.manager.isPlayerInGame(player))
+		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
 			currentPerks = game.perkManager.getCurrentDroppedPerks();
 			if(!currentPerks.contains(e.getItem()))
@@ -50,21 +48,20 @@ public class OnOutsidePlayerInteractEvent implements Listener
 	@EventHandler
 	public void itemDrop(PlayerDropItemEvent event)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		Player player = event.getPlayer();
-		if(plugin.manager.isPlayerInGame(player))
+		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
 			event.setCancelled(true);
 		}
 		Location loc = player.getLocation();
-		if(plugin.manager.isLocationInGame(loc))
+		if(GameManager.INSTANCE.isLocationInGame(loc))
 		{
-			if(!(plugin.manager.getGame(loc).mode == ArenaStatus.INGAME))
+			if(!(GameManager.INSTANCE.getGame(loc).mode == ArenaStatus.INGAME))
 			{
 				return;
 			}
 			event.setCancelled(true);
-			if(!plugin.manager.isPlayerInGame(player))
+			if(!GameManager.INSTANCE.isPlayerInGame(player))
 			{
 				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Do not drop items in this arena!");
 			}

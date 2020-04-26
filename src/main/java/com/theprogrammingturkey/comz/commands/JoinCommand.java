@@ -20,48 +20,45 @@ public class JoinCommand implements SubCommand
 		{
 			if(args.length == 1)
 			{
-				GameManager manager = plugin.manager;
-				if(manager.isPlayerInGame(player))
+				if(GameManager.INSTANCE.isPlayerInGame(player))
 				{
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You must leave your current game first!");
 					return true;
 				}
-				if(manager.games.size() >= 1)
-				{
-					for(int i = 0; i < manager.games.size(); i++)
-					{
-						if(manager.games.get(i).mode != ArenaStatus.DISABLED && manager.games.get(i).mode != ArenaStatus.INGAME)
-						{
-
-							Game game = manager.games.get(i);
-							if(game.spawnManager.getPoints().size() == 0) continue;
-							CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
-							if(conf.getInt(game.getName() + ".maxPlayers", 8) <= game.players.size()) continue;
-							if(player.hasPermission("zombies.join." + game.getName()))
-							{
-								game.addPlayer(player);
-								return true;
-							}
-						}
-					}
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "No arena available!");
-				}
-				else
+				if(GameManager.INSTANCE.getGames().size() == 0)
 				{
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "There are no arenas!");
+					return true;
 				}
+
+				for(Game game : GameManager.INSTANCE.getGames())
+				{
+					if(game.mode != ArenaStatus.DISABLED && game.mode != ArenaStatus.INGAME)
+					{
+						if(game.spawnManager.getPoints().size() == 0)
+							continue;
+						CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
+						if(conf.getInt(game.getName() + ".maxPlayers", 8) <= game.players.size())
+							continue;
+						if(player.hasPermission("zombies.join." + game.getName()))
+						{
+							game.addPlayer(player);
+							return true;
+						}
+					}
+				}
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "No arena available!");
 			}
 			else
 			{
-				GameManager manager = plugin.manager;
-				if(manager.isPlayerInGame(player))
+				if(GameManager.INSTANCE.isPlayerInGame(player))
 				{
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must leave your current game first!");
 					return true;
 				}
-				if(manager.isValidArena(args[1]))
+				if(GameManager.INSTANCE.isValidArena(args[1]))
 				{
-					Game game = manager.getGame(args[1]);
+					Game game = GameManager.INSTANCE.getGame(args[1]);
 					if(game.mode != ArenaStatus.DISABLED && game.mode != ArenaStatus.INGAME)
 					{
 						if(game.mode == ArenaStatus.INGAME)

@@ -90,11 +90,7 @@ public class Arena
 		{
 			if((y <= Math.max(max.getBlockY(), min.getBlockY()) && (y >= Math.min(max.getBlockY(), min.getBlockY()))))
 			{
-				if((z <= Math.max(max.getBlockZ(), min.getBlockZ()) && (z >= Math.min(max.getBlockZ(), min.getBlockZ()))))
-				{
-					return true;
-				}
-				return false;
+				return (z <= Math.max(max.getBlockZ(), min.getBlockZ()) && (z >= Math.min(max.getBlockZ(), min.getBlockZ())));
 			}
 			return false;
 		}

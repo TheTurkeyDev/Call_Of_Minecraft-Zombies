@@ -1,6 +1,6 @@
 package com.theprogrammingturkey.comz.listeners;
 
-import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,11 +12,10 @@ public class OnPlayerJoinEvent implements Listener
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		Player player = event.getPlayer();
 		for(Player pl : Bukkit.getOnlinePlayers())
 		{
-			if(plugin.manager.isPlayerInGame(pl))
+			if(GameManager.INSTANCE.isPlayerInGame(pl))
 			{
 				pl.hidePlayer(player);
 				player.showPlayer(pl);

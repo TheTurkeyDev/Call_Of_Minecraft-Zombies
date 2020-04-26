@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.listeners.OnZombiePerkDrop;
 import com.theprogrammingturkey.comz.commands.CommandUtil;
 import com.theprogrammingturkey.comz.game.features.PerkType;
@@ -153,10 +154,10 @@ public class Gun
 			player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
 		}
 
-		if(plugin.manager.isPlayerInGame(player))
+		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
 			if(gun.clipammo == clipAmmo) return;
-			Game game = plugin.manager.getGame(player);
+			Game game = GameManager.INSTANCE.getGame(player);
 			final int reloadTime;
 			if(game.perkManager.hasPerk(player, PerkType.SPEED_COLA)) reloadTime = (plugin.config.reloadTime) / 2;
 			else reloadTime = plugin.config.reloadTime;

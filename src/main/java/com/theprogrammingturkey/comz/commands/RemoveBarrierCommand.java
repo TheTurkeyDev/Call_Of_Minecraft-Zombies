@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.commands;
 
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,9 +26,9 @@ public class RemoveBarrierCommand implements SubCommand
 			}
 			else
 			{
-				if(plugin.manager.isValidArena(args[1]))
+				if(GameManager.INSTANCE.isValidArena(args[1]))
 				{
-					Game game = plugin.manager.getGame(args[1]);
+					Game game = GameManager.INSTANCE.getGame(args[1]);
 					if(game.barrierManager.getTotalBarriers() == 0)
 					{
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "This arena has no barriers!");

@@ -1,5 +1,8 @@
 package com.theprogrammingturkey.comz.game.features;
 
+import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -15,9 +18,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
-
-import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.game.Game;
 
 public class DownedPlayer implements Listener
 {
@@ -137,7 +137,7 @@ public class DownedPlayer implements Listener
 		{
 			return;
 		}
-		if(!(plugin.manager.isPlayerInGame(tmp))) return;
+		if(!(GameManager.INSTANCE.isPlayerInGame(tmp))) return;
 		if(reviver != null) return;
 		if(!(game.downedPlayerManager.isDownedPlayer(this))) return;
 		if(tmp.equals(player)) return;
@@ -154,7 +154,7 @@ public class DownedPlayer implements Listener
 			{
 				return;
 			}
-			if(plugin.manager.isPlayerInGame(reviver))
+			if(GameManager.INSTANCE.isPlayerInGame(reviver))
 			{
 				reviver.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You are reviving " + player.getName());
 				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You are being revived by " + reviver.getName() + "!");

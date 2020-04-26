@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.commands;
 
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Door;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
@@ -25,10 +26,10 @@ public class InfoCommand implements SubCommand
 			else
 			{
 				String arenaName = args[1];
-				if(plugin.manager.isValidArena(arenaName))
+				if(GameManager.INSTANCE.isValidArena(arenaName))
 				{
 					String mode = "info";
-					Game game = plugin.manager.getGame(arenaName);
+					Game game = GameManager.INSTANCE.getGame(arenaName);
 					if(args.length >= 3)
 					{
 						mode = args[2];
@@ -110,7 +111,7 @@ public class InfoCommand implements SubCommand
 					} catch(NullPointerException e)
 					{
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "No information found! Manager reloaded.");
-						plugin.manager.loadAllGames();
+						GameManager.INSTANCE.loadAllGames();
 					}
 				}
 				else

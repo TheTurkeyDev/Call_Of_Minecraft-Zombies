@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.guns;
 
 import java.util.ArrayList;
 
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
 import org.bukkit.entity.Player;
 
@@ -50,9 +51,9 @@ public class GunManager
 	public int getCorrectSlot()
 	{
 		int current = player.getInventory().getHeldItemSlot();
-		if(plugin.manager.isPlayerInGame(player))
+		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
-			Game game = plugin.manager.getGame(player);
+			Game game = GameManager.INSTANCE.getGame(player);
 			if(game.perkManager.hasPerk(player, PerkType.MULE_KICK))
 			{
 				if(current > 3)

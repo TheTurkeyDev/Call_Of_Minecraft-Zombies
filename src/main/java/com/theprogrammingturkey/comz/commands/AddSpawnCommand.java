@@ -3,6 +3,7 @@ package com.theprogrammingturkey.comz.commands;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -23,9 +24,9 @@ public class AddSpawnCommand implements SubCommand
 			else
 			{
 				COMZombies plugin = COMZombies.getPlugin();
-				if(plugin.manager.isValidArena(args[1]))
+				if(GameManager.INSTANCE.isValidArena(args[1]))
 				{
-					Game game = plugin.manager.getGame(args[1]);
+					Game game = GameManager.INSTANCE.getGame(args[1]);
 					if(plugin.isRemovingSpawns.containsValue(game))
 					{
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Someone is removing spawn points in this arena!");

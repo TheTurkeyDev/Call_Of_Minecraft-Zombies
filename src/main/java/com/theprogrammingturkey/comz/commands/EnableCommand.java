@@ -22,10 +22,9 @@ public class EnableCommand implements SubCommand
 			}
 			else
 			{
-				GameManager manager = plugin.manager;
-				if(manager.isValidArena(args[1]))
+				if(GameManager.INSTANCE.isValidArena(args[1]))
 				{
-					Game game = manager.getGame(args[1]);
+					Game game = GameManager.INSTANCE.getGame(args[1]);
 					if(game == null)
 					{
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "That arena does not exist!");

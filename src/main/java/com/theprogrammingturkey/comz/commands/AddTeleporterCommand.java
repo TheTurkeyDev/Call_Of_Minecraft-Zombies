@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.commands;
 
+import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -15,7 +16,7 @@ public class AddTeleporterCommand implements SubCommand
 		if(player.hasPermission("zombies.createteleporter") || player.hasPermission("zombies.admin"))
 		{
 			Location loc = player.getLocation();
-			Game game = plugin.manager.getGame(loc);
+			Game game = GameManager.INSTANCE.getGame(loc);
 			if(game == null)
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must be in an arena!");

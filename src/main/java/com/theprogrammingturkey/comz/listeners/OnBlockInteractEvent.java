@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.util.BlockUtils;
@@ -42,7 +43,7 @@ public class OnBlockInteractEvent implements Listener
 							{
 								return;
 							}
-							Game game = plugin.manager.getGame(door);
+							Game game = GameManager.INSTANCE.getGame(door);
 							SpawnPoint point = game.spawnManager.getSpawnPoint(event.getClickedBlock().getLocation());
 							if(point == null)
 							{
@@ -67,7 +68,7 @@ public class OnBlockInteractEvent implements Listener
 						{
 							Sign sign = (Sign) event.getClickedBlock().getState();
 							door.addSign(sign);
-							Game game = plugin.manager.getGame(door);
+							Game game = GameManager.INSTANCE.getGame(door);
 							game.doorManager.addDoorSignToConfig(door, sign.getLocation());
 							event.setCancelled(true);
 							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Sign selected!");
@@ -110,7 +111,7 @@ public class OnBlockInteractEvent implements Listener
 						{
 							if(event.getMaterial().equals(Material.END_PORTAL_FRAME) || event.getClickedBlock().getType().equals(Material.END_PORTAL_FRAME))
 							{
-								Game game = plugin.manager.getGame(event.getClickedBlock().getLocation());
+								Game game = GameManager.INSTANCE.getGame(event.getClickedBlock().getLocation());
 								SpawnPoint point = game.spawnManager.getSpawnPoint(event.getClickedBlock().getLocation());
 								if(point == null)
 								{
@@ -129,7 +130,7 @@ public class OnBlockInteractEvent implements Listener
 				else if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK))
 				{
 					Location loc = event.getClickedBlock().getLocation();
-					Game game = plugin.manager.getGame(loc);
+					Game game = GameManager.INSTANCE.getGame(loc);
 					Barrier barrier = new Barrier(loc, event.getClickedBlock(), game.barrierManager.getNextBarrierNumber(), game);
 					plugin.isCreatingBarrier.remove(player);
 					plugin.isCreatingBarrier.put(player, barrier);
@@ -145,11 +146,11 @@ public class OnBlockInteractEvent implements Listener
 	{
 		COMZombies plugin = COMZombies.getPlugin();
 		Player player = event.getPlayer();
-		if(plugin.manager.isPlayerInGame(player))
+		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
 			if(player.getInventory().getItemInMainHand().getType().equals(Material.MAGMA_CREAM))
 			{
-				Game game = plugin.manager.getGame(player);
+				Game game = GameManager.INSTANCE.getGame(player);
 				game.getName();
 			}
 		}

@@ -1,16 +1,14 @@
 package com.theprogrammingturkey.comz.listeners;
 
-import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.commands.CommandUtil;
+import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-
-import com.theprogrammingturkey.comz.commands.CommandUtil;
-import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 
 public class OnPlayerMoveEvent implements Listener
 {
@@ -23,11 +21,10 @@ public class OnPlayerMoveEvent implements Listener
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent playerMove)
 	{
-		GameManager gameManager = COMZombies.getPlugin().manager;
 		Player player = playerMove.getPlayer();
-		if(gameManager.isPlayerInGame(player))
+		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
-			Game game = gameManager.getGame(player);
+			Game game = GameManager.INSTANCE.getGame(player);
 			if(game.arena.containsBlock(player.getLocation()))
 			{
 				return;

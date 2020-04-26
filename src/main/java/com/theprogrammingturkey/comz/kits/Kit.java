@@ -3,6 +3,7 @@ package com.theprogrammingturkey.comz.kits;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
 import com.theprogrammingturkey.comz.guns.Gun;
 import com.theprogrammingturkey.comz.guns.GunManager;
@@ -160,9 +161,9 @@ public class Kit
 	{
 		COMZombies plugin = COMZombies.getPlugin();
 
-		if(!plugin.manager.isPlayerInGame(player) && !player.hasPermission("zombies.kit." + name))
+		if(!GameManager.INSTANCE.isPlayerInGame(player) && !player.hasPermission("zombies.kit." + name))
 			return;
-		Game game = plugin.manager.getGame(player);
+		Game game = GameManager.INSTANCE.getGame(player);
 		GunManager manager = game.getPlayersGun(player);
 
 		if(gunOne != null)

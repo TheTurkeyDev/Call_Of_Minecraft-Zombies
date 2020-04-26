@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.commands;
 
+import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -15,10 +16,8 @@ public class ArenaListCommand implements SubCommand
 		if(player.hasPermission("zombies.listarenas") || player.hasPermission("zombies.user") || player.hasPermission("zombies.admin"))
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "---------------" + ChatColor.DARK_RED + "Arenas" + ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "---------------");
-			for(Game gl : plugin.manager.games)
-			{
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + gl.getName() + ": " + ChatColor.GREEN + "Players: " + gl.players.size() + ", Status: " + gl.mode.toString().toLowerCase());
-			}
+			for(Game game : GameManager.INSTANCE.getGames())
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + game.getName() + ": " + ChatColor.GREEN + "Players: " + game.players.size() + ", Status: " + game.mode.toString().toLowerCase());
 		}
 		else
 		{

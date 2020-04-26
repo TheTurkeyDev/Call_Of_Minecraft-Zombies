@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.listeners;
 
 import java.util.ArrayList;
 
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.DownedPlayer;
 import com.theprogrammingturkey.comz.game.features.PerkType;
 import org.bukkit.Bukkit;
@@ -32,7 +33,7 @@ public class OnEntityDamageEvent implements Listener
 		COMZombies plugin = COMZombies.getPlugin();
 		if(e.getEntity() instanceof Player)
 		{
-			if(plugin.manager.isPlayerInGame((Player) e.getEntity()))
+			if(GameManager.INSTANCE.isPlayerInGame((Player) e.getEntity()))
 			{
 				if(e.getCause() == DamageCause.ENTITY_ATTACK)
 				{
@@ -43,9 +44,9 @@ public class OnEntityDamageEvent implements Listener
 					else
 					{
 						Entity entity = e.getDamager();
-						if(!(plugin.manager.isEntityInGame(entity)))
+						if(!(GameManager.INSTANCE.isEntityInGame(entity)))
 						{
-							if(plugin.manager.isPlayerInGame((Player) e.getEntity()))
+							if(GameManager.INSTANCE.isPlayerInGame((Player) e.getEntity()))
 							{
 								e.setCancelled(true);
 							}
@@ -53,7 +54,7 @@ public class OnEntityDamageEvent implements Listener
 						else
 						{
 							final Player player = (Player) e.getEntity();
-							Game game = plugin.manager.getGame(player);
+							Game game = GameManager.INSTANCE.getGame(player);
 							double damage = 6;
 							if(game.perkManager.getPlayersPerks().containsKey(player))
 							{
@@ -86,9 +87,9 @@ public class OnEntityDamageEvent implements Listener
 		{
 			Entity entity = e.getEntity();
 			double damage = 0;
-			if(!(plugin.manager.isEntityInGame(entity)))
+			if(!(GameManager.INSTANCE.isEntityInGame(entity)))
 				return;
-			Game game = plugin.manager.getGame(entity);
+			Game game = GameManager.INSTANCE.getGame(entity);
 			if(game != null)
 			{
 
@@ -207,21 +208,21 @@ public class OnEntityDamageEvent implements Listener
 		if(e.getEntity() instanceof Player)
 		{
 			Player player = (Player) e.getEntity();
-			if(plugin.manager.getGame(player) == null)
+			if(GameManager.INSTANCE.getGame(player) == null)
 				return;
-			if(plugin.manager.getGame(player).downedPlayerManager.isPlayerDowned(player))
+			if(GameManager.INSTANCE.getGame(player).downedPlayerManager.isPlayerDowned(player))
 			{
 				e.setCancelled(true);
 			}
-			if(plugin.manager.getGame(player) != null && plugin.manager.getGame(player).mode == ArenaStatus.STARTING)
+			if(GameManager.INSTANCE.getGame(player) != null && GameManager.INSTANCE.getGame(player).mode == ArenaStatus.STARTING)
 			{
 				e.setCancelled(true);
 			}
 			if(player.getHealth() < 1 || player.getHealth() - e.getDamage() < 1)
 			{
-				if(plugin.manager.isPlayerInGame(player))
+				if(GameManager.INSTANCE.isPlayerInGame(player))
 				{
-					Game game = plugin.manager.getGame(player);
+					Game game = GameManager.INSTANCE.getGame(player);
 					if(game.mode == ArenaStatus.INGAME)
 					{
 						e.setCancelled(true);
@@ -229,13 +230,13 @@ public class OnEntityDamageEvent implements Listener
 					}
 				}
 			}
-			if(plugin.manager.isPlayerInGame(player))
+			if(GameManager.INSTANCE.isPlayerInGame(player))
 				player.getLocation().getWorld().playEffect(player.getLocation().add(0, 1, 0), Effect.STEP_SOUND, 152);
 		}
 		else if(e.getCause().equals(DamageCause.LAVA) && e.getEntity() instanceof Zombie)
 		{
 			Zombie z = (Zombie) e.getEntity();
-			Game game = plugin.manager.getGame(z);
+			Game game = GameManager.INSTANCE.getGame(z);
 			if(game == null)
 				return;
 			z.setFireTicks(0);
@@ -276,7 +277,7 @@ public class OnEntityDamageEvent implements Listener
 			beingHealed.add(player);
 
 		COMZombies plugin = COMZombies.getPlugin();
-		if(!(plugin.manager.isPlayerInGame(player)))
+		if(!(GameManager.INSTANCE.isPlayerInGame(player)))
 			return;
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
 		{
@@ -294,13 +295,11 @@ public class OnEntityDamageEvent implements Listener
 
 	public void removeDownedPlayer(Player player)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
-		plugin.manager.getGame(player).downedPlayerManager.removeDownedPlayer(player);
+		GameManager.INSTANCE.getGame(player).downedPlayerManager.removeDownedPlayer(player);
 	}
 
 	public boolean isDownedPlayer(String name)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
-		return plugin.manager.getGame(Bukkit.getPlayer(name)).downedPlayerManager.isPlayerDowned(Bukkit.getPlayer(name));
+		return GameManager.INSTANCE.getGame(Bukkit.getPlayer(name)).downedPlayerManager.isPlayerDowned(Bukkit.getPlayer(name));
 	}
 }

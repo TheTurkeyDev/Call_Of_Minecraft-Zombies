@@ -3,6 +3,7 @@ package com.theprogrammingturkey.comz.listeners;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.commands.CommandUtil;
 import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
@@ -89,14 +90,14 @@ public class OnBlockBreakEvent implements Listener
 				plugin.command.onRemoteCommand(player, args);
 			}
 		}
-		if(plugin.manager.isPlayerInGame(player))
+		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
 			if(BlockUtils.isSign(interact.getBlock().getType()))
 			{
 				Sign sign = (Sign) interact.getBlock().getState();
 				if(sign.getLine(0).equalsIgnoreCase("[BarrierRepair]"))
 				{
-					Game game = plugin.manager.getGame(player);
+					Game game = GameManager.INSTANCE.getGame(player);
 					Barrier b = game.barrierManager.getBarrierFromRepair(sign.getLocation());
 					if(b != null)
 					{
@@ -118,7 +119,7 @@ public class OnBlockBreakEvent implements Listener
 				interact.setCancelled(true);
 			return;
 		}
-		if(plugin.manager.isLocationInGame(interact.getBlock().getLocation()))
+		if(GameManager.INSTANCE.isLocationInGame(interact.getBlock().getLocation()))
 		{
 			interact.setCancelled(true);
 		}
@@ -129,7 +130,7 @@ public class OnBlockBreakEvent implements Listener
 			String lineTwo = sign.getLine(1);
 			if(ChatColor.stripColor(lineOne).equalsIgnoreCase("[Zombies]") && ChatColor.stripColor(lineTwo).equalsIgnoreCase("MysteryBox"))
 			{
-				Game game = plugin.manager.getGame(interact.getBlock().getLocation());
+				Game game = GameManager.INSTANCE.getGame(interact.getBlock().getLocation());
 				if(game != null)
 				{
 					game.boxManager.removeBox(interact.getPlayer(), game.boxManager.getBox(sign.getLocation()));

@@ -10,7 +10,6 @@ package com.theprogrammingturkey.comz.game;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.commands.CommandUtil;
 import com.theprogrammingturkey.comz.config.COMZConfig;
-import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.game.features.DownedPlayer;
@@ -571,23 +570,17 @@ public class Game
 
 			spawnManager.nextWave();
 
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () ->
 			{
-				public void run()
+				for(Player pl : players)
 				{
-					synchronized(this)
-					{
-						for(Player pl : players)
-						{
-							pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_TRAVEL, 1, 1);
-							CommandUtil.sendMessageToPlayer(pl, "Round " + waveNumber + " has begun!");
-						}
-
-						spawnManager.startWave(waveNumber, players);
-						signManager.updateGame();
-						changingRound = false;
-					}
+					pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_TRAVEL, 1, 1);
+					CommandUtil.sendMessageToPlayer(pl, "Round " + waveNumber + " has begun!");
 				}
+
+				spawnManager.startWave(waveNumber, players);
+				signManager.updateGame();
+				changingRound = false;
 			}, 200L);
 		}
 		else
@@ -650,7 +643,7 @@ public class Game
 				}
 			}
 			GunType gun = plugin.getGun(gunName);
-			Game game = plugin.manager.getGame(player);
+			Game game = GameManager.INSTANCE.getGame(player);
 			if(!(game == null))
 			{
 				GunManager manager = game.getPlayersGun(player);
@@ -742,7 +735,7 @@ public class Game
 			plugin.pointManager.playerLeaveGame(player);
 		} catch(NullPointerException e)
 		{
-			plugin.manager.loadAllGames();
+			GameManager.INSTANCE.loadAllGames();
 		}
 		signManager.updateGame();
 	}
@@ -835,7 +828,7 @@ public class Game
 			plugin.pointManager.playerLeaveGame(player);
 		} catch(NullPointerException e)
 		{
-			plugin.manager.loadAllGames();
+			GameManager.INSTANCE.loadAllGames();
 		}
 		signManager.updateGame();
 	}
@@ -866,16 +859,7 @@ public class Game
 	 */
 	public void forceNight()
 	{
-		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
-		{
-
-			@Override
-			public void run()
-			{
-				getWorld().setTime(14000L);
-			}
-
-		}, 5L, 1200L);
+		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> getWorld().setTime(14000L), 5L, 1200L);
 	}
 
 	/**
@@ -909,14 +893,12 @@ public class Game
 	 *
 	 * @param p   player that set the point
 	 * @param loc location that
-	 * @return if the point was set or not
 	 */
-	public boolean addPointOne(Player p, Location loc)
+	public void addPointOne(Player p, Location loc)
 	{
 		min = loc;
 		saveLocationsInConfig(p);
 		worldName = loc.getWorld().getName();
-		return true;
 	}
 
 	/**
@@ -975,7 +957,7 @@ public class Game
 		for(Player p : players)
 		{
 			double points = waveNumber;
-			plugin.vault.addMoney(p.getName(), points);
+			plugin.vault.addMoney(p, points);
 			CommandUtil.sendMessageToPlayer(p, "You got " + points + " for getting to round " + waveNumber + "!");
 			scoreboard.removePlayer(p);
 			playerLeave(p, true);
@@ -1045,7 +1027,7 @@ public class Game
 
 	public enum ArenaStatus
 	{
-		DISABLED, STARTING, WAITING, INGAME;
+		DISABLED, STARTING, WAITING, INGAME
 	}
 
 	/**
@@ -1057,10 +1039,9 @@ public class Game
 	{
 		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
 
-		if(min.getWorld().getName() != null)
-		{
+		if(min.getWorld() != null)
 			conf.set(arenaName + ".Location.world", min.getWorld().getName());
-		}
+
 		try
 		{
 			conf.set(arenaName + ".Location.P1.x", min.getBlockX());
@@ -1230,7 +1211,7 @@ public class Game
 		String spawnDelay = loc + ".ZombieSpawnDelay";
 		conf.set(spawnDelay, 15);
 		// Setup starting items data, default vaules added.
-		ArrayList<String> startItems = new ArrayList<String>();
+		ArrayList<String> startItems = new ArrayList<>();
 		conf.set(loc + ".StartingItems", startItems);
 		conf.set(loc, null);
 		conf.set(loc + ".maxPlayers", 8);
@@ -1272,7 +1253,10 @@ public class Game
 	private ItemStack setItemMeta(int slot, ItemStack item)
 	{
 		ItemMeta data = item.getItemMeta();
-		List<String> lore = new ArrayList<String>();
+		if(data == null)
+			return item;
+
+		List<String> lore = new ArrayList<>();
 		switch(slot)
 		{
 			case 27:
@@ -1328,7 +1312,8 @@ public class Game
 		ItemStack boots = new ItemStack(Material.LEATHER_BOOTS, 1);
 		ItemStack knife = new ItemStack(Material.IRON_SWORD, 1);
 		ItemMeta kMeta = knife.getItemMeta();
-		kMeta.setDisplayName(ChatColor.RED + "Knife");
+		if(kMeta != null)
+			kMeta.setDisplayName(ChatColor.RED + "Knife");
 		knife.setItemMeta(kMeta);
 		ItemStack ib = new ItemStack(Material.GREEN_STAINED_GLASS_PANE, 1);
 		player.getInventory().setHelmet(helmet);
@@ -1434,9 +1419,9 @@ public class Game
 		{
 			try
 			{
-				if(!plugin.vault.hasAccount(player.getName()))
-					plugin.vault.newAccount(player.getName());
-				plugin.vault.addMoney(player.getName(), (double) plugin.config.KillMoney);
+				if(!plugin.vault.hasAccount(player))
+					plugin.vault.newAccount(player);
+				plugin.vault.addMoney(player, plugin.config.KillMoney);
 			} catch(NullPointerException e)
 			{
 				e.printStackTrace();

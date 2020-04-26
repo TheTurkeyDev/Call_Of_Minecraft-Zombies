@@ -4,6 +4,7 @@ import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.commands.CommandUtil;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.Door;
 import org.bukkit.Bukkit;
@@ -111,7 +112,7 @@ public class OnPlayerChatEvent implements Listener
 					{
 						door.addSpawnPoint(null);
 					}
-					final Game game = plugin.manager.getGame(door);
+					final Game game = GameManager.INSTANCE.getGame(door);
 
 					Runnable delayedSpawnFunc = () -> game.resetSpawnLocationBlocks();
 					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delayedSpawnFunc, 1);

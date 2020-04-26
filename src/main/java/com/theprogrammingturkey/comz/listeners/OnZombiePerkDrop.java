@@ -3,6 +3,7 @@ package com.theprogrammingturkey.comz.listeners;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.PowerUp;
 import com.theprogrammingturkey.comz.guns.Gun;
@@ -45,12 +46,12 @@ public class OnZombiePerkDrop implements Listener
 			int randomPerk = (int) (Math.random() * 6);
 			try
 			{
-				game = COMZombies.getPlugin().manager.getGame(zombie.getLocation());
+				game = GameManager.INSTANCE.getGame(zombie.getLocation());
 				if(!(game.mode == ArenaStatus.INGAME))
 				{
 					return;
 				}
-				if(!COMZombies.getPlugin().manager.isPlayerInGame(player))
+				if(!GameManager.INSTANCE.isPlayerInGame(player))
 				{
 					return;
 				}
@@ -152,9 +153,9 @@ public class OnZombiePerkDrop implements Listener
 	private void onPerkPickup(PlayerPickupItemEvent event)
 	{
 		final Item eItem = event.getItem();
-		if(COMZombies.getPlugin().manager.isPlayerInGame(event.getPlayer()))
+		if(GameManager.INSTANCE.isPlayerInGame(event.getPlayer()))
 		{
-			final Game game = COMZombies.getPlugin().manager.getGame(event.getPlayer());
+			final Game game = GameManager.INSTANCE.getGame(event.getPlayer());
 			final Player player = event.getPlayer();
 
 			if(currentPerks.size() == 0)

@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.commands;
 
+import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -23,9 +24,9 @@ public class SpectateCommand implements SubCommand
 			else
 			{
 				String name = args[1];
-				if(plugin.manager.isValidArena(name))
+				if(GameManager.INSTANCE.isValidArena(name))
 				{
-					Game game = plugin.manager.getGame(name);
+					Game game = GameManager.INSTANCE.getGame(name);
 					Location specLocation = game.getSpectateLocation();
 					player.teleport(specLocation);
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You are now spectating " + ChatColor.GOLD + game.getName() + ChatColor.RED + "!");

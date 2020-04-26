@@ -43,10 +43,7 @@ public class PerkManager
 		if(playersPerks.containsKey(player))
 		{
 			ArrayList<PerkType> effects = playersPerks.get(player);
-			if(effects.contains(type))
-			{
-				return true;
-			}
+			return effects.contains(type);
 		}
 		return false;
 	}

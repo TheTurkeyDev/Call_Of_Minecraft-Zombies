@@ -1,12 +1,4 @@
-/******************************************
- *            COM: Zombies                *
- * Developers: Connor Hollasch, Ryan Turk *
- *****************************************/
-
 package com.theprogrammingturkey.comz.game.managers;
-
-import java.util.ArrayList;
-import java.util.Random;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
@@ -18,6 +10,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public class BoxManager
 {

@@ -16,8 +16,7 @@ public class LeaveCommand implements SubCommand
 		COMZombies plugin = COMZombies.getPlugin();
 		if(player.hasPermission("zombies.leave") || player.hasPermission("zombies.user") || player.hasPermission("zombies.admin"))
 		{
-			GameManager manager = plugin.manager;
-			for(Game gm : manager.games)
+			for(Game gm : GameManager.INSTANCE.getGames())
 			{
 				for(int i = 0; i < gm.players.size(); i++)
 				{

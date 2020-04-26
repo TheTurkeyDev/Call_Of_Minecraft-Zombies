@@ -42,10 +42,6 @@ public class COMZombies extends JavaPlugin
 	 */
 	public ZombiesCommand command;
 	/**
-	 * In game manager that manages every game.
-	 */
-	public GameManager manager;
-	/**
 	 * Manages the plugins Kits.
 	 */
 	public KitManager kitManager;
@@ -135,7 +131,6 @@ public class COMZombies extends JavaPlugin
 		reloadConfig();
 		config = new ConfigSetup();
 		config.setup();
-		manager = new GameManager();
 		kitManager = new KitManager();
 		kitManager.loadKits();
 		pointManager = new PointManager();
@@ -168,7 +163,7 @@ public class COMZombies extends JavaPlugin
 
 		log.info(COMZombies.PREFIX + " has been enabled!");
 
-		manager.loadAllGames();
+		GameManager.INSTANCE.loadAllGames();
 	}
 
 	/**
@@ -225,11 +220,7 @@ public class COMZombies extends JavaPlugin
 	{
 		reloadConfig();
 		configManager.reloadALL();
-		for(Game g : manager.games)
-		{
-			g.endGame();
-		}
-		manager.games.clear();
+		GameManager.INSTANCE.endAll();
 		log.info(COMZombies.PREFIX + " has been disabled!");
 	}
 

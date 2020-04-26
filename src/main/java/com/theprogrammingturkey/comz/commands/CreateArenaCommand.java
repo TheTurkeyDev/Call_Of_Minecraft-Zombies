@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.commands;
 
+import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -21,7 +22,7 @@ public class CreateArenaCommand implements SubCommand
 			else
 			{
 				String secondArg = args[1];
-				if(plugin.manager.isValidArena(secondArg))
+				if(GameManager.INSTANCE.isValidArena(secondArg))
 				{
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "This arena already exists!");
 					return true;
@@ -29,7 +30,7 @@ public class CreateArenaCommand implements SubCommand
 				Game newGame = new Game(plugin, secondArg);
 				newGame.setName(secondArg);
 				newGame.setup();
-				plugin.manager.addArena(newGame);
+				GameManager.INSTANCE.addArena(newGame);
 				plugin.isArenaSetup.put(player, newGame);
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------" + ChatColor.DARK_RED + "Arena Setup" + ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Type p1 for point one, and p2 for point two.");
