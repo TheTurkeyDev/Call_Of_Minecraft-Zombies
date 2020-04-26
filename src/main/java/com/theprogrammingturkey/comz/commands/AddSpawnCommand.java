@@ -59,7 +59,7 @@ public class AddSpawnCommand implements SubCommand
 		}
 		else
 		{
-			COMZombies.getPlugin().command.noPerms(player, "add a spawn");
+			CommandUtil.noPermission(player, "add a spawn");
 			return true;
 		}
 	}

@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.commands.CommandManager;
 import com.theprogrammingturkey.comz.commands.CommandUtil;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
@@ -14,6 +15,7 @@ import com.theprogrammingturkey.comz.guns.Gun;
 import com.theprogrammingturkey.comz.guns.GunManager;
 import com.theprogrammingturkey.comz.guns.GunType;
 import com.theprogrammingturkey.comz.kits.Kit;
+import com.theprogrammingturkey.comz.kits.KitManager;
 import com.theprogrammingturkey.comz.listeners.customEvents.PlayerPerkPurchaseEvent;
 import com.theprogrammingturkey.comz.particleutilities.ParticleEffects;
 import com.theprogrammingturkey.comz.util.BlockUtils;
@@ -76,7 +78,7 @@ public class OnSignInteractEvent implements Listener
 							args[0] = "join";
 							args[1] = game.getName();
 							player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_ZOMBIE_AMBIENT, 1, 1);
-							plugin.command.onRemoteCommand(player, args);
+							CommandManager.INSTANCE.onRemoteCommand(player, args);
 							game.signManager.updateGame();
 							return;
 						}
@@ -314,10 +316,10 @@ public class OnSignInteractEvent implements Listener
 					}
 					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "Kit"))
 					{
-						Kit kit = plugin.kitManager.getKit(ChatColor.stripColor(sign.getLine(2)));
+						Kit kit = KitManager.getKit(ChatColor.stripColor(sign.getLine(2)));
 						if(player.hasPermission("zombies.admin") || player.hasPermission("zombies.kit." + kit.getName()))
 						{
-							plugin.kitManager.addPlayersSelectedKit(player, kit);
+							KitManager.addPlayersSelectedKit(player, kit);
 							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + " You have selected the " + kit.getName() + " Kit!");
 						}
 						else

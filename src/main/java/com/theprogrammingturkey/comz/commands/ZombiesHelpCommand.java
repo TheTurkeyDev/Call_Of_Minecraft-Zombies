@@ -9,7 +9,7 @@ public class ZombiesHelpCommand
 	private Player player;
 	private int page;
 
-	public ZombiesHelpCommand(ZombiesCommand command, Player player)
+	public ZombiesHelpCommand(CommandManager command, Player player)
 	{
 		this.player = player;
 		page = 1;

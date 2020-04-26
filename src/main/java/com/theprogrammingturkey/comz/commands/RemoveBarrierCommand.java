@@ -60,7 +60,7 @@ public class RemoveBarrierCommand implements SubCommand
 		}
 		else
 		{
-			plugin.command.noPerms(player, "remove this banner");
+			CommandUtil.noPermission(player, "remove this banner");
 			return false;
 		}
 		return false;

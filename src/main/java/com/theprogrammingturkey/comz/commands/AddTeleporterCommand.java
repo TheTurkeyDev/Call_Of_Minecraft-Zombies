@@ -33,7 +33,7 @@ public class AddTeleporterCommand implements SubCommand
 		}
 		else
 		{
-			COMZombies.getPlugin().command.noPerms(player, "add a teleporter");
+			CommandUtil.noPermission(player, "add a teleporter");
 			return true;
 		}
 	}

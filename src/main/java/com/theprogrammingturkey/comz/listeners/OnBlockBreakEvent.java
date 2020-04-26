@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.commands.CommandManager;
 import com.theprogrammingturkey.comz.commands.CommandUtil;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
@@ -49,7 +50,7 @@ public class OnBlockBreakEvent implements Listener
 				String[] args = new String[2];
 				args[0] = "cancel";
 				args[1] = "removedoor";
-				plugin.command.onRemoteCommand(player, args);
+				CommandManager.INSTANCE.onRemoteCommand(player, args);
 			}
 		}
 		if(plugin.isRemovingSpawns.containsKey(player))
@@ -67,7 +68,7 @@ public class OnBlockBreakEvent implements Listener
 						String[] args = new String[2];
 						args[0] = "cancel";
 						args[1] = "removespawn";
-						plugin.command.onRemoteCommand(player, args);
+						CommandManager.INSTANCE.onRemoteCommand(player, args);
 					}
 					return;
 				}
@@ -88,7 +89,7 @@ public class OnBlockBreakEvent implements Listener
 				String[] args = new String[2];
 				args[0] = "cancel";
 				args[1] = "removebarrier";
-				plugin.command.onRemoteCommand(player, args);
+				CommandManager.INSTANCE.onRemoteCommand(player, args);
 			}
 		}
 		if(GameManager.INSTANCE.isPlayerInGame(player))

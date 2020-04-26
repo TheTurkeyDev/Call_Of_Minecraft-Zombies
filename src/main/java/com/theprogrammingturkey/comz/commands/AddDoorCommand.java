@@ -59,7 +59,7 @@ public class AddDoorCommand implements SubCommand
 		}
 		else
 		{
-			plugin.command.noPerms(player, "add a door");
+			CommandUtil.noPermission(player, "add a door");
 			return true;
 		}
 	}

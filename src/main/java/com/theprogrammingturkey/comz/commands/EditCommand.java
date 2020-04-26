@@ -39,7 +39,7 @@ public class EditCommand implements SubCommand
 		}
 		else
 		{
-			plugin.command.noPerms(player, "edit this arena");
+			CommandUtil.noPermission(player, "edit this arena");
 			return true;
 		}
 		return false;

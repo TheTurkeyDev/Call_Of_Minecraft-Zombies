@@ -68,7 +68,7 @@ public class LeaderboardsCommand implements SubCommand
 		}
 		else
 		{
-			plugin.command.noPerms(player, "view this");
+			CommandUtil.noPermission(player, "view this");
 			return true;
 		}
 		return false;

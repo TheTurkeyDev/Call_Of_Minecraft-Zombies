@@ -1,6 +1,6 @@
 package com.theprogrammingturkey.comz;
 
-import com.theprogrammingturkey.comz.commands.ZombiesCommand;
+import com.theprogrammingturkey.comz.commands.CommandManager;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.ArenaAntiBreak;
@@ -36,14 +36,6 @@ public class COMZombies extends JavaPlugin
 	 * Default plugin logger.
 	 */
 	public static final Logger log = Logger.getLogger("COM:Z");
-	/**
-	 * Command executor for the whole plugin.
-	 */
-	public ZombiesCommand command;
-	/**
-	 * Manages the plugins Kits.
-	 */
-	public KitManager kitManager;
 	/**
 	 * Manages the players leaderboards.
 	 */
@@ -119,10 +111,8 @@ public class COMZombies extends JavaPlugin
 	{
 		reloadConfig();
 		ConfigManager.loadFiles();
-		kitManager = new KitManager();
-		kitManager.loadKits();
+		KitManager.loadKits();
 		PointManager.saveAll();
-		command = new ZombiesCommand();
 		leaderboards = new Leaderboards();
 		vault = new Vault();
 		registerEvents();
@@ -146,7 +136,7 @@ public class COMZombies extends JavaPlugin
 			saveConfig();
 		}
 
-		getCommand("zombies").setExecutor(command);
+		getCommand("zombies").setExecutor(CommandManager.INSTANCE);
 
 		log.info(COMZombies.PREFIX + " has been enabled!");
 

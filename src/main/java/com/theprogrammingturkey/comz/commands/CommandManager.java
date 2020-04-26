@@ -13,12 +13,13 @@ import org.bukkit.entity.Player;
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 
-public class ZombiesCommand implements CommandExecutor
+public class CommandManager implements CommandExecutor
 {
+	public static final CommandManager INSTANCE = new CommandManager();
 	private HashMap<String, SubCommand> commandList = new HashMap<>();
 	private HashMap<Player, ZombiesHelpCommand> helpCommand = new HashMap<>();
 
-	public ZombiesCommand()
+	public CommandManager()
 	{
 		load();
 	}
@@ -232,12 +233,5 @@ public class ZombiesCommand implements CommandExecutor
 			}
 		}
 		return false;
-	}
-
-	// Call when the user does not have permission for a specific thing! Action
-	// being like... "disable this arena"
-	public void noPerms(Player player, String action)
-	{
-		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You do not have permission to " + action + "!");
 	}
 }

@@ -45,7 +45,7 @@ public class DisableCommand implements SubCommand
 		}
 		else
 		{
-			plugin.command.noPerms(player, "disable this arena");
+			CommandUtil.noPermission(player, "disable this arena");
 		}
 		return false;
 	}

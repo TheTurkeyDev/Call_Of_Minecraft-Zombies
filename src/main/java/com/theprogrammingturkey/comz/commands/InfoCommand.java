@@ -123,7 +123,7 @@ public class InfoCommand implements SubCommand
 		}
 		else
 		{
-			plugin.command.noPerms(player, "view this games information");
+			CommandUtil.noPermission(player, "view this games information");
 		}
 		return false;
 	}

@@ -10,6 +10,7 @@ import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
 import com.theprogrammingturkey.comz.game.features.RandomBox;
 import com.theprogrammingturkey.comz.kits.Kit;
+import com.theprogrammingturkey.comz.kits.KitManager;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -253,7 +254,7 @@ public class OnSignChangeEvent implements Listener
 			}
 			else if(secondLine.equalsIgnoreCase("Kit"))
 			{
-				Kit kit = plugin.kitManager.getKit(sign.getLine(2));
+				Kit kit = KitManager.getKit(sign.getLine(2));
 				if(kit == null)
 				{
 					sign.setLine(0, ChatColor.RED + "" + ChatColor.BOLD + "Kit name is");

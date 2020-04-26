@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.commands.CommandManager;
 import com.theprogrammingturkey.comz.commands.CommandUtil;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
@@ -134,7 +135,7 @@ public class OnPlayerChatEvent implements Listener
 				String[] args = new String[2];
 				args[0] = "cancel";
 				args[1] = "doorcreation";
-				plugin.command.onRemoteCommand(player, args);
+				CommandManager.INSTANCE.onRemoteCommand(player, args);
 				playerChat.setCancelled(true);
 				return;
 			}
@@ -221,7 +222,7 @@ public class OnPlayerChatEvent implements Listener
 				String[] args = new String[2];
 				args[0] = "cancel";
 				args[1] = "arenacreation";
-				plugin.command.onRemoteCommand(player, args);
+				CommandManager.INSTANCE.onRemoteCommand(player, args);
 				playerChat.setCancelled(true);
 				return;
 			}
@@ -233,7 +234,7 @@ public class OnPlayerChatEvent implements Listener
 				String[] args = new String[2];
 				args[0] = "cancel";
 				args[1] = "removespawns";
-				plugin.command.onRemoteCommand(player, args);
+				CommandManager.INSTANCE.onRemoteCommand(player, args);
 				playerChat.setCancelled(true);
 			}
 		}
@@ -244,7 +245,7 @@ public class OnPlayerChatEvent implements Listener
 				String[] args = new String[2];
 				args[0] = "cancel";
 				args[1] = "removedoor";
-				plugin.command.onRemoteCommand(player, args);
+				CommandManager.INSTANCE.onRemoteCommand(player, args);
 				playerChat.setCancelled(true);
 			}
 		}

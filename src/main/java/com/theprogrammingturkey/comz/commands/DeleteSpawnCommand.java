@@ -60,7 +60,7 @@ public class DeleteSpawnCommand implements SubCommand
 		}
 		else
 		{
-			plugin.command.noPerms(player, "remove spawns");
+			CommandUtil.noPermission(player, "remove spawns");
 			return true;
 		}
 	}

@@ -39,7 +39,7 @@ public class GunListCommand implements SubCommand
 		}
 		else
 		{
-			plugin.command.noPerms(player, "see the list of guns");
+			CommandUtil.noPermission(player, "see the list of guns");
 		}
 		return false;
 	}

@@ -12,15 +12,20 @@ import com.theprogrammingturkey.comz.COMZombies;
 
 public class KitManager
 {
-	private ArrayList<Kit> kits = new ArrayList<>();
-	private HashMap<Player, Kit> selectedKits = new HashMap<>();
+	private static ArrayList<Kit> kits = new ArrayList<>();
+	private static HashMap<Player, Kit> selectedKits = new HashMap<>();
 
-	public void newKit(String name)
+	private KitManager()
 	{
 
 	}
 
-	public Kit getKit(String name)
+	public static void newKit(String name)
+	{
+
+	}
+
+	public static Kit getKit(String name)
 	{
 		for(Kit k : kits)
 		{
@@ -32,7 +37,7 @@ public class KitManager
 		return null;
 	}
 
-	public void loadKits()
+	public static void loadKits()
 	{
 		for(String key : ConfigManager.getConfig(COMZConfig.KITS).getConfigurationSection("").getKeys(false))
 		{
@@ -42,7 +47,7 @@ public class KitManager
 		}
 	}
 
-	public void giveOutKits(Game game)
+	public static void giveOutKits(Game game)
 	{
 		for(Player player : selectedKits.keySet())
 		{
@@ -50,7 +55,7 @@ public class KitManager
 		}
 	}
 
-	public void addPlayersSelectedKit(Player player, Kit kit)
+	public static void addPlayersSelectedKit(Player player, Kit kit)
 	{
 		selectedKits.put(player, kit);
 	}

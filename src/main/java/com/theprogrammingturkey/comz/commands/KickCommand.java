@@ -64,7 +64,7 @@ public class KickCommand implements SubCommand
 		}
 		else
 		{
-			plugin.command.noPerms(player, "kick a player");
+			CommandUtil.noPermission(player, "kick a player");
 		}
 		return false;
 	}

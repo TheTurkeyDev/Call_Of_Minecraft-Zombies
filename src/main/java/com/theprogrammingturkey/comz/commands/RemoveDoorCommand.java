@@ -64,7 +64,7 @@ public class RemoveDoorCommand implements SubCommand
 		}
 		else
 		{
-			plugin.command.noPerms(player, "remove this door");
+			CommandUtil.noPermission(player, "remove this door");
 			return false;
 		}
 		return false;

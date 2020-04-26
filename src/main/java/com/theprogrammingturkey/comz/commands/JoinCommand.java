@@ -113,7 +113,7 @@ public class JoinCommand implements SubCommand
 		}
 		else
 		{
-			plugin.command.noPerms(player, "join this game");
+			CommandUtil.noPermission(player, "join this game");
 			return true;
 		}
 		return false;

@@ -33,7 +33,7 @@ public class LeaveCommand implements SubCommand
 		}
 		else
 		{
-			plugin.command.noPerms(player, "leave this game");
+			CommandUtil.noPermission(player, "leave this game");
 			return true;
 		}
 	}

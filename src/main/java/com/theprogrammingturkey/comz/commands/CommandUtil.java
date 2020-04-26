@@ -21,9 +21,9 @@ public class CommandUtil
 	/**
 	 * @param player for the no permission message to be sent to
 	 */
-	public static void noPermission(Player player)
+	public static void noPermission(Player player, String action)
 	{
-		player.sendMessage(COMZombies.PREFIX + ChatColor.RED + "No permission!");
+		player.sendMessage(COMZombies.PREFIX + ChatColor.RED + "You do not have permission to " + action + "!");
 	}
 
 	/**

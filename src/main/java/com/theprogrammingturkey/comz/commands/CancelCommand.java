@@ -144,7 +144,7 @@ public class CancelCommand implements SubCommand
 		}
 		else
 		{
-			plugin.command.noPerms(player, "cancel this operation");
+			CommandUtil.noPermission(player, "cancel this operation");
 		}
 		return false;
 	}

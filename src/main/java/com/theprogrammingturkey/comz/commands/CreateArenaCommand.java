@@ -42,7 +42,7 @@ public class CreateArenaCommand implements SubCommand
 		}
 		else
 		{
-			plugin.command.noPerms(player, "create an arena");
+			CommandUtil.noPermission(player, "create an arena");
 			return true;
 		}
 	}

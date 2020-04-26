@@ -31,7 +31,7 @@ public class RemoveTeleporterCommand implements SubCommand
 		}
 		else
 		{
-			COMZombies.getPlugin().command.noPerms(player, "remove a teleporter");
+			CommandUtil.noPermission(player, "remove a teleporter");
 			return true;
 		}
 	}

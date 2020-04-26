@@ -223,11 +223,6 @@ public class Game
 	 */
 	public int maxPlayers;
 
-	/**
-	 * contains all of the Kits in the game
-	 */
-	public KitManager kitManager;
-
 	public boolean changingRound = false;
 
 	/**
@@ -251,7 +246,6 @@ public class Game
 		teleporterManager = new TeleporterManager(this);
 		downedPlayerManager = new DownedPlayerManager();
 		signManager = new SignManager(this);
-		kitManager = COMZombies.getPlugin().kitManager;
 
 		scoreboard = new GameScoreboard(this);
 
@@ -515,7 +509,7 @@ public class Game
 		this.waveNumber = 0;
 		nextWave();
 		signManager.updateGame();
-		kitManager.giveOutKits(this);
+		KitManager.giveOutKits(this);
 		return true;
 	}
 
