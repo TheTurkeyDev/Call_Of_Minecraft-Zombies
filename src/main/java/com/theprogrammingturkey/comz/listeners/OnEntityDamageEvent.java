@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.ConfigManager;
+import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
@@ -130,18 +131,18 @@ public class OnEntityDamageEvent implements Listener
 								zombie1.setHealth(20D);
 								if(game.isDoublePoints())
 								{
-									plugin.pointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit * 2);
+									PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit * 2);
 								}
 								else
 								{
-									plugin.pointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit);
+									PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit);
 								}
 								game.spawnManager.setTotalHealth(e.getEntity(), (int) (totalHealth - damageAmount));
 								if(game.spawnManager.totalHealth().get(e.getEntity()) < 20)
 								{
 									zombie1.setHealth(game.spawnManager.totalHealth().get(e.getEntity()));
 								}
-								plugin.pointManager.notifyPlayer(player);
+								PointManager.notifyPlayer(player);
 							}
 							else if(totalHealth < 1 || totalHealth - damageAmount <= 1)
 							{
@@ -152,15 +153,15 @@ public class OnEntityDamageEvent implements Listener
 								boolean doublePoints = game.isDoublePoints();
 								if(doublePoints)
 								{
-									plugin.pointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
+									PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
 								}
 								else
 								{
-									plugin.pointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
+									PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
 								}
 								zombie1.playEffect(EntityEffect.DEATH);
-								plugin.pointManager.notifyPlayer(player);
-								game.spawnManager.removeEntity((Entity) zombie1);
+								PointManager.notifyPlayer(player);
+								game.spawnManager.removeEntity(zombie1);
 								game.zombieKilled(player);
 							}
 							else
@@ -168,13 +169,13 @@ public class OnEntityDamageEvent implements Listener
 								zombie1.damage(damage);
 								if(game.isDoublePoints())
 								{
-									plugin.pointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit * 2);
+									PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit * 2);
 								}
 								else
 								{
-									plugin.pointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit);
+									PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit);
 								}
-								plugin.pointManager.notifyPlayer(player);
+								PointManager.notifyPlayer(player);
 							}
 							game.spawnManager.setTotalHealth(e.getEntity(), (int) (totalHealth - damageAmount));
 							if(game.isInstaKill())

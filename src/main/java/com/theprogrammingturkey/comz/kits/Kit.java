@@ -3,6 +3,7 @@ package com.theprogrammingturkey.comz.kits;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
+import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
@@ -246,7 +247,7 @@ public class Kit
 			manager.removeGun(manager.getGun(slot));
 			manager.addGun(new Gun(gunThree, player, slot));
 		}
-		plugin.pointManager.addPoints(player, points - 500);
+		PointManager.addPoints(player, points - 500);
 		game.scoreboard.update();
 		player.updateInventory();
 

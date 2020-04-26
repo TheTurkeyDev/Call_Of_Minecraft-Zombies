@@ -45,10 +45,6 @@ public class COMZombies extends JavaPlugin
 	 */
 	public KitManager kitManager;
 	/**
-	 * Manages the plugins economy.
-	 */
-	public PointManager pointManager;
-	/**
 	 * Manages the players leaderboards.
 	 */
 	public Leaderboards leaderboards;
@@ -125,8 +121,7 @@ public class COMZombies extends JavaPlugin
 		ConfigManager.loadFiles();
 		kitManager = new KitManager();
 		kitManager.loadKits();
-		pointManager = new PointManager();
-		pointManager.saveAll();
+		PointManager.saveAll();
 		command = new ZombiesCommand();
 		leaderboards = new Leaderboards();
 		vault = new Vault();

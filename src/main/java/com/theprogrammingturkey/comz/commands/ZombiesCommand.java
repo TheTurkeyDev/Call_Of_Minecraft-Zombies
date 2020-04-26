@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.commands;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.ChatColor;
@@ -182,7 +183,7 @@ public class ZombiesCommand implements CommandExecutor
 			{
 				if(player.isOp())
 				{
-					COMZombies.getPlugin().pointManager.addPoints(player, 100000);
+					PointManager.addPoints(player, 100000);
 				}
 				return true;
 			}

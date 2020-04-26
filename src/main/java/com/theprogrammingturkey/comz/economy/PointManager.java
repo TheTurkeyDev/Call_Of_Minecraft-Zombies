@@ -1,31 +1,34 @@
 package com.theprogrammingturkey.comz.economy;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.entity.Player;
 
-import com.theprogrammingturkey.comz.COMZombies;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PointManager
 {
-	private ArrayList<Player> allPlayers = new ArrayList<>();
-	private HashMap<Player, PlayerPoints> playersPoints = new HashMap<>();
+	private static ArrayList<Player> allPlayers = new ArrayList<>();
+	private static HashMap<Player, PlayerPoints> playersPoints = new HashMap<>();
 
-	public void initalizePlayer(Player player)
+	private PointManager()
+	{
+
+	}
+
+	public static void initalizePlayer(Player player)
 	{
 		allPlayers.add(player);
 		playersPoints.put(player, new PlayerPoints(player, 500));
 	}
 
-	public boolean canBuy(Player player, int required)
+	public static boolean canBuy(Player player, int required)
 	{
 		return getPlayerPoints(player).canWithdraw(required);
 	}
 
-	public PlayerPoints getPlayerPoints(Player player)
+	public static PlayerPoints getPlayerPoints(Player player)
 	{
 		if(allPlayers.contains(player))
 		{
@@ -42,7 +45,7 @@ public class PointManager
 		}
 	}
 
-	public void addPoints(Player player, int amount)
+	public static void addPoints(Player player, int amount)
 	{
 		if(allPlayers.contains(player) && playersPoints.containsKey(player))
 		{
@@ -58,14 +61,14 @@ public class PointManager
 	/**
 	 * Updates all other players ingame on points change
 	 */
-	public void notifyPlayer(Player player)
+	public static void notifyPlayer(Player player)
 	{
 		Game game = GameManager.INSTANCE.getGame(player);
 		if(game == null) return;
 		game.scoreboard.update();
 	}
 
-	public void takePoints(Player player, int amount)
+	public static void takePoints(Player player, int amount)
 	{
 		if(allPlayers.contains(player))
 		{
@@ -78,7 +81,7 @@ public class PointManager
 		}
 	}
 
-	public void unloadPlayer(Player player)
+	public static void unloadPlayer(Player player)
 	{
 		if(playersPoints.containsKey(player))
 		{
@@ -87,17 +90,17 @@ public class PointManager
 		}
 	}
 
-	public void playerLeaveGame(Player player)
+	public static void playerLeaveGame(Player player)
 	{
 		playersPoints.remove(player);
 	}
 
-	public int getPlayersPoints(Player player)
+	public static int getPlayersPoints(Player player)
 	{
 		return playersPoints.get(player).getPoints();
 	}
 
-	public void saveAll()
+	public static void saveAll()
 	{
 		for(int i = 0; i < playersPoints.size(); i++)
 		{
@@ -105,7 +108,7 @@ public class PointManager
 		}
 	}
 
-	public void clearGamePoints(Game game)
+	public static void clearGamePoints(Game game)
 	{
 		for(Player pl : game.players)
 		{
@@ -113,7 +116,7 @@ public class PointManager
 		}
 	}
 
-	public void setPoints(Player player, int points)
+	public static void setPoints(Player player, int points)
 	{
 		if(playersPoints.containsKey(player))
 		{

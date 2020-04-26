@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.ConfigManager;
+import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
@@ -215,10 +216,10 @@ public class OnZombiePerkDrop implements Listener
 					for(Player pl : game.players)
 					{
 						if(game.isDoublePoints())
-							COMZombies.getPlugin().pointManager.addPoints(player, 800);
+							PointManager.addPoints(player, 800);
 						else
-							COMZombies.getPlugin().pointManager.addPoints(player, 400);
-						COMZombies.getPlugin().pointManager.notifyPlayer(pl);
+							PointManager.addPoints(player, 400);
+						PointManager.notifyPlayer(pl);
 					}
 					game.spawnManager.nuke();
 					event.setCancelled(true);

@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.game;
 
 import java.util.HashMap;
 
+import com.theprogrammingturkey.comz.economy.PointManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -70,7 +71,7 @@ public class GameScoreboard
 		{
 			try
 			{
-				playerScores.get(player).setScore(COMZombies.getPlugin().pointManager.getPlayersPoints(player));
+				playerScores.get(player).setScore(PointManager.getPlayersPoints(player));
 			} catch(NullPointerException e)
 			{
 				playerScores.get(player).setScore(500);

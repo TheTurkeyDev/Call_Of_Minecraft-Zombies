@@ -4,6 +4,7 @@ import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.commands.CommandUtil;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
+import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Door;
@@ -107,7 +108,7 @@ public class OnSignInteractEvent implements Listener
 						{
 							points = 10;
 						}
-						if(plugin.pointManager.canBuy(player, points))
+						if(PointManager.canBuy(player, points))
 						{
 							RandomBox box = game.boxManager.getBox(sign.getLocation());
 							if(box != null)
@@ -141,7 +142,7 @@ public class OnSignInteractEvent implements Listener
 						}
 						else
 						{
-							int playerPoints = plugin.pointManager.getPlayersPoints(player);
+							int playerPoints = PointManager.getPlayersPoints(player);
 							int cost;
 							try
 							{
@@ -180,8 +181,8 @@ public class OnSignInteractEvent implements Listener
 								{
 									player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
 								}
-								plugin.pointManager.takePoints(player, cost);
-								plugin.pointManager.notifyPlayer(player);
+								PointManager.takePoints(player, cost);
+								PointManager.notifyPlayer(player);
 							}
 							else
 							{
@@ -201,7 +202,7 @@ public class OnSignInteractEvent implements Listener
 							}
 						}
 						int cost = Integer.parseInt(sign.getLine(2));
-						if(plugin.pointManager.canBuy(player, cost))
+						if(PointManager.canBuy(player, cost))
 						{
 							GunManager manager = game.getPlayersGun(player);
 							if(manager.isGun())
@@ -216,7 +217,7 @@ public class OnSignInteractEvent implements Listener
 									CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Your " + ChatColor.GOLD + gun.getType().name + ChatColor.RED + " was Pack-A-Punched");
 									player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
 									gun.setPackOfPunch(true);
-									plugin.pointManager.takePoints(player, cost);
+									PointManager.takePoints(player, cost);
 								}
 							}
 							else
@@ -242,7 +243,7 @@ public class OnSignInteractEvent implements Listener
 						{
 							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "This door is already open!");
 						}
-						else if(plugin.pointManager.getPlayerPoints(player).getPoints() < door.getCost())
+						else if(PointManager.getPlayerPoints(player).getPoints() < door.getCost())
 						{
 							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You don't have enough points!");
 						}
@@ -250,8 +251,8 @@ public class OnSignInteractEvent implements Listener
 						{
 							door.openDoor();
 							door.playerDoorOpenSound();
-							plugin.pointManager.takePoints(player, door.getCost());
-							plugin.pointManager.notifyPlayer(player);
+							PointManager.takePoints(player, door.getCost());
+							PointManager.notifyPlayer(player);
 							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Door opened!");
 						}
 					}
@@ -265,12 +266,12 @@ public class OnSignInteractEvent implements Listener
 						Gun gun = manager.getGun(player.getInventory().getHeldItemSlot());
 						if(manager.isGun() && gun.getType().name.equalsIgnoreCase(guntype.name))
 						{
-							if(plugin.pointManager.canBuy(player, Refilpoints))
+							if(PointManager.canBuy(player, Refilpoints))
 							{
 								manager.getGun(slot).maxAmmo();
 								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Filling ammo!");
-								plugin.pointManager.takePoints(player, Refilpoints);
-								plugin.pointManager.notifyPlayer(player);
+								PointManager.takePoints(player, Refilpoints);
+								PointManager.notifyPlayer(player);
 							}
 							else
 							{
@@ -279,14 +280,14 @@ public class OnSignInteractEvent implements Listener
 						}
 						else
 						{
-							if(plugin.pointManager.canBuy(player, Buypoints))
+							if(PointManager.canBuy(player, Buypoints))
 							{
 								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You got the " + ChatColor.GOLD + "" + ChatColor.BOLD + guntype.name + ChatColor.RED + ChatColor.BOLD + "!");
 								manager.removeGun(manager.getGun(slot));
 								manager.addGun(new Gun(guntype, player, slot));
 								player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1, 1);
-								plugin.pointManager.takePoints(player, Buypoints);
-								plugin.pointManager.notifyPlayer(player);
+								PointManager.takePoints(player, Buypoints);
+								PointManager.notifyPlayer(player);
 							}
 							else
 							{
@@ -338,7 +339,7 @@ public class OnSignInteractEvent implements Listener
 									return;
 								}
 								int points = Integer.parseInt(sign.getLine(3));
-								if(plugin.pointManager.canBuy(player, points))
+								if(PointManager.canBuy(player, points))
 								{
 									ArrayList<Location> locList = g.teleporterManager.getTeleporters().get(sign.getLine(2));
 									Random r = new Random();
@@ -365,8 +366,8 @@ public class OnSignInteractEvent implements Listener
 										}
 									}
 
-									plugin.pointManager.takePoints(player, points);
-									plugin.pointManager.notifyPlayer(player);
+									PointManager.takePoints(player, points);
+									PointManager.notifyPlayer(player);
 								}
 								else
 								{

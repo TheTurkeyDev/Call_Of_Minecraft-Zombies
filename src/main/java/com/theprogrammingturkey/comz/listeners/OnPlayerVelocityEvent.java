@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
@@ -79,7 +80,7 @@ public class OnPlayerVelocityEvent implements Listener
 								{
 									game.spawnManager.setTotalHealth(e, totalHealth - 12);
 								}
-								plugin.pointManager.notifyPlayer(player);
+								PointManager.notifyPlayer(player);
 							}
 							else if(totalHealth - 12 < 1)
 							{

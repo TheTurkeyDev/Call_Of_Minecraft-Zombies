@@ -4,6 +4,7 @@ import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.commands.CommandUtil;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
+import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
@@ -222,7 +223,7 @@ public class Gun
 								{
 									game.spawnManager.setTotalHealth(ent, totalHealth - 10);
 								}
-								plugin.pointManager.notifyPlayer(player);
+								PointManager.notifyPlayer(player);
 							}
 							else if(totalHealth - 10 < 1)
 							{

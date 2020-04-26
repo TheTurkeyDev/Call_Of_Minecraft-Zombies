@@ -12,6 +12,7 @@ import com.theprogrammingturkey.comz.commands.CommandUtil;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
+import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.game.features.DownedPlayer;
 import com.theprogrammingturkey.comz.game.features.RandomBox;
@@ -461,7 +462,7 @@ public class Game
 			player.setHealth(20D);
 			player.setFoodLevel(20);
 			player.setLevel(0);
-			plugin.pointManager.setPoints(player, 500);
+			PointManager.setPoints(player, 500);
 		}
 
 		scoreboard.update();
@@ -623,7 +624,7 @@ public class Game
 			player.setLevel(0);
 			player.setExp(0);
 			player.teleport(lobbyLocation);
-			COMZombies.getPlugin().pointManager.setPoints(player, 500);
+			PointManager.setPoints(player, 500);
 			assignPlayerInventory(player);
 			player.setGameMode(GameMode.SURVIVAL);
 			String gunName = ConfigManager.getConfig(COMZConfig.GUNS).getString("StartingGun", "M1911");
@@ -708,7 +709,7 @@ public class Game
 					starter = null;
 					players.clear();
 					waveNumber = 0;
-					COMZombies.getPlugin().pointManager.clearGamePoints(this);
+					PointManager.clearGamePoints(this);
 					endGame();
 					for(int i = 0; i < doorManager.getDoors().size(); i++)
 					{
@@ -732,7 +733,7 @@ public class Game
 			{
 				e.printStackTrace();
 			}
-			COMZombies.getPlugin().pointManager.playerLeaveGame(player);
+			PointManager.playerLeaveGame(player);
 		} catch(NullPointerException e)
 		{
 			GameManager.INSTANCE.loadAllGames();
@@ -806,7 +807,7 @@ public class Game
 				starter = null;
 				players.clear();
 				waveNumber = 0;
-				COMZombies.getPlugin().pointManager.clearGamePoints(this);
+				PointManager.clearGamePoints(this);
 				endGame();
 				for(int i = 0; i < doorManager.getDoors().size(); i++)
 				{
@@ -825,7 +826,7 @@ public class Game
 			{
 				e.printStackTrace();
 			}
-			COMZombies.getPlugin().pointManager.playerLeaveGame(player);
+			PointManager.playerLeaveGame(player);
 		} catch(NullPointerException e)
 		{
 			GameManager.INSTANCE.loadAllGames();

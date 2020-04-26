@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.game.features;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.ConfigManager;
+import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.Bukkit;
@@ -120,7 +121,7 @@ public class DownedPlayer implements Listener
 				player.setWalkSpeed(0.2F);
 				player.setHealth(20);
 				setPlayerDown(false);
-				plugin.pointManager.addPoints(reviver, 10);
+				PointManager.addPoints(reviver, 10);
 				reviver = null;
 			}
 		}, reviveTime);

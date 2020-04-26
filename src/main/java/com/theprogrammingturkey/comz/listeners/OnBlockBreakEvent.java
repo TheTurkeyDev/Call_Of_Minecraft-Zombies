@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.commands.CommandUtil;
+import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Barrier;
@@ -102,7 +103,7 @@ public class OnBlockBreakEvent implements Listener
 					if(b != null)
 					{
 						b.repair();
-						plugin.pointManager.addPoints(player, b.getReward());
+						PointManager.addPoints(player, b.getReward());
 					}
 					else
 					{

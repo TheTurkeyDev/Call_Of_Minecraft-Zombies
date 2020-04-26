@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.game.features;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.commands.CommandUtil;
+import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.guns.Gun;
@@ -36,7 +37,7 @@ public class RandomBox
 		{
 			return;
 		}
-		if(!COMZombies.getPlugin().pointManager.canBuy(player, PointsNeeded))
+		if(!PointManager.canBuy(player, PointsNeeded))
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You don't have enough points!");
 			return;
@@ -65,8 +66,8 @@ public class RandomBox
 		manager.removeGun(manager.getGun(slot));
 		manager.addGun(new Gun(gun, player, slot));
 		player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
-		COMZombies.getPlugin().pointManager.takePoints(player, PointsNeeded);
-		COMZombies.getPlugin().pointManager.notifyPlayer(player);
+		PointManager.takePoints(player, PointsNeeded);
+		PointManager.notifyPlayer(player);
 		/*plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
 		{
 			int time = 15;
