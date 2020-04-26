@@ -1,0 +1,11 @@
+name: COM_Zombies
+main: com.theprogrammingturkey.comz.COMZombies
+authors: [Turkey2349]
+description: 'Call of Minecraft: Zombies'
+version: '${project.version}'
+api-version: '1.15'
+load: POSTWORLD
+commands:
+  zombies:
+    description: Type /zombies help for more info!
+    aliases: [z, zo, zom]

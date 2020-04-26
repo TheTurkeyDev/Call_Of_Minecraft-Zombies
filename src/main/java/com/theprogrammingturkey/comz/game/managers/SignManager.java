@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import org.bukkit.Bukkit;
@@ -24,7 +25,7 @@ public class SignManager
 	public SignManager(Game game)
 	{
 		this.game = game;
-		conf = COMZombies.getPlugin().configManager.getConfig("Signs");
+		conf = COMZombies.getPlugin().configManager.getConfig(COMZConfig.SIGNS);
 		load();
 	}
 
@@ -93,7 +94,7 @@ public class SignManager
 			}, 20L);
 		} catch(Exception e)
 		{
-			System.out.println(COMZombies.consoleprefix + "Failed to update signs. Could be due to the server closing or restarting");
+			System.out.println(COMZombies.PREFIX + "Failed to update signs. Could be due to the server closing or restarting");
 		}
 	}
 

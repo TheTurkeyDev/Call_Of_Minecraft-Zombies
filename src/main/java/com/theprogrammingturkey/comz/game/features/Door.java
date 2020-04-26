@@ -3,6 +3,7 @@ package com.theprogrammingturkey.comz.game.features;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.util.BlockUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -68,7 +69,7 @@ public class Door
 	private void loadDoor()
 	{
 		String location = game.getName() + ".Doors.door" + doorNumber;
-		ArrayList<String> spawns = (ArrayList<String>) plugin.configManager.getConfig("ArenaConfig").getStringList(location + ".SpawnPoints");
+		ArrayList<String> spawns = (ArrayList<String>) plugin.configManager.getConfig(COMZConfig.ARENAS).getStringList(location + ".SpawnPoints");
 		ArrayList<SpawnPoint> points = new ArrayList<>();
 		for(String spawn : spawns)
 		{
@@ -96,7 +97,7 @@ public class Door
 
 	private void loadSigns()
 	{
-		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
+		CustomConfig config = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		String location = game.getName() + ".Doors.door" + doorNumber;
 		try
 		{
@@ -180,7 +181,7 @@ public class Door
 
 	public void closeDoor()
 	{
-		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
+		CustomConfig config = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		try
 		{
 			for(String key : config.getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Blocks").getKeys(false))
@@ -233,7 +234,7 @@ public class Door
 
 	private void loadBlocks()
 	{
-		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
+		CustomConfig config = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		try
 		{
 			for(String key : config.getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Blocks").getKeys(false))
@@ -261,7 +262,7 @@ public class Door
 	 */
 	public void saveBlocks(Location p1, Location p2)
 	{
-		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
+		CustomConfig config = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		if(p1 != null && p2 != null)
 		{
 			int x1 = Math.min(p1.getBlockX(), p2.getBlockX()); // Eg. 5
@@ -293,7 +294,7 @@ public class Door
 			config.saveConfig();
 		}
 
-		plugin.configManager.getConfig("ArenaConfig").saveConfig();
+		plugin.configManager.getConfig(COMZConfig.ARENAS).saveConfig();
 	}
 
 	public ArrayList<Block> getBlocks()
@@ -313,7 +314,7 @@ public class Door
 
 	public void removeSelfFromConfig()
 	{
-		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
+		CustomConfig config = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		config.set(game.getName() + ".Doors.door" + doorNumber, null);
 		config.saveConfig();
 	}

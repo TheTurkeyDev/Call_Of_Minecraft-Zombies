@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.Door;
 import net.minecraft.server.v1_15_R1.AttributeInstance;
@@ -55,7 +56,7 @@ public class SpawnManager
 
 	public void loadAllSpawnsToGame()
 	{
-		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
+		CustomConfig config = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		points.clear();
 		try
 		{
@@ -101,7 +102,7 @@ public class SpawnManager
 
 	public void removePoint(Player player, SpawnPoint point)
 	{
-		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
+		CustomConfig config = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		if(points.contains(point))
 		{
 			Location loc = point.getLocation();
@@ -478,7 +479,7 @@ public class SpawnManager
 		if(players.size() == 0)
 		{
 			this.game.endGame();
-			Bukkit.broadcastMessage(COMZombies.prefix + "SmartSpawn was sent a players list with no players in it! Game was ended");
+			Bukkit.broadcastMessage(COMZombies.PREFIX + "SmartSpawn was sent a players list with no players in it! Game was ended");
 			return;
 		}
 		zombiesToSpawn = (int) ((wave * 0.15) * 30) + (2 * players.size());
@@ -530,7 +531,7 @@ public class SpawnManager
 		try
 		{
 			for(@SuppressWarnings("unused")
-					String key : plugin.configManager.getConfig("ArenaConfig").getConfigurationSection(game.getName() + ".ZombieSpawns").getKeys(false))
+					String key : plugin.configManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(game.getName() + ".ZombieSpawns").getKeys(false))
 			{
 				spawnNum++;
 			}
@@ -547,13 +548,13 @@ public class SpawnManager
 	public void addSpawnToConfig(SpawnPoint spawn)
 	{
 		World world = null;
-		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		try
 		{
 			world = spawn.getLocation().getWorld();
 		} catch(Exception e)
 		{
-			Bukkit.broadcastMessage(ChatColor.RED + "" + ChatColor.BOLD + "[Zombies] Could not retrieve the world " + world.getName());
+			Bukkit.broadcastMessage(COMZombies.PREFIX + " Could not retrieve the world " + world.getName());
 			return;
 		}
 		double x = spawn.getLocation().getBlockX();

@@ -1,6 +1,9 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.commands.CommandUtil;
+import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.Door;
 import org.bukkit.Bukkit;
@@ -13,10 +16,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-
-import com.theprogrammingturkey.comz.commands.CommandUtil;
-import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 
 public class OnPlayerChatEvent implements Listener
 {
@@ -35,7 +34,7 @@ public class OnPlayerChatEvent implements Listener
 				Sign sign = plugin.isEditingASign.get(player);
 				plugin.isEditingASign.remove(player);
 				Bukkit.getServer().getPluginManager().callEvent(new SignChangeEvent(sign.getBlock(), player, sign.getLines()));
-				CommandUtil.sendMessageToPlayer(player, "You are No longr editing a sign");
+				CommandUtil.sendMessageToPlayer(player, "You are No longer editing a sign");
 				playerChat.setCancelled(true);
 				sign.update();
 			}
@@ -192,6 +191,7 @@ public class OnPlayerChatEvent implements Listener
 			}
 			else if(message.equalsIgnoreCase("sw"))
 			{
+				//TODO: Don't Limit to be inside arena
 				Location loc = player.getLocation();
 				Game game = plugin.isArenaSetup.get(player);
 				if(!game.setSpectateLocation(player, loc))

@@ -2,11 +2,8 @@ package com.theprogrammingturkey.comz.guns;
 
 import org.bukkit.Material;
 
-import com.theprogrammingturkey.comz.COMZombies;
-
 public class GunType
 {
-	public COMZombies plugin;
 	public String name;
 	public GunTypeEnum type;
 	public Material gunItem;

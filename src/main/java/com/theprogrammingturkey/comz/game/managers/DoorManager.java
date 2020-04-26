@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.Door;
@@ -55,7 +56,7 @@ public class DoorManager
 		String location = game.getName() + ".Doors";
 		try
 		{
-			for(String key : plugin.configManager.getConfig("ArenaConfig").getConfigurationSection(location).getKeys(false))
+			for(String key : plugin.configManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(location).getKeys(false))
 			{
 				Door door = new Door(plugin, game, Integer.parseInt(key.substring(4)));
 				door.loadAll();
@@ -96,7 +97,7 @@ public class DoorManager
 	 */
 	public void addDoorSignToConfig(Door door, Location location)
 	{
-		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		int x = location.getBlockX();
 		int y = location.getBlockY();
 		int z = location.getBlockZ();
@@ -116,7 +117,7 @@ public class DoorManager
 	 */
 	public void addDoorSpawnPointToConfig(Door door, SpawnPoint spawnPoint)
 	{
-		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		List<String> spawnPoints = conf.getStringList(game.getName() + ".Doors.door" + door.doorNumber + ".SpawnPoints");
 		if(spawnPoints.contains(spawnPoint.getName())) return;
 		spawnPoints.add(spawnPoint.getName());
@@ -136,7 +137,7 @@ public class DoorManager
 		try
 		{
 			for(@SuppressWarnings("unused")
-					String s : plugin.configManager.getConfig("ArenaConfig").getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Signs").getKeys(false))
+					String s : plugin.configManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Signs").getKeys(false))
 			{
 				i++;
 			}
@@ -158,7 +159,7 @@ public class DoorManager
 		try
 		{
 			for(@SuppressWarnings("unused")
-					String s : plugin.configManager.getConfig("ArenaConfig").getConfigurationSection(game.getName() + ".Doors").getKeys(false))
+					String s : plugin.configManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(game.getName() + ".Doors").getKeys(false))
 			{
 				i++;
 			}

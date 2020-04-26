@@ -3,6 +3,7 @@ package com.theprogrammingturkey.comz.game.managers;
 import java.util.ArrayList;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.Barrier;
@@ -26,7 +27,7 @@ public class BarrierManager
 
 	public void loadAllBarriersToGame()
 	{
-		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		barriers.clear();
 		try
 		{
@@ -111,7 +112,7 @@ public class BarrierManager
 	{
 		if(barriers.contains(barrier))
 		{
-			CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+			CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
 			conf.set(game.getName() + ".Barriers." + barrier.getNum(), null);
 			conf.saveConfig();
 			loadAllBarriersToGame();
@@ -123,7 +124,7 @@ public class BarrierManager
 
 	public void addBarrier(Barrier barrier)
 	{
-		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		if(game.mode == Game.ArenaStatus.DISABLED || game.mode == Game.ArenaStatus.WAITING)
 		{
 			boolean same = false;
@@ -158,7 +159,7 @@ public class BarrierManager
 
 	public void UpdateBarrier(Barrier barrier)
 	{
-		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		if(game.mode == Game.ArenaStatus.DISABLED || game.mode == Game.ArenaStatus.WAITING)
 		{
 			boolean same = false;

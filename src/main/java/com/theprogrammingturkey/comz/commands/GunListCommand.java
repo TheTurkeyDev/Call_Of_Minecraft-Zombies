@@ -18,7 +18,7 @@ public class GunListCommand implements SubCommand
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "---------" + ChatColor.GOLD + "Guns" + ChatColor.RED + "----------");
 			if(plugin.possibleGuns.size() == 0)
 			{
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You have no guns! Make sure COM: Z can read from your " + ChatColor.GOLD + "GunConfig.yml");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You have no guns! Make sure COM: Z can read from your " + ChatColor.GOLD + "guns.yml");
 			}
 			GunTypeEnum currentType = plugin.possibleGuns.get(0).type;
 			CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + currentType.toString());

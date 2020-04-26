@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.RandomBox;
@@ -36,7 +37,7 @@ public class BoxManager
 
 	public void loadAllBoxesToGame()
 	{
-		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
+		CustomConfig config = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		boxes.clear();
 		numbers.clear();
 		try
@@ -95,7 +96,7 @@ public class BoxManager
 
 	public void removeBox(Player player, RandomBox box)
 	{
-		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		if(boxes.contains(box))
 		{
 			Location loc = box.getLocation();
@@ -112,7 +113,7 @@ public class BoxManager
 
 	public void addBox(RandomBox box)
 	{
-		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		if(game.mode == Game.ArenaStatus.DISABLED || game.mode == Game.ArenaStatus.WAITING)
 		{
 			boolean same = false;

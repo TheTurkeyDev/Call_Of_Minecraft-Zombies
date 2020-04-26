@@ -252,7 +252,7 @@ public class OnEntityDamageEvent implements Listener
 		}
 		if(!game.downedPlayerManager.isPlayerDowned(player))
 		{
-			Bukkit.broadcastMessage(COMZombies.prefix + player.getName() + " Has gone down! Stand close and right click him to revive");
+			Bukkit.broadcastMessage(COMZombies.PREFIX + player.getName() + " Has gone down! Stand close and right click him to revive");
 			DownedPlayer down = new DownedPlayer(player, game);
 			down.setPlayerDown(true);
 			game.downedPlayerManager.addDownedPlayer(down);

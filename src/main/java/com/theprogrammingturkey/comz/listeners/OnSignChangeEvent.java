@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.config.COMZConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -122,7 +123,7 @@ public class OnSignChangeEvent implements Listener
 					sign.setLine(1, ChatColor.AQUA + "power");
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type /z disablepower " + game.getName() + " to disable the power!");
 
-					CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+					CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
 
 					conf.set(game.getName() + ".Power", true);
 

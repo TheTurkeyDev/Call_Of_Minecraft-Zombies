@@ -21,16 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
@@ -108,8 +99,6 @@ public class COMZombies extends JavaPlugin
 	 */
 	public HashMap<Player, Sign> isEditingASign = new HashMap<>();
 
-	public URL bukkitPage;
-
 	/**
 	 * Called when the plugin is reloading to cancel every remove spawn, create
 	 * door, and arena setup operation.
@@ -122,8 +111,7 @@ public class COMZombies extends JavaPlugin
 		isRemovingDoors.clear();
 	}
 
-	public static String prefix = ChatColor.RED + "< " + ChatColor.GOLD + ChatColor.ITALIC + "CoM: Zombies" + ChatColor.RED + " >" + ChatColor.GRAY + " ";
-	public static String consoleprefix = "[COM_Zombies]";
+	public static final String PREFIX = ChatColor.RED + "[ " + ChatColor.GOLD + ChatColor.ITALIC + "CoM: Zombies" + ChatColor.RED + " ]" + ChatColor.GRAY + " ";
 	/**
 	 * List of every gun contained in the config.
 	 */
@@ -135,8 +123,6 @@ public class COMZombies extends JavaPlugin
 	public ConfigSetup config;
 	/**
 	 * Enables the plugin.
-	 *
-	 * @category Custom constructor
 	 */
 	public SignManager signManager;
 	public ConfigManager configManager;
@@ -148,6 +134,7 @@ public class COMZombies extends JavaPlugin
 		configManager = new ConfigManager();
 		reloadConfig();
 		config = new ConfigSetup();
+		config.setup();
 		manager = new GameManager();
 		kitManager = new KitManager();
 		kitManager.loadKits();
@@ -159,79 +146,27 @@ public class COMZombies extends JavaPlugin
 		registerEvents();
 
 		boolean say = true;
-		Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] " + ChatColor.GREEN + "" + ChatColor.BOLD + "This server is running " + ChatColor.GOLD + "" + ChatColor.BOLD + getName() + ChatColor.RED + "" + ChatColor.BOLD + "!");
-		Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] " + ChatColor.GREEN + "" + ChatColor.BOLD + "Testing plugin...");
+		Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.GREEN + "" + ChatColor.BOLD + "This server is running " + ChatColor.GOLD + "" + ChatColor.BOLD + getName() + ChatColor.RED + "" + ChatColor.BOLD + "!");
+		Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.GREEN + "" + ChatColor.BOLD + "Testing plugin...");
 		try
 		{
 			testPlugin();
 		} catch(Exception e)
 		{
-			Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] " + ChatColor.DARK_RED + "Zombies has run into an error!");
-			Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] " + ChatColor.DARK_RED + e.toString());
+			Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.DARK_RED + "Zombies has run into an error!");
+			Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.DARK_RED + e.toString());
 
 			say = false;
 		}
 		if(say)
 		{
-			Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] " + ChatColor.GREEN + "" + ChatColor.BOLD + "Zombies is working just fine!");
+			Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.GREEN + "" + ChatColor.BOLD + "Zombies is working just fine!");
 			saveConfig();
 		}
 
-
 		getCommand("zombies").setExecutor(command);
 
-		log.info(COMZombies.consoleprefix + " has been enabled!");
-
-		if(getConfig().getBoolean("config.settings.checkForUpdates"))
-		{
-			try
-			{
-				bukkitPage = new URL("https://api.curseforge.com/servermods/files?projectIds=53465");
-			} catch(MalformedURLException e1)
-			{
-				Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] " + ChatColor.DARK_RED + "COM:Z has run into an issue connection to the bukkit page");
-				return;
-			}
-			try
-			{
-				InputStream stream = bukkitPage.openConnection().getInputStream();
-				final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-				String response = reader.readLine();
-
-				// Parse the array of files from the query's response
-				JSONArray array = (JSONArray) JSONValue.parse(response);
-
-				if(array.size() > 0)
-				{
-					JSONObject latest = (JSONObject) array.get(array.size() - 1);
-					String versionName = (String) latest.get("name");
-					String versionLink = (String) latest.get("downloadUrl");
-					//String versionType = (String) latest.get("releaseType");
-					//String versionFileName = (String) latest.get("fileName");
-					//String versionGameVersion = (String) latest.get("gameVersion");
-					versionName = versionName.substring(versionName.indexOf("v") + 1);
-					if(versionName.contains(" "))
-					{
-						versionName = versionName.substring(0, versionName.indexOf(" "));
-					}
-					if(!getDescription().getVersion().equalsIgnoreCase(versionName))
-					{
-						Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] " + ChatColor.DARK_RED + "" + ChatColor.BOLD + "There is an update availible for COM:Z that differs from yours!");
-						System.out.println(ChatColor.RED + "[Zombies] " + ChatColor.DARK_RED + "" + ChatColor.BOLD + "You currently have version: " + getDescription().getVersion() + " and the current version fro COM:Z is verion: " + versionName);
-						System.out.println(ChatColor.RED + "[Zombies] " + ChatColor.DARK_RED + "" + ChatColor.BOLD + "Get the latest version of COM:Z here: " + versionLink);
-					}
-
-				}
-				else
-				{
-					System.out.println("There are no files for this project");
-				}
-			} catch(IOException e)
-			{
-				Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] " + ChatColor.DARK_RED + "COM:Z has run into an issue connection to the bukkit page");
-				return;
-			}
-		}
+		log.info(COMZombies.PREFIX + " has been enabled!");
 
 		manager.loadAllGames();
 	}
@@ -295,7 +230,7 @@ public class COMZombies extends JavaPlugin
 			g.endGame();
 		}
 		manager.games.clear();
-		log.info("[Zombies] has been disabled!");
+		log.info(COMZombies.PREFIX + " has been disabled!");
 	}
 
 	/**
@@ -313,6 +248,7 @@ public class COMZombies extends JavaPlugin
 				return type;
 			}
 		}
+		//TODO: Default gun
 		return null;
 	}
 

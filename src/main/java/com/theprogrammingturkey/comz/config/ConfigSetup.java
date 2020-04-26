@@ -89,10 +89,10 @@ public class ConfigSetup
 	/**
 	 * Main method to assign values to every field.
 	 */
-	public void Setup()
+	public void setup()
 	{
 		COMZombies plugin = COMZombies.getPlugin();
-		CustomConfig conf = plugin.configManager.getConfig("GunConfig");
+		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.GUNS);
 		MultiBox = plugin.getConfig().getBoolean("config.gameSettings.MultipleMysteryBoxes");
 		doublePointsTimer = plugin.getConfig().getInt("config.gameSettings.doublePointsTimer");
 		instaKillTimer = plugin.getConfig().getInt("config.gameSettings.instaKillTimer");
@@ -150,7 +150,7 @@ public class ConfigSetup
 
 		try
 		{
-			CustomConfig killsconf = plugin.configManager.getConfig("kills");
+			CustomConfig killsconf = plugin.configManager.getConfig(COMZConfig.KILLS);
 			for(String a : killsconf.getConfigurationSection("Kills").getKeys(true))
 			{
 				PlayerStats stat = new PlayerStats(a, killsconf.getInt("Kills." + a));

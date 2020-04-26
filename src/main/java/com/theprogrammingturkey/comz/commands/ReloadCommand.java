@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.commands;
 
+import com.theprogrammingturkey.comz.config.COMZConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -19,7 +20,7 @@ public class ReloadCommand implements SubCommand
 			{
 				Bukkit.getServer().getPluginManager().disablePlugin(plugin);
 				Bukkit.getServer().getPluginManager().enablePlugin(plugin);
-				plugin.configManager.getConfig("ArenaConfig").reloadConfig();
+				plugin.configManager.getConfig(COMZConfig.ARENAS).reloadConfig();
 				plugin.reloadConfig();
 				for(Game gl : plugin.manager.games)
 				{

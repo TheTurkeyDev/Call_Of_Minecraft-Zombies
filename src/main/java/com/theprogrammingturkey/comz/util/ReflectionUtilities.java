@@ -24,7 +24,7 @@ public class ReflectionUtilities
 			field.set(instance, value);
 		} catch(Exception e)
 		{
-			COMZombies.log.log(Level.WARNING, COMZombies.consoleprefix + " Failed on particles!");
+			COMZombies.log.log(Level.WARNING, COMZombies.PREFIX + " Failed on particles!");
 		}
 	}
 

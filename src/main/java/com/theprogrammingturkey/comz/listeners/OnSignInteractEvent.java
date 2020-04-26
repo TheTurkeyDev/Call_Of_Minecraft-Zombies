@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.commands.CommandUtil;
+import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.game.features.PerkType;
@@ -32,7 +33,6 @@ import java.util.Random;
 public class OnSignInteractEvent implements Listener
 {
 
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void RightClickSign(PlayerInteractEvent event)
 	{
@@ -294,7 +294,7 @@ public class OnSignInteractEvent implements Listener
 					}
 					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "power"))
 					{
-						if(plugin.configManager.getConfig("ArenaConfig").getBoolean(game.getName() + ".Power"))
+						if(plugin.configManager.getConfig(COMZConfig.ARENAS).getBoolean(game.getName() + ".Power"))
 						{
 							if(plugin.manager.isPlayerInGame(player))
 							{

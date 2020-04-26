@@ -1,5 +1,10 @@
 package com.theprogrammingturkey.comz.config;
 
+import com.theprogrammingturkey.comz.COMZombies;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,31 +15,25 @@ import java.io.Reader;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-
-import com.theprogrammingturkey.comz.COMZombies;
-
 public class CustomConfig
 {
 	private FileConfiguration fileConfig;
 	private File file;
 
-	private String name;
+	private COMZConfig config;
 
 
-	public CustomConfig(File folder, String name, boolean loadFromExist)
+	public CustomConfig(File folder, COMZConfig config, boolean loadFromExist)
 	{
 		COMZombies plugin = COMZombies.getPlugin();
-		this.name = name;
+		this.config = config;
 		if(loadFromExist)
 		{
 			this.loadConfigFromExisting();
 		}
 		else
 		{
-			file = new File(plugin.getDataFolder(), name + ".yml");
+			file = new File(folder, config.getFileName());
 			if(!file.exists())
 			{
 				try
@@ -54,7 +53,7 @@ public class CustomConfig
 		COMZombies plugin = COMZombies.getPlugin();
 		if(file == null)
 		{
-			file = new File(plugin.getDataFolder(), name + ".yml");
+			file = new File(plugin.getDataFolder(), config.getFileName());
 		}
 
 		if(!file.exists())
@@ -62,7 +61,7 @@ public class CustomConfig
 			try
 			{
 				file.createNewFile();
-				Reader defConfigStream = new InputStreamReader(plugin.getResource(name + ".yml"), "UTF8");
+				Reader defConfigStream = new InputStreamReader(plugin.getResource(config.getFileName()), "UTF8");
 				BufferedWriter writter = new BufferedWriter(new FileWriter(file.getAbsolutePath()));
 				BufferedReader reader = new BufferedReader(defConfigStream);
 				String line = "";
@@ -74,7 +73,7 @@ public class CustomConfig
 				writter.close();
 			} catch(IOException e)
 			{
-				COMZombies.log.log(Level.SEVERE, COMZombies.consoleprefix + " Unable to load the COM:Z default guns config! THIS IS BAD!!!");
+				COMZombies.log.log(Level.SEVERE, COMZombies.PREFIX + " Unable to load the COM:Z default guns config! THIS IS BAD!!!");
 				e.printStackTrace();
 			}
 		}
@@ -99,9 +98,9 @@ public class CustomConfig
 		fileConfig = YamlConfiguration.loadConfiguration(file);
 	}
 
-	public String getName()
+	public COMZConfig getConfig()
 	{
-		return this.name;
+		return config;
 	}
 
 	/***

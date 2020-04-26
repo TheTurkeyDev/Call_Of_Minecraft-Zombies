@@ -9,6 +9,8 @@ package com.theprogrammingturkey.comz.game;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.commands.CommandUtil;
+import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.game.features.DownedPlayer;
@@ -242,7 +244,7 @@ public class Game
 		plugin = zombies;
 		arenaName = name;
 
-		powerEnabled = plugin.configManager.getConfig("ArenaConfig").getBoolean(name + ".Power", false);
+		powerEnabled = plugin.configManager.getConfig(COMZConfig.ARENAS).getBoolean(name + ".Power", false);
 
 		starter = new AutoStart(this, 60);
 
@@ -264,7 +266,7 @@ public class Game
 		doorManager.loadAllDoorsToGame();
 		teleporterManager.loadAllTeleportersToGame();
 
-		if(plugin.configManager.getConfig("ArenaConfig").getBoolean(arenaName + ".IsForceNight", false))
+		if(plugin.configManager.getConfig(COMZConfig.ARENAS).getBoolean(arenaName + ".IsForceNight", false))
 		{
 			forceNight();
 		}
@@ -631,7 +633,7 @@ public class Game
 			plugin.pointManager.setPoints(player, 500);
 			assignPlayerInventory(player);
 			player.setGameMode(GameMode.SURVIVAL);
-			String gunName = plugin.configManager.getConfig("GunConfig").getString("StartingGun", "M1911");
+			String gunName = plugin.configManager.getConfig(COMZConfig.GUNS).getString("StartingGun", "M1911");
 			waveNumber = 0;
 			for(Player pl : players)
 			{
@@ -659,7 +661,7 @@ public class Game
 			{
 				CommandUtil.sendMessageToPlayer(pl, player.getName() + " has joined with " + players.size() + "/" + maxPlayers + "!");
 			}
-			if(players.size() >= plugin.configManager.getConfig("ArenaConfig").getInt(arenaName + ".minPlayers"))
+			if(players.size() >= plugin.configManager.getConfig(COMZConfig.ARENAS).getInt(arenaName + ".minPlayers"))
 			{
 				if(starter == null)
 				{
@@ -1053,7 +1055,7 @@ public class Game
 	 */
 	public void saveLocationsInConfig(Player player)
 	{
-		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
 
 		if(min.getWorld().getName() != null)
 		{
@@ -1099,7 +1101,7 @@ public class Game
 	 */
 	public void enable()
 	{
-		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		conf.reloadConfig();
 		if(conf.getString(arenaName + ".Location.world") == null)
 			worldName = arena.getWorld();
@@ -1149,7 +1151,7 @@ public class Game
 	{
 
 		// Sets up ArenaConfig
-		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		// Adding ArenaName
 		String loc = arenaName;
 		conf.set(loc + ".Power", false);
@@ -1241,7 +1243,7 @@ public class Game
 	 */
 	public void removeFromConfig()
 	{
-		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
 		try
 		{
 			conf.set(arenaName, null);
@@ -1403,7 +1405,7 @@ public class Game
 
 	public void zombieKilled(Player player)
 	{
-		CustomConfig conf = plugin.configManager.getConfig("kills");
+		CustomConfig conf = plugin.configManager.getConfig(COMZConfig.KILLS);
 		Leaderboards lb = plugin.leaderboards;
 		if(conf.contains("Kills." + player.getName()))
 		{

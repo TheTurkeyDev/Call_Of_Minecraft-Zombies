@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.commands;
 
+import com.theprogrammingturkey.comz.config.COMZConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -32,7 +33,7 @@ public class DisablePowerCommand implements SubCommand
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must disable this arena first!");
 						return true;
 					}
-					CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
+					CustomConfig conf = plugin.configManager.getConfig(COMZConfig.ARENAS);
 					conf.set(game.getName() + ".Power", false);
 					game.enable();
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Power diabled!");

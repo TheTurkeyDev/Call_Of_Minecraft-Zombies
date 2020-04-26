@@ -1,9 +1,9 @@
 package com.theprogrammingturkey.comz.config;
 
+import com.theprogrammingturkey.comz.COMZombies;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.theprogrammingturkey.comz.COMZombies;
 
 public class ConfigManager
 {
@@ -20,17 +20,17 @@ public class ConfigManager
 		plugin.getConfig().options().copyDefaults(true);
 		plugin.saveDefaultConfig();
 
-		configs.add(new CustomConfig(plugin.getDataFolder(), "GunConfig", true));
-		configs.add(new CustomConfig(plugin.getDataFolder(), "ArenaConfig", false));
-		configs.add(new CustomConfig(plugin.getDataFolder(), "Signs", false));
-		configs.add(new CustomConfig(plugin.getDataFolder(), "Kits", false));
-		configs.add(new CustomConfig(plugin.getDataFolder(), "kills", false));
+		configs.add(new CustomConfig(plugin.getDataFolder(), COMZConfig.GUNS, true));
+		configs.add(new CustomConfig(plugin.getDataFolder(), COMZConfig.ARENAS, false));
+		configs.add(new CustomConfig(plugin.getDataFolder(), COMZConfig.SIGNS, false));
+		configs.add(new CustomConfig(plugin.getDataFolder(), COMZConfig.KITS, false));
+		configs.add(new CustomConfig(plugin.getDataFolder(), COMZConfig.KILLS, false));
 	}
 
-	public CustomConfig getConfig(String name)
+	public CustomConfig getConfig(COMZConfig comzConfig)
 	{
 		for(CustomConfig c : configs)
-			if(c.getName().equalsIgnoreCase(name))
+			if(c.getConfig() == comzConfig)
 				return c;
 		return null;
 	}

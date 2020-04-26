@@ -3,6 +3,7 @@ package com.theprogrammingturkey.comz.guns;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.listeners.OnZombiePerkDrop;
 import com.theprogrammingturkey.comz.commands.CommandUtil;
 import com.theprogrammingturkey.comz.game.features.PerkType;
@@ -147,7 +148,7 @@ public class Gun
 	public void reload()
 	{
 		COMZombies plugin = COMZombies.getPlugin();
-		if(plugin.configManager.getConfig("GunConfig").getString("Resource Sounds", "off").equalsIgnoreCase("on"))
+		if(plugin.configManager.getConfig(COMZConfig.GUNS).getString("Resource Sounds", "off").equalsIgnoreCase("on"))
 		{
 			player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
 		}
@@ -317,7 +318,7 @@ public class Gun
 		}
 
 		COMZombies plugin = COMZombies.getPlugin();
-		if(plugin.configManager.getConfig("GunConfig").getString("Resource Sounds", "off").equalsIgnoreCase("on"))
+		if(plugin.configManager.getConfig(COMZConfig.GUNS).getString("Resource Sounds", "off").equalsIgnoreCase("on"))
 		{
 			switch(gun.name)
 			{
