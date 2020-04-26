@@ -46,8 +46,8 @@ public class SignManager
 
 			if(world == null)
 			{
-				COMZombies.log.log(Level.SEVERE, COMZombies.CONOSLE_PREFIX + "World " + s + " Does not exist!");
-				COMZombies.log.log(Level.SEVERE, COMZombies.CONOSLE_PREFIX + "Thus, could not load the sign at " + x + "," + y + "," + z + "!");
+				COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "World " + s + " Does not exist!");
+				COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "Thus, could not load the sign at " + x + "," + y + "," + z + "!");
 				continue;
 			}
 			Block block = world.getBlockAt(x, y, z);
@@ -102,7 +102,7 @@ public class SignManager
 			}, 20L);
 		} catch(Exception e)
 		{
-			COMZombies.log.log(Level.WARNING, COMZombies.CONOSLE_PREFIX + "Failed to update signs. Could be due to the server closing or restarting");
+			COMZombies.log.log(Level.WARNING, COMZombies.CONSOLE_PREFIX + "Failed to update signs. Could be due to the server closing or restarting");
 		}
 	}
 

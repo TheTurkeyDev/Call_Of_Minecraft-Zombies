@@ -68,7 +68,7 @@ public class CustomConfig
 				writter.close();
 			} catch(IOException e)
 			{
-				COMZombies.log.log(Level.SEVERE, COMZombies.CONOSLE_PREFIX + " Unable to load the COM:Z default guns config! THIS IS BAD!!!");
+				COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + " Unable to load the COM:Z default guns config! THIS IS BAD!!!");
 				e.printStackTrace();
 			}
 		}

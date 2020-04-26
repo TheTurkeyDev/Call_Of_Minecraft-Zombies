@@ -27,7 +27,7 @@ import com.theprogrammingturkey.comz.guns.Gun;
 import com.theprogrammingturkey.comz.guns.GunManager;
 import com.theprogrammingturkey.comz.guns.GunType;
 import com.theprogrammingturkey.comz.kits.KitManager;
-import com.theprogrammingturkey.comz.leaderboards.Leaderboards;
+import com.theprogrammingturkey.comz.leaderboards.Leaderboard;
 import com.theprogrammingturkey.comz.leaderboards.PlayerStats;
 import com.theprogrammingturkey.comz.spawning.SpawnManager;
 import net.minecraft.server.v1_15_R1.BlockPosition;
@@ -1386,17 +1386,16 @@ public class Game
 	public void zombieKilled(Player player)
 	{
 		CustomConfig conf = ConfigManager.getConfig(COMZConfig.KILLS);
-		Leaderboards lb = COMZombies.getPlugin().leaderboards;
 		if(conf.contains("Kills." + player.getName()))
 		{
 			int kills = conf.getInt("Kills." + player.getName());
 			kills++;
 			conf.set("Kills." + player.getName(), kills);
-			PlayerStats stat = lb.getPlayerStatFromPlayer(player);
+			PlayerStats stat = Leaderboard.getPlayerStatFromPlayer(player);
 			if(stat == null)
 			{
 				PlayerStats newstat = new PlayerStats(player.getName(), 1);
-				lb.addPlayerStats(newstat);
+				Leaderboard.addPlayerStats(newstat);
 			}
 			else
 			{
@@ -1407,8 +1406,7 @@ public class Game
 		{
 			conf.set("Kills." + player.getName(), 1);
 			PlayerStats stat = new PlayerStats(player.getName(), 1);
-			lb.addPlayerStats(stat);
-
+			Leaderboard.addPlayerStats(stat);
 		}
 		if(COMZombies.getPlugin().vault != null)
 		{

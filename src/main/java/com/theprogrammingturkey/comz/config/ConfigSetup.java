@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.config;
 
 import com.theprogrammingturkey.comz.guns.GunType;
+import com.theprogrammingturkey.comz.leaderboards.Leaderboard;
 import com.theprogrammingturkey.comz.leaderboards.PlayerStats;
 import org.bukkit.Material;
 
@@ -151,10 +152,10 @@ public class ConfigSetup
 		CustomConfig killsconf = ConfigManager.getConfig(COMZConfig.KILLS);
 		if(killsconf.getConfigurationSection("Kills") != null)
 		{
-			for(String a : killsconf.getConfigurationSection("Kills").getKeys(true))
+			for(String a : killsconf.getConfigurationSection("Kills").getKeys(false))
 			{
 				PlayerStats stat = new PlayerStats(a, killsconf.getInt("Kills." + a));
-				plugin.leaderboards.addPlayerStats(stat);
+				Leaderboard.addPlayerStats(stat);
 			}
 		}
 	}

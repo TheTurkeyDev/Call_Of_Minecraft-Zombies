@@ -10,7 +10,6 @@ import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.guns.GunType;
 import com.theprogrammingturkey.comz.kits.KitManager;
-import com.theprogrammingturkey.comz.leaderboards.Leaderboards;
 import com.theprogrammingturkey.comz.listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -35,10 +34,6 @@ public class COMZombies extends JavaPlugin
 	 * Default plugin logger.
 	 */
 	public static final Logger log = Logger.getLogger("COM:Z");
-	/**
-	 * Manages the players leaderboards.
-	 */
-	public Leaderboards leaderboards;
 	/**
 	 * Players put in this hash map are setting up arenas, the value that player
 	 * contains is the game they are setting up.
@@ -93,7 +88,7 @@ public class COMZombies extends JavaPlugin
 		isRemovingDoors.clear();
 	}
 
-	public static final String CONOSLE_PREFIX = "[CoM: Zombies] ";
+	public static final String CONSOLE_PREFIX = "[CoM: Zombies] ";
 	public static final String PREFIX = ChatColor.RED + "[ " + ChatColor.GOLD + ChatColor.ITALIC + "CoM: Zombies" + ChatColor.RED + " ]" + ChatColor.GRAY + " ";
 	/**
 	 * List of every gun contained in the config.
@@ -108,7 +103,6 @@ public class COMZombies extends JavaPlugin
 		ConfigManager.loadFiles();
 		KitManager.loadKits();
 		PointManager.saveAll();
-		leaderboards = new Leaderboards();
 		vault = new Vault();
 		registerEvents();
 
@@ -133,7 +127,7 @@ public class COMZombies extends JavaPlugin
 
 		getCommand("zombies").setExecutor(CommandManager.INSTANCE);
 
-		log.info(COMZombies.CONOSLE_PREFIX + " has been enabled!");
+		log.info(COMZombies.CONSOLE_PREFIX + " has been enabled!");
 
 		GameManager.INSTANCE.loadAllGames();
 	}
@@ -193,7 +187,7 @@ public class COMZombies extends JavaPlugin
 		reloadConfig();
 		ConfigManager.reloadALL();
 		GameManager.INSTANCE.endAll();
-		log.info(COMZombies.CONOSLE_PREFIX + " has been disabled!");
+		log.info(COMZombies.CONSOLE_PREFIX + " has been disabled!");
 	}
 
 	/**

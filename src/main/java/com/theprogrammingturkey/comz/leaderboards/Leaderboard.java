@@ -4,14 +4,19 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
-public class Leaderboards
+public class Leaderboard
 {
 
 	// String being player, PlayerStats being the object that contains info
 	// about that "player" or string
-	private ArrayList<PlayerStats> allPlayers = new ArrayList<>();
+	private static ArrayList<PlayerStats> allPlayers = new ArrayList<>();
 
-	public ArrayList<PlayerStats> createLeaderboard(int size, Player player)
+	private Leaderboard()
+	{
+
+	}
+
+	public static ArrayList<PlayerStats> createLeaderboard(int size, Player player)
 	{
 		if(allPlayers.size() < size)
 		{
@@ -26,7 +31,7 @@ public class Leaderboards
 		return toReturn;
 	}
 
-	public void addPlayerStats(PlayerStats stat)
+	public static void addPlayerStats(PlayerStats stat)
 	{
 		if(allPlayers.size() == 0)
 		{
@@ -43,7 +48,7 @@ public class Leaderboards
 		allPlayers.add(stat);
 	}
 
-	public PlayerStats getPlayerStatFromPlayer(Player p)
+	public static PlayerStats getPlayerStatFromPlayer(Player p)
 	{
 		for(PlayerStats ps : allPlayers)
 		{
@@ -53,7 +58,7 @@ public class Leaderboards
 		return null;
 	}
 
-	public int getRank(Player p)
+	public static int getRank(Player p)
 	{
 		return 0;
 	}
