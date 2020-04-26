@@ -32,6 +32,10 @@ dependencies {
     compileOnly 'org.spigotmc:spigot:1.15.2-R0.1-SNAPSHOT'
 }
 
+processResources {
+    expand projectVersion: project.version
+}
+
 //def reobfFile = file("$buildDir/reobfJar/output.jar")
 //def reobfArtifact = artifacts.add('default', reobfFile) {
 //    type 'jar'
