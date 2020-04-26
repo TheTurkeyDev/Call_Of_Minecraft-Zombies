@@ -14,13 +14,7 @@ public class OnBlockPlaceEvent implements Listener
 	public void onBlockPlaceEvent(BlockPlaceEvent interact)
 	{
 		Player player = interact.getPlayer();
-		if(GameManager.INSTANCE.isPlayerInGame(player))
-		{
+		if(GameManager.INSTANCE.isPlayerInGame(player) || GameManager.INSTANCE.isLocationInGame(interact.getBlock().getLocation()))
 			interact.setCancelled(true);
-		}
-		else if(GameManager.INSTANCE.isLocationInGame(interact.getBlock().getLocation()))
-		{
-			interact.setCancelled(true);
-		}
 	}
 }

@@ -17,13 +17,13 @@ public class ConfigManager
 		plugin.saveDefaultConfig();
 
 		mainConfig = new ConfigSetup();
-		mainConfig.setup();
-
 		configs.put(COMZConfig.GUNS, new CustomConfig(plugin.getDataFolder(), COMZConfig.GUNS, true));
-		configs.put(COMZConfig.ARENAS, new CustomConfig(plugin.getDataFolder(), COMZConfig.ARENAS, false));
-		configs.put(COMZConfig.SIGNS, new CustomConfig(plugin.getDataFolder(), COMZConfig.SIGNS, false));
-		configs.put(COMZConfig.KITS, new CustomConfig(plugin.getDataFolder(), COMZConfig.KITS, false));
-		configs.put(COMZConfig.KILLS, new CustomConfig(plugin.getDataFolder(), COMZConfig.KILLS, false));
+		configs.put(COMZConfig.ARENAS, new CustomConfig(plugin.getDataFolder(), COMZConfig.ARENAS, true));
+		configs.put(COMZConfig.SIGNS, new CustomConfig(plugin.getDataFolder(), COMZConfig.SIGNS, true));
+		configs.put(COMZConfig.KITS, new CustomConfig(plugin.getDataFolder(), COMZConfig.KITS, true));
+		configs.put(COMZConfig.KILLS, new CustomConfig(plugin.getDataFolder(), COMZConfig.KILLS, true));
+
+		mainConfig.setup();
 	}
 
 	public static CustomConfig getConfig(COMZConfig comzConfig)

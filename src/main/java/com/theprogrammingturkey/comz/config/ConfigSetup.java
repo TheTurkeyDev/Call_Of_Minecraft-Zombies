@@ -148,17 +148,14 @@ public class ConfigSetup
 		KillMoney = plugin.getConfig().getInt("config.Economy.MoneyPerKill");
 		//PistolMaterial = plugin.getConfig().getInt("config.Guns.PistolMaterial");
 
-		try
+		CustomConfig killsconf = ConfigManager.getConfig(COMZConfig.KILLS);
+		if(killsconf.getConfigurationSection("Kills") != null)
 		{
-			CustomConfig killsconf = ConfigManager.getConfig(COMZConfig.KILLS);
 			for(String a : killsconf.getConfigurationSection("Kills").getKeys(true))
 			{
 				PlayerStats stat = new PlayerStats(a, killsconf.getInt("Kills." + a));
 				plugin.leaderboards.addPlayerStats(stat);
 			}
-		} catch(NullPointerException e)
-		{
-			e.printStackTrace();
 		}
 	}
 }

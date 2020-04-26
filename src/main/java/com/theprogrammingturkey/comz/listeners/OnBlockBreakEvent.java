@@ -35,7 +35,9 @@ public class OnBlockBreakEvent implements Listener
 			Game game = plugin.isRemovingDoors.get(player);
 			Location loc = interact.getBlock().getLocation();
 			Door door = game.doorManager.getDoorFromSign(loc);
-			if(door == null) return;
+			if(door == null)
+				return;
+
 			door.removeSelfFromConfig();
 			interact.setCancelled(true);
 			for(final Sign sign : door.getSigns())
@@ -79,7 +81,9 @@ public class OnBlockBreakEvent implements Listener
 			Game game = plugin.isRemovingBarriers.get(player);
 			Location loc = interact.getBlock().getLocation();
 			Barrier barrier = game.barrierManager.getBarrierFromRepair(loc);
-			if(barrier == null) return;
+			if(barrier == null)
+				return;
+
 			interact.setCancelled(true);
 			game.barrierManager.removeBarrier(player, barrier);
 			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "" + ChatColor.BOLD + "Barrier removed!");
@@ -118,13 +122,15 @@ public class OnBlockBreakEvent implements Listener
 				}
 			}
 			else
+			{
 				interact.setCancelled(true);
+			}
 			return;
 		}
+
 		if(GameManager.INSTANCE.isLocationInGame(interact.getBlock().getLocation()))
-		{
 			interact.setCancelled(true);
-		}
+
 		if(BlockUtils.isSign(interact.getBlock().getType()))
 		{
 			Sign sign = (Sign) interact.getBlock().getState();
@@ -134,9 +140,7 @@ public class OnBlockBreakEvent implements Listener
 			{
 				Game game = GameManager.INSTANCE.getGame(interact.getBlock().getLocation());
 				if(game != null)
-				{
 					game.boxManager.removeBox(interact.getPlayer(), game.boxManager.getBox(sign.getLocation()));
-				}
 			}
 		}
 	}

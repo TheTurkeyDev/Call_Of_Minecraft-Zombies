@@ -24,7 +24,6 @@ public class CustomConfig
 
 	public CustomConfig(File folder, COMZConfig config, boolean loadFromExist)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		this.config = config;
 		if(loadFromExist)
 		{
@@ -51,9 +50,7 @@ public class CustomConfig
 	{
 		COMZombies plugin = COMZombies.getPlugin();
 		if(file == null)
-		{
 			file = new File(plugin.getDataFolder(), config.getFileName());
-		}
 
 		if(!file.exists())
 		{
@@ -63,16 +60,15 @@ public class CustomConfig
 				Reader defConfigStream = new InputStreamReader(plugin.getResource(config.getFileName()), "UTF8");
 				BufferedWriter writter = new BufferedWriter(new FileWriter(file.getAbsolutePath()));
 				BufferedReader reader = new BufferedReader(defConfigStream);
-				String line = "";
+				String line;
 				while((line = reader.readLine()) != null)
-				{
 					writter.write(line + "\n");
-				}
+
 				reader.close();
 				writter.close();
 			} catch(IOException e)
 			{
-				COMZombies.log.log(Level.SEVERE, COMZombies.PREFIX + " Unable to load the COM:Z default guns config! THIS IS BAD!!!");
+				COMZombies.log.log(Level.SEVERE, COMZombies.CONOSLE_PREFIX + " Unable to load the COM:Z default guns config! THIS IS BAD!!!");
 				e.printStackTrace();
 			}
 		}

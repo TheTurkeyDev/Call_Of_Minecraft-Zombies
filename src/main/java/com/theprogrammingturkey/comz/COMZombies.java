@@ -8,7 +8,6 @@ import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.Door;
-import com.theprogrammingturkey.comz.game.managers.SignManager;
 import com.theprogrammingturkey.comz.guns.GunType;
 import com.theprogrammingturkey.comz.kits.KitManager;
 import com.theprogrammingturkey.comz.leaderboards.Leaderboards;
@@ -94,16 +93,12 @@ public class COMZombies extends JavaPlugin
 		isRemovingDoors.clear();
 	}
 
+	public static final String CONOSLE_PREFIX = "[CoM: Zombies] ";
 	public static final String PREFIX = ChatColor.RED + "[ " + ChatColor.GOLD + ChatColor.ITALIC + "CoM: Zombies" + ChatColor.RED + " ]" + ChatColor.GRAY + " ";
 	/**
 	 * List of every gun contained in the config.
 	 */
 	public ArrayList<GunType> possibleGuns = new ArrayList<>();
-
-	/**
-	 * Enables the plugin.
-	 */
-	public SignManager signManager;
 
 	public Vault vault;
 
@@ -138,7 +133,7 @@ public class COMZombies extends JavaPlugin
 
 		getCommand("zombies").setExecutor(CommandManager.INSTANCE);
 
-		log.info(COMZombies.PREFIX + " has been enabled!");
+		log.info(COMZombies.CONOSLE_PREFIX + " has been enabled!");
 
 		GameManager.INSTANCE.loadAllGames();
 	}
@@ -198,7 +193,7 @@ public class COMZombies extends JavaPlugin
 		reloadConfig();
 		ConfigManager.reloadALL();
 		GameManager.INSTANCE.endAll();
-		log.info(COMZombies.PREFIX + " has been disabled!");
+		log.info(COMZombies.CONOSLE_PREFIX + " has been disabled!");
 	}
 
 	/**
