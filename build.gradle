@@ -15,6 +15,7 @@ version = "${mc_version}-${mod_version}.${buildnumber}"
 sourceCompatibility = targetCompatibility = '1.8'
 
 repositories {
+    mavenCentral()
     mavenLocal()
     maven { url 'http://nexus.hc.to/content/repositories/pub_releases/' }
 
