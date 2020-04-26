@@ -408,7 +408,6 @@ public class SpawnManager
 
 			private Player getNearestPlayer(Entity e)
 			{
-				System.out.println("here 4");
 				Player closest = null;
 				for(Player player : SpawnManager.this.game.players)
 				{
@@ -417,7 +416,6 @@ public class SpawnManager
 						closest = player;
 					}
 				}
-				System.out.println("here 5");
 				return closest;
 			}
 
