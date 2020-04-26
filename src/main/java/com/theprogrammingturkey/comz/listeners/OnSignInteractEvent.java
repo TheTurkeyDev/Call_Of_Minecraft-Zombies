@@ -129,7 +129,7 @@ public class OnSignInteractEvent implements Listener
 							if(!game.isPowered())
 							{
 								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must turn on the power first!");
-								PerkType.noPower(plugin, player);
+								PerkType.noPower(player);
 								return;
 							}
 						}
@@ -194,7 +194,7 @@ public class OnSignInteractEvent implements Listener
 							if(!game.isPowered())
 							{
 								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must turn on the power before You can Pack-A-punch!");
-								PerkType.noPower(plugin, player);
+								PerkType.noPower(player);
 								return;
 							}
 						}
@@ -332,7 +332,7 @@ public class OnSignInteractEvent implements Listener
 								if(!(g.isPowered()))
 								{
 									CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must turn on the power first!");
-									PerkType.noPower(plugin, player);
+									PerkType.noPower(player);
 									return;
 								}
 								int points = Integer.parseInt(sign.getLine(3));

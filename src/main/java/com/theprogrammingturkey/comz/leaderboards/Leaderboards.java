@@ -1,24 +1,15 @@
 package com.theprogrammingturkey.comz.leaderboards;
 
-import java.util.ArrayList;
-
 import org.bukkit.entity.Player;
 
-import com.theprogrammingturkey.comz.COMZombies;
+import java.util.ArrayList;
 
 public class Leaderboards
 {
 
-	@SuppressWarnings("unused")
-	private COMZombies plugin;
 	// String being player, PlayerStats being the object that contains info
 	// about that "player" or string
 	private ArrayList<PlayerStats> allPlayers = new ArrayList<>();
-
-	public Leaderboards(COMZombies zombies)
-	{
-		plugin = zombies;
-	}
 
 	public ArrayList<PlayerStats> createLeaderboard(int size, Player player)
 	{

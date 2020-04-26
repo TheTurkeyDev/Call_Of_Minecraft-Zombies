@@ -18,7 +18,6 @@ import com.theprogrammingturkey.comz.listeners.customEvents.PlayerPerkPurchaseEv
 public class Kit
 {
 	private String name;
-	private COMZombies plugin;
 
 	private GunType gunOne = null;
 	private GunType gunTwo = null;
@@ -29,14 +28,14 @@ public class Kit
 	private PerkType perkFour = null;
 	private int points = 500;
 
-	public Kit(COMZombies p, String perkName)
+	public Kit(String perkName)
 	{
-		plugin = p;
 		name = perkName;
 	}
 
 	public void load()
 	{
+		COMZombies plugin = COMZombies.getPlugin();
 		CustomConfig config = plugin.configManager.getConfig("Kits");
 		if(config.getString(name + ".Guns") != null)
 		{
@@ -158,6 +157,8 @@ public class Kit
 
 	public void GivePlayerStartingItems(Player player)
 	{
+		COMZombies plugin = COMZombies.getPlugin();
+
 		if(!plugin.manager.isPlayerInGame(player) && !player.hasPermission("zombies.kit." + name))
 			return;
 		Game game = plugin.manager.getGame(player);

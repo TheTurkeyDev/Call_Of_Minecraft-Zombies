@@ -244,7 +244,7 @@ public class Game
 
 		powerEnabled = plugin.configManager.getConfig("ArenaConfig").getBoolean(name + ".Power", false);
 
-		starter = new AutoStart(plugin, this, 60);
+		starter = new AutoStart(this, 60);
 
 		spawnManager = new SpawnManager(plugin, this);
 		boxManager = new BoxManager(plugin, this);
@@ -430,7 +430,7 @@ public class Game
 		}
 		if(starter != null)
 			starter.endTimer();
-		starter = new AutoStart(plugin, this, 6);
+		starter = new AutoStart(this, 6);
 		starter.startTimer();
 		mode = ArenaStatus.STARTING;
 		starter.forced = true;
@@ -663,7 +663,7 @@ public class Game
 			{
 				if(starter == null)
 				{
-					starter = new AutoStart(plugin, this, plugin.config.arenaStartTime + 1);
+					starter = new AutoStart(this, plugin.config.arenaStartTime + 1);
 					starter.startTimer();
 					for(Player pl : players)
 					{
@@ -677,7 +677,7 @@ public class Game
 					{
 						return;
 					}
-					starter = new AutoStart(plugin, this, plugin.config.arenaStartTime + 1);
+					starter = new AutoStart(this, plugin.config.arenaStartTime + 1);
 					starter.startTimer();
 					for(Player pl : players)
 					{

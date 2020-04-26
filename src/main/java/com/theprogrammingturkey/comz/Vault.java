@@ -13,7 +13,6 @@ public class Vault
 {
 	private Economy economy;
 	private Permission permission;
-	private Plugin plugin;
 
 	private boolean enabled = false;
 
@@ -22,7 +21,7 @@ public class Vault
 	 */
 	private void setupEconomy()
 	{
-		RegisteredServiceProvider<Economy> economyProvider = this.plugin.getServer().getServicesManager().getRegistration(Economy.class);
+		RegisteredServiceProvider<Economy> economyProvider = COMZombies.getPlugin().getServer().getServicesManager().getRegistration(Economy.class);
 		if(economyProvider != null)
 			this.economy = economyProvider.getProvider();
 	}
@@ -32,14 +31,13 @@ public class Vault
 	 */
 	private void setupPermission()
 	{
-		RegisteredServiceProvider<Permission> permissionProvider = this.plugin.getServer().getServicesManager().getRegistration(Permission.class);
+		RegisteredServiceProvider<Permission> permissionProvider = COMZombies.getPlugin().getServer().getServicesManager().getRegistration(Permission.class);
 		if(permissionProvider != null)
 			this.permission = permissionProvider.getProvider();
 	}
 
-	public Vault(Plugin plugin)
+	public Vault()
 	{
-		this.plugin = plugin;
 		if(Bukkit.getPluginManager().isPluginEnabled("Vault"))
 		{
 			setupEconomy();

@@ -10,20 +10,13 @@ import com.theprogrammingturkey.comz.COMZombies;
 
 public class PointManager
 {
-
-	private COMZombies plugin;
 	private ArrayList<Player> allPlayers = new ArrayList<>();
 	private HashMap<Player, PlayerPoints> playersPoints = new HashMap<>();
-
-	public PointManager(COMZombies p)
-	{
-		plugin = p;
-	}
 
 	public void initalizePlayer(Player player)
 	{
 		allPlayers.add(player);
-		playersPoints.put(player, new PlayerPoints(plugin, player, 500));
+		playersPoints.put(player, new PlayerPoints(player, 500));
 	}
 
 	public boolean canBuy(Player player, int required)
@@ -66,7 +59,7 @@ public class PointManager
 	 */
 	public void notifyPlayer(Player player)
 	{
-		Game game = plugin.manager.getGame(player);
+		Game game = COMZombies.getPlugin().manager.getGame(player);
 		if(game == null) return;
 		game.scoreboard.update();
 	}

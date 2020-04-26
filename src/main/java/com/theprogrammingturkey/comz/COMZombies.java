@@ -1,6 +1,5 @@
 package com.theprogrammingturkey.comz;
 
-import com.theprogrammingturkey.comz.listeners.*;
 import com.theprogrammingturkey.comz.commands.ZombiesCommand;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.ConfigSetup;
@@ -14,6 +13,7 @@ import com.theprogrammingturkey.comz.game.managers.SignManager;
 import com.theprogrammingturkey.comz.guns.GunType;
 import com.theprogrammingturkey.comz.kits.KitManager;
 import com.theprogrammingturkey.comz.leaderboards.Leaderboards;
+import com.theprogrammingturkey.comz.listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
@@ -147,15 +147,15 @@ public class COMZombies extends JavaPlugin
 	{
 		configManager = new ConfigManager();
 		reloadConfig();
-		config = new ConfigSetup(this);
-		manager = new GameManager(this);
-		kitManager = new KitManager(this);
+		config = new ConfigSetup();
+		manager = new GameManager();
+		kitManager = new KitManager();
 		kitManager.loadKits();
-		pointManager = new PointManager(this);
+		pointManager = new PointManager();
 		pointManager.saveAll();
-		command = new ZombiesCommand(this);
-		leaderboards = new Leaderboards(this);
-		vault = new Vault(this);
+		command = new ZombiesCommand();
+		leaderboards = new Leaderboards();
+		vault = new Vault();
 		registerEvents();
 
 		boolean say = true;

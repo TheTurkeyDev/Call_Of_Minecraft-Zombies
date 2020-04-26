@@ -8,12 +8,10 @@ public class PlayerPoints
 {
 
 	private int points;
-	private final COMZombies plugin;
 	private final Player player;
 
-	public PlayerPoints(COMZombies zombies, Player player, int points)
+	public PlayerPoints(Player player, int points)
 	{
-		plugin = zombies;
 		this.player = player;
 		this.points = points;
 	}
@@ -33,6 +31,7 @@ public class PlayerPoints
 	// Call this when a player dies. Also call resetPoints();
 	public void storePoints()
 	{
+		COMZombies plugin = COMZombies.getPlugin();
 		plugin.getConfig().set("Players." + player.getName() + ".points", points);
 		plugin.saveConfig();
 	}
@@ -40,6 +39,7 @@ public class PlayerPoints
 	// Call this when a player joins a game only!
 	public void constructPoints()
 	{
+		COMZombies plugin = COMZombies.getPlugin();
 		points = plugin.getConfig().getInt("Players." + player.getName() + ".points");
 	}
 

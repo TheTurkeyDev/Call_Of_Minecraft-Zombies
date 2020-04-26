@@ -11,3 +11,4 @@
 /bin1
 .gradle/
 .idea/
+build/

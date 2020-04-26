@@ -10,18 +10,12 @@ import com.theprogrammingturkey.comz.COMZombies;
 
 public class KitManager
 {
-	private COMZombies plugin;
 	private ArrayList<Kit> kits = new ArrayList<>();
 	private HashMap<Player, Kit> selectedKits = new HashMap<>();
 
-	public KitManager(COMZombies plugin)
-	{
-		this.plugin = plugin;
-	}
-
 	public void newKit(String name)
 	{
-		plugin.getClass();
+
 	}
 
 	public Kit getKit(String name)
@@ -38,9 +32,9 @@ public class KitManager
 
 	public void loadKits()
 	{
-		for(String key : plugin.configManager.getConfig("Kits").getConfigurationSection("").getKeys(false))
+		for(String key : COMZombies.getPlugin().configManager.getConfig("Kits").getConfigurationSection("").getKeys(false))
 		{
-			Kit kit = new Kit(plugin, key);
+			Kit kit = new Kit(key);
 			kit.load();
 			kits.add(kit);
 		}
