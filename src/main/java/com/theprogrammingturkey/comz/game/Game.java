@@ -1037,39 +1037,54 @@ public class Game
 		if(min.getWorld() != null)
 			conf.set(arenaName + ".Location.world", min.getWorld().getName());
 
-		try
+		if(min == null || max == null)
 		{
-			conf.set(arenaName + ".Location.P1.x", min.getBlockX());
-			conf.set(arenaName + ".Location.P1.y", min.getBlockY());
-			conf.set(arenaName + ".Location.P1.z", min.getBlockZ());
-			conf.set(arenaName + ".Location.P2.x", max.getBlockX());
-			conf.set(arenaName + ".Location.P2.y", max.getBlockY());
-			conf.set(arenaName + ".Location.P2.z", max.getBlockZ());
-			conf.set(arenaName + ".PlayerSpawn.x", playerTPLocation.getBlockX());
-			conf.set(arenaName + ".PlayerSpawn.y", playerTPLocation.getBlockY());
-			conf.set(arenaName + ".PlayerSpawn.z", playerTPLocation.getBlockZ());
-			conf.set(arenaName + ".PlayerSpawn.pitch", playerTPLocation.getPitch());
-			conf.set(arenaName + ".PlayerSpawn.yaw", playerTPLocation.getYaw());
-			conf.set(arenaName + ".SpectatorSpawn.x", spectateLocation.getBlockX());
-			conf.set(arenaName + ".SpectatorSpawn.y", spectateLocation.getBlockY());
-			conf.set(arenaName + ".SpectatorSpawn.z", spectateLocation.getBlockZ());
-			conf.set(arenaName + ".SpectatorSpawn.pitch", spectateLocation.getPitch());
-			conf.set(arenaName + ".SpectatorSpawn.yaw", spectateLocation.getYaw());
-			conf.set(arenaName + ".LobbySpawn.x", lobbyLocation.getBlockX());
-			conf.set(arenaName + ".LobbySpawn.y", lobbyLocation.getBlockY());
-			conf.set(arenaName + ".LobbySpawn.z", lobbyLocation.getBlockZ());
-			conf.set(arenaName + ".LobbySpawn.pitch", lobbyLocation.getPitch());
-			conf.set(arenaName + ".LobbySpawn.yaw", lobbyLocation.getYaw());
-			conf.saveConfig();
-			conf.reloadConfig();
-
-			CommandUtil.sendMessageToPlayer(player, "Arena " + arenaName + " setup!");
-			COMZombies.getPlugin().isArenaSetup.remove(player);
-			hasWarps = true;
-		} catch(Exception e)
-		{
-			e.printStackTrace();
+			player.sendRawMessage(COMZombies.PREFIX + "P1 or P2 is not set!");
+			return;
 		}
+		if(playerTPLocation == null)
+		{
+			player.sendRawMessage(COMZombies.PREFIX + "player warp is not set!");
+			return;
+		}
+		if(spectateLocation == null)
+		{
+			player.sendRawMessage(COMZombies.PREFIX + "spectator warp is not set!");
+			return;
+		}
+		if(lobbyLocation == null)
+		{
+			player.sendRawMessage(COMZombies.PREFIX + "lobby warp not set!");
+			return;
+		}
+
+		conf.set(arenaName + ".Location.P1.x", min.getBlockX());
+		conf.set(arenaName + ".Location.P1.y", min.getBlockY());
+		conf.set(arenaName + ".Location.P1.z", min.getBlockZ());
+		conf.set(arenaName + ".Location.P2.x", max.getBlockX());
+		conf.set(arenaName + ".Location.P2.y", max.getBlockY());
+		conf.set(arenaName + ".Location.P2.z", max.getBlockZ());
+		conf.set(arenaName + ".PlayerSpawn.x", playerTPLocation.getBlockX());
+		conf.set(arenaName + ".PlayerSpawn.y", playerTPLocation.getBlockY());
+		conf.set(arenaName + ".PlayerSpawn.z", playerTPLocation.getBlockZ());
+		conf.set(arenaName + ".PlayerSpawn.pitch", playerTPLocation.getPitch());
+		conf.set(arenaName + ".PlayerSpawn.yaw", playerTPLocation.getYaw());
+		conf.set(arenaName + ".SpectatorSpawn.x", spectateLocation.getBlockX());
+		conf.set(arenaName + ".SpectatorSpawn.y", spectateLocation.getBlockY());
+		conf.set(arenaName + ".SpectatorSpawn.z", spectateLocation.getBlockZ());
+		conf.set(arenaName + ".SpectatorSpawn.pitch", spectateLocation.getPitch());
+		conf.set(arenaName + ".SpectatorSpawn.yaw", spectateLocation.getYaw());
+		conf.set(arenaName + ".LobbySpawn.x", lobbyLocation.getBlockX());
+		conf.set(arenaName + ".LobbySpawn.y", lobbyLocation.getBlockY());
+		conf.set(arenaName + ".LobbySpawn.z", lobbyLocation.getBlockZ());
+		conf.set(arenaName + ".LobbySpawn.pitch", lobbyLocation.getPitch());
+		conf.set(arenaName + ".LobbySpawn.yaw", lobbyLocation.getYaw());
+		conf.saveConfig();
+		conf.reloadConfig();
+
+		CommandUtil.sendMessageToPlayer(player, "Arena " + arenaName + " setup!");
+		COMZombies.getPlugin().isArenaSetup.remove(player);
+		hasWarps = true;
 	}
 
 	/**

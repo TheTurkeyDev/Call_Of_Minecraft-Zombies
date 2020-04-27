@@ -1,9 +1,6 @@
 package com.theprogrammingturkey.comz.particleutilities;
 
-import com.theprogrammingturkey.comz.util.ReflectionUtilities;
-import net.minecraft.server.v1_15_R1.PacketPlayOutWorldParticles;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 
@@ -21,17 +18,8 @@ public enum ParticleEffects
 
 	public void sendToPlayer(Player player, Location location, float offsetX, float offsetY, float offsetZ, float speed, int count) throws Exception
 	{
-		PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles();
-		ReflectionUtilities.setValue(packet, "a", particleName);
-		ReflectionUtilities.setValue(packet, "b", (float) location.getX());
-		ReflectionUtilities.setValue(packet, "c", (float) location.getY());
-		ReflectionUtilities.setValue(packet, "d", (float) location.getZ());
-		ReflectionUtilities.setValue(packet, "e", offsetX);
-		ReflectionUtilities.setValue(packet, "f", offsetY);
-		ReflectionUtilities.setValue(packet, "g", offsetZ);
-		ReflectionUtilities.setValue(packet, "h", speed);
-		ReflectionUtilities.setValue(packet, "i", count);
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+		//PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(particleName, true, location.getX(), location.getY(), location.getZ(), offsetX, offsetY, offsetZ, speed, count);
+		//((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
 	}
 
 	public void sendToAllPlayers(Location loc, float offsetX, float offsetY, float offsetZ, float speed, int count)

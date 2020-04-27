@@ -21,6 +21,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -532,15 +533,12 @@ public class SpawnManager
 	 */
 	public int getCurrentSpawnPoint()
 	{
-		int spawnNum = 0;
-		try
-		{
-			spawnNum = ConfigManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(game.getName() + ".ZombieSpawns").getKeys(false).size();
-		} catch(NullPointerException e)
-		{
-			e.printStackTrace();
-		}
-		return spawnNum + 1;
+		ConfigurationSection sec = ConfigManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(game.getName() + ".ZombieSpawns");
+
+		if(sec == null)
+			return 1;
+		else
+			return sec.getKeys(false).size();
 	}
 
 	/**

@@ -162,7 +162,7 @@ public class OnSignInteractEvent implements Listener
 								}
 								try
 								{
-									if(game.perkManager.getPlayersPerks().get(player).contains(perk))
+									if(game.perkManager.getPlayersPerks().getOrDefault(player, new ArrayList<>()).contains(perk))
 									{
 										CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You already have " + perk + "!");
 										return;
