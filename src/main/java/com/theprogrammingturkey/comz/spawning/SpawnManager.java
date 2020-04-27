@@ -1,14 +1,11 @@
 package com.theprogrammingturkey.comz.spawning;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-import java.util.logging.Level;
-
+import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
+import com.theprogrammingturkey.comz.config.CustomConfig;
+import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.Door;
 import net.minecraft.server.v1_15_R1.AttributeInstance;
@@ -28,12 +25,13 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
-
-import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.config.CustomConfig;
-import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 public class SpawnManager
 {
@@ -72,8 +70,7 @@ public class SpawnManager
 			}
 		} catch(Exception e)
 		{
-			COMZombies.log.log(Level.WARNING, " Failed to load one or more spawn points in the arena " + game.getName());
-			COMZombies.log.log(Level.WARNING, "Please report this to the authors and include your arena config");
+			e.printStackTrace();
 		}
 	}
 

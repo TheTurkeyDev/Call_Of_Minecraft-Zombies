@@ -144,7 +144,6 @@ public class OnBlockInteractEvent implements Listener
 	@EventHandler
 	public void grenadeUse(PlayerInteractEvent event)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		Player player = event.getPlayer();
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{

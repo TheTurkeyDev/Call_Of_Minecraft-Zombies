@@ -155,22 +155,18 @@ public class OnSignInteractEvent implements Listener
 							}
 							if(playerPoints >= cost)
 							{
-								if(game.perkManager.getPlayersPerks().size() > 4)
+								if(game.perkManager.getPlayersPerks(player).size() > 4)
 								{
 									CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You already have four perks!");
 									return;
 								}
-								try
+
+								if(game.perkManager.getPlayersPerks(player).contains(perk))
 								{
-									if(game.perkManager.getPlayersPerks().getOrDefault(player, new ArrayList<>()).contains(perk))
-									{
-										CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You already have " + perk + "!");
-										return;
-									}
-								} catch(NullPointerException e)
-								{
-									e.printStackTrace();
+									CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You already have " + perk + "!");
+									return;
 								}
+
 								if(!game.perkManager.addPerk(player, perk))
 								{
 									return;
@@ -263,6 +259,13 @@ public class OnSignInteractEvent implements Listener
 						int Buypoints = Integer.parseInt(sign.getLine(3).substring(0, sign.getLine(3).indexOf("/") - 1).trim());
 						int Refilpoints = Integer.parseInt(sign.getLine(3).substring(sign.getLine(3).indexOf("/") + 2).trim());
 						GunType guntype = plugin.getGun(sign.getLine(2));
+
+						if(guntype == null)
+						{
+							player.sendRawMessage(COMZombies.PREFIX + " Sorry! That gun doesn't seem to exist!");
+							return;
+						}
+
 						GunManager manager = game.getPlayersGun(player);
 						int slot = manager.getCorrectSlot();
 						Gun gun = manager.getGun(player.getInventory().getHeldItemSlot());

@@ -1,6 +1,5 @@
 package com.theprogrammingturkey.comz.listeners;
 
-import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
@@ -22,10 +21,9 @@ public class OnPlayerVelocityEvent implements Listener
 {
 
 	@EventHandler
-	public void OnPlyerVelocityEvent(PlayerMoveEvent event) throws Exception
+	public void OnPlyerVelocityEvent(PlayerMoveEvent event)
 	{
 		Player player = event.getPlayer();
-		COMZombies plugin = COMZombies.getPlugin();
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
 			player.setFoodLevel(20);
@@ -33,11 +31,7 @@ public class OnPlayerVelocityEvent implements Listener
 			if(fallDistance > 2)
 			{
 				Game game = GameManager.INSTANCE.getGame(player);
-				if(!game.perkManager.getPlayersPerks().containsKey(player))
-				{
-					return;
-				}
-				if(game.perkManager.getPlayersPerks().get(player).contains(PerkType.PHD_FLOPPER))
+				if(game.perkManager.getPlayersPerks(player).contains(PerkType.PHD_FLOPPER))
 				{
 					double pHealth = player.getHealth();
 					Location loc = player.getLocation();

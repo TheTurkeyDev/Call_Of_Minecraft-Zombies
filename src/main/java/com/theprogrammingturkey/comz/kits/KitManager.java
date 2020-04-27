@@ -12,6 +12,7 @@ import com.theprogrammingturkey.comz.COMZombies;
 
 public class KitManager
 {
+	private static final Kit ERROR_KIT = new Kit();
 	private static ArrayList<Kit> kits = new ArrayList<>();
 	private static HashMap<Player, Kit> selectedKits = new HashMap<>();
 
@@ -28,13 +29,9 @@ public class KitManager
 	public static Kit getKit(String name)
 	{
 		for(Kit k : kits)
-		{
 			if(k.getName().equalsIgnoreCase(name))
-			{
 				return k;
-			}
-		}
-		return null;
+		return ERROR_KIT;
 	}
 
 	public static void loadKits()

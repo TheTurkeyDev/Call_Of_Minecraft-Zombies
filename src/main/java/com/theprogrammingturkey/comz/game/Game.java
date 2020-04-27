@@ -54,6 +54,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Main game class.
@@ -124,7 +125,7 @@ public class Game
 	/**
 	 * World name for the game.
 	 */
-	public String worldName = "world";
+	public World world;
 
 	/**
 	 * Arena name for the game.
@@ -248,17 +249,6 @@ public class Game
 		signManager = new SignManager(this);
 
 		scoreboard = new GameScoreboard(this);
-
-		spawnManager.loadAllSpawnsToGame();
-		boxManager.loadAllBoxesToGame();
-		barrierManager.loadAllBarriersToGame();
-		doorManager.loadAllDoorsToGame();
-		teleporterManager.loadAllTeleportersToGame();
-
-		if(ConfigManager.getConfig(COMZConfig.ARENAS).getBoolean(arenaName + ".IsForceNight", false))
-		{
-			forceNight();
-		}
 	}
 
 	/**
@@ -862,7 +852,7 @@ public class Game
 	 */
 	public World getWorld()
 	{
-		return Bukkit.getServer().getWorld(this.worldName);
+		return world;
 	}
 
 	/**
@@ -893,7 +883,7 @@ public class Game
 	{
 		min = loc;
 		saveLocationsInConfig(p);
-		worldName = loc.getWorld().getName();
+		world = loc.getWorld();
 	}
 
 	/**
@@ -1090,14 +1080,25 @@ public class Game
 	/**
 	 * Sets up the arena when the server loads
 	 */
-	public void enable()
+	public boolean loadGame()
 	{
 		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 		conf.reloadConfig();
 		if(conf.getString(arenaName + ".Location.world") == null)
-			worldName = arena.getWorld();
-		else
-			worldName = conf.getString(arenaName + ".Location.world");
+		{
+			COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + " The world for arena " + arenaName + " is not set and therefor we could not enable the arena!");
+			return false;
+		}
+
+		String worldName = conf.getString(arenaName + ".Location.world");
+		world = Bukkit.getServer().getWorld(worldName);
+
+		if(world == null)
+		{
+			COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + worldName + " isn't a valid world name for the arena " + arenaName);
+			return false;
+		}
+
 		int x1 = conf.getInt(arenaName + ".Location.P1.x");
 		int y1 = conf.getInt(arenaName + ".Location.P1.y");
 		int z1 = conf.getInt(arenaName + ".Location.P1.z");
@@ -1120,19 +1121,29 @@ public class Game
 		int pitch5 = conf.getInt(arenaName + ".LobbySpawn.pitch");
 		int yaw5 = conf.getInt(arenaName + ".LobbySpawn.yaw");
 		maxPlayers = conf.getInt(arenaName + ".maxPlayers", 8);
-		Location minLoc = new Location(Bukkit.getWorld(worldName), x1, y1, z1);
-		Location maxLoc = new Location(Bukkit.getWorld(worldName), x2, y2, z2);
-		Location pwarp = new Location(Bukkit.getWorld(worldName), x3, y3, z3, yaw3, pitch3);
-		Location swarp = new Location(Bukkit.getWorld(worldName), x4, y4, z4, yaw4, pitch4);
-		Location lwarp = new Location(Bukkit.getWorld(worldName), x5, y5, z5, yaw5, pitch5);
+		Location minLoc = new Location(world, x1, y1, z1);
+		Location maxLoc = new Location(world, x2, y2, z2);
+		Location pwarp = new Location(world, x3, y3, z3, yaw3, pitch3);
+		Location swarp = new Location(world, x4, y4, z4, yaw4, pitch4);
+		Location lwarp = new Location(world, x5, y5, z5, yaw5, pitch5);
 		min = minLoc;
 		max = maxLoc;
 		playerTPLocation = pwarp.add(0.5, 0, 0.5);
 		spectateLocation = swarp.add(0.5, 0, 0.5);
 		lobbyLocation = lwarp.add(0.5, 0, 0.5);
-		arena = new Arena(min, max, Bukkit.getWorld(worldName));
-		spawnManager.loadAllSpawnsToGame();
+		arena = new Arena(min, max, world);
 		mode = ArenaStatus.WAITING;
+
+		spawnManager.loadAllSpawnsToGame();
+		boxManager.loadAllBoxesToGame();
+		barrierManager.loadAllBarriersToGame();
+		doorManager.loadAllDoorsToGame();
+		teleporterManager.loadAllTeleportersToGame();
+
+		if(ConfigManager.getConfig(COMZConfig.ARENAS).getBoolean(arenaName + ".IsForceNight", false))
+			forceNight();
+
+		return true;
 	}
 
 	/**

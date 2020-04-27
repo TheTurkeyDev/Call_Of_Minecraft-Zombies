@@ -31,7 +31,6 @@ public class ReloadCommand implements SubCommand
 				}
 				GameManager.INSTANCE.loadAllGames();
 				plugin.clearAllSetup();
-				GameManager.INSTANCE.enableAllGames();
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Zombies has been reloaded!");
 			} catch(org.bukkit.command.CommandException e)
 			{

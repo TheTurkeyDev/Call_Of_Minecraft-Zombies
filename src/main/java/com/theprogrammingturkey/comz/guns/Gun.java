@@ -187,8 +187,7 @@ public class Gun
 				updateGun();
 			}, reloadTime * 20);
 			isReloading = true;
-			if(!(game.perkManager.getPlayersPerks().containsKey(player))) return;
-			if(game.perkManager.getPlayersPerks().get(player).contains(PerkType.ELECTRIC_C))
+			if(game.perkManager.getPlayersPerks(player).contains(PerkType.ELECTRIC_C))
 			{
 				if(totalAmmo == 0 && !ecUsed)
 					return;

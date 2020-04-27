@@ -94,11 +94,10 @@ public class OnGunEvent implements Listener
 	}
 
 	@EventHandler
-	public void onZombieHitEvent(EntityDamageByEntityEvent event) throws Exception
+	public void onZombieHitEvent(EntityDamageByEntityEvent event)
 	{
 		if(event.getDamager() instanceof Snowball)
 		{
-			COMZombies plugin = COMZombies.getPlugin();
 			Snowball snowball = (Snowball) event.getDamager();
 			if(snowball.getShooter() != null)
 			{

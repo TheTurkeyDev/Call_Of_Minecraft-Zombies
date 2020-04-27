@@ -37,7 +37,6 @@ public class DisablePowerCommand implements SubCommand
 					}
 					CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 					conf.set(game.getName() + ".Power", false);
-					game.enable();
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Power diabled!");
 					conf.saveConfig();
 					conf.reloadConfig();

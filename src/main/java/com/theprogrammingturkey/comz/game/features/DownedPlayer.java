@@ -100,13 +100,10 @@ public class DownedPlayer implements Listener
 	{
 		COMZombies plugin = COMZombies.getPlugin();
 		int reviveTime = ConfigManager.getMainConfig().reviveTimer * 20;
-		if(game.perkManager.getPlayersPerks().containsKey(pl))
-		{
-			if(game.perkManager.getPlayersPerks().get(pl).contains(PerkType.QUICK_REVIVE))
-			{
-				reviveTime /= 2;
-			}
-		}
+
+		if(game.perkManager.getPlayersPerks(pl).contains(PerkType.QUICK_REVIVE))
+			reviveTime /= 2;
+
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
 		{
 			if(!hasMoved)

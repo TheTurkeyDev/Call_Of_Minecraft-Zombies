@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
+import java.util.logging.Level;
 
 public class GameManager
 {
@@ -65,22 +66,20 @@ public class GameManager
 
 	public void loadAllGames()
 	{
-		COMZombies plugin = COMZombies.getPlugin();
-		int i = 0;
 		games.clear();
 		for(String key : ConfigManager.getConfig(COMZConfig.ARENAS).getConfigurationSection("").getKeys(false))
 		{
-			games.add(new Game(key));
-			games.get(i).enable();
-			i++;
+			Game game = new Game(key);
+			if(game.loadGame())
+			{
+				games.add(game);
+			}
+			else
+			{
+				COMZombies.log.log(Level.SEVERE, "Failed to load arena " + key + "!");
+			}
 		}
 		Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.RED + ChatColor.BOLD + " Done loading arenas!");
-	}
-
-	public void enableAllGames()
-	{
-		for(Game game : games)
-			game.enable();
 	}
 
 	public void disableAllArenas()

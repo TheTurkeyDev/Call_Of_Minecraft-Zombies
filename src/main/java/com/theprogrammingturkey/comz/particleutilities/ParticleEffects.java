@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.particleutilities;
 
+import net.minecraft.server.v1_15_R1.ParticleParamBlock;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -16,7 +17,7 @@ public enum ParticleEffects
 		this.particleName = particleName;
 	}
 
-	public void sendToPlayer(Player player, Location location, float offsetX, float offsetY, float offsetZ, float speed, int count) throws Exception
+	public void sendToPlayer(Player player, Location location, float offsetX, float offsetY, float offsetZ, float speed, int count)
 	{
 		//PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(particleName, true, location.getX(), location.getY(), location.getZ(), offsetX, offsetY, offsetZ, speed, count);
 		//((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
@@ -25,14 +26,6 @@ public enum ParticleEffects
 	public void sendToAllPlayers(Location loc, float offsetX, float offsetY, float offsetZ, float speed, int count)
 	{
 		for(Player player : loc.getWorld().getPlayers())
-		{
-			try
-			{
-				sendToPlayer(player, loc, offsetX, offsetY, offsetZ, speed, count);
-			} catch(Exception e)
-			{
-				e.printStackTrace();
-			}
-		}
+			sendToPlayer(player, loc, offsetX, offsetY, offsetZ, speed, count);
 	}
 }

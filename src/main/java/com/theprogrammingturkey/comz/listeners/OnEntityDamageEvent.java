@@ -57,13 +57,10 @@ public class OnEntityDamageEvent implements Listener
 							final Player player = (Player) e.getEntity();
 							Game game = GameManager.INSTANCE.getGame(player);
 							double damage = 6;
-							if(game.perkManager.getPlayersPerks().containsKey(player))
-							{
-								if(game.perkManager.getPlayersPerks().get(player).contains(PerkType.JUGGERNOG))
-								{
-									damage = damage / 2;
-								}
-							}
+
+							if(game.perkManager.getPlayersPerks(player).contains(PerkType.JUGGERNOG))
+								damage = damage / 2;
+
 							if(player.getHealth() - damage < 1)
 							{
 								e.setCancelled(true);
@@ -93,7 +90,6 @@ public class OnEntityDamageEvent implements Listener
 			Game game = GameManager.INSTANCE.getGame(entity);
 			if(game != null)
 			{
-
 				if(e.getDamager() instanceof Player)
 				{
 					Player player = (Player) e.getDamager();
@@ -104,11 +100,9 @@ public class OnEntityDamageEvent implements Listener
 							Zombie zombie1 = (Zombie) entity;
 							double damageAmount = e.getDamage();
 							Double totalHealth;
-							double cx = player.getLocation().getX() - zombie1.getLocation().getX();
-							double cy = player.getLocation().getY() - zombie1.getLocation().getY();
-							double cz = player.getLocation().getZ() - zombie1.getLocation().getZ();
+							double dist = zombie1.getLocation().distance(player.getLocation());
 
-							if(Math.sqrt(Math.pow(cx, 2) + Math.pow(cy, 2) + Math.pow(cz, 2)) <= ConfigManager.getMainConfig().meleeRange)
+							if(dist <= ConfigManager.getMainConfig().meleeRange)
 							{
 								damageAmount = 5;
 							}

@@ -97,7 +97,7 @@ public class PointManager
 
 	public static int getPlayersPoints(Player player)
 	{
-		return playersPoints.get(player).getPoints();
+		return playersPoints.computeIfAbsent(player, k -> new PlayerPoints(k, 500)).getPoints();
 	}
 
 	public static void saveAll()

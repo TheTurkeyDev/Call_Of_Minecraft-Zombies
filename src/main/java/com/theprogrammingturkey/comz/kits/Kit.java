@@ -37,6 +37,11 @@ public class Kit
 		name = perkName;
 	}
 
+	public Kit()
+	{
+		name = "ERROR";
+	}
+
 	public void load()
 	{
 		COMZombies plugin = COMZombies.getPlugin();

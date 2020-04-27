@@ -21,7 +21,6 @@ import java.util.logging.Level;
 
 public class Door
 {
-
 	public Location p1;
 	public Location p2;
 	public int doorNumber;
@@ -87,9 +86,8 @@ public class Door
 
 	public void playerDoorOpenSound()
 	{
-		Location loc = blocks.get(0).getLocation();
 		World world = game.getWorld();
-		world.playSound(loc, Sound.BLOCK_WOODEN_DOOR_OPEN, 1L, 1L);
+		world.playSound(p1, Sound.BLOCK_WOODEN_DOOR_OPEN, 1L, 1L);
 	}
 
 	private void loadSigns()
@@ -179,28 +177,24 @@ public class Door
 	public void closeDoor()
 	{
 		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
-		try
+
+		for(String key : config.getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Blocks").getKeys(false))
 		{
-			for(String key : config.getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Blocks").getKeys(false))
-			{
-				int x = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".x");
-				int y = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".y");
-				int z = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".z");
-				Location loc = new Location(game.getWorld(), x, y, z);
-				Block block = loc.getBlock();
-				block.setType(Material.getMaterial(config.getString(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".ID")));
-			}
-			for(Sign sign : signs)
-			{
-				sign.setLine(0, ChatColor.RED + "[Zombies]");
-				sign.setLine(1, ChatColor.AQUA + "Door");
-				sign.setLine(2, ChatColor.GOLD + "Price:");
-				sign.setLine(3, Integer.toString(price));
-				sign.update(true);
-			}
-		} catch(NullPointerException e)
+			int x = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".x");
+			int y = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".y");
+			int z = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".z");
+			Location loc = new Location(game.getWorld(), x, y, z);
+			Block block = loc.getBlock();
+			Material mat = Material.getMaterial(config.getString(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".mat"));
+			block.setType(mat == null ? Material.IRON_BARS : mat);
+		}
+		for(Sign sign : signs)
 		{
-			e.printStackTrace();
+			sign.setLine(0, ChatColor.RED + "[Zombies]");
+			sign.setLine(1, ChatColor.AQUA + "Door");
+			sign.setLine(2, ChatColor.GOLD + "Price:");
+			sign.setLine(3, Integer.toString(price));
+			sign.update(true);
 		}
 		isOpened = false;
 	}
@@ -232,22 +226,16 @@ public class Door
 	private void loadBlocks()
 	{
 		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
-		try
+
+		for(String key : config.getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Blocks").getKeys(false))
 		{
-			for(String key : config.getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Blocks").getKeys(false))
-			{
-				String mat = config.getString(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".ID");
-				int x = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".x");
-				int y = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".y");
-				int z = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".z");
-				Location loc = new Location(game.getWorld(), x, y, z);
-				loc.getBlock().setType(Material.getMaterial(mat));
-				blocks.add(loc.getBlock());
-			}
-		} catch(Exception e)
-		{
-			COMZombies.log.log(Level.WARNING, "Failed to load one or more doors in the arena " + game.getName());
-			COMZombies.log.log(Level.WARNING, "Please report this to the authors and include your arena config");
+			int x = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".x");
+			int y = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".y");
+			int z = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".z");
+			Location loc = new Location(game.getWorld(), x, y, z);
+			Material mat = Material.getMaterial(config.getString(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".ID"));
+			loc.getBlock().setType(mat == null ? Material.IRON_BARS : mat);
+			blocks.add(loc.getBlock());
 		}
 	}
 

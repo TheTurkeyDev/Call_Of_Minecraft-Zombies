@@ -26,9 +26,9 @@ public class PerkManager
 		}
 	}
 
-	public HashMap<Player, ArrayList<PerkType>> getPlayersPerks()
+	public ArrayList<PerkType> getPlayersPerks(Player player)
 	{
-		return playersPerks;
+		return playersPerks.computeIfAbsent(player, k -> new ArrayList<>());
 	}
 
 	public boolean hasPerk(Player player, PerkType type)

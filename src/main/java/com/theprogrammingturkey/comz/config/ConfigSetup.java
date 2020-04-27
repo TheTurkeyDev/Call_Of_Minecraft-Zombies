@@ -105,7 +105,7 @@ public class ConfigSetup
 		maxWave = plugin.getConfig().getInt("config.gameSettings.maxWave");
 		reviveTimer = plugin.getConfig().getInt("config.ReviveSettings.ReviveTimer");
 		reviveRange = Math.min(plugin.getConfig().getInt("config.ReviveSettings.ReviveRange"), 6);
-		meleeRange = (float) plugin.getConfig().getDouble("config.ReviveSettings.MeleeRange");
+		meleeRange = (float) plugin.getConfig().getDouble("config.gameSettings.MeleeRange");
 		configVersion = plugin.getConfig().getString("vID");
 		reloadTime = plugin.getConfig().getInt("config.gameSettings.reloadTime");
 

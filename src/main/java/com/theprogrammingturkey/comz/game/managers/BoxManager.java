@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -34,9 +35,10 @@ public class BoxManager
 		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
 		boxes.clear();
 		numbers.clear();
-		try
+		ConfigurationSection sec = config.getConfigurationSection(game.getName() + ".MysteryBoxs");
+		if(sec != null)
 		{
-			for(String key : config.getConfigurationSection(game.getName() + ".MysteryBoxs").getKeys(false))
+			for(String key : sec.getKeys(false))
 			{
 				double x = config.getDouble(game.getName() + ".MysteryBoxs." + key + ".x");
 				double y = config.getDouble(game.getName() + ".MysteryBoxs." + key + ".y");
@@ -47,9 +49,6 @@ public class BoxManager
 				boxes.add(point);
 				numbers.add(Integer.parseInt(key.substring(3)));
 			}
-		} catch(NullPointerException e)
-		{
-			e.printStackTrace();
 		}
 	}
 
