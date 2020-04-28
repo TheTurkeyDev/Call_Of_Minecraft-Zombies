@@ -109,6 +109,7 @@ public class OnBlockBreakEvent implements Listener
 					{
 						b.repair();
 						PointManager.addPoints(player, b.getReward());
+						PointManager.notifyPlayer(player);
 					}
 					else
 					{
