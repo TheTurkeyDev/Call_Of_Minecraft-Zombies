@@ -18,11 +18,6 @@ public class PreJoinInformation
 	private HashMap<Player, ItemStack[]> playerArmor = new HashMap<>();
 	private HashMap<Player, Location> oldLocs = new HashMap<>();
 
-	public PreJoinInformation()
-	{
-
-	}
-
 	public void addPlayerGM(Player player, GameMode oldMode)
 	{
 		oldModes.put(player, oldMode);
@@ -35,20 +30,17 @@ public class PreJoinInformation
 
 	public boolean getFly(Player player)
 	{
-		if(oldFly.containsKey(player)) return oldFly.get(player);
-		return false;
+		return oldFly.getOrDefault(player, false);
 	}
 
 	public GameMode getGM(Player player)
 	{
-		if(oldModes.containsKey(player)) return oldModes.get(player);
-		return GameMode.SURVIVAL;
+		return oldModes.getOrDefault(player, GameMode.SURVIVAL);
 	}
 
 	public ItemStack[] getContents(Player player)
 	{
-		if(playerContents.containsKey(player)) return playerContents.get(player);
-		return player.getInventory().getContents();
+		return playerContents.getOrDefault(player, player.getInventory().getContents());
 	}
 
 	public ItemStack[] getArmor(Player player)

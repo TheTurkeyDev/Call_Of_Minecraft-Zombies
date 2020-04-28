@@ -6,6 +6,7 @@ import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
+import com.theprogrammingturkey.comz.util.BlockUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -40,7 +41,7 @@ public class BarrierManager
 			int number = Integer.parseInt(key);
 			Barrier barrier = new Barrier(loc, loc.getWorld().getBlockAt(loc), number, game);
 
-			loc.getBlock().setType(Material.getMaterial(conf.getString(game.getName() + ".Barriers." + key + ".bb")));
+			loc.getBlock().setType(BlockUtils.getMaterialFromKey(conf.getString(game.getName() + ".Barriers." + key + ".bb")));
 
 			double rx = conf.getDouble(game.getName() + ".Barriers." + key + ".rx");
 			double ry = conf.getDouble(game.getName() + ".Barriers." + key + ".ry");
@@ -146,9 +147,10 @@ public class BarrierManager
 				conf.set(game.getName() + ".Barriers." + name + ".ry", loc2.getBlockY());
 				conf.set(game.getName() + ".Barriers." + name + ".rz", loc2.getBlockZ());
 				conf.set(game.getName() + ".Barriers." + name + ".sp", sp.getName());
-				conf.set(game.getName() + ".Barriers." + name + ".bb", barrier.getBlock().getType().getKey());
+				conf.set(game.getName() + ".Barriers." + name + ".bb", barrier.getBlock().getType().getKey().getKey());
 				conf.set(game.getName() + ".Barriers." + name + ".reward", barrier.getReward());
 				conf.saveConfig();
+				conf.reloadConfig();
 				barriers.add(barrier);
 			}
 		}
@@ -181,7 +183,7 @@ public class BarrierManager
 				conf.set(game.getName() + ".Barriers." + name + ".ry", loc2.getBlockY());
 				conf.set(game.getName() + ".Barriers." + name + ".rz", loc2.getBlockZ());
 				conf.set(game.getName() + ".Barriers." + name + ".sp", sp.getNumber());
-				conf.set(game.getName() + ".Barriers." + name + ".bb", barrier.getBlock().getType().getKey());
+				conf.set(game.getName() + ".Barriers." + name + ".bb", barrier.getBlock().getType().getKey().getKey());
 				conf.set(game.getName() + ".Barriers." + name + ".reward", barrier.getReward());
 				conf.saveConfig();
 				barriers.add(barrier);

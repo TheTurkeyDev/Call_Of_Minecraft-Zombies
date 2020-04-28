@@ -22,6 +22,7 @@ import org.bukkit.entity.Snowball;
 import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -263,29 +264,33 @@ public class Gun
 	 */
 	public void wasShot()
 	{
-		if(isReloading) return;
-		if(!canFire) return;
+		if(isReloading)
+			return;
+
+		if(!canFire)
+			return;
+
 		if(totalAmmo == 0 && clipAmmo == 0)
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "No ammo!");
 			player.getLocation().getWorld().playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
 			return;
 		}
+
 		if(clipAmmo - 1 < 1 && !(totalAmmo == 0))
-		{
 			reload();
-		}
+
 		clipAmmo -= 1;
 		if(getType().type.equals(GunTypeEnum.Shotguns))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.3));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.4));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.2));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.1));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.3));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.2));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().multiply(.4));
+			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().add(new Vector(getAdjust(), getAdjust(), getAdjust())).multiply(0.3));
+			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().add(new Vector(getAdjust(), getAdjust(), getAdjust())).multiply(0.3));
+			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().add(new Vector(getAdjust(), getAdjust(), getAdjust())).multiply(0.3));
+			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().add(new Vector(getAdjust(), getAdjust(), getAdjust())).multiply(0.3));
+			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().add(new Vector(getAdjust(), getAdjust(), getAdjust())).multiply(0.3));
+			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().add(new Vector(getAdjust(), getAdjust(), getAdjust())).multiply(0.3));
+			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().add(new Vector(getAdjust(), getAdjust(), getAdjust())).multiply(0.3));
 			ls.setVelocity(ls.getVelocity().multiply(.3));
 		}
 		if(getType().type.equals(GunTypeEnum.Pistols))
@@ -433,6 +438,11 @@ public class Gun
 		Runnable delayedSpawnFunc = () -> canFire = true;
 
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delayedSpawnFunc, this.gun.fireDelay);
+	}
+
+	public double getAdjust()
+	{
+		return (Math.random() - 0.5) * 1.5;
 	}
 
 	/**

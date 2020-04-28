@@ -17,7 +17,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
 
 public class Door
 {
@@ -233,8 +232,7 @@ public class Door
 			int y = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".y");
 			int z = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".z");
 			Location loc = new Location(game.getWorld(), x, y, z);
-			Material mat = Material.getMaterial(config.getString(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".ID"));
-			loc.getBlock().setType(mat == null ? Material.IRON_BARS : mat);
+			loc.getBlock().setType(BlockUtils.getMaterialFromKey(config.getString(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".ID")));
 			blocks.add(loc.getBlock());
 		}
 	}
@@ -275,7 +273,7 @@ public class Door
 			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".x", blocks.get(i).getLocation().getBlockX());
 			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".y", blocks.get(i).getLocation().getBlockY());
 			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".z", blocks.get(i).getLocation().getBlockZ());
-			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".ID", blocks.get(i).getType().getKey());
+			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".ID", blocks.get(i).getType().getKey().getKey());
 			config.saveConfig();
 		}
 

@@ -1,6 +1,5 @@
 package com.theprogrammingturkey.comz.game.managers;
 
-import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
@@ -10,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -43,9 +43,10 @@ public class BoxManager
 				double x = config.getDouble(game.getName() + ".MysteryBoxs." + key + ".x");
 				double y = config.getDouble(game.getName() + ".MysteryBoxs." + key + ".y");
 				double z = config.getDouble(game.getName() + ".MysteryBoxs." + key + ".z");
+				String facing = config.getString(game.getName() + ".MysteryBoxs." + key + ".Face");
 				int cost = config.getInt(game.getName() + ".MysteryBoxs." + key + ".Cost");
 				Location loc = new Location(game.getWorld(), x, y, z);
-				RandomBox point = new RandomBox(loc, game, key, cost);
+				RandomBox point = new RandomBox(loc, BlockFace.valueOf(facing), game, key, cost);
 				boxes.add(point);
 				numbers.add(Integer.parseInt(key.substring(3)));
 			}
@@ -126,7 +127,7 @@ public class BoxManager
 				conf.set(game.getName() + ".MysteryBoxs." + name + ".y", loc.getBlockY());
 				conf.set(game.getName() + ".MysteryBoxs." + name + ".z", loc.getBlockZ());
 				conf.set(game.getName() + ".MysteryBoxs." + name + ".Cost", box.getCost());
-				conf.set(game.getName() + ".MysteryBoxs." + name + ".Face", "");
+				conf.set(game.getName() + ".MysteryBoxs." + name + ".Face", box.getFacing().name());
 				conf.saveConfig();
 				boxes.add(box);
 				numbers.add(Integer.parseInt(box.getName().substring(3)));
@@ -139,9 +140,9 @@ public class BoxManager
 		return currentBox;
 	}
 
-	public ArrayList<RandomBox> getBoxes()
+	public int getNumBoxes()
 	{
-		return boxes;
+		return boxes.size();
 	}
 
 	public void setCurrentBox(RandomBox box)

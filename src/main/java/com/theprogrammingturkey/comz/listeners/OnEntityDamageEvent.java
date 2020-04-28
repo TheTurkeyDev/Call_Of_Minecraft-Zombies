@@ -45,17 +45,16 @@ public class OnEntityDamageEvent implements Listener
 					else
 					{
 						Entity entity = e.getDamager();
-						if(!(GameManager.INSTANCE.isEntityInGame(entity)))
-						{
-							if(GameManager.INSTANCE.isPlayerInGame((Player) e.getEntity()))
-							{
-								e.setCancelled(true);
-							}
-						}
-						else
+						if(GameManager.INSTANCE.isEntityInGame(entity))
 						{
 							final Player player = (Player) e.getEntity();
 							Game game = GameManager.INSTANCE.getGame(player);
+							if(game.downedPlayerManager.isPlayerDowned(player))
+							{
+								e.setCancelled(true);
+								return;
+							}
+
 							double damage = 6;
 
 							if(game.perkManager.getPlayersPerks(player).contains(PerkType.JUGGERNOG))
@@ -69,13 +68,14 @@ public class OnEntityDamageEvent implements Listener
 							}
 							else
 							{
-								if(game.downedPlayerManager.isPlayerDowned(player))
-								{
-									e.setCancelled(true);
-								}
 								e.setDamage(damage);
 							}
+
 							Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> healPlayer(player), 100L);
+						}
+						else
+						{
+							e.setCancelled(true);
 						}
 					}
 				}
@@ -199,7 +199,6 @@ public class OnEntityDamageEvent implements Listener
 	@EventHandler
 	public void damgeEvent(EntityDamageEvent e)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		if(e.getEntity() instanceof Player)
 		{
 			Player player = (Player) e.getEntity();
@@ -242,25 +241,24 @@ public class OnEntityDamageEvent implements Listener
 
 	private void playerDowned(Player player, final Game game)
 	{
-		if(player.getFireTicks() > 0)
-		{
-			player.setFireTicks(0);
-		}
 		if(!game.downedPlayerManager.isPlayerDowned(player))
 		{
-			Bukkit.broadcastMessage(COMZombies.PREFIX + player.getName() + " Has gone down! Stand close and right click him to revive");
-			DownedPlayer down = new DownedPlayer(player, game);
-			down.setPlayerDown(true);
-			game.downedPlayerManager.addDownedPlayer(down);
-			player.setHealth(1D);
-		}
-		if(game.downedPlayerManager.getDownedPlayers().size() == game.players.size())
-		{
-			for(DownedPlayer downedPlayer : game.downedPlayerManager.getDownedPlayers())
+			player.setFireTicks(0);
+
+			if(game.downedPlayerManager.getDownedPlayers().size() + 1 == game.players.size())
 			{
-				downedPlayer.cancelDowned();
+				for(DownedPlayer downedPlayer : game.downedPlayerManager.getDownedPlayers())
+					downedPlayer.cancelDowned();
+				game.endGame();
 			}
-			game.endGame();
+			else
+			{
+				Bukkit.broadcastMessage(COMZombies.PREFIX + player.getName() + " Has gone down! Stand close and right click him to revive");
+				DownedPlayer down = new DownedPlayer(player, game);
+				down.setPlayerDown(true);
+				game.downedPlayerManager.addDownedPlayer(down);
+				player.setHealth(1D);
+			}
 		}
 	}
 

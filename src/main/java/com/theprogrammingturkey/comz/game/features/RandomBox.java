@@ -13,94 +13,132 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RandomBox
 {
+	public static Map<RandomBox, Integer> boxes = new HashMap<>();
 	private Location boxLoc;
+	private BlockFace facing;
 	private Game boxGame;
 	private String boxNum;
 	private int boxCost;
 
-	public RandomBox(Location loc, Game game, String key, int cost)
+	private boolean running;
+	private boolean gunSelected;
+	private GunType gun;
+	private Item item;
+
+	public RandomBox(Location loc, BlockFace facing, Game game, String key, int cost)
 	{
 		boxLoc = loc;
+		this.facing = facing;
 		boxGame = game;
 		boxNum = key;
 		boxCost = cost;
+		this.running = false;
+		this.gunSelected = false;
 	}
 
 	public void Start(final Player player, int PointsNeeded)
 	{
-		if(!(GameManager.INSTANCE.isPlayerInGame(player)))
-		{
+		if(boxGame == null)
 			return;
-		}
+
+		if(!(GameManager.INSTANCE.isPlayerInGame(player)))
+			return;
+
 		if(!PointManager.canBuy(player, PointsNeeded))
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You don't have enough points!");
 			return;
 		}
-		if(boxGame == null) return;
-		GunType gun = COMZombies.getPlugin().possibleGuns.get(0);
-		int randID = (int) (Math.random() * COMZombies.getPlugin().possibleGuns.size() + 1);
-		try
+
+		running = true;
+		int randID = COMZombies.rand.nextInt(COMZombies.getPlugin().possibleGuns.size());
+		gun = COMZombies.getPlugin().possibleGuns.get(randID);
+		Location loc = boxLoc.clone().add(.5, .2, .5);
+		item = player.getWorld().dropItem(loc, new ItemStack(gun.categorizeGun()));
+		Game game = GameManager.INSTANCE.getGame(player);
+
+		PointManager.takePoints(player, PointsNeeded);
+		PointManager.notifyPlayer(player);
+
+		int taskID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(COMZombies.getPlugin(), new Runnable()
 		{
-			gun = COMZombies.getPlugin().possibleGuns.get(randID);
-		} catch(IndexOutOfBoundsException e)
-		{
-			if(!boxGame.isFireSale())
+			int time = 15;
+
+			public void run()
 			{
-				CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "TeadyBear!!!!!!");
-				boxGame.boxManager.teddyBear();
-				return;
+				item.setTicksLived(5960);
+				item.setPickupDelay(1000);
+				item.setVelocity(new Vector(0, 0, 0));
+				if(game.mode == Game.ArenaStatus.INGAME)
+				{
+					if(time > 0)
+					{
+						int randID = COMZombies.rand.nextInt(COMZombies.getPlugin().possibleGuns.size());
+						gun = COMZombies.getPlugin().possibleGuns.get(randID);
+						item.setItemStack(new ItemStack(gun.categorizeGun()));
+					}
+					else if(time == 0)
+					{
+//						if(!boxGame.isFireSale())
+//						{
+//							CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "TeadyBear!!!!!!");
+//							boxGame.boxManager.teddyBear();
+//							return;
+//						}
+						gunSelected = true;
+					}
+					else if(time == -15)
+					{
+						gunSelected = false;
+						item.remove();
+						Bukkit.getScheduler().cancelTask(RandomBox.boxes.remove(RandomBox.this));
+						running = false;
+					}
+					time--;
+				}
 			}
-			else
-			{
-				randID = (int) Math.random() * COMZombies.getPlugin().possibleGuns.size();
-			}
-		}
+		}, 0, 10L);
+
+		boxes.put(this, taskID);
+	}
+
+	public boolean canActivate()
+	{
+		return !this.running;
+	}
+
+	public boolean canPickGun()
+	{
+		return this.gunSelected;
+	}
+
+	public void pickUpGun(Player player)
+	{
 		GunManager manager = boxGame.getPlayersGun(player);
 		int slot = manager.getCorrectSlot();
 		manager.removeGun(manager.getGun(slot));
 		manager.addGun(new Gun(gun, player, slot));
 		player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
-		PointManager.takePoints(player, PointsNeeded);
-		PointManager.notifyPlayer(player);
-		/*plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
-		{
-			int time = 15;
-			Item temp = null;
-			Location loc = boxLoc.add(.5,.2,.5);
-			Game game = plugin.manager.getGame(player);
-			
-			public void run()
-			{
-				if (time != -1 && game.mode == ArenaStatus.INGAME)
-				{
-					if (time != 0 && game.mode == ArenaStatus.INGAME)
-					{
-						if (game == null) return;
-						GunType gun = plugin.possibleGuns.get(0);
-						int randID = (int) (Math.random() * plugin.possibleGuns.size() + 1);
-						try{
-							gun = plugin.possibleGuns.get(randID);
-						}catch(IndexOutOfBoundsException e){}
-						if (temp != null) temp.remove();
-						temp = Bukkit.getServer().getWorld(player.getWorld().getName()).dropItem(loc, new ItemStack(gun.categorizeGun()));
-						temp.setTicksLived(5960);
-						temp.setPickupDelay(1000);
-						temp.setVelocity(new Vector(0,0,0));
-						time--;
-					}
-					else
-					{
-						time -= 1;
-					}
-				}
-			}
-		}, 0L, 3L);*/
+		gunSelected = false;
+		if(item != null)
+			item.remove();
+		Bukkit.getScheduler().cancelTask(RandomBox.boxes.remove(this));
+		running = false;
 	}
 
 	public void loadBox()
@@ -110,8 +148,12 @@ public class RandomBox
 			Bukkit.getServer().broadcastMessage("Mysterybox " + this.getName() + "Is broken and has no location!! what did you do!!");
 			return;
 		}
-		boxLoc.getBlock().setType(Material.OAK_WALL_SIGN);
-		Sign sign = (Sign) boxLoc.getBlock().getState();
+		Block block = boxLoc.getBlock();
+		block.setType(Material.OAK_WALL_SIGN);
+		BlockData blockData = block.getBlockData();
+		((Directional) blockData).setFacing(facing);
+		block.setBlockData(blockData);
+		Sign sign = (Sign) block.getState();
 		sign.setLine(0, ChatColor.RED + "[Zombies]");
 		sign.setLine(1, ChatColor.AQUA + "MysteryBox");
 		sign.setLine(2, "" + boxCost);
@@ -126,6 +168,11 @@ public class RandomBox
 	public Location getLocation()
 	{
 		return boxLoc;
+	}
+
+	public BlockFace getFacing()
+	{
+		return facing;
 	}
 
 	public String getName()

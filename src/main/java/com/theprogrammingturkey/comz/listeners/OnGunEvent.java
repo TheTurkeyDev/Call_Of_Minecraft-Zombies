@@ -15,6 +15,7 @@ import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
@@ -32,9 +33,8 @@ public class OnGunEvent implements Listener
 	public void onBlockInteractEvent(PlayerInteractEvent event)
 	{
 		if(!(event.getAction().equals(Action.RIGHT_CLICK_AIR)) || !(event.getAction().equals(Action.RIGHT_CLICK_AIR)))
-		{
 			return;
-		}
+
 		if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
 		{
 			if(BlockUtils.isSign(event.getClickedBlock().getType()))
@@ -46,9 +46,8 @@ public class OnGunEvent implements Listener
 		{
 			Game game = GameManager.INSTANCE.getGame(player);
 			if(!(game.mode == ArenaStatus.INGAME))
-			{
 				return;
-			}
+
 			if(game.getPlayersGun(player) != null)
 			{
 				GunManager gunManager = game.getPlayersGun(player);
@@ -243,15 +242,16 @@ public class OnGunEvent implements Listener
 				// Location Iloc = item.getLocation();
 				item.setVelocity(player.getLocation().getDirection().multiply(1));
 				item.setPickupDelay(1000);
-				/*
-				 * for(Entity e: game.spawnManager.mobs) {
-				 *
-				 * }
-				 */
+
+//				for(Entity e : game.spawnManager.getEntities())
+//				{
+//				}
+
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
 				{
 					Location loc = item.getLocation();
-					player.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 4.0F, false, false);
+					player.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 0.0F, false, false);
+					//TODO: Damage logic
 					item.remove();
 				}, 140);
 			}

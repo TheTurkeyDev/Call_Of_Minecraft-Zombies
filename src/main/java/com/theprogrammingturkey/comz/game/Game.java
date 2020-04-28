@@ -428,21 +428,12 @@ public class Game
 		if(mode == ArenaStatus.INGAME)
 			return false;
 
-		COMZombies plugin = COMZombies.getPlugin();
-
 		mode = ArenaStatus.INGAME;
 		for(Player player : players)
 		{
 			player.teleport(playerTPLocation);
-			try
-			{
-				player.setAllowFlight(false);
-				player.setFlying(false);
-			} catch(Exception e)
-			{
-				e.printStackTrace();
-			}
-
+			player.setAllowFlight(false);
+			player.setFlying(false);
 			player.setHealth(20D);
 			player.setFoodLevel(20);
 			player.setLevel(0);
@@ -470,31 +461,23 @@ public class Game
 
 		for(Door door : doorManager.getDoors())
 			door.loadSpawns();
-		try
+
+		for(LivingEntity entity : getWorld().getLivingEntities())
 		{
-			for(LivingEntity entity : getWorld().getLivingEntities())
+			if(arena.containsBlock(entity.getLocation()))
 			{
-				if(arena.containsBlock(entity.getLocation()))
+				if(entity instanceof Player)
+					continue;
+
+				int times = 0;
+				while(!entity.isDead())
 				{
-					if(entity instanceof Player)
-					{
-						continue;
-					}
-					int times = 0;
-					while(!entity.isDead())
-					{
-						entity.damage(20D);
-						if(times > 20)
-						{
-							break;
-						}
-						times++;
-					}
+					entity.damage(20D);
+					if(times > 20)
+						break;
+					times++;
 				}
 			}
-		} catch(Exception e)
-		{
-			e.printStackTrace();
 		}
 		this.waveNumber = 0;
 		nextWave();
@@ -701,54 +684,28 @@ public class Game
 					}
 				}
 			}
-			if(downedPlayerManager.isPlayerDowned(player))
-			{
-				downedPlayerManager.removeDownedPlayer(player);
-			}
+
+			downedPlayerManager.removeDownedPlayer(player);
 		}
-		try
-		{
-			resetPlayer(player);
-			playersGuns.remove(player);
-			try
-			{
-				player.setFlying(pInfo.getFly(player));
-			} catch(Exception e)
-			{
-				e.printStackTrace();
-			}
-			PointManager.playerLeaveGame(player);
-		} catch(NullPointerException e)
-		{
-			GameManager.INSTANCE.loadAllGames();
-		}
+
+		resetPlayer(player);
+		playersGuns.remove(player);
+		player.setFlying(pInfo.getFly(player));
+		PointManager.playerLeaveGame(player);
 		signManager.updateGame();
 	}
 
 	private void resetPlayer(Player player)
 	{
-		try
-		{
-			for(PotionEffectType t : PotionEffectType.values())
-			{
-				player.removePotionEffect(t);
-			}
-		} catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+		for(PotionEffectType t : PotionEffectType.values())
+			player.removePotionEffect(t);
+
 		player.removePotionEffect(PotionEffectType.SPEED);
 		player.getInventory().clear();
-		player.teleport(pInfo.getOldLocation(player));
+		Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> player.teleport(pInfo.getOldLocation(player)));
 		player.setHealth(20);
 		player.setGameMode(pInfo.getGM(player));
-		try
-		{
-			player.setFlying(pInfo.getFly(player));
-		} catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+		player.setFlying(pInfo.getFly(player));
 		player.getInventory().setContents(pInfo.getContents(player));
 		player.getInventory().setArmorContents(pInfo.getArmor(player));
 		player.setExp(pInfo.getExp(player));
@@ -759,13 +716,9 @@ public class Game
 		for(Player pl : Bukkit.getOnlinePlayers())
 		{
 			if(!players.contains(pl))
-			{
 				player.showPlayer(pl);
-			}
 			else
-			{
 				pl.hidePlayer(player);
-			}
 		}
 		signManager.updateGame();
 	}
@@ -799,22 +752,12 @@ public class Game
 				}
 			}
 		}
-		try
-		{
-			playersGuns.remove(player);
-			resetPlayer(player);
-			try
-			{
-				player.setFlying(pInfo.getFly(player));
-			} catch(Exception e)
-			{
-				e.printStackTrace();
-			}
-			PointManager.playerLeaveGame(player);
-		} catch(NullPointerException e)
-		{
-			GameManager.INSTANCE.loadAllGames();
-		}
+
+
+		playersGuns.remove(player);
+		resetPlayer(player);
+		player.setFlying(pInfo.getFly(player));
+		PointManager.playerLeaveGame(player);
 		signManager.updateGame();
 	}
 
@@ -1342,8 +1285,7 @@ public class Game
 		player.getInventory().setLeggings(pants);
 		player.getInventory().setBoots(boots);
 		player.getInventory().setItem(0, knife);
-		// player.getInventory().setItem(8, new ItemStack(Material.MAGMA_CREAM,
-		// 4));
+		//player.getInventory().setItem(8, new ItemStack(Material.MAGMA_CREAM, 4));
 		player.getInventory().setItem(27, setItemMeta(27, ib));
 		player.getInventory().setItem(28, setItemMeta(28, ib));
 		player.getInventory().setItem(29, setItemMeta(29, ib));

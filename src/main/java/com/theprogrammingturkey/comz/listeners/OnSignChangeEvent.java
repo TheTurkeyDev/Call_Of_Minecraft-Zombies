@@ -12,7 +12,9 @@ import com.theprogrammingturkey.comz.game.features.RandomBox;
 import com.theprogrammingturkey.comz.kits.Kit;
 import com.theprogrammingturkey.comz.kits.KitManager;
 import org.bukkit.ChatColor;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -55,7 +57,8 @@ public class OnSignChangeEvent implements Listener
 					sign.setLine(0, ChatColor.RED + "[Zombies]");
 					sign.setLine(1, ChatColor.AQUA + "MysteryBox");
 					sign.setLine(2, "950");
-					RandomBox box = new RandomBox(sign.getBlock().getLocation(), game, game.boxManager.getNextBoxName(), Integer.parseInt(thirdLine));
+					BlockFace facing = ((Directional) sign.getBlock().getBlockData()).getFacing();
+					RandomBox box = new RandomBox(sign.getBlock().getLocation(), facing, game, game.boxManager.getNextBoxName(), Integer.parseInt(thirdLine));
 					game.boxManager.addBox(box);
 					sign.getPlayer().sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Random Weapon Box Created!");
 					return;
@@ -65,7 +68,8 @@ public class OnSignChangeEvent implements Listener
 					sign.setLine(0, ChatColor.RED + "[Zombies]");
 					sign.setLine(1, ChatColor.AQUA + "MysteryBox");
 					sign.setLine(2, thirdLine);
-					RandomBox box = new RandomBox(sign.getBlock().getLocation(), game, game.boxManager.getNextBoxName(), Integer.parseInt(thirdLine));
+					BlockFace facing = ((Directional) sign.getBlock().getBlockData()).getFacing();
+					RandomBox box = new RandomBox(sign.getBlock().getLocation(), facing, game, game.boxManager.getNextBoxName(), Integer.parseInt(thirdLine));
 					game.boxManager.addBox(box);
 					sign.getPlayer().sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Random Weapon Box Created!");
 				}

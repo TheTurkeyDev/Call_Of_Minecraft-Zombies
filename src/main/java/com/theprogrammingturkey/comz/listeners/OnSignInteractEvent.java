@@ -65,6 +65,7 @@ public class OnSignInteractEvent implements Listener
 				if(sign.getLine(0).equalsIgnoreCase(ChatColor.RED + "[Zombies]"))
 				{
 					Player player = event.getPlayer();
+
 					if(sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "Join"))
 					{
 						if(GameManager.INSTANCE.isValidArena(sign.getLine(2)))
@@ -105,23 +106,29 @@ public class OnSignInteractEvent implements Listener
 					Game game = GameManager.INSTANCE.getGame(player);
 					if(sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "MysteryBox"))
 					{
-						int points = Integer.parseInt(sign.getLine(2));
-						if(game.isFireSale())
+						RandomBox box = game.boxManager.getBox(sign.getLocation());
+						if(box == null)
+							return;
+
+						if(box.canActivate())
 						{
-							points = 10;
-						}
-						if(PointManager.canBuy(player, points))
-						{
-							RandomBox box = game.boxManager.getBox(sign.getLocation());
-							if(box != null)
+							int points = Integer.parseInt(sign.getLine(2));
+							if(game.isFireSale())
+								points = 10;
+
+							if(PointManager.canBuy(player, points))
 							{
 								box.Start(player, points);
 								player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
 							}
+							else
+							{
+								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You don't have enough points!");
+							}
 						}
-						else
+						else if(box.canPickGun())
 						{
-							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You don't have enough points!");
+							box.pickUpGun(player);
 						}
 					}
 					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "Perk Machine"))

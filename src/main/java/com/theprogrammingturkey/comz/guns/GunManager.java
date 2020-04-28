@@ -113,12 +113,8 @@ public class GunManager
 	public Gun getGun(int slot)
 	{
 		for(Gun gun : guns)
-		{
 			if(gun.getSlot() == slot)
-			{
 				return gun;
-			}
-		}
 		return null;
 	}
 
@@ -130,6 +126,13 @@ public class GunManager
 	public void removeGun(Gun gun)
 	{
 		guns.remove(gun);
+	}
+
+	public void removeGun(int slot)
+	{
+		for(int i = guns.size() - 1; i >= 0; i--)
+			if(guns.get(i).getSlot() == slot)
+				guns.remove(i);
 	}
 
 	public boolean hasGun(GunType gun)

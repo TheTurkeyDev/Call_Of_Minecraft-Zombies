@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -99,8 +100,8 @@ public class OnBlockInteractEvent implements Listener
 					{
 						if(event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
 						{
-							Block block = event.getClickedBlock();
-							b.setRepairLoc(block.getLocation().add(0, 1, 0));
+							BlockFace face = event.getBlockFace();
+							b.setRepairLoc(event.getClickedBlock().getLocation().add(face.getModX(), face.getModY(), face.getModZ()));
 							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier repair sign location set!");
 							event.setCancelled(true);
 						}

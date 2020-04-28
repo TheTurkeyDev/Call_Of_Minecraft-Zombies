@@ -21,6 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.logging.Logger;
 
 /**
@@ -30,6 +31,7 @@ import java.util.logging.Logger;
  */
 public class COMZombies extends JavaPlugin
 {
+	public static final Random rand = new Random();
 	/**
 	 * Default plugin logger.
 	 */

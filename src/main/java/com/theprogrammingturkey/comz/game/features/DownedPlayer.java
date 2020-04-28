@@ -5,6 +5,7 @@ import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.guns.GunManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -48,6 +49,8 @@ public class DownedPlayer implements Listener
 		{
 			player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You have went down and need to be revived!");
 			game.perkManager.clearPlayersPerks(player);
+			GunManager manager = game.getPlayersGun(player);
+			manager.removeGun(3);
 			player.setGameMode(GameMode.CREATIVE);
 			player.setAllowFlight(false);
 		}
