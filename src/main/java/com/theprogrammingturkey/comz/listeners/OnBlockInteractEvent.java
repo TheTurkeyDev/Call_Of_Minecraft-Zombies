@@ -20,6 +20,12 @@ public class OnBlockInteractEvent implements Listener
 			if(COMZombies.getPlugin().activeActions.containsKey(player))
 				COMZombies.getPlugin().activeActions.get(player).onPlayerInteractEvent(event);
 		}
+		else if(event.getClickedBlock() != null && event.getClickedBlock().getType().equals(Material.CHEST))
+		{
+			Game game = GameManager.INSTANCE.getGame(event.getPlayer());
+			if(game != null)
+				event.setCancelled(true);
+		}
 	}
 
 	@EventHandler

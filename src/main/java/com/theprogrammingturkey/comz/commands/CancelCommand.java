@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.commands;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.actions.BaseAction;
+import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.entity.Player;
 
 public class CancelCommand implements SubCommand

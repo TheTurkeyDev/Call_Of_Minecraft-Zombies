@@ -28,7 +28,6 @@ import org.bukkit.entity.Zombie;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -43,14 +42,12 @@ public class SpawnManager
 	private double zombieSpawnDelayFactor;
 	private int zombiesSpawned = 0;
 	private int zombiesToSpawn = 0;
-	private Random random;
 
 	public SpawnManager(Game game)
 	{
 		this.game = game;
 		zombieSpawnInterval = COMZombies.getPlugin().getConfig().getDouble("config.gameSettings.zombieSpawnDelay");
 		zombieSpawnDelayFactor = COMZombies.getPlugin().getConfig().getDouble("config.gameSettings.zombieSpawnDelayFactor");
-		random = new Random();
 	}
 
 	public void loadAllSpawnsToGame()
@@ -186,11 +183,11 @@ public class SpawnManager
 		return game;
 	}
 
-	private ArrayList<SpawnPoint> getNearestPoints(Location loc, int numToGet)
+	private List<SpawnPoint> getNearestPoints(Location loc, int numToGet)
 	{
-		ArrayList<SpawnPoint> points = game.spawnManager.getPoints();
+		List<SpawnPoint> points = game.spawnManager.getPoints();
 		if(numToGet <= 0 || points.size() == 0)
-			return null;
+			return new ArrayList<>();
 
 		int numPoints = Math.min(numToGet, points.size());
 		ArrayList<SpawnPoint> results = new ArrayList<>(numPoints);
@@ -241,22 +238,22 @@ public class SpawnManager
 
 		int playersSize = players.size();
 
-		int selectPlayer = random.nextInt(playersSize);
+		int selectPlayer = COMZombies.rand.nextInt(playersSize);
 		SpawnPoint selectPoint = null;
 		Player player = players.get(selectPlayer);
-		ArrayList<SpawnPoint> points = getNearestPoints(player.getLocation(), zombiesToSpawn);
+		List<SpawnPoint> points = getNearestPoints(player.getLocation(), zombiesToSpawn);
 		int totalRetries = 0;
 		int curr = 0;
 		while(selectPoint == null)
 		{
 			if(curr == points.size())
 			{
-				player = players.get(random.nextInt(playersSize));
+				player = players.get(COMZombies.rand.nextInt(playersSize));
 				points = getNearestPoints(player.getLocation(), zombiesToSpawn / playersSize);
 				curr = 0;
 				continue;
 			}
-			selectPoint = points.get(random.nextInt(points.size()));
+			selectPoint = points.get(COMZombies.rand.nextInt(points.size()));
 			if(!(canSpawn(selectPoint)))
 				selectPoint = null;
 			curr++;
@@ -276,12 +273,7 @@ public class SpawnManager
 		Location location = new Location(loc.getLocation().getWorld(), loc.getLocation().getBlockX(), loc.getLocation().getBlockY(), loc.getLocation().getBlockZ());
 		location.add(0.5, 0, 0.5);
 		Zombie zomb = (Zombie) location.getWorld().spawnEntity(location, EntityType.ZOMBIE);
-		zomb.getEquipment().setHelmet(null);
-		zomb.getEquipment().setChestplate(null);
-		zomb.getEquipment().setLeggings(null);
-		zomb.getEquipment().setBoots(null);
-		zomb.getEquipment().setItemInMainHand(null);
-		zomb.getEquipment().setItemInOffHand(null);
+		zomb.getEquipment().clear();
 		zomb.setBaby(false);
 		setFollowDistance(zomb);
 		setTotalHealth(zomb, strength);
@@ -359,15 +351,10 @@ public class SpawnManager
 			{
 				Player closest = null;
 				for(Player player : SpawnManager.this.game.players)
-				{
 					if(closest == null || player.getLocation().distance(e.getLocation()) < closest.getLocation().distance(e.getLocation()))
-					{
 						closest = player;
-					}
-				}
 				return closest;
 			}
-
 		});
 	}
 

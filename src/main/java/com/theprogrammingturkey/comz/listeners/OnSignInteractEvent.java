@@ -2,7 +2,7 @@ package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.commands.CommandManager;
-import com.theprogrammingturkey.comz.commands.CommandUtil;
+import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.economy.PointManager;

@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.commands;
 
 import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

@@ -1,6 +1,6 @@
 package com.theprogrammingturkey.comz.game.actions;
 
-import com.theprogrammingturkey.comz.commands.CommandUtil;
+import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.game.Game;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

@@ -1,7 +1,7 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.commands.CommandUtil;
+import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.game.actions.BaseAction;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Sign;

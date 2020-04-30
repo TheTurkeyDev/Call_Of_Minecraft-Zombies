@@ -79,21 +79,19 @@ public class Arena
 	public boolean containsBlock(Location currentLoc)
 	{
 		// Short circut eval.
-		if(currentLoc == null) return false;
-		if(currentLoc.getWorld() != world) return false;
+		if(currentLoc == null || currentLoc.getWorld() == null)
+			return false;
+
+		if(currentLoc.getWorld() != world)
+			return false;
 
 		double x = currentLoc.getX();
 		double y = currentLoc.getY();
 		double z = currentLoc.getZ();
 
-		if((x <= Math.max(max.getBlockX(), min.getBlockX()) && (x >= Math.min(max.getBlockX(), min.getBlockX()))))
-		{
-			if((y <= Math.max(max.getBlockY(), min.getBlockY()) && (y >= Math.min(max.getBlockY(), min.getBlockY()))))
-			{
-				return (z <= Math.max(max.getBlockZ(), min.getBlockZ()) && (z >= Math.min(max.getBlockZ(), min.getBlockZ())));
-			}
-			return false;
-		}
+		if(x <= Math.max(max.getBlockX(), min.getBlockX()) && x >= Math.min(max.getBlockX(), min.getBlockX()))
+			if(y <= Math.max(max.getBlockY(), min.getBlockY()) && y >= Math.min(max.getBlockY(), min.getBlockY()))
+				return z <= Math.max(max.getBlockZ(), min.getBlockZ()) && z >= Math.min(max.getBlockZ(), min.getBlockZ());
 		return false;
 	}
 

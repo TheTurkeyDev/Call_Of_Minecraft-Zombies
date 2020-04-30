@@ -8,7 +8,7 @@
 package com.theprogrammingturkey.comz.game;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.commands.CommandUtil;
+import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
@@ -53,6 +53,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 /**
@@ -114,7 +115,7 @@ public class Game
 	/**
 	 * Contains a player and the gun manager corresponding to that player.
 	 */
-	private HashMap<Player, GunManager> playersGuns = new HashMap<>();
+	private Map<Player, GunManager> playersGuns = new HashMap<>();
 
 	/**
 	 * Current wave number.
@@ -258,10 +259,7 @@ public class Game
 	 */
 	public GunManager getPlayersGun(Player player)
 	{
-		if(playersGuns.containsKey(player))
-			return playersGuns.get(player);
-		playersGuns.put(player, new GunManager(player));
-		return playersGuns.get(player);
+		return playersGuns.computeIfAbsent(player, GunManager::new);
 	}
 
 	/**
@@ -342,16 +340,11 @@ public class Game
 	public void turnOnPower()
 	{
 		power = true;
-		try
+
+		for(Player pl : players)
 		{
-			for(Player pl : players)
-			{
-				Location loc = pl.getLocation();
-				loc.getWorld().playSound(loc, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1L, 1L);
-			}
-		} catch(NullPointerException e)
-		{
-			e.printStackTrace();
+			Location loc = pl.getLocation();
+			loc.getWorld().playSound(loc, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1L, 1L);
 		}
 	}
 
@@ -381,6 +374,7 @@ public class Game
 		for(BaseAction action : COMZombies.getPlugin().activeActions.values())
 			if(action.getGame().equals(this))
 				return;
+
 		for(int i = 0; i < spawnManager.getPoints().size(); i++)
 		{
 			Location loc = spawnManager.getPoints().get(i).getLocation();
@@ -394,13 +388,9 @@ public class Game
 	public boolean isCreated()
 	{
 		if(isDisabled)
-		{
 			return false;
-		}
 		if(hasPoints && hasWarps && !isDisabled)
-		{
 			return true;
-		}
 		return false;
 	}
 
@@ -410,17 +400,12 @@ public class Game
 	public void forceStart()
 	{
 		if(mode == ArenaStatus.INGAME)
-		{
 			return;
-		}
+
 		if(starter != null && starter.forced)
-		{
 			return;
-		}
-		for(Player pl : players)
-		{
-			CommandUtil.sendMessageToPlayer(pl, "Game force started!");
-		}
+
+		sendMessageToPlayers("Game force started!");
 		if(starter != null)
 			starter.endTimer();
 		starter = new AutoStart(this, 6);
@@ -432,13 +417,11 @@ public class Game
 
 	/**
 	 * starts the game normally
-	 *
-	 * @return if the game starts correct
 	 */
-	public boolean startArena()
+	public void startArena()
 	{
 		if(mode == ArenaStatus.INGAME)
-			return false;
+			return;
 
 		mode = ArenaStatus.INGAME;
 		for(Player player : players)
@@ -455,8 +438,7 @@ public class Game
 		scoreboard.update();
 		if(ConfigManager.getMainConfig().MultiBox)
 		{
-			for(Player player : players)
-				player.sendMessage("" + ChatColor.RED + "[Zombies] All mystery boxes are being generated.");
+			sendMessageToPlayers(ChatColor.RED + "[Zombies] All mystery boxes are being generated.");
 			this.boxManager.loadAllBoxes();
 		}
 		else
@@ -495,19 +477,6 @@ public class Game
 		nextWave();
 		signManager.updateGame();
 		KitManager.giveOutKits(this);
-		return true;
-	}
-
-	/**
-	 * Starts a delayed task
-	 *
-	 * @param run            Runnable that runs the task
-	 * @param delayInSeconds delay for the task
-	 */
-	public void scheduleSyncTask(Runnable run, int delayInSeconds)
-	{
-		COMZombies plugin = COMZombies.getPlugin();
-		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, run, delayInSeconds);
 	}
 
 	/**
@@ -520,23 +489,25 @@ public class Game
 			this.endGame();
 			return;
 		}
+
 		if(!(spawnManager.getZombiesAlive() == 0) || !(spawnManager.getZombiesToSpawn() <= spawnManager.getZombiesSpawned()))
 			return;
 		if(changingRound)
 			return;
+
 		changingRound = true;
+
+		COMZombies plugin = COMZombies.getPlugin();
 		for(Player pl : players)
-		{
 			for(Player p : players)
-			{
-				pl.showPlayer(p);
-			}
-		}
+				pl.showPlayer(plugin, p);
+
 		if(mode != ArenaStatus.INGAME)
 		{
 			waveNumber = 0;
 			return;
 		}
+
 		waveNumber++;
 		if(waveNumber != 1)
 		{
@@ -548,18 +519,16 @@ public class Game
 
 			spawnManager.nextWave(waveNumber, players);
 
-			COMZombies plugin = COMZombies.getPlugin();
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () ->
+			COMZombies.scheduleTask(200, () ->
 			{
 				for(Player pl : players)
 					pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_TRAVEL, 1, 1);
-
 
 				spawnManager.startWave(waveNumber, players);
 				signManager.updateGame();
 				changingRound = false;
 				scoreboard.update();
-			}, 200L);
+			});
 		}
 		else
 		{
@@ -609,21 +578,20 @@ public class Game
 			player.setGameMode(GameMode.SURVIVAL);
 			String gunName = ConfigManager.getConfig(COMZConfig.GUNS).getString("StartingGun", "M1911");
 			waveNumber = 0;
+
+			COMZombies plugin = COMZombies.getPlugin();
 			for(Player pl : players)
 			{
 				for(Player p : Bukkit.getOnlinePlayers())
 				{
 					if(!(players.contains(p)))
-					{
-						pl.hidePlayer(p);
-					}
+						pl.hidePlayer(plugin, p);
 					else
-					{
-						pl.showPlayer(p);
-					}
+						pl.showPlayer(plugin, p);
 				}
 			}
-			GunType gun = COMZombies.getPlugin().getGun(gunName);
+
+			GunType gun = plugin.getGun(gunName);
 			Game game = GameManager.INSTANCE.getGame(player);
 			if(!(game == null))
 			{
@@ -631,34 +599,25 @@ public class Game
 				Gun gunType = new Gun(gun, player, 1);
 				manager.addGun(gunType);
 			}
-			for(Player pl : players)
-			{
-				CommandUtil.sendMessageToPlayer(pl, player.getName() + " has joined with " + players.size() + "/" + maxPlayers + "!");
-			}
+
+			sendMessageToPlayers(player.getName() + " has joined with " + players.size() + "/" + maxPlayers + "!");
 			if(players.size() >= ConfigManager.getConfig(COMZConfig.ARENAS).getInt(arenaName + ".minPlayers"))
 			{
 				if(starter == null)
 				{
 					starter = new AutoStart(this, ConfigManager.getMainConfig().arenaStartTime + 1);
 					starter.startTimer();
-					for(Player pl : players)
-					{
-						CommandUtil.sendMessageToPlayer(pl, ChatColor.RED + "" + ChatColor.BOLD + "Game starting soon!");
-					}
+					sendMessageToPlayers(ChatColor.RED + "" + ChatColor.BOLD + "Game starting soon!");
 					mode = ArenaStatus.STARTING;
 				}
 				else
 				{
 					if(starter.started)
-					{
 						return;
-					}
+
 					starter = new AutoStart(this, ConfigManager.getMainConfig().arenaStartTime + 1);
 					starter.startTimer();
-					for(Player pl : players)
-					{
-						CommandUtil.sendMessageToPlayer(pl, "Game starting soon!");
-					}
+					sendMessageToPlayers("Game starting soon!");
 					mode = ArenaStatus.STARTING;
 				}
 				signManager.updateGame();
@@ -687,14 +646,12 @@ public class Game
 				{
 					mode = ArenaStatus.WAITING;
 					starter = null;
-					players.clear();
 					waveNumber = 0;
 					PointManager.clearGamePoints(this);
 					endGame();
+
 					for(int i = 0; i < doorManager.getDoors().size(); i++)
-					{
 						doorManager.getDoors().get(i).closeDoor();
-					}
 				}
 			}
 
@@ -703,6 +660,41 @@ public class Game
 
 		resetPlayer(player);
 		playersGuns.remove(player);
+		player.setFlying(pInfo.getFly(player));
+		PointManager.playerLeaveGame(player);
+		signManager.updateGame();
+	}
+
+	/**
+	 * Removes a player from the game
+	 *
+	 * @param player to be removed
+	 */
+	public void removePlayer(Player player)
+	{
+		players.remove(player);
+		if(!isDisabled)
+			sendMessageToPlayers(player.getName() + " has left the game! Only " + players.size() + "/" + this.maxPlayers + " player(s) left!");
+
+		if(players.size() == 0)
+		{
+			if(!isDisabled)
+			{
+				mode = ArenaStatus.WAITING;
+				starter = null;
+				waveNumber = 0;
+				PointManager.clearGamePoints(this);
+				endGame();
+				for(int i = 0; i < doorManager.getDoors().size(); i++)
+				{
+					doorManager.getDoors().get(i).closeDoor();
+				}
+			}
+		}
+
+
+		playersGuns.remove(player);
+		resetPlayer(player);
 		player.setFlying(pInfo.getFly(player));
 		PointManager.playerLeaveGame(player);
 		signManager.updateGame();
@@ -726,51 +718,15 @@ public class Game
 		player.setWalkSpeed(0.2F);
 		scoreboard.removePlayer(player);
 		player.updateInventory();
+
+		COMZombies plugin = COMZombies.getPlugin();
 		for(Player pl : Bukkit.getOnlinePlayers())
 		{
 			if(!players.contains(pl))
-				player.showPlayer(pl);
+				player.showPlayer(plugin, pl);
 			else
-				pl.hidePlayer(player);
+				pl.hidePlayer(plugin, player);
 		}
-		signManager.updateGame();
-	}
-
-	/**
-	 * Removes a player from the game
-	 *
-	 * @param player to be removed
-	 */
-	public void removePlayer(Player player)
-	{
-		players.remove(player);
-		for(Player pl : players)
-		{
-			if(!isDisabled)
-				CommandUtil.sendMessageToPlayer(pl, player.getName() + " has left the game! Only " + players.size() + "/" + this.maxPlayers + " player(s) left!");
-		}
-		if(players.size() == 0)
-		{
-			if(!isDisabled)
-			{
-				mode = ArenaStatus.WAITING;
-				starter = null;
-				players.clear();
-				waveNumber = 0;
-				PointManager.clearGamePoints(this);
-				endGame();
-				for(int i = 0; i < doorManager.getDoors().size(); i++)
-				{
-					doorManager.getDoors().get(i).closeDoor();
-				}
-			}
-		}
-
-
-		playersGuns.remove(player);
-		resetPlayer(player);
-		player.setFlying(pInfo.getFly(player));
-		PointManager.playerLeaveGame(player);
 		signManager.updateGame();
 	}
 
@@ -882,9 +838,8 @@ public class Game
 		resetSpawnLocationBlocks();
 		isDisabled = false;
 		if(mode == ArenaStatus.INGAME)
-		{
 			return;
-		}
+
 		mode = ArenaStatus.WAITING;
 		signManager.updateGame();
 	}
@@ -925,17 +880,18 @@ public class Game
 		waveNumber = 0;
 		clearArena();
 		clearArenaItems();
+
+		COMZombies plugin = COMZombies.getPlugin();
 		for(Player pl : Bukkit.getOnlinePlayers())
 		{
 			for(Player p : Bukkit.getOnlinePlayers())
 			{
-				p.showPlayer(pl);
-				pl.showPlayer(p);
+				p.showPlayer(plugin, pl);
+				pl.showPlayer(plugin, p);
 			}
 		}
 
-		if(COMZombies.getPlugin().isEnabled())
-			signManager.updateGame();
+		signManager.updateGame();
 	}
 
 	/**
@@ -1403,5 +1359,11 @@ public class Game
 	{
 		for(Player player : this.players)
 			PacketUtil.playBlockBreakAction(player, damage, block);
+	}
+
+	public void sendMessageToPlayers(String message)
+	{
+		for(Player player : players)
+			player.sendRawMessage(COMZombies.PREFIX + message);
 	}
 }

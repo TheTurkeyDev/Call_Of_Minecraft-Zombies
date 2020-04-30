@@ -1,7 +1,7 @@
 package com.theprogrammingturkey.comz.game.actions;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.commands.CommandUtil;
+import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import org.bukkit.ChatColor;

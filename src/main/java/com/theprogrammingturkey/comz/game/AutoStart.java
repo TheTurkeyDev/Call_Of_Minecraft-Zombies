@@ -1,9 +1,8 @@
 package com.theprogrammingturkey.comz.game;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.commands.CommandUtil;
 import com.theprogrammingturkey.comz.listeners.customEvents.GameStartEvent;
-import org.bukkit.entity.Player;
+import org.bukkit.Bukkit;
 
 /**
  * Arena auto start class.
@@ -48,9 +47,8 @@ public class AutoStart
 	public AutoStart(Game game, int seconds)
 	{
 		if(seconds == -1)
-		{
 			return;
-		}
+
 		this.game = game;
 		this.seconds = seconds;
 	}
@@ -60,26 +58,11 @@ public class AutoStart
 	 */
 	public void startTimer()
 	{
-		try
+		if(seconds > 0 && !started)
 		{
-			if(seconds > 0 && !started)
-			{
-				started = true;
-				timer = new Countdown(seconds);
-				timer.run();
-			}
-		} catch(Exception e)
-		{
-			try
-			{
-				for(Player pl : game.players)
-				{
-					CommandUtil.sendMessageToPlayer(pl, "Error in joining " + game.getName() + ". Try rejoining!");
-				}
-			} catch(NullPointerException ex)
-			{
-				ex.printStackTrace();
-			}
+			started = true;
+			timer = new Countdown(seconds);
+			timer.run();
 		}
 	}
 
@@ -105,48 +88,34 @@ public class AutoStart
 			remain = seconds;
 
 			for(int i = 0; (i < warnings.length) && (seconds > warnings[i]); i++)
-			{
 				index = i;
-			}
-
 		}
 
 		@Override
 		public void run()
 		{
-			synchronized(this)
+			if(game.mode == Game.ArenaStatus.INGAME || game.players.isEmpty())
+				return;
+
+			remain = remain - 1;
+
+			if(remain <= 0)
 			{
-				if(AutoStart.this.game.mode == Game.ArenaStatus.INGAME || AutoStart.this.game.players.isEmpty())
+				game.startArena();
+				Bukkit.getPluginManager().callEvent(new GameStartEvent(game));
+			}
+			else
+			{
+				if(remain == warnings[index])
 				{
-					notifyAll();
-					return;
+					game.sendMessageToPlayers(warnings[index] + " seconds!");
+					index = index - 1;
 				}
-
-				remain = remain - 1;
-
-				if(remain <= 0)
-				{
-					AutoStart.this.game.startArena();
-					COMZombies.getPlugin().getServer().getPluginManager().callEvent(new GameStartEvent(AutoStart.this.game));
-				}
-				else
-				{
-					if(remain == warnings[index])
-					{
-						for(Player pl : game.players)
-						{
-							CommandUtil.sendMessageToPlayer(pl, warnings[index] + " seconds!");
-						}
-						index = index - 1;
-					}
-					AutoStart.this.timeLeft = remain;
-					game.signManager.updateGame();
-					if(!stopped)
-						AutoStart.this.game.scheduleSyncTask(this, 20);
-				}
-				notifyAll();
+				timeLeft = remain;
+				game.signManager.updateGame();
+				if(!stopped)
+					COMZombies.scheduleTask(20, this);
 			}
 		}
-
 	}
 }

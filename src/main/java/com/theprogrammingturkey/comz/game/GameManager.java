@@ -12,18 +12,12 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.logging.Level;
 
 public class GameManager
 {
 	public static final GameManager INSTANCE = new GameManager();
-
-	private GameManager()
-	{
-
-	}
 
 	private List<Game> games = new ArrayList<>();
 
@@ -46,21 +40,9 @@ public class GameManager
 	public Game getGame(Entity entity)
 	{
 		for(Game game : games)
-		{
-			try
-			{
-				for(Entity ent : game.spawnManager.getEntities())
-				{
-					if(ent.equals(entity))
-					{
-						return game;
-					}
-				}
-			} catch(NullPointerException e)
-			{
-				e.printStackTrace();
-			}
-		}
+			for(Entity ent : game.spawnManager.getEntities())
+				if(ent.equals(entity))
+					return game;
 		return null;
 	}
 
@@ -71,36 +53,22 @@ public class GameManager
 		{
 			Game game = new Game(key);
 			if(game.loadGame())
-			{
 				games.add(game);
-			}
 			else
-			{
 				COMZombies.log.log(Level.SEVERE, "Failed to load arena " + key + "!");
-			}
 		}
 		Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.RED + ChatColor.BOLD + " Done loading arenas!");
 	}
 
 	public void disableAllArenas()
 	{
-		try
+		for(Game gl : games)
 		{
-			for(Game gl : games)
-			{
-				for(Game game : games)
-				{
-					for(int q = 0; q < game.doorManager.getDoors().size(); q++)
-					{
-						game.doorManager.getDoors().get(q).closeDoor();
-					}
-				}
-				gl.endGame();
-				gl.resetSpawnLocationBlocks();
-			}
-		} catch(NullPointerException | ConcurrentModificationException e)
-		{
-			e.printStackTrace();
+			for(Game game : games)
+				for(int q = 0; q < game.doorManager.getDoors().size(); q++)
+					game.doorManager.getDoors().get(q).closeDoor();
+			gl.endGame();
+			gl.resetSpawnLocationBlocks();
 		}
 	}
 
@@ -112,39 +80,25 @@ public class GameManager
 	public Game getGame(Door door)
 	{
 		for(Game gl : games)
-		{
 			if(gl.doorManager.getDoors().contains(door))
-			{
 				return gl;
-			}
-		}
 		return null;
 	}
 
 	public Game getGame(Player player)
 	{
 		for(Game game : games)
-		{
 			if(game.players.contains(player))
-			{
 				return game;
-			}
-		}
 		return null;
 	}
 
 	public boolean isPlayerInGame(Player player)
 	{
 		for(Game gm : games)
-		{
 			for(Player pl : gm.players)
-			{
 				if(player.getName().equalsIgnoreCase(pl.getName()))
-				{
 					return true;
-				}
-			}
-		}
 		return false;
 	}
 
@@ -157,9 +111,7 @@ public class GameManager
 			{
 				String tempName = gameName.substring(0, i);
 				if(name.equalsIgnoreCase(tempName))
-				{
 					return gl;
-				}
 			}
 		}
 		return null;
@@ -170,17 +122,11 @@ public class GameManager
 		for(Game gl : games)
 		{
 			if(gl.mode != ArenaStatus.WAITING && gl.mode != ArenaStatus.INGAME && gl.mode != ArenaStatus.STARTING)
-			{
 				return false;
-			}
 
 			if(gl.arena.containsBlock(loc))
-			{
 				if(gl.mode != ArenaStatus.DISABLED)
-				{
 					return true;
-				}
-			}
 		}
 		return false;
 	}
@@ -188,12 +134,8 @@ public class GameManager
 	public boolean isEntityInGame(Entity entity)
 	{
 		for(Game game : games)
-		{
 			if(game.spawnManager.isEntitySpawned(entity))
-			{
 				return true;
-			}
-		}
 		return false;
 	}
 
@@ -205,9 +147,7 @@ public class GameManager
 			{
 				String gN = gl.getName().substring(0, pf);
 				if(gN.equalsIgnoreCase(name))
-				{
 					return true;
-				}
 			}
 		}
 		return false;
@@ -215,19 +155,9 @@ public class GameManager
 
 	public Game getGame(Location loc)
 	{
-		try
-		{
-			for(Game gl : games)
-			{
-				if(gl.arena.containsBlock(loc))
-				{
-					return gl;
-				}
-			}
-		} catch(Exception e)
-		{
-			return null;
-		}
+		for(Game gl : games)
+			if(gl.arena.containsBlock(loc))
+				return gl;
 		return null;
 	}
 
