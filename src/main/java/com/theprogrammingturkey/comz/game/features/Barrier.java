@@ -1,8 +1,8 @@
 package com.theprogrammingturkey.comz.game.features;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,9 +13,8 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Entity;
 
-import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.spawning.SpawnPoint;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Barrier implements Runnable
 {
@@ -38,7 +37,6 @@ public class Barrier implements Runnable
 	private int reward;
 
 	private List<Entity> ents = new ArrayList<>();
-	private List<Entity> entsToAdd = new ArrayList<>();
 
 	public Barrier(int n, Game game)
 	{
@@ -199,39 +197,25 @@ public class Barrier implements Runnable
 
 	public void update()
 	{
-		if(ents.size() > 0)
+		for(int i = 0; i < ents.size(); i++)
 		{
-			if(!this.damage())
+			Entity ent = ents.get(i);
+			if(ent.isDead())
 			{
-				for(int i = 0; i < ents.size(); i++)
-				{
-					Entity ent = ents.get(i);
-					if(ent.isDead())
-					{
-						ents.remove(ent);
-						i--;
-					}
-				}
-				ents.addAll(entsToAdd);
-				entsToAdd.clear();
-				Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), this, 3 * 20L);
+				ents.remove(ent);
+				i--;
 			}
-			else
-				this.breaking = false;
 		}
-		else if(entsToAdd.size() > 0)
-		{
-			ents.addAll(entsToAdd);
-			entsToAdd.clear();
+
+		if(ents.size() > 0 && !this.damage())
 			Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), this, 3 * 20L);
-		}
 		else
 			this.breaking = false;
 	}
 
 	public void initBarrier(Entity ent)
 	{
-		entsToAdd.add(ent);
+		ents.add(ent);
 		if(this.stage < 6 && !breaking)
 		{
 			this.breaking = true;

@@ -38,7 +38,6 @@ public class SpawnManager
 	private HashMap<Entity, Double> health = new HashMap<>();
 	private ArrayList<SpawnPoint> points = new ArrayList<>();
 	private ArrayList<Entity> mobs = new ArrayList<>();
-	private ArrayList<Entity> mobsToRemove = new ArrayList<>();
 	private boolean canSpawn = false;
 	private double zombieSpawnInterval;
 	private double zombieSpawnDelayFactor;
@@ -87,12 +86,8 @@ public class SpawnManager
 	public SpawnPoint getSpawnPoint(Location loc)
 	{
 		for(SpawnPoint point : points)
-		{
 			if(point.getLocation().equals(loc))
-			{
 				return point;
-			}
-		}
 		return null;
 	}
 
@@ -128,9 +123,7 @@ public class SpawnManager
 			return;
 
 		while(!entity.isDead())
-		{
 			entity.remove();
-		}
 
 		this.removeEntity(entity);
 	}
@@ -142,9 +135,8 @@ public class SpawnManager
 
 	public void killAll(boolean nextWave)
 	{
-		ArrayList<Entity> mobs = this.mobs;
-		for(Entity mob : mobs)
-			killMob(mob);
+		for(int i = mobs.size() - 1; i >= 0; i--)
+			killMob(this.mobs.get(i));
 
 		if(nextWave)
 			game.nextWave();
@@ -160,22 +152,14 @@ public class SpawnManager
 	{
 		if(mobs.contains(entity))
 		{
-			mobsToRemove.add(entity);
-		}
-	}
-
-	public void updateEntityList()
-	{
-		for(Entity ent : mobsToRemove)
-		{
-			health.remove(ent);
-			mobs.remove(ent);
+			health.remove(entity);
+			mobs.remove(entity);
 		}
 
 		if((mobs.size() == 0) && (zombiesSpawned >= zombiesToSpawn))
-		{
 			game.nextWave();
-		}
+
+		game.scoreboard.update();
 	}
 
 	public HashMap<Entity, Double> totalHealth()
@@ -206,20 +190,17 @@ public class SpawnManager
 	{
 		ArrayList<SpawnPoint> points = game.spawnManager.getPoints();
 		if(numToGet <= 0 || points.size() == 0)
-		{
 			return null;
-		}
+
 		int numPoints = Math.min(numToGet, points.size());
 		ArrayList<SpawnPoint> results = new ArrayList<>(numPoints);
 		for(int i = 0; i < numPoints; i++)
-		{
 			results.add(points.get(i));
-		}
+
 		ArrayList<Double> distances = new ArrayList<>();
 		for(int i = 0; i < numToGet; i++)
-		{
 			distances.add(Double.POSITIVE_INFINITY);
-		}
+
 
 		for(SpawnPoint point : points)
 		{
@@ -231,9 +212,8 @@ public class SpawnManager
 			for(int resultIndex = 0; resultIndex < results.size(); resultIndex++)
 			{
 				if(dist2 >= distances.get(resultIndex))
-				{
 					continue;
-				}
+
 				distances.add(resultIndex, dist2);
 				results.add(resultIndex, point);
 				results.remove(numPoints);
@@ -246,7 +226,6 @@ public class SpawnManager
 
 	private void smartSpawn(final int wave, final List<Player> players)
 	{
-
 		if(!this.canSpawn || wave != game.waveNumber)
 			return;
 		if(game.mode != ArenaStatus.INGAME)
@@ -256,18 +235,7 @@ public class SpawnManager
 
 		if(mobs.size() >= ConfigManager.getMainConfig().maxZombies)
 		{
-			Runnable delayedSpawnFunc = new Runnable()
-			{
-				public void run()
-				{
-					synchronized(this)
-					{
-						smartSpawn(wave, players);
-					}
-				}
-			};
-
-			Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), delayedSpawnFunc, (int) zombieSpawnInterval * 20);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> smartSpawn(wave, players), (int) zombieSpawnInterval * 20);
 			return;
 		}
 
@@ -331,17 +299,7 @@ public class SpawnManager
 		if(b != null)
 			b.initBarrier(zomb);
 
-		Runnable delayedSpawnFunc = new Runnable()
-		{
-			public void run()
-			{
-				synchronized(this)
-				{
-					smartSpawn(wave, players);
-				}
-			}
-		};
-		Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), delayedSpawnFunc, time * 20L);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> smartSpawn(wave, players), time * 20L);
 	}
 
 	public void setFollowDistance(Entity zomb)
@@ -379,25 +337,22 @@ public class SpawnManager
 			@Override
 			public void run()
 			{
-				synchronized(this)
+				for(int i = mobs.size() - 1; i >= 0; i--)
 				{
-					for(Entity zomb : mobs)
+					Entity zomb = mobs.get(i);
+					if(zomb.isDead())
 					{
-						if(zomb.isDead())
-						{
-							removeEntity(zomb);
-						}
-						else
-						{
-							Player closest = getNearestPlayer(zomb);
-							Zombie z = (Zombie) zomb;
-							z.setTarget(closest);
-						}
+						removeEntity(zomb);
 					}
-
-					updateEntityList();
-					update();
+					else
+					{
+						Player closest = getNearestPlayer(zomb);
+						Zombie z = (Zombie) zomb;
+						z.setTarget(closest);
+					}
 				}
+
+				update();
 			}
 
 			private Player getNearestPlayer(Entity e)
@@ -461,10 +416,11 @@ public class SpawnManager
 		game.endGame();
 	}
 
-	public void nextWave()
+	public void nextWave(int wave, final List<Player> players)
 	{
 		canSpawn = false;
 		zombiesSpawned = 0;
+		zombiesToSpawn = (int) ((wave * 0.15) * 30) + (2 * players.size());
 		setSpawnInterval(zombieSpawnInterval / zombieSpawnDelayFactor);
 		if(zombieSpawnInterval < 0.5)
 			zombieSpawnInterval = 0.5;
@@ -480,7 +436,6 @@ public class SpawnManager
 			Bukkit.broadcastMessage(COMZombies.PREFIX + "SmartSpawn was sent a players list with no players in it! Game was ended");
 			return;
 		}
-		zombiesToSpawn = (int) ((wave * 0.15) * 30) + (2 * players.size());
 		this.smartSpawn(wave, players);
 	}
 

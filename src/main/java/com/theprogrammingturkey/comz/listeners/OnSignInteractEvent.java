@@ -99,11 +99,28 @@ public class OnSignInteractEvent implements Listener
 						}
 						event.getPlayer().performCommand("zombies spec " + g.getName());
 					}
+					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "Kit"))
+					{
+						Kit kit = KitManager.getKit(ChatColor.stripColor(sign.getLine(2)));
+						if(player.hasPermission("zombies.admin") || player.hasPermission("zombies.kit." + kit.getName()))
+						{
+							KitManager.addPlayersSelectedKit(player, kit);
+							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + " You have selected the " + kit.getName() + " Kit!");
+						}
+						else
+						{
+							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You dont have permission to use that kit!");
+						}
+					}
 					else if(!GameManager.INSTANCE.isPlayerInGame(player))
 					{
 						return;
 					}
+
 					Game game = GameManager.INSTANCE.getGame(player);
+					if(game.mode != Game.ArenaStatus.INGAME)
+						return;
+
 					if(sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "MysteryBox"))
 					{
 						RandomBox box = game.boxManager.getBox(sign.getLocation());
@@ -175,17 +192,15 @@ public class OnSignInteractEvent implements Listener
 								}
 
 								if(!game.perkManager.addPerk(player, perk))
-								{
 									return;
-								}
+
 								plugin.getServer().getPluginManager().callEvent(new PlayerPerkPurchaseEvent(player, perk));
 								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You now have " + perk.toString().toLowerCase() + "!");
 								int slot = game.perkManager.getAvaliblePerkSlot(player);
 								perk.initialEffect(plugin, player, perk, slot);
 								if(perk.equals(PerkType.STAMIN_UP))
-								{
 									player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
-								}
+
 								PointManager.takePoints(player, cost);
 								PointManager.notifyPlayer(player);
 							}
@@ -322,19 +337,6 @@ public class OnSignInteractEvent implements Listener
 								g.turnOnPower();
 								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Power on!");
 							}
-						}
-					}
-					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "Kit"))
-					{
-						Kit kit = KitManager.getKit(ChatColor.stripColor(sign.getLine(2)));
-						if(player.hasPermission("zombies.admin") || player.hasPermission("zombies.kit." + kit.getName()))
-						{
-							KitManager.addPlayersSelectedKit(player, kit);
-							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + " You have selected the " + kit.getName() + " Kit!");
-						}
-						else
-						{
-							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You dont have permission to use that kit!");
 						}
 					}
 					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.AQUA + "teleporter"))

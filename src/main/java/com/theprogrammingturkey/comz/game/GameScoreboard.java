@@ -1,7 +1,5 @@
 package com.theprogrammingturkey.comz.game;
 
-import java.util.HashMap;
-
 import com.theprogrammingturkey.comz.economy.PointManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,7 +11,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
-import com.theprogrammingturkey.comz.COMZombies;
+import java.util.HashMap;
 
 public class GameScoreboard
 {
@@ -24,6 +22,7 @@ public class GameScoreboard
 	private Team team;
 	private Objective objective;
 	private Score round;
+	private Score zombiesLeft;
 	private HashMap<Player, Score> playerScores = new HashMap<>();
 
 	public GameScoreboard(Game game)
@@ -39,6 +38,8 @@ public class GameScoreboard
 		objective.setDisplayName(ChatColor.RED + this.game.getName());
 		round = objective.getScore(ChatColor.RED + "Round");
 		round.setScore(0);
+		zombiesLeft = objective.getScore(ChatColor.RED + "Zombies Left");
+		zombiesLeft.setScore(0);
 	}
 
 	public void addPlayer(Player player)
@@ -67,16 +68,11 @@ public class GameScoreboard
 	public void update()
 	{
 		round.setScore(game.waveNumber);
+		zombiesLeft.setScore((game.spawnManager.getZombiesToSpawn() - game.spawnManager.getZombiesSpawned()) + game.spawnManager.getZombiesAlive());
+
 		for(Player player : playerScores.keySet())
-		{
-			try
-			{
-				playerScores.get(player).setScore(PointManager.getPlayersPoints(player));
-			} catch(NullPointerException e)
-			{
-				playerScores.get(player).setScore(500);
-			}
-		}
+			playerScores.get(player).setScore(PointManager.getPlayersPoints(player));
+
 		game.signManager.updateGame();
 	}
 }

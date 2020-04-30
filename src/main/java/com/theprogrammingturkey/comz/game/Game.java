@@ -525,7 +525,6 @@ public class Game
 		if(changingRound)
 			return;
 		changingRound = true;
-		scoreboard.update();
 		for(Player pl : players)
 		{
 			for(Player p : players)
@@ -544,37 +543,39 @@ public class Game
 			for(Player pl : players)
 			{
 				pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, 1, 1);
-				CommandUtil.sendMessageToPlayer(pl, "Round " + waveNumber + " will start in 10 seconds!");
+				pl.sendTitle(ChatColor.RED + "Round " + waveNumber, ChatColor.GRAY + "starting in 10 seconds", 10, 60, 10);
 			}
 
-			spawnManager.nextWave();
+			spawnManager.nextWave(waveNumber, players);
 
 			COMZombies plugin = COMZombies.getPlugin();
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () ->
 			{
 				for(Player pl : players)
-				{
 					pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_TRAVEL, 1, 1);
-					CommandUtil.sendMessageToPlayer(pl, "Round " + waveNumber + " has begun!");
-				}
+
 
 				spawnManager.startWave(waveNumber, players);
 				signManager.updateGame();
 				changingRound = false;
+				scoreboard.update();
 			}, 200L);
 		}
 		else
 		{
 			for(Player pl : players)
 			{
-				CommandUtil.sendMessageToPlayer(pl, "Round " + waveNumber + "!");
+				pl.sendTitle(ChatColor.RED + "Round " + waveNumber, "", 10, 60, 10);
+				pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_TRAVEL, 1, 1);
 			}
 
-			spawnManager.nextWave();
+			spawnManager.nextWave(waveNumber, players);
 			spawnManager.startWave(waveNumber, players);
 			signManager.updateGame();
 			changingRound = false;
 		}
+
+		scoreboard.update();
 	}
 
 	/**
@@ -932,7 +933,9 @@ public class Game
 				pl.showPlayer(p);
 			}
 		}
-		signManager.updateGame();
+
+		if(COMZombies.getPlugin().isEnabled())
+			signManager.updateGame();
 	}
 
 	/**

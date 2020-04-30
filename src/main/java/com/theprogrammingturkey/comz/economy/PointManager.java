@@ -64,7 +64,8 @@ public class PointManager
 	public static void notifyPlayer(Player player)
 	{
 		Game game = GameManager.INSTANCE.getGame(player);
-		if(game == null) return;
+		if(game == null)
+			return;
 		game.scoreboard.update();
 	}
 

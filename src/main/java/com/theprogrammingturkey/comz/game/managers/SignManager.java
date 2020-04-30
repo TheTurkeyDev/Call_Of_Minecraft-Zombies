@@ -62,48 +62,34 @@ public class SignManager
 
 	public void updateGame()
 	{
-		try
+		Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () ->
 		{
-			Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), new Runnable()
+			for(Sign s : gameSigns)
 			{
-				public void run()
+				if(game.mode.equals(Game.ArenaStatus.DISABLED))
 				{
-					synchronized(this)
-					{
-						for(Sign s : gameSigns)
-						{
-							if(game.mode.equals(Game.ArenaStatus.DISABLED))
-							{
-								s.setLine(0, ChatColor.DARK_RED + "[maintenance]".toUpperCase());
-								s.setLine(1, game.getName());
-								s.setLine(2, "Game will be");
-								s.setLine(3, "available soon!");
-							}
-							else if(game.mode.equals(Game.ArenaStatus.WAITING) || game.mode.equals(Game.ArenaStatus.STARTING))
-							{
-								s.setLine(0, ChatColor.RED + "[Zombies]");
-								s.setLine(1, ChatColor.AQUA + "Join");
-								s.setLine(2, game.getName());
-								s.setLine(3, ChatColor.GREEN + "Players: " + game.players.size() + "/" + game.maxPlayers);
-							}
-							else if(game.mode.equals(Game.ArenaStatus.INGAME))
-							{
-								s.setLine(0, ChatColor.GREEN + game.getName());
-								s.setLine(1, ChatColor.RED + "InProgress");
-								s.setLine(2, ChatColor.RED + "Wave:" + game.waveNumber);
-								s.setLine(3, ChatColor.DARK_RED + "Alive: " + game.players.size());
-							}
-							s.update();
-						}
-					}
-
+					s.setLine(0, ChatColor.DARK_RED + "[maintenance]".toUpperCase());
+					s.setLine(1, game.getName());
+					s.setLine(2, "Game will be");
+					s.setLine(3, "available soon!");
 				}
-
-			}, 20L);
-		} catch(Exception e)
-		{
-			COMZombies.log.log(Level.WARNING, COMZombies.CONSOLE_PREFIX + "Failed to update signs. Could be due to the server closing or restarting");
-		}
+				else if(game.mode.equals(Game.ArenaStatus.WAITING) || game.mode.equals(Game.ArenaStatus.STARTING))
+				{
+					s.setLine(0, ChatColor.RED + "[Zombies]");
+					s.setLine(1, ChatColor.AQUA + "Join");
+					s.setLine(2, game.getName());
+					s.setLine(3, ChatColor.GREEN + "Players: " + game.players.size() + "/" + game.maxPlayers);
+				}
+				else if(game.mode.equals(Game.ArenaStatus.INGAME))
+				{
+					s.setLine(0, ChatColor.GREEN + game.getName());
+					s.setLine(1, ChatColor.RED + "InProgress");
+					s.setLine(2, ChatColor.RED + "Wave:" + game.waveNumber);
+					s.setLine(3, ChatColor.DARK_RED + "Alive: " + game.players.size());
+				}
+				s.update();
+			}
+		}, 20L);
 	}
 
 	public void enable()
