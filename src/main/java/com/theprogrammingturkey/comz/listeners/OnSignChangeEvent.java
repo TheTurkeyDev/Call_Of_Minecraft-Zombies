@@ -52,27 +52,19 @@ public class OnSignChangeEvent implements Listener
 					sign.setLine(3, "");
 					return;
 				}
-				if(thirdLine.equalsIgnoreCase(""))
+
+				if(thirdLine == null || thirdLine.equalsIgnoreCase(""))
 				{
-					sign.setLine(0, ChatColor.RED + "[Zombies]");
-					sign.setLine(1, ChatColor.AQUA + "MysteryBox");
-					sign.setLine(2, "950");
-					BlockFace facing = ((Directional) sign.getBlock().getBlockData()).getFacing();
-					RandomBox box = new RandomBox(sign.getBlock().getLocation(), facing, game, game.boxManager.getNextBoxName(), Integer.parseInt(thirdLine));
-					game.boxManager.addBox(box);
-					sign.getPlayer().sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Random Weapon Box Created!");
-					return;
+					thirdLine = "950";
 				}
-				else
-				{
-					sign.setLine(0, ChatColor.RED + "[Zombies]");
-					sign.setLine(1, ChatColor.AQUA + "MysteryBox");
-					sign.setLine(2, thirdLine);
-					BlockFace facing = ((Directional) sign.getBlock().getBlockData()).getFacing();
-					RandomBox box = new RandomBox(sign.getBlock().getLocation(), facing, game, game.boxManager.getNextBoxName(), Integer.parseInt(thirdLine));
-					game.boxManager.addBox(box);
-					sign.getPlayer().sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Random Weapon Box Created!");
-				}
+
+				sign.setLine(0, ChatColor.RED + "[Zombies]");
+				sign.setLine(1, ChatColor.AQUA + "MysteryBox");
+				sign.setLine(2, thirdLine);
+				BlockFace facing = ((Directional) sign.getBlock().getBlockData()).getFacing();
+				RandomBox box = new RandomBox(sign.getBlock().getLocation(), facing, game, game.boxManager.getNextBoxName(), Integer.parseInt(thirdLine));
+				game.boxManager.addBox(box);
+				sign.getPlayer().sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Random Weapon Box Created!");
 			}
 			else if(secondLine.equalsIgnoreCase("perk"))
 			{

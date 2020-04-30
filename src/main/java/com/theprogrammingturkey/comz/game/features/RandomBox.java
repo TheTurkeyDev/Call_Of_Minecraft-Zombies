@@ -8,6 +8,7 @@ import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.guns.Gun;
 import com.theprogrammingturkey.comz.guns.GunManager;
 import com.theprogrammingturkey.comz.guns.GunType;
+import com.theprogrammingturkey.comz.util.PacketUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -18,6 +19,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -31,6 +34,7 @@ public class RandomBox
 	public static Map<RandomBox, Integer> boxes = new HashMap<>();
 	private Location boxLoc;
 	private BlockFace facing;
+	private Location chestLocation = null;
 	private Game boxGame;
 	private String boxNum;
 	private int boxCost;
@@ -39,6 +43,7 @@ public class RandomBox
 	private boolean gunSelected;
 	private GunType gun;
 	private Item item;
+	private ArmorStand namePlate;
 
 	public RandomBox(Location loc, BlockFace facing, Game game, String key, int cost)
 	{
@@ -65,11 +70,36 @@ public class RandomBox
 			return;
 		}
 
+		chestLocation = null;
+		for(BlockFace facing : BlockFace.values())
+		{
+			if(boxLoc.clone().add(facing.getModX(), facing.getModY(), facing.getModZ()).getBlock().getType().equals(Material.CHEST))
+			{
+				chestLocation = boxLoc.clone().add(facing.getModX(), facing.getModY(), facing.getModZ());
+				break;
+			}
+		}
+
+		if(chestLocation != null)
+			PacketUtil.playChestAction(chestLocation, true);
+
 		running = true;
 		int randID = COMZombies.rand.nextInt(COMZombies.getPlugin().possibleGuns.size());
 		gun = COMZombies.getPlugin().possibleGuns.get(randID);
-		Location loc = boxLoc.clone().add(.5, .2, .5);
-		item = player.getWorld().dropItem(loc, new ItemStack(gun.categorizeGun()));
+		Location itemLoc;
+
+		if(chestLocation != null)
+			itemLoc = chestLocation.clone().add(.5, 1, .5);
+		else
+			itemLoc = boxLoc.clone().add(.5, .2, .5);
+
+		item = player.getWorld().dropItem(itemLoc, new ItemStack(gun.categorizeGun()));
+		namePlate = (ArmorStand) player.getWorld().spawnEntity(itemLoc.clone().add(0, -1.7, 0), EntityType.ARMOR_STAND);
+		namePlate.setVisible(false);
+		namePlate.setGravity(false);
+		namePlate.setAI(false);
+		namePlate.setCustomName(gun.name);
+		namePlate.setCustomNameVisible(true);
 		Game game = GameManager.INSTANCE.getGame(player);
 
 		PointManager.takePoints(player, PointsNeeded);
@@ -91,6 +121,8 @@ public class RandomBox
 						int randID = COMZombies.rand.nextInt(COMZombies.getPlugin().possibleGuns.size());
 						gun = COMZombies.getPlugin().possibleGuns.get(randID);
 						item.setItemStack(new ItemStack(gun.categorizeGun()));
+						namePlate.setCustomName(gun.name);
+						player.getWorld().playSound(boxLoc, Sound.BLOCK_NOTE_BLOCK_HARP, 1f, 1f);
 					}
 					else if(time == 0)
 					{
@@ -100,14 +132,12 @@ public class RandomBox
 //							boxGame.boxManager.teddyBear();
 //							return;
 //						}
+						player.getWorld().playSound(boxLoc, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
 						gunSelected = true;
 					}
 					else if(time == -15)
 					{
-						gunSelected = false;
-						item.remove();
-						Bukkit.getScheduler().cancelTask(RandomBox.boxes.remove(RandomBox.this));
-						running = false;
+						reset();
 					}
 					time--;
 				}
@@ -134,10 +164,21 @@ public class RandomBox
 		manager.removeGun(manager.getGun(slot));
 		manager.addGun(new Gun(gun, player, slot));
 		player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
+		reset();
+	}
+
+	public void reset()
+	{
 		gunSelected = false;
 		if(item != null)
 			item.remove();
-		Bukkit.getScheduler().cancelTask(RandomBox.boxes.remove(this));
+		if(namePlate != null)
+			namePlate.remove();
+		if(chestLocation != null)
+			PacketUtil.playChestAction(chestLocation, false);
+		Integer id = RandomBox.boxes.remove(RandomBox.this);
+		if(id != null)
+			Bukkit.getScheduler().cancelTask(id);
 		running = false;
 	}
 

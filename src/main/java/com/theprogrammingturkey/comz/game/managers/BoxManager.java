@@ -53,6 +53,12 @@ public class BoxManager
 		}
 	}
 
+	public void resetBoxes()
+	{
+		for(RandomBox box: this.boxes)
+			box.reset();
+	}
+
 	public RandomBox getBox(String name)
 	{
 		for(RandomBox b : boxes)

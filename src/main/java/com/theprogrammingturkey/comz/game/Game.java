@@ -32,11 +32,7 @@ import com.theprogrammingturkey.comz.leaderboards.Leaderboard;
 import com.theprogrammingturkey.comz.leaderboards.PlayerStats;
 import com.theprogrammingturkey.comz.spawning.SpawnManager;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
-import net.minecraft.server.v1_15_R1.BlockPosition;
-import net.minecraft.server.v1_15_R1.DedicatedPlayerList;
-import net.minecraft.server.v1_15_R1.EntityPlayer;
-import net.minecraft.server.v1_15_R1.Packet;
-import net.minecraft.server.v1_15_R1.PacketPlayOutBlockBreakAnimation;
+import com.theprogrammingturkey.comz.util.PacketUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -45,7 +41,6 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -910,14 +905,13 @@ public class Game
 		spawnManager.killAll(false);
 		spawnManager.reset();
 		for(Door door : doorManager.getDoors())
-		{
 			door.closeDoor();
-		}
+
+		boxManager.resetBoxes();
 		perkManager.clearPerks();
 		for(DownedPlayer pl : downedPlayerManager.getDownedPlayers())
-		{
 			pl.setPlayerDown(false);
-		}
+
 		downedPlayerManager.clearDownedPlayers();
 		turnOffPower();
 		boxManager.loadAllBoxes();
@@ -1405,21 +1399,6 @@ public class Game
 	public void updateBarrierDamage(int damage, Block block)
 	{
 		for(Player player : this.players)
-		{
-			PacketPlayOutBlockBreakAnimation packet = new PacketPlayOutBlockBreakAnimation(0, new BlockPosition(block.getX(), block.getY(), block.getZ()), damage);
-			sendPacketNearby(((CraftServer) player.getServer()).getHandle(), block.getX(), block.getY(), block.getZ(), 12, packet);
-		}
-	}
-
-	public void sendPacketNearby(DedicatedPlayerList playerList, double d0, double d1, double d2, double d3, Packet<?> packet)
-	{
-		for(EntityPlayer entityplayer : playerList.players)
-		{
-			double d4 = d0 - entityplayer.locX();
-			double d5 = d1 - entityplayer.locY();
-			double d6 = d2 - entityplayer.locZ();
-			if(d4 * d4 + d5 * d5 + d6 * d6 < d3 * d3)
-				entityplayer.playerConnection.sendPacket(packet);
-		}
+			PacketUtil.playBlockBreakAction(player, damage, block);
 	}
 }

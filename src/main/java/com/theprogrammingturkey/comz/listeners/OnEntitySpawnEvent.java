@@ -16,11 +16,7 @@ public class OnEntitySpawnEvent implements Listener
 	{
 		Entity entity = event.getEntity();
 		if(!event.getSpawnReason().equals(SpawnReason.CUSTOM))
-		{
 			if(GameManager.INSTANCE.isLocationInGame(entity.getLocation()))
-			{
 				event.setCancelled(true);
-			}
-		}
 	}
 }
