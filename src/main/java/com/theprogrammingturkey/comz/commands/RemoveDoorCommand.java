@@ -1,14 +1,11 @@
 package com.theprogrammingturkey.comz.commands;
 
-import com.theprogrammingturkey.comz.game.GameManager;
-import com.theprogrammingturkey.comz.game.features.Door;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.block.Sign;
-import org.bukkit.entity.Player;
-
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.game.actions.DoorRemoveAction;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 public class RemoveDoorCommand implements SubCommand
 {
@@ -19,54 +16,34 @@ public class RemoveDoorCommand implements SubCommand
 		COMZombies plugin = COMZombies.getPlugin();
 		if(player.hasPermission("zombies.removedoor") || player.hasPermission("zombies.admin"))
 		{
-			if(args.length == 1)
+			if(plugin.activeActions.containsKey(player))
+			{
+				CommandUtil.sendMessageToPlayer(player, "You are currently performing another action and cannot add a door right now!");
+			}
+			else if(args.length < 2)
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Please specify an arena to remove a door from!");
-				return true;
+			}
+			else if(GameManager.INSTANCE.isValidArena(args[1]))
+			{
+				Game game = GameManager.INSTANCE.getGame(args[1]);
+				if(game.doorManager.getDoors().size() == 0)
+				{
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "This arena has no doors!");
+					return true;
+				}
+
+				plugin.activeActions.put(player, new DoorRemoveAction(player, game));
 			}
 			else
 			{
-				if(GameManager.INSTANCE.isValidArena(args[1]))
-				{
-					Game game = GameManager.INSTANCE.getGame(args[1]);
-					if(game.doorManager.getDoors().size() == 0)
-					{
-						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "This arena has no doors!");
-						return true;
-					}
-					for(Door door : game.doorManager.getDoors())
-					{
-						for(Sign sign : door.getSigns())
-						{
-							if(!(sign.getBlock().getState() instanceof Sign))
-							{
-								sign.getBlock().setType(Material.OAK_WALL_SIGN);
-							}
-							sign.setLine(0, ChatColor.RED + "Break a sign");
-							sign.setLine(1, ChatColor.RED + "to remove the");
-							sign.setLine(2, ChatColor.RED + "door that the");
-							sign.setLine(3, ChatColor.RED + "sign is for!");
-							sign.update();
-							sign.update(true);
-						}
-					}
-					plugin.isRemovingDoors.put(player, game);
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------" + ChatColor.DARK_RED + "Door Removal" + ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------");
-					CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Break any sign that leads to a door to remove the door!");
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type cancel to cancel this operation.");
-				}
-				else
-				{
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + args[2] + " is not a valid arena!");
-					return true;
-				}
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + args[2] + " is not a valid arena!");
 			}
 		}
 		else
 		{
 			CommandUtil.noPermission(player, "remove this door");
-			return false;
 		}
-		return false;
+		return true;
 	}
 }

@@ -17,6 +17,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Door
 {
@@ -64,15 +66,13 @@ public class Door
 	private void loadDoor()
 	{
 		String location = game.getName() + ".Doors.door" + doorNumber;
-		ArrayList<String> spawns = (ArrayList<String>) ConfigManager.getConfig(COMZConfig.ARENAS).getStringList(location + ".SpawnPoints");
+		List<Integer> spawns = ConfigManager.getConfig(COMZConfig.ARENAS).getStringList(location + ".SpawnPoints").stream().map(Integer::parseInt).collect(Collectors.toList());
 		ArrayList<SpawnPoint> points = new ArrayList<>();
-		for(String spawn : spawns)
+		for(int spawn : spawns)
 		{
 			SpawnPoint point = game.spawnManager.getSpawnPoint(spawn);
 			if(point == null)
-			{
 				continue;
-			}
 			points.add(point);
 		}
 		spawnsInRoomDoorLeadsTo = points;

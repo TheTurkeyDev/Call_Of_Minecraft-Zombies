@@ -7,7 +7,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Entity;
 
 import com.theprogrammingturkey.comz.COMZombies;
@@ -21,6 +24,7 @@ public class Barrier implements Runnable
 	private Block block;
 	private Material blockMat;
 	private Location repairLoc;
+	private BlockFace signFacing;
 
 	private int stage;
 	private boolean breaking = false;
@@ -36,11 +40,8 @@ public class Barrier implements Runnable
 	private List<Entity> ents = new ArrayList<>();
 	private List<Entity> entsToAdd = new ArrayList<>();
 
-	public Barrier(Location l, Block b, int n, Game game)
+	public Barrier(int n, Game game)
 	{
-		loc = l;
-		block = b;
-		blockMat = b.getType();
 		stage = 0;
 		number = n;
 		this.game = game;
@@ -64,13 +65,17 @@ public class Barrier implements Runnable
 		{
 			if(stage > -1)
 			{
-				game.getWorld().getBlockAt(this.repairLoc).setType(Material.OAK_WALL_SIGN);
-				Sign sign = (Sign) game.getWorld().getBlockAt(this.repairLoc).getState();
+				Block block = repairLoc.getBlock();
+				block.setType(Material.OAK_WALL_SIGN);
+				BlockData blockData = block.getBlockData();
+				((Directional) blockData).setFacing(signFacing);
+				block.setBlockData(blockData);
+				Sign sign = (Sign) block.getState();
 				sign.setLine(0, "[BarrierRepair]");
 				sign.setLine(1, "Break this to");
 				sign.setLine(2, "repair the");
 				sign.setLine(3, "barrier");
-				sign.update();
+				sign.update(true);
 			}
 			return false;
 		}
@@ -89,6 +94,7 @@ public class Barrier implements Runnable
 		{
 			game.getWorld().getBlockAt(this.repairLoc).setType(Material.OAK_WALL_SIGN);
 			Sign sign = (Sign) game.getWorld().getBlockAt(this.repairLoc).getState();
+			((Directional) sign.getBlockData()).setFacing(signFacing);
 			sign.setLine(0, "[BarrierRepair]");
 			sign.setLine(1, "Break this to");
 			sign.setLine(2, "repair the");
@@ -117,6 +123,13 @@ public class Barrier implements Runnable
 		game.getWorld().getBlockAt(this.repairLoc).setType(Material.AIR);
 
 		this.breaking = false;
+	}
+
+	public void setBarrierBlock(Location loc)
+	{
+		this.loc = loc;
+		block = loc.getBlock();
+		blockMat = block.getType();
 	}
 
 	public Location getLocation()
@@ -167,6 +180,16 @@ public class Barrier implements Runnable
 	public void setRepairLoc(Location repairLoc)
 	{
 		this.repairLoc = repairLoc;
+	}
+
+	public BlockFace getSignFacing()
+	{
+		return signFacing;
+	}
+
+	public void setSignFacing(BlockFace signFacing)
+	{
+		this.signFacing = signFacing;
 	}
 
 	public Game getGame()

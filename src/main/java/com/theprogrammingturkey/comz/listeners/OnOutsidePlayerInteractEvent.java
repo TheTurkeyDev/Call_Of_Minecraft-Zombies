@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
@@ -19,9 +20,11 @@ public class OnOutsidePlayerInteractEvent implements Listener
 	private ArrayList<ItemStack> currentPerks = new ArrayList<>();
 
 	@EventHandler
-	public void onOusidePlayerItemPickUp(PlayerPickupItemEvent e)
+	public void onOusidePlayerItemPickUp(EntityPickupItemEvent e)
 	{
-		Player player = e.getPlayer();
+		if(!(e.getEntity() instanceof Player))
+			return;
+		Player player = (Player) e.getEntity();
 		Game game = GameManager.INSTANCE.getGame(player.getLocation());
 		if(game == null || game.mode == null) return;
 		if(!(game.mode.equals(ArenaStatus.INGAME)))

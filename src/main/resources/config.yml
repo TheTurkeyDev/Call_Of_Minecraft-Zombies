@@ -13,7 +13,7 @@ config:
     maxPerks: 4
   gameSettings:
     #Range to allow knife attacks. (Values over 6 are set to 6, the vanilla value.)
-    MeleeRange: 1.5
+    MeleeRange: 2
     #Have all or only one Mystery Box be spawned at a time
     MultipleMysteryBoxes: false
     #Double points length in seconds
@@ -32,10 +32,10 @@ config:
     defaultPointsOnKill: 60
     #Max possible zombies in an arena at once
     maxZombies: 20
-    #This is multiplied by a factor of 1.2
-    waveSpawnInterval: 7
-    #Interval between zombies spawning, value decreases as rounds go up
-    zombieSpawnDelay: 10
+    #This is the amount to change the zombieSpawnDelay per round. Equation is zombieSpawnDelayFactor / zombieSpawnDelayFactor
+    zombieSpawnDelayFactor: 1.05
+    #Interval between zombies spawning, value decreases as rounds go up. This value is rounded down and is # of seconds.
+    zombieSpawnDelay: 7
     #Time it takes for an arena to start
     arenaStartTime: 60
     #Apply Scope when zooming in if textured

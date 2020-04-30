@@ -27,12 +27,8 @@ public enum PerkType
 	public PerkType getPerkType(String name)
 	{
 		for(PerkType pt : values())
-		{
-			if((ChatColor.GOLD + pt.toString()).equalsIgnoreCase(name) || (pt.toString().equalsIgnoreCase(name)))
-			{
+			if((ChatColor.GOLD + pt.toString()).equalsIgnoreCase(name) || (pt.toString().toLowerCase().equalsIgnoreCase(name)))
 				return pt;
-			}
-		}
 		return null;
 	}
 

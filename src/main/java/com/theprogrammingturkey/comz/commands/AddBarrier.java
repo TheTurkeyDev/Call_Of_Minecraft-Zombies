@@ -1,15 +1,12 @@
 package com.theprogrammingturkey.comz.commands;
 
-import com.theprogrammingturkey.comz.game.GameManager;
-import com.theprogrammingturkey.comz.spawning.SpawnPoint;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.game.actions.BarrierSetupAction;
+import com.theprogrammingturkey.comz.game.features.Barrier;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 public class AddBarrier implements SubCommand
 {
@@ -17,10 +14,9 @@ public class AddBarrier implements SubCommand
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		if(player.hasPermission("zombies.addbarrier") || player.hasPermission("zombies.admin"))
 		{
-			if(args.length == 1)
+			if(args.length < 2)
 			{
 				CommandUtil.sendMessageToPlayer(player, "Please specify an arena to add a door to!");
 			}
@@ -29,24 +25,9 @@ public class AddBarrier implements SubCommand
 				if(GameManager.INSTANCE.isValidArena(args[1]))
 				{
 					Game game = GameManager.INSTANCE.getGame(args[1]);
-					plugin.isCreatingBarrier.put(player, null);
-					for(SpawnPoint point : game.spawnManager.getPoints())
-					{
-						Block block = point.getLocation().getBlock();
-						point.setMaterial(block.getType());
-						block.setType(Material.END_PORTAL_FRAME);
-					}
-					if(!player.getInventory().contains(Material.WOODEN_HOE))
-					{
-						player.getInventory().addItem(new ItemStack(Material.WOODEN_SWORD));
-					}
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------" + ChatColor.DARK_RED + "Door Setup" + ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------");
-					CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Select a block to be the barrier using the wooden sword.");
-					CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Once you have this complete, type done, go into the room the brarrier blocks to and click on any ender portal frame (spawn point) that is in there with the sword.");
-					CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Lastly! In chat, type a price for the each repairation stage of the barrier");
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type cancel to cancel this operation.");
+					BarrierSetupAction barrierSetupAction = new BarrierSetupAction(player, game, new Barrier(game.barrierManager.getNextBarrierNumber(), game));
+					COMZombies.getPlugin().activeActions.put(player, barrierSetupAction);
 				}
-
 				else
 				{
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "That is not a valid arena!");

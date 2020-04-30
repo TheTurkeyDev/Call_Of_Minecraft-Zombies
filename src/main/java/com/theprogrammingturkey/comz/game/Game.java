@@ -13,6 +13,7 @@ import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.economy.PointManager;
+import com.theprogrammingturkey.comz.game.actions.BaseAction;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.game.features.DownedPlayer;
 import com.theprogrammingturkey.comz.game.features.RandomBox;
@@ -30,8 +31,11 @@ import com.theprogrammingturkey.comz.kits.KitManager;
 import com.theprogrammingturkey.comz.leaderboards.Leaderboard;
 import com.theprogrammingturkey.comz.leaderboards.PlayerStats;
 import com.theprogrammingturkey.comz.spawning.SpawnManager;
+import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import net.minecraft.server.v1_15_R1.BlockPosition;
-import net.minecraft.server.v1_15_R1.DimensionManager;
+import net.minecraft.server.v1_15_R1.DedicatedPlayerList;
+import net.minecraft.server.v1_15_R1.EntityPlayer;
+import net.minecraft.server.v1_15_R1.Packet;
 import net.minecraft.server.v1_15_R1.PacketPlayOutBlockBreakAnimation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -364,11 +368,24 @@ public class Game
 		return powerEnabled;
 	}
 
+	public void showSpawnLocations()
+	{
+		for(SpawnPoint point : spawnManager.getPoints())
+		{
+			Block block = point.getLocation().getBlock();
+			point.setMaterial(block.getType());
+			block.setType(Material.END_PORTAL_FRAME);
+		}
+	}
+
 	/**
 	 * Resets the blocks to air at the spawn locations
 	 */
 	public void resetSpawnLocationBlocks()
 	{
+		for(BaseAction action : COMZombies.getPlugin().activeActions.values())
+			if(action.getGame().equals(this))
+				return;
 		for(int i = 0; i < spawnManager.getPoints().size(); i++)
 		{
 			Location loc = spawnManager.getPoints().get(i).getLocation();
@@ -1016,7 +1033,6 @@ public class Game
 		conf.reloadConfig();
 
 		CommandUtil.sendMessageToPlayer(player, "Arena " + arenaName + " setup!");
-		COMZombies.getPlugin().isArenaSetup.remove(player);
 		hasWarps = true;
 	}
 
@@ -1325,19 +1341,16 @@ public class Game
 	{
 		if(this.getWorld() == null)
 			return;
-		List<Entity> entList = getWorld().getEntities();// get all entities in
-		// the world
+		List<Entity> entList = getWorld().getEntities();// get all entities in the world
 
 		for(Entity current : entList)
-		{// loop through the list
+		{
+			// loop through the list
+			// make sure we are only deleting what we want to delete
 			if(current instanceof Item)
-			{// make sure we are only deleting what we want to delete
-				current.remove();// remove it
-			}
-			if(current instanceof Zombie)
-			{
 				current.remove();
-			}
+			if(current instanceof Zombie)
+				current.remove();
 		}
 	}
 
@@ -1394,7 +1407,19 @@ public class Game
 		for(Player player : this.players)
 		{
 			PacketPlayOutBlockBreakAnimation packet = new PacketPlayOutBlockBreakAnimation(0, new BlockPosition(block.getX(), block.getY(), block.getZ()), damage);
-			((CraftServer) player.getServer()).getHandle().sendPacketNearby(null, block.getX(), block.getY(), block.getZ(), 120, DimensionManager.OVERWORLD, packet);
+			sendPacketNearby(((CraftServer) player.getServer()).getHandle(), block.getX(), block.getY(), block.getZ(), 12, packet);
+		}
+	}
+
+	public void sendPacketNearby(DedicatedPlayerList playerList, double d0, double d1, double d2, double d3, Packet<?> packet)
+	{
+		for(EntityPlayer entityplayer : playerList.players)
+		{
+			double d4 = d0 - entityplayer.locX();
+			double d5 = d1 - entityplayer.locY();
+			double d6 = d2 - entityplayer.locZ();
+			if(d4 * d4 + d5 * d5 + d6 * d6 < d3 * d3)
+				entityplayer.playerConnection.sendPacket(packet);
 		}
 	}
 }

@@ -99,7 +99,7 @@ public class ConfigSetup
 		instaKillTimer = plugin.getConfig().getInt("config.gameSettings.instaKillTimer");
 		fireSaleTimer = plugin.getConfig().getInt("config.gameSettings.fireSaleTimer");
 		maxZombies = (int) plugin.getConfig().getDouble("config.gameSettings.maxZombies");
-		waveSpawnInterval = (int) plugin.getConfig().getDouble("config.gameSettings.waveSpawnInterval");
+		waveSpawnInterval = plugin.getConfig().getInt("config.gameSettings.waveSpawnInterval");
 		pointsOnHit = plugin.getConfig().getInt("config.gameSettings.defaultPointsOnHit");
 		pointsOnKill = plugin.getConfig().getInt("config.gameSettings.defaultPointsOnKill");
 		maxWave = plugin.getConfig().getInt("config.gameSettings.maxWave");

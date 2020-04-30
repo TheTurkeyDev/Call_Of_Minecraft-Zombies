@@ -12,6 +12,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DoorManager
 {
@@ -116,9 +117,10 @@ public class DoorManager
 	public void addDoorSpawnPointToConfig(Door door, SpawnPoint spawnPoint)
 	{
 		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
-		List<String> spawnPoints = conf.getStringList(game.getName() + ".Doors.door" + door.doorNumber + ".SpawnPoints");
-		if(spawnPoints.contains(spawnPoint.getName())) return;
-		spawnPoints.add(spawnPoint.getName());
+		List<Integer> spawnPoints = conf.getStringList(game.getName() + ".Doors.door" + door.doorNumber + ".SpawnPoints").stream().map(Integer::parseInt).collect(Collectors.toList());
+		if(spawnPoints.contains(spawnPoint.getID()))
+			return;
+		spawnPoints.add(spawnPoint.getID());
 		conf.set(game.getName() + ".Doors.door" + door.doorNumber + ".SpawnPoints", spawnPoints);
 
 		conf.saveConfig();

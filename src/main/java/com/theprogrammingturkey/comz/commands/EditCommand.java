@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.commands;
 
 import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.game.actions.ArenaSetupAction;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -14,34 +15,29 @@ public class EditCommand implements SubCommand
 		COMZombies plugin = COMZombies.getPlugin();
 		if(player.hasPermission("zombies.editarena") || player.hasPermission("zombies.admin"))
 		{
-			if(args.length == 1)
+			if(plugin.activeActions.containsKey(player))
+			{
+				CommandUtil.sendMessageToPlayer(player, "You are currently performing another action and cannot add a door right now!");
+			}
+			else if(args.length == 1)
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Please specify an arena to edit!");
-				return true;
 			}
-			String arena = args[1];
-			if(GameManager.INSTANCE.isValidArena(arena))
+			else if(GameManager.INSTANCE.isValidArena(args[1]))
 			{
-				Game game = GameManager.INSTANCE.getGame(arena);
+				Game game = GameManager.INSTANCE.getGame(args[1]);
 				game.setDisabled();
-				plugin.isArenaSetup.put(player, game);
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------" + ChatColor.DARK_RED + "Arena Setup" + ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------");
-				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Type p1 for point one, and p2 for point two.");
-				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Type pw for game warp, lw for lobby warp, and sw for spectator warp.");
-				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Be sure to type /z addspawn " + args[1]);
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type /zombies cancel arenasetup to cancel this operation.");
-				return true;
+				plugin.activeActions.put(player, new ArenaSetupAction(player, game));
 			}
 			else
 			{
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + arena + " is not a valid arena!");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + args[1] + " is not a valid arena!");
 			}
 		}
 		else
 		{
 			CommandUtil.noPermission(player, "edit this arena");
-			return true;
 		}
-		return false;
+		return true;
 	}
 }

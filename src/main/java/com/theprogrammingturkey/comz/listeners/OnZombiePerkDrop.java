@@ -20,7 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -152,110 +152,116 @@ public class OnZombiePerkDrop implements Listener
 	}
 
 	@EventHandler
-	private void onPerkPickup(PlayerPickupItemEvent event)
+	private void onPerkPickup(EntityPickupItemEvent event)
 	{
-		final Item eItem = event.getItem();
-		if(GameManager.INSTANCE.isPlayerInGame(event.getPlayer()))
+		if(event.getEntity() instanceof Player)
 		{
-			final Game game = GameManager.INSTANCE.getGame(event.getPlayer());
-			final Player player = event.getPlayer();
+			Player player = (Player) event.getEntity();
+			final Item eItem = event.getItem();
+			if(GameManager.INSTANCE.isPlayerInGame(player))
+			{
+				final Game game = GameManager.INSTANCE.getGame(player);
 
-			if(currentPerks.size() == 0)
-			{
-				event.getItem().remove();
-				event.setCancelled(true);
-				return;
-			}
-			if(!currentPerks.contains(event.getItem().getItemStack()))
-			{
-				event.getItem().remove();
-				event.setCancelled(true);
-				return;
-			}
-			ItemStack item = event.getItem().getItemStack();
+				if(currentPerks.size() == 0)
+				{
+					event.getItem().remove();
+					event.setCancelled(true);
+					return;
+				}
+				if(!currentPerks.contains(event.getItem().getItemStack()))
+				{
+					event.getItem().remove();
+					event.setCancelled(true);
+					return;
+				}
+				ItemStack item = event.getItem().getItemStack();
 
-			switch(PowerUp.getPowerUpForMaterial(item.getType()))
-			{
-				case MAX_AMMO:
-					event.getPlayer().getInventory().remove(item);
-					notifyAll(game, PowerUp.MAX_AMMO);
-					currentPerks.remove(event.getItem().getItemStack());
-					for(Player pl : game.players)
-					{
-						GunManager manager = game.getPlayersGun(pl);
-						for(Gun gun : manager.getGuns())
+				switch(PowerUp.getPowerUpForMaterial(item.getType()))
+				{
+					case MAX_AMMO:
+						player.getInventory().remove(item);
+						notifyAll(game, PowerUp.MAX_AMMO);
+						currentPerks.remove(event.getItem().getItemStack());
+						for(Player pl : game.players)
 						{
-							gun.maxAmmo();
+							GunManager manager = game.getPlayersGun(pl);
+							for(Gun gun : manager.getGuns())
+							{
+								gun.maxAmmo();
+							}
 						}
-					}
-					event.getItem().remove();
-					event.setCancelled(true);
-					return;
-				case INSTA_KILL:
-					currentPerks.remove(event.getItem().getItemStack());
-					event.getPlayer().getInventory().remove(item);
-					game.setInstaKill(true);
-					notifyAll(game, PowerUp.INSTA_KILL);
-					Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> game.setInstaKill(false), ConfigManager.getMainConfig().instaKillTimer * 20);
-					event.getItem().remove();
-					event.setCancelled(true);
-					return;
-				case CARPENTER:
-					currentPerks.remove(event.getItem().getItemStack());
-					event.getPlayer().getInventory().remove(item);
-					notifyAll(game, PowerUp.CARPENTER);
-					for(Barrier barrier : game.barrierManager.getBrriers())
-						barrier.repairFull();
-					event.getItem().remove();
-					event.setCancelled(true);
-					return;
-				case NUKE:
-					currentPerks.remove(event.getItem().getItemStack());
-					event.getPlayer().getInventory().remove(item);
-					notifyAll(game, PowerUp.NUKE);
-					for(Player pl : game.players)
-					{
-						if(game.isDoublePoints())
-							PointManager.addPoints(player, 800);
-						else
-							PointManager.addPoints(player, 400);
-						PointManager.notifyPlayer(pl);
-					}
-					game.spawnManager.nuke();
-					event.setCancelled(true);
-					event.getItem().remove();
-					return;
-				case DOUBLE_POINTS:
-					currentPerks.remove(event.getItem().getItemStack());
-					event.getPlayer().getInventory().remove(item);
-					game.setDoublePoints(true);
-					notifyAll(game, PowerUp.DOUBLE_POINTS);
-					Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> game.setDoublePoints(false), ConfigManager.getMainConfig().doublePointsTimer * 20);
-					event.getItem().remove();
-					event.setCancelled(true);
-					return;
-				case FIRE_SALE:
-					currentPerks.remove(event.getItem().getItemStack());
-					event.getPlayer().getInventory().remove(item);
-					game.setFireSale(true);
-					game.boxManager.FireSale(true);
-					notifyAll(game, PowerUp.FIRE_SALE);
-					Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () ->
-					{
-						game.setFireSale(false);
-						game.boxManager.FireSale(false);
-					}, ConfigManager.getMainConfig().fireSaleTimer * 20);
-					event.getItem().remove();
-					event.setCancelled(true);
-					return;
-				default:
-					event.getPlayer().updateInventory();
-					currentPerks.remove(event.getItem().getItemStack());
-					Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> player.getInventory().removeItem(eItem.getItemStack()), 5L);
-					break;
+						event.getItem().remove();
+						event.setCancelled(true);
+						return;
+					case INSTA_KILL:
+						currentPerks.remove(event.getItem().getItemStack());
+						player.getInventory().remove(item);
+						game.setInstaKill(true);
+						notifyAll(game, PowerUp.INSTA_KILL);
+						Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> game.setInstaKill(false), ConfigManager.getMainConfig().instaKillTimer * 20);
+						event.getItem().remove();
+						event.setCancelled(true);
+						return;
+					case CARPENTER:
+						currentPerks.remove(event.getItem().getItemStack());
+						player.getInventory().remove(item);
+						notifyAll(game, PowerUp.CARPENTER);
+						for(Barrier barrier : game.barrierManager.getBrriers())
+							barrier.repairFull();
+						event.getItem().remove();
+						event.setCancelled(true);
+						return;
+					case NUKE:
+						currentPerks.remove(event.getItem().getItemStack());
+						player.getInventory().remove(item);
+						notifyAll(game, PowerUp.NUKE);
+						for(Player pl : game.players)
+						{
+							if(game.isDoublePoints())
+								PointManager.addPoints(player, 800);
+							else
+								PointManager.addPoints(player, 400);
+							PointManager.notifyPlayer(pl);
+						}
+						game.spawnManager.nuke();
+						event.setCancelled(true);
+						event.getItem().remove();
+						return;
+					case DOUBLE_POINTS:
+						currentPerks.remove(event.getItem().getItemStack());
+						player.getInventory().remove(item);
+						game.setDoublePoints(true);
+						notifyAll(game, PowerUp.DOUBLE_POINTS);
+						Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> game.setDoublePoints(false), ConfigManager.getMainConfig().doublePointsTimer * 20);
+						event.getItem().remove();
+						event.setCancelled(true);
+						return;
+					case FIRE_SALE:
+						currentPerks.remove(event.getItem().getItemStack());
+						player.getInventory().remove(item);
+						game.setFireSale(true);
+						game.boxManager.FireSale(true);
+						notifyAll(game, PowerUp.FIRE_SALE);
+						Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () ->
+						{
+							game.setFireSale(false);
+							game.boxManager.FireSale(false);
+						}, ConfigManager.getMainConfig().fireSaleTimer * 20);
+						event.getItem().remove();
+						event.setCancelled(true);
+						return;
+					default:
+						player.updateInventory();
+						currentPerks.remove(event.getItem().getItemStack());
+						Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> player.getInventory().removeItem(eItem.getItemStack()), 5L);
+						break;
+				}
 			}
 		}
-
+		else if(GameManager.INSTANCE.isEntityInGame(event.getEntity()))
+		{
+			event.setCancelled(true);
+		}
 	}
 
 	public void notifyAll(Game game, PowerUp powerUp)

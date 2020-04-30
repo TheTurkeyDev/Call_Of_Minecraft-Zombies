@@ -4,10 +4,8 @@ import com.theprogrammingturkey.comz.commands.CommandManager;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.ArenaAntiBreak;
-import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
-import com.theprogrammingturkey.comz.game.features.Barrier;
-import com.theprogrammingturkey.comz.game.features.Door;
+import com.theprogrammingturkey.comz.game.actions.BaseAction;
 import com.theprogrammingturkey.comz.guns.GunType;
 import com.theprogrammingturkey.comz.kits.KitManager;
 import com.theprogrammingturkey.comz.listeners.*;
@@ -37,39 +35,10 @@ public class COMZombies extends JavaPlugin
 	 */
 	public static final Logger log = Logger.getLogger("COM:Z");
 	/**
-	 * Players put in this hash map are setting up arenas, the value that player
-	 * contains is the game they are setting up.
+	 * Players currently performing some sort of action or maintenance
 	 */
-	public HashMap<Player, Game> isArenaSetup = new HashMap<>();
-	/**
-	 * Players who are contained in this hash map are remove spawns, the value
-	 * that player contains is the game that they are removing spawns from.
-	 */
-	public HashMap<Player, Game> isRemovingSpawns = new HashMap<>();
-	/**
-	 * Players who are in this hash map are creating a door for a game, the
-	 * value that player contains is the door that they are creating. The door
-	 * contains the game and it's information.
-	 */
-	public HashMap<Player, Door> isCreatingDoor = new HashMap<>();
-	/**
-	 * Players who are contained in this hash map are removing doors for a given
-	 * arena, the value that corresponds to the player is the game that the
-	 * player is removing doors from.
-	 */
-	public HashMap<Player, Game> isRemovingDoors = new HashMap<>();
-	/**
-	 * Players who are in this hash map are creating a door for a game, the
-	 * value that player contains is the door that they are creating. The door
-	 * contains the game and it's information.
-	 */
-	public HashMap<Player, Barrier> isCreatingBarrier = new HashMap<>();
-	/**
-	 * Players who are contained in this hash map are removing doors for a given
-	 * arena, the value that corresponds to the player is the game that the
-	 * player is removing doors from.
-	 */
-	public HashMap<Player, Game> isRemovingBarriers = new HashMap<>();
+	public HashMap<Player, BaseAction> activeActions = new HashMap<>();
+
 
 	/**
 	 * Players who are contained in this hash map are in sign edit for a given
@@ -84,10 +53,7 @@ public class COMZombies extends JavaPlugin
 	 */
 	public void clearAllSetup()
 	{
-		isArenaSetup.clear();
-		isRemovingSpawns.clear();
-		isCreatingDoor.clear();
-		isRemovingDoors.clear();
+		activeActions.clear();
 	}
 
 	public static final String CONSOLE_PREFIX = "[CoM: Zombies] ";

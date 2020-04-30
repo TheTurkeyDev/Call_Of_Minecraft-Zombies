@@ -23,13 +23,8 @@ public class Kit
 {
 	private String name;
 
-	private GunType gunOne = null;
-	private GunType gunTwo = null;
-	private GunType gunThree = null;
-	private PerkType perkOne = null;
-	private PerkType perkTwo = null;
-	private PerkType perkThree = null;
-	private PerkType perkFour = null;
+	private GunType[] guns = new GunType[3];
+	private PerkType[] perks = new PerkType[4];
 	private int points = 500;
 
 	public Kit(String perkName)
@@ -49,46 +44,15 @@ public class Kit
 		if(config.getString(name + ".Guns") != null)
 		{
 			String[] guns = config.getString(name + ".Guns").split(",");
-			try
+			for(int i = 0; i < guns.length; i++)
 			{
-				if(guns[0] != null)
-				{
-					GunType gun = plugin.getGun(guns[0]);
-					if(gun == null)
-						Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] Kit Gun: " + guns[0] + "  is an invalid gun name!");
-					gunOne = gun;
-				}
-			} catch(ArrayIndexOutOfBoundsException e)
-			{
-				e.printStackTrace();
-			}
+				if(guns[i] == null)
+					continue;
 
-			try
-			{
-				if(guns[1] != null)
-				{
-					GunType gun = plugin.getGun(guns[1]);
-					if(gun == null)
-						Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] Kit Gun: " + guns[1] + "  is an invalid perk name!");
-					gunTwo = gun;
-				}
-			} catch(ArrayIndexOutOfBoundsException e)
-			{
-				e.printStackTrace();
-			}
-
-			try
-			{
-				if(guns[2] != null)
-				{
-					GunType gun = plugin.getGun(guns[2]);
-					if(gun == null)
-						Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] Kit Gun: " + guns[2] + "  is an invalid perk name!");
-					gunThree = gun;
-				}
-			} catch(ArrayIndexOutOfBoundsException e)
-			{
-				e.printStackTrace();
+				GunType gun = plugin.getGun(guns[0]);
+				if(gun == null)
+					Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] Kit Gun: " + guns[i] + "  is an invalid gun name!");
+				this.guns[i] = gun;
 			}
 		}
 
@@ -96,68 +60,14 @@ public class Kit
 		{
 			String[] perks = config.getString(name + ".Perks").split(",");
 
-			try
+			for(int i = 0; i < perks.length; i++)
 			{
-				if(perks[0] != null)
-				{
-					String perkName = perks[0];
-					PerkType perk = PerkType.DEADSHOT_DAIQ;
-					perk = perk.getPerkType(perkName);
-					if(perk == null)
-						Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] Perk: " + perkName + "  is an invalid perk name!");
-					perkOne = perk;
-				}
-			} catch(ArrayIndexOutOfBoundsException e)
-			{
-				e.printStackTrace();
-			}
-
-			try
-			{
-				if(perks[1] != null)
-				{
-					String perkName = perks[1];
-					PerkType perk = PerkType.DEADSHOT_DAIQ;
-					perk = perk.getPerkType(perkName);
-					if(perk == null)
-						Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] Perk: " + perkName + "  is an invalid perk name!");
-					perkTwo = perk;
-				}
-			} catch(ArrayIndexOutOfBoundsException e)
-			{
-				e.printStackTrace();
-			}
-
-			try
-			{
-				if(perks[2] != null)
-				{
-					String perkName = perks[2];
-					PerkType perk = PerkType.DEADSHOT_DAIQ;
-					perk = perk.getPerkType(perkName);
-					if(perk == null)
-						Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] Perk: " + perkName + "  is an invalid perk name!");
-					perkThree = perk;
-				}
-			} catch(ArrayIndexOutOfBoundsException e)
-			{
-				e.printStackTrace();
-			}
-
-			try
-			{
-				if(perks[3] != null)
-				{
-					String perkName = perks[3];
-					PerkType perk = PerkType.DEADSHOT_DAIQ;
-					perk = perk.getPerkType(perkName);
-					if(perk == null)
-						Bukkit.broadcastMessage("Perk: " + perkName + "  is an invalid perk name!");
-					perkFour = perk;
-				}
-			} catch(ArrayIndexOutOfBoundsException e)
-			{
-				e.printStackTrace();
+				String perkName = perks[i];
+				PerkType perk = PerkType.DEADSHOT_DAIQ;
+				perk = perk.getPerkType(perkName);
+				if(perk == null)
+					Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] Perk: " + perkName + "  is an invalid perk name!");
+				this.perks[i] = perk;
 			}
 		}
 
@@ -173,84 +83,27 @@ public class Kit
 		Game game = GameManager.INSTANCE.getGame(player);
 		GunManager manager = game.getPlayersGun(player);
 
-		if(gunOne != null)
+		for(int i = 0; i < guns.length; i++)
 		{
-			int slot = 1;
-			manager.removeGun(manager.getGun(slot));
-			manager.addGun(new Gun(gunOne, player, slot));
-		}
-		if(gunTwo != null)
-		{
-			int slot = 2;
-			manager.removeGun(manager.getGun(slot));
-			manager.addGun(new Gun(gunTwo, player, slot));
+			GunType gun = guns[i];
+			if(gun == null)
+				continue;
+			manager.removeGun(i + 1);
+			manager.addGun(new Gun(gun, player, i + 1));
 		}
 
-		if(perkOne != null)
+		for(PerkType perk : perks)
 		{
-			PerkType perk = perkOne;
+			if(perk == null)
+				continue;
+
 			if(!game.perkManager.addPerk(player, perk))
-			{
 				return;
-			}
 			plugin.getServer().getPluginManager().callEvent(new PlayerPerkPurchaseEvent(player, perk));
 			int slot = game.perkManager.getAvaliblePerkSlot(player);
 			perk.initialEffect(plugin, player, perk, slot);
 			if(perk.equals(PerkType.STAMIN_UP))
-			{
 				player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
-			}
-		}
-		if(perkTwo != null)
-		{
-			PerkType perk = perkTwo;
-			if(!game.perkManager.addPerk(player, perk))
-			{
-				return;
-			}
-			plugin.getServer().getPluginManager().callEvent(new PlayerPerkPurchaseEvent(player, perk));
-			int slot = game.perkManager.getAvaliblePerkSlot(player);
-			perk.initialEffect(plugin, player, perk, slot);
-			if(perk.equals(PerkType.STAMIN_UP))
-			{
-				player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
-			}
-		}
-		if(perkThree != null)
-		{
-			PerkType perk = perkThree;
-			if(!game.perkManager.addPerk(player, perk))
-			{
-				return;
-			}
-			plugin.getServer().getPluginManager().callEvent(new PlayerPerkPurchaseEvent(player, perk));
-			int slot = game.perkManager.getAvaliblePerkSlot(player);
-			perk.initialEffect(plugin, player, perk, slot);
-			if(perk.equals(PerkType.STAMIN_UP))
-			{
-				player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
-			}
-		}
-		if(perkFour != null)
-		{
-			PerkType perk = perkFour;
-			if(!game.perkManager.addPerk(player, perk))
-			{
-				return;
-			}
-			plugin.getServer().getPluginManager().callEvent(new PlayerPerkPurchaseEvent(player, perk));
-			int slot = game.perkManager.getAvaliblePerkSlot(player);
-			perk.initialEffect(plugin, player, perk, slot);
-			if(perk.equals(PerkType.STAMIN_UP))
-			{
-				player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
-			}
-		}
-		if(gunThree != null)
-		{
-			int slot = 3;
-			manager.removeGun(manager.getGun(slot));
-			manager.addGun(new Gun(gunThree, player, slot));
 		}
 		PointManager.addPoints(player, points - 500);
 		game.scoreboard.update();

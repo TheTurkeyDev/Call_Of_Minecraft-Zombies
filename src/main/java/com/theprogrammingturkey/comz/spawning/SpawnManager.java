@@ -16,7 +16,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftLivingEntity;
@@ -25,13 +24,13 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class SpawnManager
 {
@@ -41,7 +40,8 @@ public class SpawnManager
 	private ArrayList<Entity> mobs = new ArrayList<>();
 	private ArrayList<Entity> mobsToRemove = new ArrayList<>();
 	private boolean canSpawn = false;
-	private int zombieSpawnInterval;
+	private double zombieSpawnInterval;
+	private double zombieSpawnDelayFactor;
 	private int zombiesSpawned = 0;
 	private int zombiesToSpawn = 0;
 	private Random random;
@@ -49,7 +49,8 @@ public class SpawnManager
 	public SpawnManager(Game game)
 	{
 		this.game = game;
-		zombieSpawnInterval = COMZombies.getPlugin().getConfig().getInt("config.gameSettings.zombieSpawnDelay");
+		zombieSpawnInterval = COMZombies.getPlugin().getConfig().getDouble("config.gameSettings.zombieSpawnDelay");
+		zombieSpawnDelayFactor = COMZombies.getPlugin().getConfig().getDouble("config.gameSettings.zombieSpawnDelayFactor");
 		random = new Random();
 	}
 
@@ -57,32 +58,29 @@ public class SpawnManager
 	{
 		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
 		points.clear();
-		try
+
+		ConfigurationSection sec = config.getConfigurationSection(game.getName() + ".ZombieSpawns");
+
+		if(sec == null)
+			return;
+
+		for(String key : config.getConfigurationSection(game.getName() + ".ZombieSpawns").getKeys(false))
 		{
-			for(String key : config.getConfigurationSection(game.getName() + ".ZombieSpawns").getKeys(false))
-			{
-				double x = config.getDouble(game.getName() + ".ZombieSpawns." + key + ".x");
-				double y = config.getDouble(game.getName() + ".ZombieSpawns." + key + ".y");
-				double z = config.getDouble(game.getName() + ".ZombieSpawns." + key + ".z");
-				Location loc = new Location(game.getWorld(), x, y, z);
-				SpawnPoint point = new SpawnPoint(loc, game, loc.getBlock().getType(), key);
-				points.add(point);
-			}
-		} catch(Exception e)
-		{
-			e.printStackTrace();
+			double x = config.getDouble(game.getName() + ".ZombieSpawns." + key + ".x");
+			double y = config.getDouble(game.getName() + ".ZombieSpawns." + key + ".y");
+			double z = config.getDouble(game.getName() + ".ZombieSpawns." + key + ".z");
+
+			Location loc = new Location(game.getWorld(), x, y, z);
+			SpawnPoint point = new SpawnPoint(loc, game, loc.getBlock().getType(), Integer.parseInt(key));
+			points.add(point);
 		}
 	}
 
-	public SpawnPoint getSpawnPoint(String name)
+	public SpawnPoint getSpawnPoint(int id)
 	{
 		for(SpawnPoint p : points)
-		{
-			if(name.equalsIgnoreCase(p.getName()))
-			{
+			if(id == p.getID())
 				return p;
-			}
-		}
 		return null;
 	}
 
@@ -104,7 +102,7 @@ public class SpawnManager
 		if(points.contains(point))
 		{
 			Location loc = point.getLocation();
-			config.set(game.getName() + ".ZombieSpawns." + point.getName(), null);
+			config.set(game.getName() + ".ZombieSpawns." + point.getID(), null);
 			config.saveConfig();
 			loadAllSpawnsToGame();
 			player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Spawn point removed!");
@@ -269,7 +267,7 @@ public class SpawnManager
 				}
 			};
 
-			Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), delayedSpawnFunc, zombieSpawnInterval * 20L);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), delayedSpawnFunc, (int) zombieSpawnInterval * 20);
 			return;
 		}
 
@@ -298,7 +296,7 @@ public class SpawnManager
 				oopsWeHadAnError();
 			totalRetries++;
 		}
-		scheduleSpawn(zombieSpawnInterval, selectPoint, wave, players);
+		scheduleSpawn((int) zombieSpawnInterval, selectPoint, wave, players);
 	}
 
 	private void scheduleSpawn(int time, SpawnPoint loc, final int wave, final List<Player> players)
@@ -418,7 +416,7 @@ public class SpawnManager
 		}, 100L);
 	}
 
-	public void setSpawnInterval(int interval)
+	public void setSpawnInterval(double interval)
 	{
 		this.zombieSpawnInterval = interval;
 	}
@@ -467,11 +465,9 @@ public class SpawnManager
 	{
 		canSpawn = false;
 		zombiesSpawned = 0;
-		setSpawnInterval((int) (zombieSpawnInterval / 1.05));
-		if(zombieSpawnInterval < 1)
-		{
-			zombieSpawnInterval = 1;
-		}
+		setSpawnInterval(zombieSpawnInterval / zombieSpawnDelayFactor);
+		if(zombieSpawnInterval < 0.5)
+			zombieSpawnInterval = 0.5;
 	}
 
 	public void startWave(int wave, final List<Player> players)
@@ -505,7 +501,7 @@ public class SpawnManager
 
 	public int getSpawnInterval()
 	{
-		return this.zombieSpawnInterval;
+		return (int) this.zombieSpawnInterval;
 	}
 
 	public boolean isEntitySpawned(Entity ent)
@@ -519,22 +515,21 @@ public class SpawnManager
 		this.canSpawn = false;
 		this.zombiesSpawned = 0;
 		this.zombiesToSpawn = 0;
-		this.zombieSpawnInterval = COMZombies.getPlugin().getConfig().getInt("config.gameSettings.waveSpawnInterval");
+		this.zombieSpawnInterval = COMZombies.getPlugin().getConfig().getInt("config.gameSettings.zombieSpawnDelay");
 	}
 
-	/**
-	 * gets the current config that the game is on
-	 *
-	 * @return the spawn point that the game is on
-	 */
-	public int getCurrentSpawnPoint()
+	public int getNewSpawnPointNum()
 	{
 		ConfigurationSection sec = ConfigManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(game.getName() + ".ZombieSpawns");
-
 		if(sec == null)
-			return 1;
-		else
-			return sec.getKeys(false).size();
+			return 0;
+
+		List<Integer> keys = sec.getKeys(false).stream().map(Integer::parseInt).sorted(Integer::compareTo).collect(Collectors.toList());
+		int last = 0;
+		for(Integer key : keys)
+			if(key != last + 1)
+				return last + 1;
+		return keys.size();
 	}
 
 	/**
@@ -542,24 +537,15 @@ public class SpawnManager
 	 */
 	public void addSpawnToConfig(SpawnPoint spawn)
 	{
-		World world = null;
 		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
-		try
-		{
-			world = spawn.getLocation().getWorld();
-		} catch(Exception e)
-		{
-			Bukkit.broadcastMessage(COMZombies.PREFIX + " Could not retrieve the world " + world.getName());
-			return;
-		}
+
 		double x = spawn.getLocation().getBlockX();
 		double y = spawn.getLocation().getBlockY();
 		double z = spawn.getLocation().getBlockZ();
-		int spawnNum = getCurrentSpawnPoint();
-		conf.set(game.getName() + ".ZombieSpawns.spawn" + spawnNum, null);
-		conf.set(game.getName() + ".ZombieSpawns.spawn" + spawnNum + ".x", x);
-		conf.set(game.getName() + ".ZombieSpawns.spawn" + spawnNum + ".y", y);
-		conf.set(game.getName() + ".ZombieSpawns.spawn" + spawnNum + ".z", z);
+		conf.set(game.getName() + ".ZombieSpawns." + spawn.getID(), null);
+		conf.set(game.getName() + ".ZombieSpawns." + spawn.getID() + ".x", x);
+		conf.set(game.getName() + ".ZombieSpawns." + spawn.getID() + ".y", y);
+		conf.set(game.getName() + ".ZombieSpawns." + spawn.getID() + ".z", z);
 
 		conf.saveConfig();
 	}
