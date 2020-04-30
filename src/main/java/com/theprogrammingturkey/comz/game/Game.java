@@ -715,7 +715,7 @@ public class Game
 
 		player.removePotionEffect(PotionEffectType.SPEED);
 		player.getInventory().clear();
-		Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> player.teleport(pInfo.getOldLocation(player)));
+		COMZombies.scheduleTask(() -> player.teleport(pInfo.getOldLocation(player)));
 		player.setHealth(20);
 		player.setGameMode(pInfo.getGM(player));
 		player.setFlying(pInfo.getFly(player));
@@ -800,7 +800,7 @@ public class Game
 	 */
 	public void forceNight()
 	{
-		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(COMZombies.getPlugin(), () -> getWorld().setTime(14000L), 5L, 1200L);
+		COMZombies.scheduleTask(5, 1200, () -> getWorld().setTime(14000L));
 	}
 
 	/**

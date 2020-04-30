@@ -116,7 +116,7 @@ public class BarrierSetupAction extends BaseAction
 			{
 				final Game game = barrier.getGame();
 
-				Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), game::resetSpawnLocationBlocks, 1);
+				COMZombies.scheduleTask(1, game::resetSpawnLocationBlocks);
 
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn point for barrier number " + barrier.getNum() + " set!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now type in the ammount the player will receive per repairation level of the barrier.");
@@ -137,7 +137,7 @@ public class BarrierSetupAction extends BaseAction
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier setup complete!");
 			barrier.getGame().barrierManager.addBarrier(barrier);
 			playerChat.setCancelled(true);
-			Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> COMZombies.getPlugin().activeActions.remove(player), 1);
+			COMZombies.scheduleTask(1, () -> COMZombies.getPlugin().activeActions.remove(player));
 		}
 	}
 }

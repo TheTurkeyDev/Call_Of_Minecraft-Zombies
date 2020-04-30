@@ -37,9 +37,9 @@ public enum PerkType
 		final World world = player.getLocation().getWorld();
 		if(world != null)
 		{
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> world.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1L, 1L), 5L);
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> world.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1L, 1L), 10L);
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> world.playEffect(player.getLocation(), Effect.POTION_BREAK, 1), 20L);
+			COMZombies.scheduleTask(5, () -> world.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1, 1));
+			COMZombies.scheduleTask(10, () -> world.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1, 1));
+			COMZombies.scheduleTask(20, () -> world.playEffect(player.getLocation(), Effect.POTION_BREAK, 1));
 		}
 		ItemStack stack = new ItemStack(Material.AIR, 1);
 		String Perktype = "";

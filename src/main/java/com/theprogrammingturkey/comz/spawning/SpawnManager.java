@@ -235,7 +235,7 @@ public class SpawnManager
 
 		if(mobs.size() >= ConfigManager.getMainConfig().maxZombies)
 		{
-			Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> smartSpawn(wave, players), (int) zombieSpawnInterval * 20);
+			COMZombies.scheduleTask((int) zombieSpawnInterval * 20, () -> smartSpawn(wave, players));
 			return;
 		}
 
@@ -299,7 +299,7 @@ public class SpawnManager
 		if(b != null)
 			b.initBarrier(zomb);
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> smartSpawn(wave, players), time * 20L);
+		COMZombies.scheduleTask(time * 20L, () -> smartSpawn(wave, players));
 	}
 
 	public void setFollowDistance(Entity zomb)
@@ -332,7 +332,7 @@ public class SpawnManager
 	{
 		if(game.mode != ArenaStatus.INGAME)
 			return;
-		Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), new Runnable()
+		COMZombies.scheduleTask(100, new Runnable()
 		{
 			@Override
 			public void run()
@@ -368,7 +368,7 @@ public class SpawnManager
 				return closest;
 			}
 
-		}, 100L);
+		});
 	}
 
 	public void setSpawnInterval(double interval)

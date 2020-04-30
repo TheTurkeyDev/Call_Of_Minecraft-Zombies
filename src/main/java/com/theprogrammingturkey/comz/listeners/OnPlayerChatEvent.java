@@ -28,11 +28,11 @@ public class OnPlayerChatEvent implements Listener
 
 			if(message.equalsIgnoreCase("cancel"))
 			{
-				Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () ->
+				COMZombies.scheduleTask(1, () ->
 				{
 					COMZombies.getPlugin().activeActions.remove(player);
 					action.cancelAction();
-				}, 1);
+				});
 				playerChat.setCancelled(true);
 			}
 			else

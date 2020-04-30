@@ -1,7 +1,6 @@
 package com.theprogrammingturkey.comz.game.actions;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.commands.CommandManager;
 import com.theprogrammingturkey.comz.commands.CommandUtil;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
@@ -125,7 +124,7 @@ public class DoorSetupAction extends BaseAction
 				}
 				Game game = GameManager.INSTANCE.getGame(door);
 
-				Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), game::resetSpawnLocationBlocks, 1);
+				COMZombies.scheduleTask(1, game::resetSpawnLocationBlocks);
 
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn points for door number " + door.doorNumber + " set!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now select any signs that can open this door.");
@@ -153,7 +152,7 @@ public class DoorSetupAction extends BaseAction
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Door setup complete!");
 			playerChat.setCancelled(true);
 			door.closeDoor();
-			Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> COMZombies.getPlugin().activeActions.remove(player), 1);
+			COMZombies.scheduleTask(1, () -> COMZombies.getPlugin().activeActions.remove(player));
 		}
 	}
 }

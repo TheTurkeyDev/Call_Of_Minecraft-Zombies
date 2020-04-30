@@ -144,11 +144,11 @@ public class OnZombiePerkDrop implements Listener
 
 	private void scheduleRemove(final Entity ent)
 	{
-		Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () ->
+		COMZombies.scheduleTask(20 * 30, () ->
 		{
 			ent.remove();
 			droppedItems.remove(ent);
-		}, 20 * 30);
+		});
 	}
 
 	@EventHandler
@@ -198,7 +198,7 @@ public class OnZombiePerkDrop implements Listener
 						player.getInventory().remove(item);
 						game.setInstaKill(true);
 						notifyAll(game, PowerUp.INSTA_KILL);
-						Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> game.setInstaKill(false), ConfigManager.getMainConfig().instaKillTimer * 20);
+						COMZombies.scheduleTask(ConfigManager.getMainConfig().instaKillTimer * 20, () -> game.setInstaKill(false));
 						event.getItem().remove();
 						event.setCancelled(true);
 						return;
@@ -232,7 +232,7 @@ public class OnZombiePerkDrop implements Listener
 						player.getInventory().remove(item);
 						game.setDoublePoints(true);
 						notifyAll(game, PowerUp.DOUBLE_POINTS);
-						Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> game.setDoublePoints(false), ConfigManager.getMainConfig().doublePointsTimer * 20);
+						COMZombies.scheduleTask(ConfigManager.getMainConfig().doublePointsTimer * 20, () -> game.setDoublePoints(false));
 						event.getItem().remove();
 						event.setCancelled(true);
 						return;
@@ -242,18 +242,18 @@ public class OnZombiePerkDrop implements Listener
 						game.setFireSale(true);
 						game.boxManager.FireSale(true);
 						notifyAll(game, PowerUp.FIRE_SALE);
-						Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () ->
+						COMZombies.scheduleTask(ConfigManager.getMainConfig().fireSaleTimer * 20, () ->
 						{
 							game.setFireSale(false);
 							game.boxManager.FireSale(false);
-						}, ConfigManager.getMainConfig().fireSaleTimer * 20);
+						});
 						event.getItem().remove();
 						event.setCancelled(true);
 						return;
 					default:
 						player.updateInventory();
 						currentPerks.remove(event.getItem().getItemStack());
-						Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> player.getInventory().removeItem(eItem.getItemStack()), 5L);
+						COMZombies.scheduleTask(5, () -> player.getInventory().removeItem(eItem.getItemStack()));
 						break;
 				}
 			}

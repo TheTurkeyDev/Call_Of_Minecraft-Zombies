@@ -150,7 +150,6 @@ public class Gun
 	 */
 	public void reload()
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		if(ConfigManager.getConfig(COMZConfig.GUNS).getString("Resource Sounds", "off").equalsIgnoreCase("on"))
 		{
 			player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
@@ -164,7 +163,7 @@ public class Gun
 			if(game.perkManager.hasPerk(player, PerkType.SPEED_COLA))
 				reloadTime = (ConfigManager.getMainConfig().reloadTime) / 2;
 			else reloadTime = ConfigManager.getMainConfig().reloadTime;
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
+			COMZombies.scheduleTask(reloadTime * 20, () ->
 			{
 				try
 				{
@@ -186,7 +185,7 @@ public class Gun
 				isReloading = false;
 				ecUsed = false;
 				updateGun();
-			}, reloadTime * 20);
+			});
 			isReloading = true;
 			if(game.perkManager.getPlayersPerks(player).contains(PerkType.ELECTRIC_C))
 			{
@@ -437,7 +436,7 @@ public class Gun
 
 		Runnable delayedSpawnFunc = () -> canFire = true;
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delayedSpawnFunc, this.gun.fireDelay);
+		COMZombies.scheduleTask(this.gun.fireDelay, delayedSpawnFunc);
 	}
 
 	public double getAdjust()

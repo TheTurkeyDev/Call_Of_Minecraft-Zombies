@@ -181,4 +181,22 @@ public class COMZombies extends JavaPlugin
 	{
 		return JavaPlugin.getPlugin(COMZombies.class);
 	}
+
+	public static int scheduleTask(Runnable runnable)
+	{
+		return COMZombies.scheduleTask(0, runnable);
+	}
+
+	public static int scheduleTask(long delay, Runnable runnable)
+	{
+		return COMZombies.scheduleTask(delay, -1, runnable);
+	}
+
+	public static int scheduleTask(long delay, long period, Runnable runnable)
+	{
+		COMZombies plugin = COMZombies.getPlugin();
+		if(plugin.isEnabled())
+			return Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, runnable, delay, period);
+		return -1;
+	}
 }

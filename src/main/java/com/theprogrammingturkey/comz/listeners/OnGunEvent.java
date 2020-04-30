@@ -10,7 +10,6 @@ import com.theprogrammingturkey.comz.guns.Gun;
 import com.theprogrammingturkey.comz.guns.GunManager;
 import com.theprogrammingturkey.comz.particleutilities.ParticleEffects;
 import com.theprogrammingturkey.comz.util.BlockUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -216,7 +215,6 @@ public class OnGunEvent implements Listener
 	@EventHandler
 	public void onPlayerMonkeyBomb(PlayerInteractEvent event)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		if(!(event.getAction().equals(Action.RIGHT_CLICK_AIR)) || !(event.getAction().equals(Action.RIGHT_CLICK_AIR)))
 		{
 			return;
@@ -246,13 +244,13 @@ public class OnGunEvent implements Listener
 //				{
 //				}
 
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
+				COMZombies.scheduleTask(140, () ->
 				{
 					Location loc = item.getLocation();
 					player.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 0.0F, false, false);
 					//TODO: Damage logic
 					item.remove();
-				}, 140);
+				});
 			}
 		}
 	}

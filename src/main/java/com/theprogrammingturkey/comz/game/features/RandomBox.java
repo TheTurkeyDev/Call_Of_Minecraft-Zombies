@@ -105,7 +105,7 @@ public class RandomBox
 		PointManager.takePoints(player, PointsNeeded);
 		PointManager.notifyPlayer(player);
 
-		int taskID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(COMZombies.getPlugin(), new Runnable()
+		int taskID = COMZombies.scheduleTask(0, 10, new Runnable()
 		{
 			int time = 15;
 
@@ -142,7 +142,7 @@ public class RandomBox
 					time--;
 				}
 			}
-		}, 0, 10L);
+		});
 
 		boxes.put(this, taskID);
 	}

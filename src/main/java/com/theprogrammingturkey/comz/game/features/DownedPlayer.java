@@ -101,13 +101,12 @@ public class DownedPlayer implements Listener
 
 	public void RevivePlayer(Player pl)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		int reviveTime = ConfigManager.getMainConfig().reviveTimer * 20;
 
 		if(game.perkManager.getPlayersPerks(pl).contains(PerkType.QUICK_REVIVE))
 			reviveTime /= 2;
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
+		COMZombies.scheduleTask(reviveTime, () ->
 		{
 			if(!hasMoved)
 			{
@@ -124,7 +123,7 @@ public class DownedPlayer implements Listener
 				PointManager.addPoints(reviver, 10);
 				reviver = null;
 			}
-		}, reviveTime);
+		});
 	}
 
 	@EventHandler
@@ -176,7 +175,7 @@ public class DownedPlayer implements Listener
 	{
 		if(isPlayerDown)
 		{
-			Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () ->
+			COMZombies.scheduleTask(20, () ->
 			{
 				if(!isPlayerDown) return;
 				downTime++;
@@ -197,7 +196,7 @@ public class DownedPlayer implements Listener
 					player.setHealth(20);
 					player.setWalkSpeed(0.2F);
 				}
-			}, 20L);
+			});
 		}
 		else
 		{

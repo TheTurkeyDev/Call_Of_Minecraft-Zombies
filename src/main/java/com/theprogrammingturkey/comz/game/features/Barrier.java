@@ -208,7 +208,7 @@ public class Barrier implements Runnable
 		}
 
 		if(ents.size() > 0 && !this.damage())
-			Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), this, 3 * 20L);
+			COMZombies.scheduleTask(60, this);
 		else
 			this.breaking = false;
 	}
@@ -219,7 +219,7 @@ public class Barrier implements Runnable
 		if(this.stage < 6 && !breaking)
 		{
 			this.breaking = true;
-			Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), this, 3 * 20L);
+			COMZombies.scheduleTask(60, this);
 		}
 	}
 

@@ -31,7 +31,6 @@ public class OnEntityDamageEvent implements Listener
 	@EventHandler
 	public void damge(EntityDamageByEntityEvent e)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		if(e.getEntity() instanceof Player)
 		{
 			if(GameManager.INSTANCE.isPlayerInGame((Player) e.getEntity()))
@@ -71,7 +70,7 @@ public class OnEntityDamageEvent implements Listener
 								e.setDamage(damage);
 							}
 
-							Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> healPlayer(player), 100L);
+							COMZombies.scheduleTask(100, () -> healPlayer(player));
 						}
 						else
 						{
@@ -272,7 +271,7 @@ public class OnEntityDamageEvent implements Listener
 		COMZombies plugin = COMZombies.getPlugin();
 		if(!(GameManager.INSTANCE.isPlayerInGame(player)))
 			return;
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
+		COMZombies.scheduleTask(20, () ->
 		{
 			if(!(player.getHealth() == 20))
 			{
@@ -283,7 +282,7 @@ public class OnEntityDamageEvent implements Listener
 			{
 				beingHealed.remove(player);
 			}
-		}, 20L);
+		});
 	}
 
 	public void removeDownedPlayer(Player player)

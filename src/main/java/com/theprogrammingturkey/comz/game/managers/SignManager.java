@@ -62,7 +62,7 @@ public class SignManager
 
 	public void updateGame()
 	{
-		Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () ->
+		COMZombies.scheduleTask(20, () ->
 		{
 			for(Sign s : gameSigns)
 			{
@@ -89,7 +89,7 @@ public class SignManager
 				}
 				s.update();
 			}
-		}, 20L);
+		});
 	}
 
 	public void enable()

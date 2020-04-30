@@ -158,11 +158,9 @@ public class Door
 		for(final Block block : blocks)
 		{
 			if(block.getType().equals(Material.AIR))
-			{
 				continue;
-			}
 
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(COMZombies.getPlugin(), () -> block.setType(Material.AIR), interval);
+			COMZombies.scheduleTask(interval, () -> block.setType(Material.AIR));
 			interval += 1;
 		}
 		isOpened = true;
