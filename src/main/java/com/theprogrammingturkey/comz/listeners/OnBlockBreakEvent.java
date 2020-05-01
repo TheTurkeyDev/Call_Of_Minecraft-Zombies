@@ -1,13 +1,12 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.util.BlockUtils;
-import org.bukkit.ChatColor;
+import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -62,18 +61,5 @@ public class OnBlockBreakEvent implements Listener
 
 		if(GameManager.INSTANCE.isLocationInGame(event.getBlock().getLocation()))
 			event.setCancelled(true);
-
-		if(BlockUtils.isSign(event.getBlock().getType()))
-		{
-			Sign sign = (Sign) event.getBlock().getState();
-			String lineOne = sign.getLine(0);
-			String lineTwo = sign.getLine(1);
-			if(ChatColor.stripColor(lineOne).equalsIgnoreCase("[Zombies]") && ChatColor.stripColor(lineTwo).equalsIgnoreCase("MysteryBox"))
-			{
-				Game game = GameManager.INSTANCE.getGame(event.getBlock().getLocation());
-				if(game != null)
-					game.boxManager.removeBox(event.getPlayer(), game.boxManager.getBox(sign.getLocation()));
-			}
-		}
 	}
 }

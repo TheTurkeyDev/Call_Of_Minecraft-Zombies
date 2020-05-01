@@ -101,7 +101,7 @@ public class Kit
 				return;
 			plugin.getServer().getPluginManager().callEvent(new PlayerPerkPurchaseEvent(player, perk));
 			int slot = game.perkManager.getAvaliblePerkSlot(player);
-			perk.initialEffect(plugin, player, perk, slot);
+			perk.initialEffect(player, perk, slot);
 			if(perk.equals(PerkType.STAMIN_UP))
 				player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
 		}

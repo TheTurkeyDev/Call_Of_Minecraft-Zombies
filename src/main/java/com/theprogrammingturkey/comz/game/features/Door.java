@@ -30,9 +30,9 @@ public class Door
 	private boolean areSignsFinal = false;
 	private Game game;
 	private int price = 0;
-	private ArrayList<Block> blocks = new ArrayList<>();
-	private ArrayList<Sign> signs = new ArrayList<>();
-	private ArrayList<SpawnPoint> spawnsInRoomDoorLeadsTo = new ArrayList<>();
+	private List<Block> blocks = new ArrayList<>();
+	private List<Sign> signs = new ArrayList<>();
+	private List<SpawnPoint> spawnsInRoomDoorLeadsTo = new ArrayList<>();
 	private boolean isOpened = false;
 
 	public Door(Game game, int number)
@@ -196,7 +196,7 @@ public class Door
 		isOpened = false;
 	}
 
-	public ArrayList<SpawnPoint> getSpawnsInRoomDoorLeadsTo()
+	public List<SpawnPoint> getSpawnsInRoomDoorLeadsTo()
 	{
 		return spawnsInRoomDoorLeadsTo;
 	}
@@ -211,7 +211,7 @@ public class Door
 		signs.add(sign);
 	}
 
-	public ArrayList<Sign> getSigns()
+	public List<Sign> getSigns()
 	{
 		return signs;
 	}
@@ -230,7 +230,7 @@ public class Door
 			int y = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".y");
 			int z = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".z");
 			Location loc = new Location(game.getWorld(), x, y, z);
-			loc.getBlock().setType(BlockUtils.getMaterialFromKey(config.getString(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".ID")));
+			loc.getBlock().setType(BlockUtils.getMaterialFromKey(config.getString(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".mat")));
 			blocks.add(loc.getBlock());
 		}
 	}
@@ -271,14 +271,14 @@ public class Door
 			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".x", blocks.get(i).getLocation().getBlockX());
 			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".y", blocks.get(i).getLocation().getBlockY());
 			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".z", blocks.get(i).getLocation().getBlockZ());
-			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".ID", blocks.get(i).getType().getKey().getKey());
+			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".mat", blocks.get(i).getType().getKey().getKey());
 			config.saveConfig();
 		}
 
 		ConfigManager.getConfig(COMZConfig.ARENAS).saveConfig();
 	}
 
-	public ArrayList<Block> getBlocks()
+	public List<Block> getBlocks()
 	{
 		return blocks;
 	}

@@ -32,7 +32,7 @@ public enum PerkType
 		return null;
 	}
 
-	public void initialEffect(COMZombies plugin, final Player player, PerkType type, int slot)
+	public void initialEffect(final Player player, PerkType type, int slot)
 	{
 		final World world = player.getLocation().getWorld();
 		if(world != null)

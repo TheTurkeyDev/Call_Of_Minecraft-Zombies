@@ -42,7 +42,6 @@ public class OnPlayerChatEvent implements Listener
 		}
 
 		if(plugin.isEditingASign.containsKey(player))
-
 		{
 			if(message.equalsIgnoreCase("done"))
 			{
