@@ -10,6 +10,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.SignChangeEvent;
 
 public class MysteryBoxSign implements IGameSign
 {
@@ -48,17 +49,17 @@ public class MysteryBoxSign implements IGameSign
 	}
 
 	@Override
-	public void onChange(Game game, Player player, Sign sign)
+	public void onChange(Game game, Player player, SignChangeEvent event)
 	{
-		String thirdLine = ChatColor.stripColor(sign.getLine(2));
+		String thirdLine = ChatColor.stripColor(event.getLine(2));
 		if(thirdLine.equalsIgnoreCase(""))
 			thirdLine = "950";
 
-		sign.setLine(0, ChatColor.RED + "[Zombies]");
-		sign.setLine(1, ChatColor.AQUA + "Mystery Box");
-		sign.setLine(2, thirdLine);
-		BlockFace facing = ((Directional) sign.getBlock().getBlockData()).getFacing();
-		RandomBox box = new RandomBox(sign.getBlock().getLocation(), facing, game, game.boxManager.getNextBoxName(), Integer.parseInt(thirdLine));
+		event.setLine(0, ChatColor.RED + "[Zombies]");
+		event.setLine(1, ChatColor.AQUA + "Mystery Box");
+		event.setLine(2, thirdLine);
+		BlockFace facing = ((Directional) event.getBlock().getBlockData()).getFacing();
+		RandomBox box = new RandomBox(event.getBlock().getLocation(), facing, game, game.boxManager.getNextBoxName(), Integer.parseInt(thirdLine));
 		game.boxManager.addBox(box);
 		player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Random Weapon Box Created!");
 	}

@@ -6,6 +6,7 @@ import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.SignChangeEvent;
 
 public class SpectateSign implements IGameSign
 {
@@ -28,7 +29,7 @@ public class SpectateSign implements IGameSign
 	}
 
 	@Override
-	public void onChange(Game game, Player player, Sign sign)
+	public void onChange(Game game, Player player, SignChangeEvent sign)
 	{
 		String name = sign.getLine(2);
 		game = GameManager.INSTANCE.getGame(name);

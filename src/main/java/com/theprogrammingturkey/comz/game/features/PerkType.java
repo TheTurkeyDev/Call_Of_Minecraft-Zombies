@@ -1,6 +1,6 @@
 package com.theprogrammingturkey.comz.game.features;
 
-import org.bukkit.Bukkit;
+import com.theprogrammingturkey.comz.COMZombies;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -9,8 +9,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import com.theprogrammingturkey.comz.COMZombies;
 
 public enum PerkType
 {

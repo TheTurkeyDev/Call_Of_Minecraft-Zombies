@@ -196,7 +196,7 @@ public class RandomBox
 		block.setBlockData(blockData);
 		Sign sign = (Sign) block.getState();
 		sign.setLine(0, ChatColor.RED + "[Zombies]");
-		sign.setLine(1, ChatColor.AQUA + "MysteryBox");
+		sign.setLine(1, ChatColor.AQUA + "Mystery Box");
 		sign.setLine(2, "" + boxCost);
 		sign.update();
 	}

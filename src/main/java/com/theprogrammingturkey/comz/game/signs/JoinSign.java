@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.SignChangeEvent;
 
 public class JoinSign implements IGameSign
 {
@@ -40,20 +41,20 @@ public class JoinSign implements IGameSign
 	}
 
 	@Override
-	public void onChange(Game game, Player player, Sign sign)
+	public void onChange(Game game, Player player, SignChangeEvent event)
 	{
-		String thirdLine = ChatColor.stripColor(sign.getLine(2));
+		String thirdLine = ChatColor.stripColor(event.getLine(2));
 
 		if(!GameManager.INSTANCE.isValidArena(thirdLine))
 		{
-			sign.setLine(0, ChatColor.DARK_RED + "No such");
-			sign.setLine(1, ChatColor.DARK_RED + "game!");
-			sign.setLine(2, "");
-			sign.setLine(3, "");
+			event.setLine(0, ChatColor.DARK_RED + "No such");
+			event.setLine(1, ChatColor.DARK_RED + "game!");
+			event.setLine(2, "");
+			event.setLine(3, "");
 			return;
 		}
 		game = GameManager.INSTANCE.getGame(thirdLine);
-		game.signManager.addSign((Sign) sign.getBlock().getState());
+		game.signManager.addSign((Sign) event.getBlock().getState());
 	}
 
 	@Override

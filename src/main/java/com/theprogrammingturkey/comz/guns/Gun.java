@@ -149,10 +149,8 @@ public class Gun
 	 */
 	public void reload()
 	{
-		if(ConfigManager.getConfig(COMZConfig.GUNS).getString("Resource Sounds", "off").equalsIgnoreCase("on"))
-		{
+		if(GunManager.customResources)
 			player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
-		}
 
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
@@ -214,13 +212,9 @@ public class Gun
 							{
 								((LivingEntity) ent).setHealth(20D);
 								if(game.spawnManager.totalHealth().get(ent) <= 20)
-								{
 									((LivingEntity) ent).setHealth(game.spawnManager.totalHealth().get(ent));
-								}
 								else
-								{
 									game.spawnManager.setTotalHealth(ent, totalHealth - 10);
-								}
 								PointManager.notifyPlayer(player);
 							}
 							else if(totalHealth - 10 < 1)
@@ -231,9 +225,7 @@ public class Gun
 								game.spawnManager.removeEntity(ent);
 								game.zombieKilled(player);
 								if(game.spawnManager.getEntities().size() <= 0)
-								{
 									game.nextWave();
-								}
 							}
 							else
 							{
@@ -322,8 +314,7 @@ public class Gun
 			ls.setVelocity(ls.getVelocity().multiply(this.gun.speed));
 		}
 
-		COMZombies plugin = COMZombies.getPlugin();
-		if(ConfigManager.getConfig(COMZConfig.GUNS).getString("Resource Sounds", "off").equalsIgnoreCase("on"))
+		if(GunManager.customResources)
 		{
 			switch(gun.name)
 			{

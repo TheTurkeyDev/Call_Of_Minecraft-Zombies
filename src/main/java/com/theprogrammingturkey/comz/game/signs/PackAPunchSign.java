@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.SignChangeEvent;
 
 public class PackAPunchSign implements IGameSign
 {
@@ -62,9 +63,9 @@ public class PackAPunchSign implements IGameSign
 	}
 
 	@Override
-	public void onChange(Game game, Player player, Sign sign)
+	public void onChange(Game game, Player player, SignChangeEvent event)
 	{
-		String thirdLine = ChatColor.stripColor(sign.getLine(2));
+		String thirdLine = ChatColor.stripColor(event.getLine(2));
 
 		int cost;
 		if(thirdLine.equalsIgnoreCase(""))
@@ -83,10 +84,10 @@ public class PackAPunchSign implements IGameSign
 				CommandUtil.sendMessageToPlayer(player, thirdLine + " is not a valid amount!");
 			}
 		}
-		sign.setLine(0, ChatColor.RED + "[Zombies]");
-		sign.setLine(1, ChatColor.AQUA + "pack-a-punch");
-		sign.setLine(2, Integer.toString(cost));
-		sign.setLine(3, "");
+		event.setLine(0, ChatColor.RED + "[Zombies]");
+		event.setLine(1, ChatColor.AQUA + "pack-a-punch");
+		event.setLine(2, Integer.toString(cost));
+		event.setLine(3, "");
 	}
 
 	@Override

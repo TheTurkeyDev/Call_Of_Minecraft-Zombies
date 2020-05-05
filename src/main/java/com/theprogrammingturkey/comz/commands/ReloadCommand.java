@@ -17,6 +17,7 @@ public class ReloadCommand implements SubCommand
 	public boolean onCommand(Player player, String[] args)
 	{
 		COMZombies plugin = COMZombies.getPlugin();
+
 		if(player.hasPermission("zombies.reload") || player.hasPermission("zombies.admin"))
 		{
 			try

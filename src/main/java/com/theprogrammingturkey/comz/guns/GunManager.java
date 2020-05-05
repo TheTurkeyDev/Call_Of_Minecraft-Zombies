@@ -6,12 +6,14 @@ import com.theprogrammingturkey.comz.game.features.PerkType;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GunManager
 {
-
-	private ArrayList<Gun> guns = new ArrayList<>();
+	private List<Gun> guns = new ArrayList<>();
 	private Player player;
+
+	public static boolean customResources = false;
 
 	public GunManager(Player player)
 	{
@@ -21,7 +23,7 @@ public class GunManager
 	/**
 	 * @return List of guns in the manager
 	 */
-	public ArrayList<Gun> getGuns()
+	public List<Gun> getGuns()
 	{
 		return guns;
 	}
@@ -83,6 +85,8 @@ public class GunManager
 	 */
 	public void addGun(Gun gun)
 	{
+		if(gun == null)
+			return;
 		guns.add(gun);
 		player.updateInventory();
 	}
@@ -95,12 +99,8 @@ public class GunManager
 	public boolean isGun()
 	{
 		for(Gun gun : guns)
-		{
 			if(gun.getSlot() == player.getInventory().getHeldItemSlot())
-			{
 				return true;
-			}
-		}
 		return false;
 	}
 
@@ -128,22 +128,19 @@ public class GunManager
 		guns.remove(gun);
 	}
 
-	public void removeGun(int slot)
+	public Gun removeGun(int slot)
 	{
 		for(int i = guns.size() - 1; i >= 0; i--)
 			if(guns.get(i).getSlot() == slot)
-				guns.remove(i);
+				return guns.remove(i);
+		return null;
 	}
 
 	public boolean hasGun(GunType gun)
 	{
 		for(Gun g : guns)
-		{
 			if(g.getType().equals(gun))
-			{
 				return true;
-			}
-		}
 		return false;
 	}
 }

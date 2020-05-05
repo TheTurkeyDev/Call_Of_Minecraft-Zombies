@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.SignChangeEvent;
 
 public class GunSign implements IGameSign
 {
@@ -69,25 +70,25 @@ public class GunSign implements IGameSign
 	}
 
 	@Override
-	public void onChange(Game game, Player player, Sign sign)
+	public void onChange(Game game, Player player, SignChangeEvent event)
 	{
-		String thirdLine = ChatColor.stripColor(sign.getLine(2));
-		String fourthLine = ChatColor.stripColor(sign.getLine(2));
+		String thirdLine = ChatColor.stripColor(event.getLine(2));
+		String fourthLine = ChatColor.stripColor(event.getLine(2));
 
 		if(thirdLine.equalsIgnoreCase(""))
 		{
-			sign.setLine(0, ChatColor.RED + "" + ChatColor.BOLD + "No gun?");
+			event.setLine(0, ChatColor.RED + "" + ChatColor.BOLD + "No gun?");
 			return;
 		}
-		sign.setLine(0, ChatColor.RED + "[Zombies]");
-		sign.setLine(1, ChatColor.AQUA + "Gun");
-		sign.setLine(2, thirdLine);
+		event.setLine(0, ChatColor.RED + "[Zombies]");
+		event.setLine(1, ChatColor.AQUA + "Gun");
+		event.setLine(2, thirdLine);
 		if(COMZombies.getPlugin().getGun(thirdLine) == null)
 		{
-			sign.setLine(0, ChatColor.RED + "Invalid Gun!");
-			sign.setLine(1, "");
-			sign.setLine(2, "");
-			sign.setLine(3, "");
+			event.setLine(0, ChatColor.RED + "Invalid Gun!");
+			event.setLine(1, "");
+			event.setLine(2, "");
+			event.setLine(3, "");
 			return;
 		}
 		String price = "";
@@ -100,7 +101,7 @@ public class GunSign implements IGameSign
 		{
 			price = "200 / 100";
 		}
-		sign.setLine(3, price);
+		event.setLine(3, price);
 	}
 
 	@Override

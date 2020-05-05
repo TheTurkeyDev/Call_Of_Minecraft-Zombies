@@ -5,8 +5,8 @@ import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.guns.Gun;
 import com.theprogrammingturkey.comz.guns.GunManager;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -24,7 +24,6 @@ import org.bukkit.inventory.meta.FireworkMeta;
 
 public class DownedPlayer implements Listener
 {
-
 	private Player player;
 	private Player reviver;
 	private Game game;
@@ -33,6 +32,8 @@ public class DownedPlayer implements Listener
 	private Location reviverLocation;
 	private boolean hasMoved;
 	private int downTime = 0;
+
+	private Gun[] guns = new Gun[2];
 
 	public DownedPlayer(Player player, Game game)
 	{
@@ -50,7 +51,10 @@ public class DownedPlayer implements Listener
 			player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You have went down and need to be revived!");
 			game.perkManager.clearPlayersPerks(player);
 			GunManager manager = game.getPlayersGun(player);
+			guns[0] = manager.removeGun(1);
+			guns[1] = manager.removeGun(2);
 			manager.removeGun(3);
+			manager.addGun(new Gun(COMZombies.getPlugin().getGun("M1911"), player, 1));
 			player.setGameMode(GameMode.CREATIVE);
 			player.setAllowFlight(false);
 		}
@@ -63,21 +67,19 @@ public class DownedPlayer implements Listener
 	{
 		if(event.getPlayer().equals(reviver))
 		{
-			if(isPlayerDown)
+			if(isPlayerDown && hasChanged(reviverLocation, event.getTo()))
 			{
-				if(hasChanged(reviverLocation, event.getTo()))
-				{
-					reviver.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You Moved! You are no longer reviving " + player.getName());
-					hasMoved = true;
-					reviver = null;
-					isBeingRevived = false;
-				}
+				reviver.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You Moved! You are no longer reviving " + player.getName());
+				hasMoved = true;
+				reviver = null;
+				isBeingRevived = false;
 			}
 		}
 		else
 		{
 			if(event.getPlayer().equals(player)) if(isPlayerDown)
-				if(event.getTo().getY() > event.getFrom().getY()) event.getPlayer().teleport(event.getFrom());
+				if(event.getTo().getY() > event.getFrom().getY())
+					event.getPlayer().teleport(event.getFrom());
 		}
 	}
 
@@ -92,11 +94,7 @@ public class DownedPlayer implements Listener
 		toX = to.getBlockX();
 		toY = to.getBlockY();
 		toZ = to.getBlockZ();
-		if((fromX != toX) || (fromY != toY) || (fromZ != toZ))
-		{
-			return true;
-		}
-		return false;
+		return (fromX != toX) || (fromY != toY) || (fromZ != toZ);
 	}
 
 	public void RevivePlayer(Player pl)
@@ -117,6 +115,10 @@ public class DownedPlayer implements Listener
 				if(!(reviver == null))
 					reviver.sendMessage(ChatColor.GREEN + "You revived " + ChatColor.DARK_GREEN + player.getName());
 				isBeingRevived = false;
+				GunManager manager = game.getPlayersGun(player);
+				manager.removeGun(1);
+				manager.addGun(guns[0]);
+				manager.addGun(guns[1]);
 				player.setWalkSpeed(0.2F);
 				player.setHealth(20);
 				setPlayerDown(false);
@@ -130,30 +132,30 @@ public class DownedPlayer implements Listener
 	public void interact(PlayerInteractEvent event)
 	{
 		Player tmp = event.getPlayer();
-		try
-		{
-			if(player.getLocation().distance(tmp.getLocation()) > ConfigManager.getMainConfig().reviveRange) return;
-		} catch(Exception e)
-		{
+		if(player.getLocation().distance(tmp.getLocation()) > ConfigManager.getMainConfig().reviveRange)
 			return;
-		}
-		if(!(GameManager.INSTANCE.isPlayerInGame(tmp))) return;
-		if(reviver != null) return;
-		if(!(game.downedPlayerManager.isDownedPlayer(this))) return;
-		if(tmp.equals(player)) return;
-		if(isBeingRevived) return;
+		if(!(GameManager.INSTANCE.isPlayerInGame(tmp)))
+			return;
+		if(reviver != null)
+			return;
+		if(!(game.downedPlayerManager.isDownedPlayer(this)))
+			return;
+		if(tmp.equals(player))
+			return;
+		if(isBeingRevived)
+			return;
+
 		reviver = tmp;
-		if(!(game.players.contains(reviver))) return;
-		if(game.downedPlayerManager.isPlayerDowned(reviver))
-		{
+		if(!(game.players.contains(reviver)))
 			return;
-		}
+		if(game.downedPlayerManager.isPlayerDowned(reviver))
+			return;
+
 		if(reviver != player)
 		{
 			if(reviver == null && reviver.getName().equals(player.getName()))
-			{
 				return;
-			}
+
 			if(GameManager.INSTANCE.isPlayerInGame(reviver))
 			{
 				reviver.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You are reviving " + player.getName());
@@ -177,7 +179,8 @@ public class DownedPlayer implements Listener
 		{
 			COMZombies.scheduleTask(20, () ->
 			{
-				if(!isPlayerDown) return;
+				if(!isPlayerDown)
+					return;
 				downTime++;
 				displayDown();
 				scheduleTask();
@@ -220,15 +223,13 @@ public class DownedPlayer implements Listener
 		int trailn = (int) (Math.random() * 100);
 		boolean trail = false;
 		if(trailn > 50)
-		{
 			trail = true;
-		}
+
 		int flickern = (int) (Math.random() * 100);
 		boolean flickr = false;
 		if(flickern > 50)
-		{
 			flickr = true;
-		}
+
 		int r = (int) (Math.random() * 255);
 		int g = (int) (Math.random() * 255);
 		int b = (int) (Math.random() * 255);
@@ -236,25 +237,16 @@ public class DownedPlayer implements Listener
 		int rand = (int) (Math.random() * 5);
 		Type type;
 		if(rand == 0)
-		{
 			type = Type.BALL;
-		}
 		else if(rand == 1)
-		{
 			type = Type.BALL_LARGE;
-		}
 		else if(rand == 2)
-		{
 			type = Type.BURST;
-		}
 		else if(rand == 3)
-		{
 			type = Type.CREEPER;
-		}
 		else
-		{
 			type = Type.STAR;
-		}
+
 		return FireworkEffect.builder().trail(trail).flicker(flickr).withColor(color).with(type).build();
 	}
 

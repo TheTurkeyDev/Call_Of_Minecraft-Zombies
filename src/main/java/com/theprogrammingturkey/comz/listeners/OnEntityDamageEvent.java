@@ -91,6 +91,12 @@ public class OnEntityDamageEvent implements Listener
 			{
 				if(e.getDamager() instanceof Player)
 				{
+					if(e.getCause().equals(DamageCause.ENTITY_SWEEP_ATTACK))
+					{
+						e.setCancelled(true);
+						return;
+					}
+
 					Player player = (Player) e.getDamager();
 					if(player.getInventory().getItemInMainHand().getType().equals(Material.IRON_SWORD))
 					{
@@ -123,13 +129,9 @@ public class OnEntityDamageEvent implements Listener
 							{
 								zombie1.setHealth(20D);
 								if(game.isDoublePoints())
-								{
 									PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit * 2);
-								}
 								else
-								{
 									PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit);
-								}
 								game.spawnManager.setTotalHealth(e.getEntity(), (int) (totalHealth - damageAmount));
 								if(game.spawnManager.totalHealth().get(e.getEntity()) < 20)
 								{

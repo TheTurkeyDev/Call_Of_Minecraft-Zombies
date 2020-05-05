@@ -55,19 +55,15 @@ public class BoxManager
 
 	public void resetBoxes()
 	{
-		for(RandomBox box: this.boxes)
+		for(RandomBox box : this.boxes)
 			box.reset();
 	}
 
 	public RandomBox getBox(String name)
 	{
 		for(RandomBox b : boxes)
-		{
 			if(name.equalsIgnoreCase(b.getName()))
-			{
 				return b;
-			}
-		}
 		return null;
 	}
 

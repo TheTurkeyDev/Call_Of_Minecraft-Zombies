@@ -1,16 +1,12 @@
 package com.theprogrammingturkey.comz.commands;
 
-import com.theprogrammingturkey.comz.config.COMZConfig;
-import com.theprogrammingturkey.comz.config.ConfigManager;
+import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
-import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.config.CustomConfig;
-import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 
 public class DisablePowerCommand implements SubCommand
 {
@@ -36,11 +32,7 @@ public class DisablePowerCommand implements SubCommand
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must disable this arena first!");
 						return true;
 					}
-					CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
-					conf.set(game.getName() + ".Power", false);
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Power diabled!");
-					conf.saveConfig();
-					conf.reloadConfig();
+					game.removePower(player);
 				}
 				else
 				{

@@ -8,7 +8,6 @@
 package com.theprogrammingturkey.comz.game;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
@@ -32,6 +31,7 @@ import com.theprogrammingturkey.comz.leaderboards.Leaderboard;
 import com.theprogrammingturkey.comz.leaderboards.PlayerStats;
 import com.theprogrammingturkey.comz.spawning.SpawnManager;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
+import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.util.PacketUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -223,6 +223,10 @@ public class Game
 	 * full.
 	 */
 	public int maxPlayers;
+	/**
+	 * minimum number of players before the game will auto start.
+	 */
+	public int minPlayers;
 
 	public boolean changingRound = false;
 
@@ -234,8 +238,6 @@ public class Game
 	public Game(String name)
 	{
 		arenaName = name;
-
-		powerEnabled = ConfigManager.getConfig(COMZConfig.ARENAS).getBoolean(name + ".Power", false);
 
 		starter = new AutoStart(this, 60);
 
@@ -354,6 +356,16 @@ public class Game
 	public boolean containsPower()
 	{
 		return powerEnabled;
+	}
+
+	public void removePower(Player player)
+	{
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
+		conf.set(this.getName() + ".Power", false);
+		powerEnabled = false;
+		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Power disabled!");
+		conf.saveConfig();
+		conf.reloadConfig();
 	}
 
 	public void showSpawnLocations()
@@ -601,7 +613,7 @@ public class Game
 			}
 
 			sendMessageToPlayers(player.getName() + " has joined with " + players.size() + "/" + maxPlayers + "!");
-			if(players.size() >= ConfigManager.getConfig(COMZConfig.ARENAS).getInt(arenaName + ".minPlayers"))
+			if(players.size() >= minPlayers)
 			{
 				if(starter == null)
 				{
@@ -673,6 +685,8 @@ public class Game
 	public void removePlayer(Player player)
 	{
 		players.remove(player);
+		resetPlayer(player);
+
 		if(!isDisabled)
 			sendMessageToPlayers(player.getName() + " has left the game! Only " + players.size() + "/" + this.maxPlayers + " player(s) left!");
 
@@ -686,9 +700,7 @@ public class Game
 				PointManager.clearGamePoints(this);
 				endGame();
 				for(int i = 0; i < doorManager.getDoors().size(); i++)
-				{
 					doorManager.getDoors().get(i).closeDoor();
-				}
 			}
 		}
 
@@ -1010,6 +1022,9 @@ public class Game
 			COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + worldName + " isn't a valid world name for the arena " + arenaName);
 			return false;
 		}
+
+		powerEnabled = ConfigManager.getConfig(COMZConfig.ARENAS).getBoolean(arenaName + ".Power", false);
+		minPlayers = ConfigManager.getConfig(COMZConfig.ARENAS).getInt(arenaName + ".minPlayers");
 
 		int x1 = conf.getInt(arenaName + ".Location.P1.x");
 		int y1 = conf.getInt(arenaName + ".Location.P1.y");

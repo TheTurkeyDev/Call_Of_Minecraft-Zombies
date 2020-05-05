@@ -83,7 +83,7 @@ public class SignListener implements Listener
 		if(!BlockUtils.isSign(event.getBlock().getType()))
 			return;
 
-		Sign sign = (Sign) event.getBlock();
+		Sign sign = (Sign) event.getBlock().getState();
 
 		String lineOne = ChatColor.stripColor(sign.getLine(0));
 		String lineTwo = ChatColor.stripColor(sign.getLine(1));
@@ -149,7 +149,7 @@ public class SignListener implements Listener
 			IGameSign signLogic = GAME_SIGNS.get(lineTwo);
 			if(signLogic != null && (game != null || !signLogic.requiresGame()))
 			{
-				signLogic.onInteract(game, event.getPlayer(), (Sign) event.getBlock());
+				signLogic.onChange(game, event.getPlayer(), event);
 			}
 			else if(signLogic == null)
 			{
@@ -157,6 +157,7 @@ public class SignListener implements Listener
 				event.setLine(1, ChatColor.RED + "" + ChatColor.BOLD + "is not a");
 				event.setLine(2, ChatColor.RED + "" + ChatColor.BOLD + "valid sign");
 				event.setLine(3, "");
+
 			}
 			else
 			{

@@ -1,13 +1,11 @@
 package com.theprogrammingturkey.comz.game.signs;
 
-import com.theprogrammingturkey.comz.config.COMZConfig;
-import com.theprogrammingturkey.comz.config.ConfigManager;
-import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.SignChangeEvent;
 
 public class PowerSign implements IGameSign
 {
@@ -20,7 +18,7 @@ public class PowerSign implements IGameSign
 	@Override
 	public void onInteract(Game game, Player player, Sign sign)
 	{
-		if(ConfigManager.getConfig(COMZConfig.ARENAS).getBoolean(game.getName() + ".Power"))
+		if(game.containsPower())
 		{
 			if(game.isPowered())
 			{
@@ -33,17 +31,12 @@ public class PowerSign implements IGameSign
 	}
 
 	@Override
-	public void onChange(Game game, Player player, Sign sign)
+	public void onChange(Game game, Player player, SignChangeEvent sign)
 	{
 		sign.setLine(0, ChatColor.RED + "[Zombies]");
 		sign.setLine(1, ChatColor.AQUA + "Power");
-		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type /z disablepower " + game.getName() + " to disable the power!");
-
-		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
-
-		conf.set(game.getName() + ".Power", true);
-
-		conf.saveConfig();
+		//TODO: Check that there are no other power signs
+		game.removePower(player);
 	}
 
 	@Override

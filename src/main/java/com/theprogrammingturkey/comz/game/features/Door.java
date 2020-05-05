@@ -17,7 +17,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Door
@@ -30,7 +32,7 @@ public class Door
 	private boolean areSignsFinal = false;
 	private Game game;
 	private int price = 0;
-	private List<Block> blocks = new ArrayList<>();
+	private Map<Block, Material> blocks = new HashMap<>();
 	private List<Sign> signs = new ArrayList<>();
 	private List<SpawnPoint> spawnsInRoomDoorLeadsTo = new ArrayList<>();
 	private boolean isOpened = false;
@@ -155,7 +157,7 @@ public class Door
 	public void openDoor()
 	{
 		int interval = 1;
-		for(final Block block : blocks)
+		for(final Block block : blocks.keySet())
 		{
 			if(block.getType().equals(Material.AIR))
 				continue;
@@ -173,18 +175,9 @@ public class Door
 
 	public void closeDoor()
 	{
-		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
+		for(Block block : blocks.keySet())
+			block.setType(blocks.get(block));
 
-		for(String key : config.getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Blocks").getKeys(false))
-		{
-			int x = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".x");
-			int y = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".y");
-			int z = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".z");
-			Location loc = new Location(game.getWorld(), x, y, z);
-			Block block = loc.getBlock();
-			Material mat = Material.getMaterial(config.getString(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".mat"));
-			block.setType(mat == null ? Material.IRON_BARS : mat);
-		}
 		for(Sign sign : signs)
 		{
 			sign.setLine(0, ChatColor.RED + "[Zombies]");
@@ -199,11 +192,6 @@ public class Door
 	public List<SpawnPoint> getSpawnsInRoomDoorLeadsTo()
 	{
 		return spawnsInRoomDoorLeadsTo;
-	}
-
-	public void saveBlocks(ArrayList<Block> blockList)
-	{
-		blocks = blockList;
 	}
 
 	public void addSign(Sign sign)
@@ -230,8 +218,9 @@ public class Door
 			int y = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".y");
 			int z = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".z");
 			Location loc = new Location(game.getWorld(), x, y, z);
-			loc.getBlock().setType(BlockUtils.getMaterialFromKey(config.getString(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".mat")));
-			blocks.add(loc.getBlock());
+			Material mat = BlockUtils.getMaterialFromKey(config.getString(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".mat"));
+			loc.getBlock().setType(mat);
+			blocks.put(loc.getBlock(), mat);
 		}
 	}
 
@@ -260,27 +249,28 @@ public class Door
 					{
 						Location loc = new Location(p1.getWorld(), x + x1, y + y1, z + z1);
 						Block block = loc.getBlock();
-						blocks.add(block);
+						blocks.put(block, block.getType());
 					}
 				}
 			}
 		}
-		for(int i = 0; i < blocks.size(); i++)
+
+		int i = 0;
+		for(Block block : blocks.keySet())
 		{
 			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1), null);
-			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".x", blocks.get(i).getLocation().getBlockX());
-			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".y", blocks.get(i).getLocation().getBlockY());
-			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".z", blocks.get(i).getLocation().getBlockZ());
-			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".mat", blocks.get(i).getType().getKey().getKey());
-			config.saveConfig();
+			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".x", block.getLocation().getBlockX());
+			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".y", block.getLocation().getBlockY());
+			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".z", block.getLocation().getBlockZ());
+			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".mat", blocks.get(block).getKey().getKey());
+			i++;
 		}
-
-		ConfigManager.getConfig(COMZConfig.ARENAS).saveConfig();
+		config.saveConfig();
 	}
 
 	public List<Block> getBlocks()
 	{
-		return blocks;
+		return new ArrayList<>(blocks.keySet());
 	}
 
 	public boolean hasBothLocations()

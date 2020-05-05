@@ -7,6 +7,7 @@ import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.SignChangeEvent;
 
 public class KitSign implements IGameSign
 {
@@ -32,20 +33,20 @@ public class KitSign implements IGameSign
 	}
 
 	@Override
-	public void onChange(Game game, Player player, Sign sign)
+	public void onChange(Game game, Player player, SignChangeEvent event)
 	{
-		Kit kit = KitManager.getKit(sign.getLine(2));
+		Kit kit = KitManager.getKit(event.getLine(2));
 		if(kit == null)
 		{
-			sign.setLine(0, ChatColor.RED + "" + ChatColor.BOLD + "Kit name is");
-			sign.setLine(1, ChatColor.RED + "" + ChatColor.BOLD + "not a valid");
-			sign.setLine(2, ChatColor.RED + "" + ChatColor.BOLD + "kit!");
-			sign.setLine(3, "");
+			event.setLine(0, ChatColor.RED + "" + ChatColor.BOLD + "Kit name is");
+			event.setLine(1, ChatColor.RED + "" + ChatColor.BOLD + "not a valid");
+			event.setLine(2, ChatColor.RED + "" + ChatColor.BOLD + "kit!");
+			event.setLine(3, "");
 			return;
 		}
-		sign.setLine(0, ChatColor.RED + "[Zombies]");
-		sign.setLine(1, ChatColor.AQUA + "Kit");
-		sign.setLine(2, ChatColor.RED + kit.getName());
+		event.setLine(0, ChatColor.RED + "[Zombies]");
+		event.setLine(1, ChatColor.AQUA + "Kit");
+		event.setLine(2, ChatColor.RED + kit.getName());
 	}
 
 	@Override

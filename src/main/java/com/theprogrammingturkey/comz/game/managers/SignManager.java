@@ -22,17 +22,16 @@ public class SignManager
 
 	private Game game;
 
-	private CustomConfig conf;
-
 	public SignManager(Game game)
 	{
 		this.game = game;
-		conf = ConfigManager.getConfig(COMZConfig.SIGNS);
+
 		load();
 	}
 
 	private void load()
 	{
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.SIGNS);
 		ConfigurationSection sec = conf.getConfigurationSection("signs." + game.getName());
 		if(sec == null)
 			return;
@@ -101,6 +100,8 @@ public class SignManager
 	{
 		gameSigns.add(sign);
 
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.SIGNS);
+
 		String signInfo = "sign(" + sign.getX() + "," + sign.getY() + "," + sign.getZ() + "," + sign.getWorld().getName() + ")";
 
 		conf.set("signs." + game.getName() + "." + signInfo, null);
@@ -117,6 +118,8 @@ public class SignManager
 	public void removeSign(Sign sign)
 	{
 		gameSigns.remove(sign);
+
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.SIGNS);
 
 		sign.setLine(0, "");
 		sign.setLine(1, "");

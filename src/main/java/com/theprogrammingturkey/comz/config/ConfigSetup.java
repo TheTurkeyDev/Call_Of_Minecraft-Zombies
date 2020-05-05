@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.config;
 
+import com.theprogrammingturkey.comz.guns.GunManager;
 import com.theprogrammingturkey.comz.guns.GunType;
 import com.theprogrammingturkey.comz.leaderboards.Leaderboard;
 import com.theprogrammingturkey.comz.leaderboards.PlayerStats;
@@ -93,7 +94,6 @@ public class ConfigSetup
 	public void setup()
 	{
 		COMZombies plugin = COMZombies.getPlugin();
-		CustomConfig conf = ConfigManager.getConfig(COMZConfig.GUNS);
 		MultiBox = plugin.getConfig().getBoolean("config.gameSettings.MultipleMysteryBoxes");
 		doublePointsTimer = plugin.getConfig().getInt("config.gameSettings.doublePointsTimer");
 		instaKillTimer = plugin.getConfig().getInt("config.gameSettings.instaKillTimer");
@@ -110,6 +110,9 @@ public class ConfigSetup
 		reloadTime = plugin.getConfig().getInt("config.gameSettings.reloadTime");
 
 		plugin.possibleGuns.clear();
+
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.GUNS);
+		GunManager.customResources = conf.getString("Resource Sounds", "off").equalsIgnoreCase("on");
 
 		for(String group : conf.getConfigurationSection("Guns").getKeys(false))
 		{
