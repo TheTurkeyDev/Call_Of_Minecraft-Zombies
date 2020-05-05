@@ -1,14 +1,13 @@
 package com.theprogrammingturkey.comz.guns;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.util.CommandUtil;
-import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
 import com.theprogrammingturkey.comz.listeners.OnZombiePerkDrop;
+import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -150,7 +149,7 @@ public class Gun
 	public void reload()
 	{
 		if(GunManager.customResources)
-			player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
+			player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
 
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
@@ -263,7 +262,7 @@ public class Gun
 		if(totalAmmo == 0 && clipAmmo == 0)
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "No ammo!");
-			player.getLocation().getWorld().playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
+			player.getWorld().playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
 			return;
 		}
 
@@ -314,99 +313,101 @@ public class Gun
 			ls.setVelocity(ls.getVelocity().multiply(this.gun.speed));
 		}
 
+		World world = player.getWorld();
+
 		if(GunManager.customResources)
 		{
 			switch(gun.name)
 			{
 				case "B23R":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
+					world.playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
 					break;
 				case "Executioner":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_ARROW_HIT, 1, 1);
+					world.playSound(player.getLocation(), Sound.ENTITY_ARROW_HIT, 1, 1);
 					break;
 				case "Five-Seven":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_BAT_HURT, 1, 1);
+					world.playSound(player.getLocation(), Sound.ENTITY_BAT_HURT, 1, 1);
 					break;
 				case "Kap-40":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_BLAZE_HURT, 1, 1);
+					world.playSound(player.getLocation(), Sound.ENTITY_BLAZE_HURT, 1, 1);
 					break;
 				case "M1911":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1, 1);
+					world.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1, 1);
 					break;
 				case "Python":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
+					world.playSound(player.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
 					break;
 				case "M1216":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 1);
+					world.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 1);
 					break;
 				case "Olympia":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_SMALL_FALL, 1, 1);
+					world.playSound(player.getLocation(), Sound.ENTITY_PLAYER_SMALL_FALL, 1, 1);
 					break;
 				case "R870 MCS":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_BIG_FALL, 1, 1);
+					world.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BIG_FALL, 1, 1);
 					break;
 				case "S12":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_BLAZE_HURT, 1, 1);
+					world.playSound(player.getLocation(), Sound.ENTITY_BLAZE_HURT, 1, 1);
 					break;
 				case "AN-94":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_IRON_GOLEM_HURT, 1, 1);
+					world.playSound(player.getLocation(), Sound.ENTITY_IRON_GOLEM_HURT, 1, 1);
 					break;
 				case "Colt M16A1":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_IRON_GOLEM_STEP, 1, 1);
+					world.playSound(player.getLocation(), Sound.ENTITY_IRON_GOLEM_STEP, 1, 1);
 					break;
 				case "FAL":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.ITEM_FLINTANDSTEEL_USE, 1, 1);
+					world.playSound(player.getLocation(), Sound.ITEM_FLINTANDSTEEL_USE, 1, 1);
 					break;
 				case "M8A1":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
+					world.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
 					break;
 				case "M14":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 1);
+					world.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 1);
 					break;
 				case "M27":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_MAGMA_CUBE_JUMP, 1, 1);
+					world.playSound(player.getLocation(), Sound.ENTITY_MAGMA_CUBE_JUMP, 1, 1);
 					break;
 				case "MTAR":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+					world.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
 					break;
 				case "SMR":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASEDRUM, 1, 1);
+					world.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASEDRUM, 1, 1);
 					break;
 				case "Type 25":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1, 1);
+					world.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1, 1);
 					break;
 				case "HAMR":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 1);
+					world.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 1);
 					break;
 				case "LSAT":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+					world.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
 					break;
 				case "RPD":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_SNARE, 1, 1);
+					world.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_SNARE, 1, 1);
 					break;
 				case "Chicom CQB":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1, 1);
+					world.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1, 1);
 					break;
 				case "MP5":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+					world.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 					break;
 				case "PDW-57":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1, 1);
+					world.playSound(player.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1, 1);
 					break;
 				case "Barret M82A1":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
+					world.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
 					break;
 				case "DSR 50":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_STONE_STEP, 1, 1);
+					world.playSound(player.getLocation(), Sound.BLOCK_STONE_STEP, 1, 1);
 					break;
 				case "SVU-AS":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_WOOD_STEP, 1, 1);
+					world.playSound(player.getLocation(), Sound.BLOCK_WOOD_STEP, 1, 1);
 					break;
 				case "Ray Gun":
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_BLAZE_DEATH, 1, 1);
+					world.playSound(player.getLocation(), Sound.ENTITY_BLAZE_DEATH, 1, 1);
 					break;
 				default:
-					player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
+					world.playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
 					break;
 			}
 		}
@@ -414,11 +415,11 @@ public class Gun
 		{
 			if(packed)
 			{
-				player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1, 1);
+				world.playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1, 1);
 			}
 			else
 			{
-				player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
+				world.playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
 			}
 		}
 		updateGun();
@@ -467,47 +468,24 @@ public class Gun
 		ItemStack stack = new ItemStack(gun.categorizeGun());
 		stack.setType(gun.categorizeGun());
 		ItemMeta data = stack.getItemMeta();
-		if(isReloading) data.setDisplayName(ChatColor.RED + "Reloading!");
-		else
-		{
-			if(packed)
-			{
-				data.setDisplayName(ChatColor.BLUE + gun.packAPunchName + " " + clipAmmo + "/" + totalAmmo);
-				data.addEnchant(Enchantment.KNOCKBACK, 1, true);
-				ArrayList<String> lore = new ArrayList<>();
-				lore.add("PACK-A-PUNCHED");
-				data.setLore(lore);
-			}
-			else
-			{
-				data.setDisplayName(ChatColor.RED + gun.name + " " + clipAmmo + "/" + totalAmmo);
-			}
-		}
-		stack.setItemMeta(data);
-		player.getInventory().setItem(slot, stack);
-	}
+		if(data == null)
+			return;
 
-	public void updateGunOnReload()
-	{
-		if(gun == null) return;
-		ItemStack stack = new ItemStack(gun.categorizeGun(), 1);
-		stack.setType(gun.categorizeGun());
-		ItemMeta data = stack.getItemMeta();
-		if(isReloading) data.setDisplayName(ChatColor.RED + "Reloading!");
+		if(isReloading)
+		{
+			data.setDisplayName(ChatColor.RED + "Reloading!");
+		}
+		else if(packed)
+		{
+			data.setDisplayName(ChatColor.BLUE + gun.packAPunchName + " " + clipAmmo + "/" + totalAmmo);
+			data.addEnchant(Enchantment.KNOCKBACK, 1, true);
+			ArrayList<String> lore = new ArrayList<>();
+			lore.add("PACK-A-PUNCHED");
+			data.setLore(lore);
+		}
 		else
 		{
-			if(packed)
-			{
-				data.setDisplayName(ChatColor.BLUE + gun.packAPunchName + " " + clipAmmo + "/" + totalAmmo);
-				data.addEnchant(Enchantment.KNOCKBACK, 1, true);
-				ArrayList<String> lore = new ArrayList<>();
-				lore.add("PACK-A-PUNCHED");
-				data.setLore(lore);
-			}
-			else
-			{
-				data.setDisplayName(ChatColor.RED + gun.name + " " + clipAmmo + "/" + totalAmmo);
-			}
+			data.setDisplayName(ChatColor.RED + gun.name + " " + clipAmmo + "/" + totalAmmo);
 		}
 		stack.setItemMeta(data);
 		player.getInventory().setItem(slot, stack);
@@ -529,13 +507,9 @@ public class Gun
 	public void maxAmmo()
 	{
 		if(packed)
-		{
 			totalAmmo = gun.packAPunchTotalAmmo;
-		}
 		else
-		{
 			totalAmmo = gun.totalammo;
-		}
 		updateGun();
 	}
 }
