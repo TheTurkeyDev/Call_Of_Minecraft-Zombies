@@ -132,7 +132,10 @@ public class DownedPlayer implements Listener
 	public void interact(PlayerInteractEvent event)
 	{
 		Player tmp = event.getPlayer();
-		if(player.getLocation().distance(tmp.getLocation()) > ConfigManager.getMainConfig().reviveRange)
+		Location tmpLoc = tmp.getLocation();
+		if(tmpLoc.getWorld() == null || !tmpLoc.getWorld().equals(player.getWorld()))
+			tmpLoc.setWorld(player.getWorld());
+		if(player.getLocation().distance(tmpLoc) > ConfigManager.getMainConfig().reviveRange)
 			return;
 		if(!(GameManager.INSTANCE.isPlayerInGame(tmp)))
 			return;
