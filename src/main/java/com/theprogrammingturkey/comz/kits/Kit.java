@@ -81,6 +81,9 @@ public class Kit
 		if(!GameManager.INSTANCE.isPlayerInGame(player) && !player.hasPermission("zombies.kit." + name))
 			return;
 		Game game = GameManager.INSTANCE.getGame(player);
+		if(game == null)
+			return;
+
 		GunManager manager = game.getPlayersGun(player);
 
 		for(int i = 0; i < guns.length; i++)
