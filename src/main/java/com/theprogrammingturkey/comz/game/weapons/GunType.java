@@ -1,12 +1,8 @@
-package com.theprogrammingturkey.comz.guns;
+package com.theprogrammingturkey.comz.game.weapons;
 
-import org.bukkit.Material;
-
-public class GunType
+public class GunType extends Weapon
 {
-	public String name;
-	public GunTypeEnum type;
-	public Material gunItem;
+	public WeaponType type;
 	public int damage;
 	public int fireDelay;
 	public double speed;
@@ -17,16 +13,15 @@ public class GunType
 	public int packAPunchDamage;
 	public String packAPunchName;
 
-	public GunType(GunTypeEnum type, String gunName, Material gunItem, int damage, int fireDelay, double speed, int clipammo, int totalammo, int packClip, int packTotal, int packDamage, String packName)
+	public GunType(WeaponType type, String gunName, int damage, int fireDelay, double speed, int clipammo, int totalammo, int packClip, int packTotal, int packDamage, String packName)
 	{
+		super(gunName, type);
 		this.damage = damage;
 		this.fireDelay = fireDelay;
 		this.speed = speed;
 		this.clipammo = clipammo;
 		this.totalammo = totalammo;
-		this.name = gunName;
 		this.type = type;
-		this.gunItem = gunItem;
 		this.packAPunchClipAmmo = packClip;
 		this.packAPunchTotalAmmo = packTotal;
 		this.packAPunchDamage = packDamage;
@@ -37,15 +32,5 @@ public class GunType
 	{
 		clipammo = clip;
 		totalammo = total;
-	}
-
-	/**
-	 * Used to select the correct material when changing a gun.
-	 *
-	 * @return Material corresponding to the guns type
-	 */
-	public Material categorizeGun()
-	{
-		return this.gunItem;
 	}
 }

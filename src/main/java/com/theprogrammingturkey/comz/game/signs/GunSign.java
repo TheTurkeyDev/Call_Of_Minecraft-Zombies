@@ -3,9 +3,10 @@ package com.theprogrammingturkey.comz.game.signs;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.guns.Gun;
-import com.theprogrammingturkey.comz.guns.GunManager;
-import com.theprogrammingturkey.comz.guns.GunType;
+import com.theprogrammingturkey.comz.game.weapons.GunInstance;
+import com.theprogrammingturkey.comz.game.weapons.GunType;
+import com.theprogrammingturkey.comz.game.weapons.PlayerWeaponManager;
+import com.theprogrammingturkey.comz.game.weapons.WeaponManager;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -26,7 +27,7 @@ public class GunSign implements IGameSign
 	{
 		int BuyPoints = Integer.parseInt(sign.getLine(3).substring(0, sign.getLine(3).indexOf("/") - 1).trim());
 		int RefillPoints = Integer.parseInt(sign.getLine(3).substring(sign.getLine(3).indexOf("/") + 2).trim());
-		GunType guntype = COMZombies.getPlugin().getGun(sign.getLine(2));
+		GunType guntype = WeaponManager.getGun(sign.getLine(2));
 
 		if(guntype == null)
 		{
@@ -34,10 +35,10 @@ public class GunSign implements IGameSign
 			return;
 		}
 
-		GunManager manager = game.getPlayersGun(player);
-		int slot = manager.getCorrectSlot();
-		Gun gun = manager.getGun(player.getInventory().getHeldItemSlot());
-		if(manager.isGun() && gun.getType().name.equalsIgnoreCase(guntype.name))
+		PlayerWeaponManager manager = game.getPlayersGun(player);
+		int slot = manager.getCorrectSlot(guntype);
+		GunInstance gun = manager.getGun(player.getInventory().getHeldItemSlot());
+		if(manager.isGun() && gun.getType().getName().equalsIgnoreCase(guntype.getName()))
 		{
 			if(PointManager.canBuy(player, RefillPoints))
 			{
@@ -55,9 +56,9 @@ public class GunSign implements IGameSign
 		{
 			if(PointManager.canBuy(player, BuyPoints))
 			{
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You got the " + ChatColor.GOLD + "" + ChatColor.BOLD + guntype.name + ChatColor.RED + ChatColor.BOLD + "!");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You got the " + ChatColor.GOLD + "" + ChatColor.BOLD + guntype.getName() + ChatColor.RED + ChatColor.BOLD + "!");
 				manager.removeGun(manager.getGun(slot));
-				manager.addGun(new Gun(guntype, player, slot));
+				manager.addGun(new GunInstance(guntype, player, slot));
 				player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1, 1);
 				PointManager.takePoints(player, BuyPoints);
 				PointManager.notifyPlayer(player);
@@ -83,7 +84,7 @@ public class GunSign implements IGameSign
 		event.setLine(0, ChatColor.RED + "[Zombies]");
 		event.setLine(1, ChatColor.AQUA + "Gun");
 		event.setLine(2, thirdLine);
-		if(COMZombies.getPlugin().getGun(thirdLine) == null)
+		if(WeaponManager.getGun(thirdLine) == null)
 		{
 			event.setLine(0, ChatColor.RED + "Invalid Gun!");
 			event.setLine(1, "");

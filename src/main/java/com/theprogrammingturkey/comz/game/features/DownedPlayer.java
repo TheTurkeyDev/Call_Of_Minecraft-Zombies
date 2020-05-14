@@ -5,8 +5,9 @@ import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
-import com.theprogrammingturkey.comz.guns.Gun;
-import com.theprogrammingturkey.comz.guns.GunManager;
+import com.theprogrammingturkey.comz.game.weapons.GunInstance;
+import com.theprogrammingturkey.comz.game.weapons.PlayerWeaponManager;
+import com.theprogrammingturkey.comz.game.weapons.WeaponManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -33,7 +34,7 @@ public class DownedPlayer implements Listener
 	private boolean hasMoved;
 	private int downTime = 0;
 
-	private Gun[] guns = new Gun[2];
+	private GunInstance[] guns = new GunInstance[2];
 
 	public DownedPlayer(Player player, Game game)
 	{
@@ -50,11 +51,11 @@ public class DownedPlayer implements Listener
 		{
 			player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You have went down and need to be revived!");
 			game.perkManager.clearPlayersPerks(player);
-			GunManager manager = game.getPlayersGun(player);
+			PlayerWeaponManager manager = game.getPlayersGun(player);
 			guns[0] = manager.removeGun(1);
 			guns[1] = manager.removeGun(2);
 			manager.removeGun(3);
-			manager.addGun(new Gun(COMZombies.getPlugin().getGun("M1911"), player, 1));
+			manager.addGun(new GunInstance(WeaponManager.getGun("M1911"), player, 1));
 			player.setGameMode(GameMode.CREATIVE);
 			player.setAllowFlight(false);
 		}
@@ -115,7 +116,7 @@ public class DownedPlayer implements Listener
 				if(!(reviver == null))
 					reviver.sendMessage(ChatColor.GREEN + "You revived " + ChatColor.DARK_GREEN + player.getName());
 				isBeingRevived = false;
-				GunManager manager = game.getPlayersGun(player);
+				PlayerWeaponManager manager = game.getPlayersGun(player);
 				manager.removeGun(1);
 				manager.addGun(guns[0]);
 				manager.addGun(guns[1]);

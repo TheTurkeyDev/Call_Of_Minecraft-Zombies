@@ -42,9 +42,9 @@ public class MysteryBoxSign implements IGameSign
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You don't have enough points!");
 			}
 		}
-		else if(box.canPickGun())
+		else if(box.canPickWeapon())
 		{
-			box.pickUpGun(player);
+			box.pickUpWeapon(player);
 		}
 	}
 

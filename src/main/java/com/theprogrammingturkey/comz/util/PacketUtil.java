@@ -23,7 +23,7 @@ public class PacketUtil
 	public static void playBlockBreakAction(Player player, int damage, Block block)
 	{
 		PacketPlayOutBlockBreakAnimation packet = new PacketPlayOutBlockBreakAnimation(0, new BlockPosition(block.getX(), block.getY(), block.getZ()), damage);
-		sendPacketNearby(((CraftServer) player.getServer()).getHandle(), block.getX(), block.getY(), block.getZ(), 12, packet);
+		sendPacketNearby(((CraftServer) player.getServer()).getHandle(), block.getX(), block.getY(), block.getZ(), 64, packet);
 	}
 
 	public static void sendPacketNearby(DedicatedPlayerList playerList, double d0, double d1, double d2, double d3, Packet<?> packet)

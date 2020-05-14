@@ -1,13 +1,12 @@
 package com.theprogrammingturkey.comz.game.features;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
-import com.theprogrammingturkey.comz.guns.Gun;
-import com.theprogrammingturkey.comz.guns.GunManager;
-import com.theprogrammingturkey.comz.guns.GunType;
+import com.theprogrammingturkey.comz.game.weapons.Weapon;
+import com.theprogrammingturkey.comz.game.weapons.WeaponManager;
+import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.util.PacketUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -41,7 +40,7 @@ public class RandomBox
 
 	private boolean running;
 	private boolean gunSelected;
-	private GunType gun;
+	private Weapon weapon;
 	private Item item;
 	private ArmorStand namePlate;
 
@@ -84,8 +83,7 @@ public class RandomBox
 			PacketUtil.playChestAction(chestLocation, true);
 
 		running = true;
-		int randID = COMZombies.rand.nextInt(COMZombies.getPlugin().possibleGuns.size());
-		gun = COMZombies.getPlugin().possibleGuns.get(randID);
+		weapon = WeaponManager.getRandomWeapon();
 		Location itemLoc;
 
 		if(chestLocation != null)
@@ -93,14 +91,13 @@ public class RandomBox
 		else
 			itemLoc = boxLoc.clone().add(.5, .2, .5);
 
-		item = player.getWorld().dropItem(itemLoc, new ItemStack(gun.categorizeGun()));
+		item = player.getWorld().dropItem(itemLoc, new ItemStack(weapon.getMaterial()));
 		namePlate = (ArmorStand) player.getWorld().spawnEntity(itemLoc.clone().add(0, -1.7, 0), EntityType.ARMOR_STAND);
 		namePlate.setVisible(false);
 		namePlate.setGravity(false);
 		namePlate.setAI(false);
-		namePlate.setCustomName(gun.name);
+		namePlate.setCustomName(weapon.getName());
 		namePlate.setCustomNameVisible(true);
-		Game game = GameManager.INSTANCE.getGame(player);
 
 		PointManager.takePoints(player, PointsNeeded);
 		PointManager.notifyPlayer(player);
@@ -114,19 +111,18 @@ public class RandomBox
 				item.setTicksLived(5960);
 				item.setPickupDelay(1000);
 				item.setVelocity(new Vector(0, 0, 0));
-				if(game.mode == Game.ArenaStatus.INGAME)
+				if(boxGame.mode == Game.ArenaStatus.INGAME)
 				{
 					if(time > 0)
 					{
-						int randID = COMZombies.rand.nextInt(COMZombies.getPlugin().possibleGuns.size());
-						gun = COMZombies.getPlugin().possibleGuns.get(randID);
-						item.setItemStack(new ItemStack(gun.categorizeGun()));
-						namePlate.setCustomName(gun.name);
+						weapon = WeaponManager.getRandomWeapon();
+						item.setItemStack(new ItemStack(weapon.getMaterial()));
+						namePlate.setCustomName(weapon.getName());
 						player.getWorld().playSound(boxLoc, Sound.BLOCK_NOTE_BLOCK_HARP, 1f, 1f);
 					}
 					else if(time == 0)
 					{
-//						if(!boxGame.isFireSale())
+//						if(!boxGame.isFireSale() && boxGame.boxManager.getTotalBoxes() > 0 && )
 //						{
 //							CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "TeadyBear!!!!!!");
 //							boxGame.boxManager.teddyBear();
@@ -152,17 +148,14 @@ public class RandomBox
 		return !this.running;
 	}
 
-	public boolean canPickGun()
+	public boolean canPickWeapon()
 	{
 		return this.gunSelected;
 	}
 
-	public void pickUpGun(Player player)
+	public void pickUpWeapon(Player player)
 	{
-		GunManager manager = boxGame.getPlayersGun(player);
-		int slot = manager.getCorrectSlot();
-		manager.removeGun(manager.getGun(slot));
-		manager.addGun(new Gun(gun, player, slot));
+		boxGame.getPlayersGun(player).addWeapon(weapon);
 		player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
 		reset();
 	}

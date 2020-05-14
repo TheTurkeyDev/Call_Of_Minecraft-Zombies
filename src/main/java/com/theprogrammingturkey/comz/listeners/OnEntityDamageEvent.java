@@ -1,18 +1,12 @@
 package com.theprogrammingturkey.comz.listeners;
 
-import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.ConfigManager;
-import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
-import com.theprogrammingturkey.comz.game.features.DownedPlayer;
 import com.theprogrammingturkey.comz.game.features.PerkType;
-import org.bukkit.Bukkit;
 import org.bukkit.Effect;
-import org.bukkit.EntityEffect;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
@@ -22,12 +16,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-import java.util.ArrayList;
-
 public class OnEntityDamageEvent implements Listener
 {
-	private ArrayList<Player> beingHealed = new ArrayList<>();
-
 	@EventHandler
 	public void damge(EntityDamageByEntityEvent e)
 	{
@@ -54,23 +44,15 @@ public class OnEntityDamageEvent implements Listener
 								return;
 							}
 
-							double damage = 6;
+							float damage = 6;
 
 							if(game.perkManager.getPlayersPerks(player).contains(PerkType.JUGGERNOG))
 								damage = damage / 2;
 
-							if(player.getHealth() - damage < 1)
-							{
+							damage = game.damagePlayer(player, damage);
+							e.setDamage(damage);
+							if(damage == 0)
 								e.setCancelled(true);
-								playerDowned(player, game);
-								return;
-							}
-							else
-							{
-								e.setDamage(damage);
-							}
-
-							COMZombies.scheduleTask(100, () -> healPlayer(player));
 						}
 						else
 						{
@@ -83,7 +65,6 @@ public class OnEntityDamageEvent implements Listener
 		else if(e.getEntity() instanceof Zombie)
 		{
 			Entity entity = e.getEntity();
-			double damage = 0;
 			if(!(GameManager.INSTANCE.isEntityInGame(entity)))
 				return;
 			Game game = GameManager.INSTANCE.getGame(entity);
@@ -102,96 +83,14 @@ public class OnEntityDamageEvent implements Listener
 					{
 						if(game.players.contains(player))
 						{
-							Zombie zombie1 = (Zombie) entity;
-							double damageAmount = e.getDamage();
-							Double totalHealth;
-							double dist = zombie1.getLocation().distance(player.getLocation());
-
+							Zombie zombie = (Zombie) entity;
+							double dist = zombie.getLocation().distance(player.getLocation());
 							if(dist <= ConfigManager.getMainConfig().meleeRange)
-							{
-								damageAmount = 5;
-							}
-							else
-							{
-								e.setCancelled(true);
-								return;
-							}
-							if(game.spawnManager.totalHealth().containsKey(e.getEntity()))
-							{
-								totalHealth = game.spawnManager.totalHealth().get(e.getEntity());
-							}
-							else
-							{
-								game.spawnManager.setTotalHealth(entity, 20);
-								totalHealth = 20D;
-							}
-							if(totalHealth >= 20)
-							{
-								zombie1.setHealth(20D);
-								if(game.isDoublePoints())
-									PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit * 2);
-								else
-									PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit);
-								game.spawnManager.setTotalHealth(e.getEntity(), (int) (totalHealth - damageAmount));
-								if(game.spawnManager.totalHealth().get(e.getEntity()) < 20)
-								{
-									zombie1.setHealth(game.spawnManager.totalHealth().get(e.getEntity()));
-								}
-								PointManager.notifyPlayer(player);
-							}
-							else if(totalHealth < 1 || totalHealth - damageAmount <= 1)
-							{
-								e.setCancelled(true);
-								OnZombiePerkDrop perkdrop = new OnZombiePerkDrop();
-								perkdrop.perkDrop(zombie1, player);
-								zombie1.remove();
-								boolean doublePoints = game.isDoublePoints();
-								if(doublePoints)
-								{
-									PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
-								}
-								else
-								{
-									PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
-								}
-								zombie1.playEffect(EntityEffect.DEATH);
-								PointManager.notifyPlayer(player);
-								game.spawnManager.removeEntity(zombie1);
-								game.zombieKilled(player);
-							}
-							else
-							{
-								zombie1.damage(damage);
-								if(game.isDoublePoints())
-								{
-									PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit * 2);
-								}
-								else
-								{
-									PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit);
-								}
-								PointManager.notifyPlayer(player);
-							}
-							game.spawnManager.setTotalHealth(e.getEntity(), (int) (totalHealth - damageAmount));
-							if(game.isInstaKill())
-							{
-								zombie1.remove();
-								game.spawnManager.removeEntity(zombie1);
-							}
-							for(Player pl : game.players)
-							{
-								pl.playSound(entity.getLocation().add(0, 1, 0), Sound.BLOCK_STONE_STEP, 1, 1);
-							}
-						}
-						else
-						{
-							e.setCancelled(true);
+								game.damageZombie(zombie, player, 5);
+
 						}
 					}
-					else
-					{
-						e.setCancelled(true);
-					}
+					e.setCancelled(true);
 				}
 			}
 		}
@@ -205,26 +104,25 @@ public class OnEntityDamageEvent implements Listener
 			Player player = (Player) e.getEntity();
 			if(GameManager.INSTANCE.getGame(player) == null)
 				return;
+
 			if(GameManager.INSTANCE.getGame(player).downedPlayerManager.isPlayerDowned(player))
-			{
 				e.setCancelled(true);
-			}
+
 			if(GameManager.INSTANCE.getGame(player) != null && GameManager.INSTANCE.getGame(player).mode == ArenaStatus.STARTING)
-			{
 				e.setCancelled(true);
-			}
-			if(player.getHealth() < 1 || player.getHealth() - e.getDamage() < 1)
+
+			if(GameManager.INSTANCE.isPlayerInGame(player))
 			{
-				if(GameManager.INSTANCE.isPlayerInGame(player))
+				Game game = GameManager.INSTANCE.getGame(player);
+				if(game.mode == ArenaStatus.INGAME)
 				{
-					Game game = GameManager.INSTANCE.getGame(player);
-					if(game.mode == ArenaStatus.INGAME)
-					{
+					float damage = game.damagePlayer(player, (float) e.getDamage());
+					e.setDamage(damage);
+					if(damage == 0)
 						e.setCancelled(true);
-						playerDowned(player, game);
-					}
 				}
 			}
+
 			if(GameManager.INSTANCE.isPlayerInGame(player))
 				player.getLocation().getWorld().playEffect(player.getLocation().add(0, 1, 0), Effect.STEP_SOUND, 152);
 		}
@@ -238,62 +136,5 @@ public class OnEntityDamageEvent implements Listener
 			z.teleport(game.getPlayerSpawn());
 			e.setCancelled(true);
 		}
-	}
-
-	private void playerDowned(Player player, final Game game)
-	{
-		if(!game.downedPlayerManager.isPlayerDowned(player))
-		{
-			player.setFireTicks(0);
-
-			if(game.downedPlayerManager.getDownedPlayers().size() + 1 == game.players.size())
-			{
-				for(DownedPlayer downedPlayer : game.downedPlayerManager.getDownedPlayers())
-					downedPlayer.cancelDowned();
-				game.endGame();
-			}
-			else
-			{
-				game.sendMessageToPlayers(COMZombies.PREFIX + player.getName() + " Has gone down! Stand close and right click him to revive");
-				DownedPlayer down = new DownedPlayer(player, game);
-				down.setPlayerDown(true);
-				game.downedPlayerManager.addDownedPlayer(down);
-				player.setHealth(1D);
-			}
-		}
-	}
-
-	public void healPlayer(final Player player)
-	{
-		if(beingHealed.contains(player))
-			return;
-		else
-			beingHealed.add(player);
-
-		COMZombies plugin = COMZombies.getPlugin();
-		if(!(GameManager.INSTANCE.isPlayerInGame(player)))
-			return;
-		COMZombies.scheduleTask(20, () ->
-		{
-			if(!(player.getHealth() == 20))
-			{
-				player.setHealth(player.getHealth() + 1);
-				healPlayer(player);
-			}
-			else
-			{
-				beingHealed.remove(player);
-			}
-		});
-	}
-
-	public void removeDownedPlayer(Player player)
-	{
-		GameManager.INSTANCE.getGame(player).downedPlayerManager.removeDownedPlayer(player);
-	}
-
-	public boolean isDownedPlayer(String name)
-	{
-		return GameManager.INSTANCE.getGame(Bukkit.getPlayer(name)).downedPlayerManager.isPlayerDowned(Bukkit.getPlayer(name));
 	}
 }

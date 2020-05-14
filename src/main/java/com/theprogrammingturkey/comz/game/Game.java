@@ -23,18 +23,21 @@ import com.theprogrammingturkey.comz.game.managers.DownedPlayerManager;
 import com.theprogrammingturkey.comz.game.managers.PerkManager;
 import com.theprogrammingturkey.comz.game.managers.SignManager;
 import com.theprogrammingturkey.comz.game.managers.TeleporterManager;
-import com.theprogrammingturkey.comz.guns.Gun;
-import com.theprogrammingturkey.comz.guns.GunManager;
-import com.theprogrammingturkey.comz.guns.GunType;
+import com.theprogrammingturkey.comz.game.weapons.GunInstance;
+import com.theprogrammingturkey.comz.game.weapons.GunType;
+import com.theprogrammingturkey.comz.game.weapons.PlayerWeaponManager;
+import com.theprogrammingturkey.comz.game.weapons.WeaponManager;
 import com.theprogrammingturkey.comz.kits.KitManager;
 import com.theprogrammingturkey.comz.leaderboards.Leaderboard;
 import com.theprogrammingturkey.comz.leaderboards.PlayerStats;
+import com.theprogrammingturkey.comz.listeners.OnZombiePerkDrop;
 import com.theprogrammingturkey.comz.spawning.SpawnManager;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.util.PacketUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.EntityEffect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -66,6 +69,8 @@ public class Game
 	 * List of every player contained in game.
 	 */
 	public List<Player> players = new ArrayList<>();
+
+	private ArrayList<Player> beingHealed = new ArrayList<>();
 
 	/**
 	 * Status of the game.
@@ -115,7 +120,7 @@ public class Game
 	/**
 	 * Contains a player and the gun manager corresponding to that player.
 	 */
-	private Map<Player, GunManager> playersGuns = new HashMap<>();
+	private Map<Player, PlayerWeaponManager> playersGuns = new HashMap<>();
 
 	/**
 	 * Current wave number.
@@ -259,9 +264,9 @@ public class Game
 	 * @param player to get the guns of
 	 * @return GunManager of the players guns
 	 */
-	public GunManager getPlayersGun(Player player)
+	public PlayerWeaponManager getPlayersGun(Player player)
 	{
-		return playersGuns.computeIfAbsent(player, GunManager::new);
+		return playersGuns.computeIfAbsent(player, PlayerWeaponManager::new);
 	}
 
 	/**
@@ -577,7 +582,7 @@ public class Game
 			pInfo.addPlayerInventoryArmorContents(player, player.getInventory().getArmorContents());
 			pInfo.addPlayerOldLocation(player, player.getLocation());
 			scoreboard.addPlayer(player);
-			playersGuns.put(player, new GunManager(player));
+			playersGuns.put(player, new PlayerWeaponManager(player));
 			player.setHealth(20D);
 			player.setFoodLevel(20);
 			player.getInventory().clear();
@@ -603,12 +608,12 @@ public class Game
 				}
 			}
 
-			GunType gun = plugin.getGun(gunName);
+			GunType gun = WeaponManager.getGun(gunName);
 			Game game = GameManager.INSTANCE.getGame(player);
 			if(!(game == null))
 			{
-				GunManager manager = game.getPlayersGun(player);
-				Gun gunType = new Gun(gun, player, 1);
+				PlayerWeaponManager manager = game.getPlayersGun(player);
+				GunInstance gunType = new GunInstance(gun, player, 1);
 				manager.addGun(gunType);
 			}
 
@@ -1330,6 +1335,141 @@ public class Game
 	public boolean isFireSale()
 	{
 		return isFireSale;
+	}
+
+	public void damageZombie(Zombie zombie, Player player, float damageAmount)
+	{
+		double totalHealth;
+		if(this.spawnManager.totalHealth().containsKey(zombie))
+		{
+			totalHealth = this.spawnManager.totalHealth().get(zombie);
+		}
+		else
+		{
+			this.spawnManager.setTotalHealth(zombie, 20);
+			totalHealth = 20D;
+		}
+
+		if(totalHealth >= 20)
+		{
+			zombie.setHealth(20D);
+			if(this.isDoublePoints())
+				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit * 2);
+			else
+				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit);
+			this.spawnManager.setTotalHealth(zombie, (int) (totalHealth - damageAmount));
+			if(this.spawnManager.totalHealth().get(zombie) < 20)
+				zombie.setHealth(this.spawnManager.totalHealth().get(zombie));
+
+			PointManager.notifyPlayer(player);
+		}
+		else if(totalHealth < 1 || totalHealth - damageAmount <= 1)
+		{
+			OnZombiePerkDrop perkdrop = new OnZombiePerkDrop();
+			perkdrop.perkDrop(zombie, player);
+			zombie.remove();
+			if(this.isDoublePoints())
+			{
+				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
+			}
+			else
+			{
+				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
+			}
+			zombie.playEffect(EntityEffect.DEATH);
+			PointManager.notifyPlayer(player);
+			this.spawnManager.removeEntity(zombie);
+			this.zombieKilled(player);
+		}
+		else
+		{
+			if(this.isDoublePoints())
+				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit * 2);
+			else
+				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit);
+
+			PointManager.notifyPlayer(player);
+		}
+
+		this.spawnManager.setTotalHealth(zombie, (int) (totalHealth - damageAmount));
+
+		if(this.isInstaKill())
+		{
+			zombie.remove();
+			this.spawnManager.removeEntity(zombie);
+		}
+
+		for(Player pl : this.players)
+			pl.playSound(zombie.getLocation().add(0, 1, 0), Sound.BLOCK_STONE_STEP, 1, 1);
+	}
+
+	public float damagePlayer(Player player, float damageAmount)
+	{
+		if(player.getHealth() - damageAmount < 1)
+		{
+			playerDowned(player);
+			return 0;
+		}
+		else
+		{
+			return damageAmount;
+		}
+	}
+
+	private void playerDowned(Player player)
+	{
+		if(!downedPlayerManager.isPlayerDowned(player))
+		{
+			player.setFireTicks(0);
+
+			if(downedPlayerManager.getDownedPlayers().size() + 1 == players.size())
+			{
+				for(DownedPlayer downedPlayer : downedPlayerManager.getDownedPlayers())
+					downedPlayer.cancelDowned();
+				endGame();
+			}
+			else
+			{
+				sendMessageToPlayers(COMZombies.PREFIX + player.getName() + " Has gone down! Stand close and right click him to revive");
+				DownedPlayer down = new DownedPlayer(player, this);
+				down.setPlayerDown(true);
+				downedPlayerManager.addDownedPlayer(down);
+				player.setHealth(1D);
+			}
+		}
+	}
+
+	public void healPlayer(final Player player)
+	{
+		if(beingHealed.contains(player))
+			return;
+		else
+			beingHealed.add(player);
+
+		if(!(GameManager.INSTANCE.isPlayerInGame(player)))
+			return;
+		COMZombies.scheduleTask(20, () ->
+		{
+			if(!(player.getHealth() == 20))
+			{
+				player.setHealth(player.getHealth() + 1);
+				healPlayer(player);
+			}
+			else
+			{
+				beingHealed.remove(player);
+			}
+		});
+	}
+
+	public void removeDownedPlayer(Player player)
+	{
+		GameManager.INSTANCE.getGame(player).downedPlayerManager.removeDownedPlayer(player);
+	}
+
+	public boolean isDownedPlayer(String name)
+	{
+		return GameManager.INSTANCE.getGame(Bukkit.getPlayer(name)).downedPlayerManager.isPlayerDowned(Bukkit.getPlayer(name));
 	}
 
 	public void zombieKilled(Player player)

@@ -1,13 +1,13 @@
 package com.theprogrammingturkey.comz.config;
 
-import com.theprogrammingturkey.comz.guns.GunManager;
-import com.theprogrammingturkey.comz.guns.GunType;
+import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.game.weapons.GunType;
+import com.theprogrammingturkey.comz.game.weapons.PlayerWeaponManager;
+import com.theprogrammingturkey.comz.game.weapons.Weapon;
+import com.theprogrammingturkey.comz.game.weapons.WeaponManager;
+import com.theprogrammingturkey.comz.game.weapons.WeaponType;
 import com.theprogrammingturkey.comz.leaderboards.Leaderboard;
 import com.theprogrammingturkey.comz.leaderboards.PlayerStats;
-import org.bukkit.Material;
-
-import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.guns.GunTypeEnum;
 
 public class ConfigSetup
 {
@@ -109,17 +109,14 @@ public class ConfigSetup
 		configVersion = plugin.getConfig().getString("vID");
 		reloadTime = plugin.getConfig().getInt("config.gameSettings.reloadTime");
 
-		plugin.possibleGuns.clear();
-
 		CustomConfig conf = ConfigManager.getConfig(COMZConfig.GUNS);
-		GunManager.customResources = conf.getString("Resource Sounds", "off").equalsIgnoreCase("on");
+		PlayerWeaponManager.customResources = conf.getString("Resource Sounds", "off").equalsIgnoreCase("on");
 
+		WeaponManager.clear();
 		for(String group : conf.getConfigurationSection("Guns").getKeys(false))
 		{
 			for(String gun : conf.getConfigurationSection("Guns." + group).getKeys(false))
 			{
-				String item = conf.getString("Guns." + group + "." + gun + ".Item", GunTypeEnum.getGun(group).getMaterial().name());
-				Material gunItem = (item == null || Material.getMaterial(item) == null) ? GunTypeEnum.getGun(group).getMaterial() : Material.getMaterial(item);
 				String ammo = conf.getString("Guns." + group + "." + gun + ".Ammo");
 				String packAmmo = conf.getString("Guns." + group + "." + gun + ".PackAPunch.Ammo");
 				int clipAmmo = Integer.parseInt(ammo.substring(0, ammo.indexOf("/")));
@@ -131,7 +128,7 @@ public class ConfigSetup
 				int pTotal = Integer.parseInt(packAmmo.substring(packAmmo.indexOf("/") + 1));
 				int packDamage = conf.getInt("Guns." + group + "." + gun + ".PackAPunch.Damage");
 				String packGunName = conf.getString("Guns." + group + "." + gun + ".PackAPunch.Name");
-				plugin.possibleGuns.add(new GunType(GunTypeEnum.getGun(group), gun, gunItem, damage, fireDelay, speed, clipAmmo, totalAmmo, pClip, pTotal, packDamage, packGunName));
+				WeaponManager.registerWeapon(new GunType(WeaponType.getWeapon(group), gun, damage, fireDelay, speed, clipAmmo, totalAmmo, pClip, pTotal, packDamage, packGunName));
 			}
 		}
 		maxAmmo = plugin.getConfig().getBoolean("config.Perks.MaxAmmo");

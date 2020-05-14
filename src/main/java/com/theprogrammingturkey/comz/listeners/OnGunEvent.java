@@ -6,14 +6,19 @@ import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
-import com.theprogrammingturkey.comz.guns.Gun;
-import com.theprogrammingturkey.comz.guns.GunManager;
+import com.theprogrammingturkey.comz.game.weapons.GunInstance;
+import com.theprogrammingturkey.comz.game.weapons.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.particleutilities.ParticleEffects;
 import com.theprogrammingturkey.comz.util.BlockUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
@@ -24,6 +29,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class OnGunEvent implements Listener
 {
@@ -48,10 +55,10 @@ public class OnGunEvent implements Listener
 
 			if(game.getPlayersGun(player) != null)
 			{
-				GunManager gunManager = game.getPlayersGun(player);
+				PlayerWeaponManager gunManager = game.getPlayersGun(player);
 				if(gunManager.isGun())
 				{
-					Gun gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
+					GunInstance gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
 					if(gun.isReloading())
 					{
 						player.getLocation().getWorld().playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
@@ -78,10 +85,10 @@ public class OnGunEvent implements Listener
 				}
 				if(game.getPlayersGun(player) != null)
 				{
-					GunManager gunManager = game.getPlayersGun(player);
+					PlayerWeaponManager gunManager = game.getPlayersGun(player);
 					if(gunManager.isGun())
 					{
-						Gun gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
+						GunInstance gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
 						gun.reload();
 						gun.updateGun();
 					}
@@ -104,10 +111,10 @@ public class OnGunEvent implements Listener
 					if(GameManager.INSTANCE.isPlayerInGame(player))
 					{
 						Game game = GameManager.INSTANCE.getGame(player);
-						GunManager manager = game.getPlayersGun(player);
+						PlayerWeaponManager manager = game.getPlayersGun(player);
 						if(manager.isGun())
 						{
-							Gun gun = manager.getGun(player.getInventory().getHeldItemSlot());
+							GunInstance gun = manager.getGun(player.getInventory().getHeldItemSlot());
 							int damage;
 							if(gun.isPackOfPunched())
 								damage = gun.getType().packAPunchDamage;
@@ -117,7 +124,7 @@ public class OnGunEvent implements Listener
 							{
 								Zombie zomb = (Zombie) event.getEntity();
 								Double totalHealth;
-								if(gun.getType().name.equalsIgnoreCase("Zombie BFF"))
+								if(gun.getType().getName().equalsIgnoreCase("Zombie BFF"))
 								{
 									ParticleEffects eff = ParticleEffects.HEART;
 									for(int i = 0; i < 30; i++)
@@ -213,7 +220,7 @@ public class OnGunEvent implements Listener
 	}
 
 	@EventHandler
-	public void onPlayerMonkeyBomb(PlayerInteractEvent event)
+	public void onGrenade(PlayerInteractEvent event)
 	{
 		if(!(event.getAction().equals(Action.RIGHT_CLICK_AIR)) || !(event.getAction().equals(Action.RIGHT_CLICK_AIR)))
 		{
@@ -232,24 +239,75 @@ public class OnGunEvent implements Listener
 			{
 				return;
 			}
-			if(player.getInventory().getItemInMainHand().getType().equals(Material.MAGMA_CREAM))
+			if(player.getInventory().getItemInMainHand().getType().equals(Material.SLIME_BALL))
 			{
-				player.getInventory().removeItem(new ItemStack(Material.MAGMA_CREAM, 1));
+				player.getInventory().removeItem(new ItemStack(Material.SLIME_BALL, 1));
 				final Item item = player.getWorld().dropItemNaturally(player.getEyeLocation(), new ItemStack(Material.MAGMA_CREAM));
-				// Location Iloc = item.getLocation();
 				item.setVelocity(player.getLocation().getDirection().multiply(1));
 				item.setPickupDelay(1000);
-
-//				for(Entity e : game.spawnManager.getEntities())
-//				{
-//				}
 
 				COMZombies.scheduleTask(140, () ->
 				{
 					Location loc = item.getLocation();
 					player.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 0.0F, false, false);
-					//TODO: Damage logic
+					List<Entity> ents = game.spawnManager.getEntities();
+					int ticker = COMZombies.scheduleTask(0, 5, () ->
+							item.getWorld().spawnParticle(Particle.SMOKE_NORMAL, item.getLocation().clone(), 0, Math.random() - 0.5, 0.5, Math.random() - 0.5, 0.05));
+
+					for(int i = ents.size() - 1; i >= 0; i--)
+					{
+						Entity e = ents.get(i);
+						float dist = (float) e.getLocation().distance(item.getLocation());
+						if(e instanceof Zombie && dist < 5)
+							game.damageZombie((Zombie) e, player, 50f / (dist * dist * dist));
+					}
+
 					item.remove();
+					Bukkit.getScheduler().cancelTask(ticker);
+				});
+			}
+
+			if(player.getInventory().getItemInMainHand().getType().equals(Material.MAGMA_CREAM))
+			{
+				player.getInventory().removeItem(new ItemStack(Material.MAGMA_CREAM, 1));
+				final Item item = player.getWorld().dropItemNaturally(player.getEyeLocation(), new ItemStack(Material.MAGMA_CREAM));
+				item.setVelocity(player.getLocation().getDirection().multiply(1));
+				item.setPickupDelay(1000);
+
+				ArmorStand attackEnt = (ArmorStand) player.getWorld().spawnEntity(item.getLocation().clone(), EntityType.ARMOR_STAND);
+				attackEnt.setVisible(false);
+				attackEnt.setGravity(false);
+				attackEnt.setAI(false);
+				item.addPassenger(attackEnt);
+
+				for(Entity e : game.spawnManager.getEntities())
+					if(e instanceof Zombie)
+						((Zombie) e).setTarget(attackEnt);
+
+				int ticker = COMZombies.scheduleTask(0, 5, () ->
+				{
+					item.getWorld().spawnParticle(Particle.SMOKE_NORMAL, item.getLocation().clone(), 0, Math.random() - 0.5, 0.5, Math.random() - 0.5, 0.05);
+					for(Entity e : game.spawnManager.getEntities())
+						if(e instanceof Zombie)
+							((Zombie) e).setTarget(attackEnt);
+				});
+
+				COMZombies.scheduleTask(140, () ->
+				{
+					Location loc = item.getLocation();
+					player.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 0.0F, false, false);
+					List<Entity> ents = game.spawnManager.getEntities();
+					for(int i = ents.size() - 1; i >= 0; i--)
+					{
+						Entity e = ents.get(i);
+						float dist = (float) e.getLocation().distance(item.getLocation());
+						if(e instanceof Zombie && dist < 5)
+							game.damageZombie((Zombie) e, player, 50f / (dist * dist * dist));
+					}
+
+					item.remove();
+					attackEnt.remove();
+					Bukkit.getScheduler().cancelTask(ticker);
 				});
 			}
 		}

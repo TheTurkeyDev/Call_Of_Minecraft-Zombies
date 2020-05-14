@@ -1,4 +1,4 @@
-package com.theprogrammingturkey.comz.guns;
+package com.theprogrammingturkey.comz.game.weapons;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.ConfigManager;
@@ -25,7 +25,7 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Gun
+public class GunInstance
 {
 
 	/**
@@ -70,7 +70,7 @@ public class Gun
 	 * @param type   : Type of the gun.
 	 * @param player : Player who contains this gun.
 	 */
-	public Gun(GunType type, Player player, int slot)
+	public GunInstance(GunType type, Player player, int slot)
 	{
 		this.gun = type;
 		this.player = player;
@@ -148,7 +148,7 @@ public class Gun
 	 */
 	public void reload()
 	{
-		if(GunManager.customResources)
+		if(PlayerWeaponManager.customResources)
 			player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
 
 		if(GameManager.INSTANCE.isPlayerInGame(player))
@@ -161,22 +161,16 @@ public class Gun
 			else reloadTime = ConfigManager.getMainConfig().reloadTime;
 			COMZombies.scheduleTask(reloadTime * 20, () ->
 			{
-				try
-				{
-					if(!(totalAmmo - (gun.clipammo - clipAmmo) < 0))
-					{
-						totalAmmo -= (gun.clipammo - clipAmmo);
-						clipAmmo = gun.clipammo;
-					}
-					else
-					{
-						clipAmmo = totalAmmo;
-						totalAmmo = 0;
-					}
 
-				} catch(Exception e)
+				if(!(totalAmmo - (gun.clipammo - clipAmmo) < 0))
 				{
-					e.printStackTrace();
+					totalAmmo -= (gun.clipammo - clipAmmo);
+					clipAmmo = gun.clipammo;
+				}
+				else
+				{
+					clipAmmo = totalAmmo;
+					totalAmmo = 0;
 				}
 				isReloading = false;
 				ecUsed = false;
@@ -270,7 +264,7 @@ public class Gun
 			reload();
 
 		clipAmmo -= 1;
-		if(getType().type.equals(GunTypeEnum.Shotguns))
+		if(getType().type.equals(WeaponType.SHOTGUNS))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
 			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().add(new Vector(getAdjust(), getAdjust(), getAdjust())).multiply(0.3));
@@ -282,32 +276,32 @@ public class Gun
 			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().add(new Vector(getAdjust(), getAdjust(), getAdjust())).multiply(0.3));
 			ls.setVelocity(ls.getVelocity().multiply(.3));
 		}
-		if(getType().type.equals(GunTypeEnum.Pistols))
+		if(getType().type.equals(WeaponType.PISTOLS))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
 			ls.setVelocity(ls.getVelocity().multiply(this.gun.speed));
 		}
-		if(getType().type.equals(GunTypeEnum.AssaultRifles))
+		if(getType().type.equals(WeaponType.ASSAULT_RIFLES))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
 			ls.setVelocity(ls.getVelocity().multiply(this.gun.speed));
 		}
-		if(getType().type.equals(GunTypeEnum.SniperRifles))
+		if(getType().type.equals(WeaponType.SNIPER_RIFLES))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
 			ls.setVelocity(ls.getVelocity().multiply(this.gun.speed));
 		}
-		if(getType().type.equals(GunTypeEnum.LightMachineGuns))
+		if(getType().type.equals(WeaponType.LIGHT_MACHINE_GUNS))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
 			ls.setVelocity(ls.getVelocity().multiply(this.gun.speed));
 		}
-		if(getType().type.equals(GunTypeEnum.SubMachineGuns))
+		if(getType().type.equals(WeaponType.SUB_MACHINE_GUNS))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
 			ls.setVelocity(ls.getVelocity().multiply(this.gun.speed));
 		}
-		if(getType().type.equals(GunTypeEnum.Others))
+		if(getType().type.equals(WeaponType.SPECIAL))
 		{
 			Projectile ls = player.launchProjectile(Snowball.class);
 			ls.setVelocity(ls.getVelocity().multiply(this.gun.speed));
@@ -315,9 +309,9 @@ public class Gun
 
 		World world = player.getWorld();
 
-		if(GunManager.customResources)
+		if(PlayerWeaponManager.customResources)
 		{
-			switch(gun.name)
+			switch(gun.getName())
 			{
 				case "B23R":
 					world.playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
@@ -465,8 +459,7 @@ public class Gun
 	public void updateGun()
 	{
 		if(gun == null) return;
-		ItemStack stack = new ItemStack(gun.categorizeGun());
-		stack.setType(gun.categorizeGun());
+		ItemStack stack = new ItemStack(gun.getMaterial());
 		ItemMeta data = stack.getItemMeta();
 		if(data == null)
 			return;
@@ -485,7 +478,7 @@ public class Gun
 		}
 		else
 		{
-			data.setDisplayName(ChatColor.RED + gun.name + " " + clipAmmo + "/" + totalAmmo);
+			data.setDisplayName(ChatColor.RED + gun.getName() + " " + clipAmmo + "/" + totalAmmo);
 		}
 		stack.setItemMeta(data);
 		player.getInventory().setItem(slot, stack);

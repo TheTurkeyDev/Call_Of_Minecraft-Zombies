@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.kits;
 
+import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
@@ -7,17 +8,16 @@ import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
-import com.theprogrammingturkey.comz.guns.Gun;
-import com.theprogrammingturkey.comz.guns.GunManager;
-import com.theprogrammingturkey.comz.guns.GunType;
+import com.theprogrammingturkey.comz.game.weapons.GunInstance;
+import com.theprogrammingturkey.comz.game.weapons.GunType;
+import com.theprogrammingturkey.comz.game.weapons.PlayerWeaponManager;
+import com.theprogrammingturkey.comz.game.weapons.WeaponManager;
+import com.theprogrammingturkey.comz.listeners.customEvents.PlayerPerkPurchaseEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.listeners.customEvents.PlayerPerkPurchaseEvent;
 
 public class Kit
 {
@@ -39,7 +39,6 @@ public class Kit
 
 	public void load()
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		CustomConfig config = ConfigManager.getConfig(COMZConfig.KITS);
 		if(config.getString(name + ".Guns") != null)
 		{
@@ -49,7 +48,7 @@ public class Kit
 				if(guns[i] == null)
 					continue;
 
-				GunType gun = plugin.getGun(guns[0]);
+				GunType gun = WeaponManager.getGun(guns[0]);
 				if(gun == null)
 					Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] Kit Gun: " + guns[i] + "  is an invalid gun name!");
 				this.guns[i] = gun;
@@ -84,7 +83,7 @@ public class Kit
 		if(game == null)
 			return;
 
-		GunManager manager = game.getPlayersGun(player);
+		PlayerWeaponManager manager = game.getPlayersGun(player);
 
 		for(int i = 0; i < guns.length; i++)
 		{
@@ -92,7 +91,7 @@ public class Kit
 			if(gun == null)
 				continue;
 			manager.removeGun(i + 1);
-			manager.addGun(new Gun(gun, player, i + 1));
+			manager.addGun(new GunInstance(gun, player, i + 1));
 		}
 
 		for(PerkType perk : perks)

@@ -3,9 +3,9 @@ package com.theprogrammingturkey.comz.listeners;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
-import com.theprogrammingturkey.comz.guns.Gun;
-import com.theprogrammingturkey.comz.guns.GunManager;
-import com.theprogrammingturkey.comz.guns.GunTypeEnum;
+import com.theprogrammingturkey.comz.game.weapons.GunInstance;
+import com.theprogrammingturkey.comz.game.weapons.PlayerWeaponManager;
+import com.theprogrammingturkey.comz.game.weapons.WeaponType;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,11 +23,11 @@ public class OnPlayerScopeEvent implements Listener
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
 			Game game = GameManager.INSTANCE.getGame(player);
-			GunManager manager = game.getPlayersGun(player);
+			PlayerWeaponManager manager = game.getPlayersGun(player);
 			if(!manager.isGun()) return;
-			Gun g = manager.getGun(player.getInventory().getHeldItemSlot());
+			GunInstance g = manager.getGun(player.getInventory().getHeldItemSlot());
 			boolean isSniper = false;
-			if(g.getType().type.equals(GunTypeEnum.SniperRifles))
+			if(g.getType().type.equals(WeaponType.SNIPER_RIFLES))
 				isSniper = true;
 			if(game.mode.equals(Game.ArenaStatus.INGAME))
 			{

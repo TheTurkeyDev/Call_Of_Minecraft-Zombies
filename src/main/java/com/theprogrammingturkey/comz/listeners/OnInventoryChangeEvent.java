@@ -3,8 +3,8 @@ package com.theprogrammingturkey.comz.listeners;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
-import com.theprogrammingturkey.comz.guns.Gun;
-import com.theprogrammingturkey.comz.guns.GunManager;
+import com.theprogrammingturkey.comz.game.weapons.GunInstance;
+import com.theprogrammingturkey.comz.game.weapons.PlayerWeaponManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,10 +26,10 @@ public class OnInventoryChangeEvent implements Listener
 			return;
 		if(game.getPlayersGun(player) != null)
 		{
-			GunManager gunManager = game.getPlayersGun(player);
+			PlayerWeaponManager gunManager = game.getPlayersGun(player);
 			if(gunManager.isGun())
 			{
-				Gun gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
+				GunInstance gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
 				gun.reload();
 				gun.updateGun();
 			}

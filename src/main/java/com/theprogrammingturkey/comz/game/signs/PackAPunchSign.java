@@ -3,8 +3,8 @@ package com.theprogrammingturkey.comz.game.signs;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.PerkType;
-import com.theprogrammingturkey.comz.guns.Gun;
-import com.theprogrammingturkey.comz.guns.GunManager;
+import com.theprogrammingturkey.comz.game.weapons.GunInstance;
+import com.theprogrammingturkey.comz.game.weapons.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -33,17 +33,17 @@ public class PackAPunchSign implements IGameSign
 		int cost = Integer.parseInt(sign.getLine(2));
 		if(PointManager.canBuy(player, cost))
 		{
-			GunManager manager = game.getPlayersGun(player);
+			PlayerWeaponManager manager = game.getPlayersGun(player);
 			if(manager.isGun())
 			{
-				Gun gun = manager.getGun(player.getInventory().getHeldItemSlot());
+				GunInstance gun = manager.getGun(player.getInventory().getHeldItemSlot());
 				if(gun.isPackOfPunched())
 				{
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Your " + ChatColor.GOLD + gun.getType().name + ChatColor.RED + " is already Pack-A-Punched!");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Your " + ChatColor.GOLD + gun.getType().getName() + ChatColor.RED + " is already Pack-A-Punched!");
 				}
 				else
 				{
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Your " + ChatColor.GOLD + gun.getType().name + ChatColor.RED + " was Pack-A-Punched");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Your " + ChatColor.GOLD + gun.getType().getName() + ChatColor.RED + " was Pack-A-Punched");
 					player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
 					gun.setPackOfPunch(true);
 					PointManager.takePoints(player, cost);
@@ -56,9 +56,9 @@ public class PackAPunchSign implements IGameSign
 		}
 		else
 		{
-			GunManager manager = game.getPlayersGun(player);
-			Gun gun = manager.getGun(player.getInventory().getHeldItemSlot());
-			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You do not have enough points to Pack-A-Punch your " + gun.getType().name + "!");
+			PlayerWeaponManager manager = game.getPlayersGun(player);
+			GunInstance gun = manager.getGun(player.getInventory().getHeldItemSlot());
+			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You do not have enough points to Pack-A-Punch your " + gun.getType().getName() + "!");
 		}
 	}
 

@@ -57,8 +57,6 @@ Guns:
         Damage: 50
         Name: Cobra
         Ammo: 12/96
-        
-
   Shotguns:
     M1216:
       Ammo: 16/84
@@ -96,15 +94,14 @@ Guns:
         Damage: 30
         Name: Synthetic Dozen
         Ammo: 10/50
-
-  AssaultRifles:
+  Assault_Rifles:
     AN-94:
       Ammo: 30/90
       Damage: 5
       FireDelay: 7
       ProjectileSpeed: 1.5
       PackAPunch:
-        Damage: 10 
+        Damage: 10
         Name: Actuated Neutralizer 94000
         Ammo: 50/600
     Colt M16A1:
@@ -122,7 +119,7 @@ Guns:
       FireDelay: 7
       ProjectileSpeed: 1.5
       PackAPunch:
-        Damage: 15 
+        Damage: 15
         Name: EPC WN
         Ammo: 30/360
     M8A1:
@@ -131,7 +128,7 @@ Guns:
       FireDelay: 7
       ProjectileSpeed: 1.5
       PackAPunch:
-        Damage: 7 
+        Damage: 7
         Name: Micro Aerator
         Ammo: 42/336
     M14:
@@ -167,7 +164,7 @@ Guns:
       FireDelay: 7
       ProjectileSpeed: 1.5
       PackAPunch:
-        Damage: 8 
+        Damage: 8
         Name: SM1L3R
         Ammo: 30/390
     Type 25:
@@ -179,8 +176,7 @@ Guns:
         Damage: 12
         Name: Strain 25
         Ammo: 30/270
-    
-  LightMachineGuns:
+  Light_Machine_Guns:
     HAMR:
       Ammo: 135/375
       Damage: 10
@@ -208,9 +204,7 @@ Guns:
         Damage: 15
         Name: Relativistic Punishment Device
         Ammo: 125/750
-
-
-  SubMachineGuns:
+  Sub_Machine_Guns:
     Chicom CQB:
       Ammo: 40/120
       Damage: 2
@@ -235,11 +229,10 @@ Guns:
       FireDelay: 5
       ProjectileSpeed: 3
       PackAPunch:
-        Damage: 6 
+        Damage: 6
         Name: Predictive Death Wish 57000
         Ammo: 50/350
-
-  SniperRifles:
+  Sniper_Rifles:
     Barret M82A1:
       Ammo: 5/30
       Damage: 50
@@ -267,13 +260,13 @@ Guns:
         Damage: 50
         Name: Shadowy Veil Utilizer
         Ammo: 12/192
-  Others:
+  Special:
     Ray Gun:
       Ammo: 20/160
       Damage: 90
       FireDelay: 7
       ProjectileSpeed: 4
       PackAPunch:
-        Damage: 120 
+        Damage: 120
         Name: Porter's X2 Ray Gun
         Ammo: 40/200

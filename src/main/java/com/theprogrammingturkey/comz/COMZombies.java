@@ -6,7 +6,6 @@ import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.ArenaAntiBreak;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.actions.BaseAction;
-import com.theprogrammingturkey.comz.guns.GunType;
 import com.theprogrammingturkey.comz.kits.KitManager;
 import com.theprogrammingturkey.comz.listeners.*;
 import org.bukkit.Bukkit;
@@ -17,7 +16,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.logging.Logger;
@@ -58,10 +56,6 @@ public class COMZombies extends JavaPlugin
 
 	public static final String CONSOLE_PREFIX = "[CoM: Zombies] ";
 	public static final String PREFIX = ChatColor.RED + "[ " + ChatColor.GOLD + ChatColor.ITALIC + "CoM: Zombies" + ChatColor.RED + " ]" + ChatColor.GRAY + " ";
-	/**
-	 * List of every gun contained in the config.
-	 */
-	public ArrayList<GunType> possibleGuns = new ArrayList<>();
 
 	public Vault vault;
 
@@ -157,24 +151,6 @@ public class COMZombies extends JavaPlugin
 		log.info(COMZombies.CONSOLE_PREFIX + " has been disabled!");
 	}
 
-	/**
-	 * Gets a gun based off of the name given
-	 *
-	 * @param name to get gun from
-	 * @return gun based off the name
-	 */
-	public GunType getGun(String name)
-	{
-		for(GunType type : possibleGuns)
-		{
-			if(type.name.equalsIgnoreCase(name) || type.packAPunchName.equalsIgnoreCase(name))
-			{
-				return type;
-			}
-		}
-		//TODO: Default gun
-		return null;
-	}
 
 	public static COMZombies getPlugin()
 	{

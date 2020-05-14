@@ -8,9 +8,8 @@ import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.PowerUp;
-import com.theprogrammingturkey.comz.guns.Gun;
-import com.theprogrammingturkey.comz.guns.GunManager;
-import org.bukkit.Bukkit;
+import com.theprogrammingturkey.comz.game.weapons.GunInstance;
+import com.theprogrammingturkey.comz.game.weapons.PlayerWeaponManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -184,11 +183,10 @@ public class OnZombiePerkDrop implements Listener
 						currentPerks.remove(event.getItem().getItemStack());
 						for(Player pl : game.players)
 						{
-							GunManager manager = game.getPlayersGun(pl);
-							for(Gun gun : manager.getGuns())
-							{
+							PlayerWeaponManager manager = game.getPlayersGun(pl);
+							for(GunInstance gun : manager.getGuns())
 								gun.maxAmmo();
-							}
+							
 						}
 						event.getItem().remove();
 						event.setCancelled(true);

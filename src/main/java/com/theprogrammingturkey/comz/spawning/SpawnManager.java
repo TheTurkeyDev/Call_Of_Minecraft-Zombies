@@ -8,27 +8,22 @@ import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.Door;
-import net.minecraft.server.v1_15_R1.AttributeInstance;
-import net.minecraft.server.v1_15_R1.AttributeModifier;
-import net.minecraft.server.v1_15_R1.EntityInsentient;
-import net.minecraft.server.v1_15_R1.GenericAttributes;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class SpawnManager
@@ -273,15 +268,20 @@ public class SpawnManager
 		Location location = new Location(loc.getLocation().getWorld(), loc.getLocation().getBlockX(), loc.getLocation().getBlockY(), loc.getLocation().getBlockZ());
 		location.add(0.5, 0, 0.5);
 		Zombie zomb = (Zombie) location.getWorld().spawnEntity(location, EntityType.ZOMBIE);
-		zomb.getEquipment().clear();
+		COMZombies.scheduleTask(10, () ->
+		{
+			if(zomb.getEquipment() != null)
+				zomb.getEquipment().clear();
+		});
 		zomb.setBaby(false);
 		setFollowDistance(zomb);
 		setTotalHealth(zomb, strength);
 		zomb.setHealth(Math.min(strength, 20D));
+
 		if(game.waveNumber > 4)
 		{
-			if(((int) (Math.random() * 100)) < game.waveNumber * 5)
-				setSpeed(zomb, (float) (Math.random()));
+			if(COMZombies.rand.nextInt(100) < 20 + (15 * (game.waveNumber - 5)))
+				setSpeed(zomb, 1.5f);
 		}
 
 		mobs.add(zomb);
@@ -294,30 +294,16 @@ public class SpawnManager
 		COMZombies.scheduleTask(time * 20L, () -> smartSpawn(wave, players));
 	}
 
-	public void setFollowDistance(Entity zomb)
+	public void setFollowDistance(Zombie zomb)
 	{
-		UUID id = UUID.randomUUID();
-		LivingEntity entity = (LivingEntity) zomb;
-		EntityInsentient nmsEntity = (EntityInsentient) ((CraftLivingEntity) entity).getHandle();
-		AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.FOLLOW_RANGE);
-
-		AttributeModifier modifier = new AttributeModifier(id, "COMZombies follow distance multiplier", 512.0F, AttributeModifier.Operation.MULTIPLY_TOTAL);
-
-		attributes.b(id);
-		attributes.a(modifier);
+		AttributeInstance attr = zomb.getAttribute(Attribute.GENERIC_FOLLOW_RANGE);
+		attr.setBaseValue(512);
 	}
 
-	public void setSpeed(Entity zomb, float speed)
+	public void setSpeed(Zombie zomb, float mult)
 	{
-		UUID id = UUID.randomUUID();
-		LivingEntity entity = (LivingEntity) zomb;
-		EntityInsentient nmsEntity = (EntityInsentient) ((CraftLivingEntity) entity).getHandle();
-		AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
-
-		AttributeModifier modifier = new AttributeModifier(id, "COMZombies speed multiplier", speed, AttributeModifier.Operation.MULTIPLY_BASE);
-
-		attributes.b(id);
-		attributes.a(modifier);
+		AttributeInstance attr = zomb.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
+		attr.setBaseValue(attr.getValue() * mult);
 	}
 
 	public void update()
