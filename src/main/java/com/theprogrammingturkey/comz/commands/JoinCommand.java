@@ -1,8 +1,5 @@
 package com.theprogrammingturkey.comz.commands;
 
-import com.theprogrammingturkey.comz.config.COMZConfig;
-import com.theprogrammingturkey.comz.config.ConfigManager;
-import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
@@ -32,7 +29,7 @@ public class JoinCommand implements SubCommand
 
 				for(Game game : GameManager.INSTANCE.getGames())
 				{
-					if(game.mode != ArenaStatus.DISABLED && game.mode != ArenaStatus.INGAME)
+					if(game.getMode() != ArenaStatus.DISABLED && game.getMode() != ArenaStatus.INGAME)
 					{
 						if(game.spawnManager.getPoints().size() == 0)
 							continue;
@@ -57,9 +54,9 @@ public class JoinCommand implements SubCommand
 				if(GameManager.INSTANCE.isValidArena(args[1]))
 				{
 					Game game = GameManager.INSTANCE.getGame(args[1]);
-					if(game.mode != ArenaStatus.DISABLED && game.mode != ArenaStatus.INGAME)
+					if(game.getMode() != ArenaStatus.DISABLED && game.getMode() != ArenaStatus.INGAME)
 					{
-						if(game.mode == ArenaStatus.INGAME)
+						if(game.getMode() == ArenaStatus.INGAME)
 						{
 							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Already in game!");
 							return true;
@@ -88,7 +85,7 @@ public class JoinCommand implements SubCommand
 					}
 					else
 					{
-						String toSay = game.mode.toString();
+						String toSay = game.getMode().toString();
 						if(toSay.equalsIgnoreCase("ingame"))
 						{
 							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "This arena is in game!");

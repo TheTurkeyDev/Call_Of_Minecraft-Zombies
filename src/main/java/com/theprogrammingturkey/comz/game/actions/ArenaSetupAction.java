@@ -69,7 +69,6 @@ public class ArenaSetupAction extends BaseAction
 				return;
 			}
 			playerChat.setCancelled(true);
-			game.mode = Game.ArenaStatus.WAITING;
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Spectator location set for arena : " + game.getName());
 		}
 		else if(message.equalsIgnoreCase("lw"))

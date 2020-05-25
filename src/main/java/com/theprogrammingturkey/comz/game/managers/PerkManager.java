@@ -13,8 +13,6 @@ public class PerkManager
 {
 	private HashMap<Player, ArrayList<PerkType>> playersPerks = new HashMap<>();
 
-	private ArrayList<ItemStack> currentPerkDrops = new ArrayList<>();
-
 	public void removePerkEffect(Player player, PerkType effect)
 	{
 		if(playersPerks.get(player).contains(effect))
@@ -99,21 +97,5 @@ public class PerkManager
 		{
 			player.getInventory().clear(i);
 		}
-	}
-
-
-	public ArrayList<ItemStack> getCurrentDroppedPerks()
-	{
-		return currentPerkDrops;
-	}
-
-	public void removeItemFromList(ItemStack stack)
-	{
-		currentPerkDrops.remove(stack);
-	}
-
-	public void setCurrentPerkDrops(ArrayList<ItemStack> stack)
-	{
-		currentPerkDrops = stack;
 	}
 }

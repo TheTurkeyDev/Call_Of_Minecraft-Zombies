@@ -24,7 +24,7 @@ public class AddSpawnCommand implements SubCommand
 			if(GameManager.INSTANCE.isValidArena(args[1]))
 			{
 				Game game = GameManager.INSTANCE.getGame(args[1]);
-				if(!game.mode.equals(ArenaStatus.DISABLED))
+				if(!game.getMode().equals(ArenaStatus.DISABLED))
 				{
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You cannot add spawn points to an arena unless it is disabled!");
 					return true;

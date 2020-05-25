@@ -1,14 +1,11 @@
 package com.theprogrammingturkey.comz.commands;
 
+import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-
-import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.game.Game;
 
 public class InfoCommand implements SubCommand
 {
@@ -16,7 +13,6 @@ public class InfoCommand implements SubCommand
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		if(player.hasPermission("zombies.info") || player.hasPermission("zombies.admin"))
 		{
 			if(args.length == 1)
@@ -51,8 +47,8 @@ public class InfoCommand implements SubCommand
 							{
 								CommandUtil.sendMessageToPlayer(player, ChatColor.BLUE + "  " + game.players.get(i).getName());
 							}
-							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Mode: " + ChatColor.BLUE + game.mode.toString());
-							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Wave Number: " + ChatColor.BLUE + game.waveNumber);
+							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Mode: " + ChatColor.BLUE + game.getMode().toString());
+							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Wave Number: " + ChatColor.BLUE + game.getWave());
 							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Zombies: " + ChatColor.BLUE + game.spawnManager.getEntities().size());
 							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Zombies Spawned: " + ChatColor.BLUE + game.spawnManager.getZombiesSpawned());
 							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Zombies To Spawn: " + ChatColor.BLUE + game.spawnManager.getZombiesToSpawn());
@@ -100,7 +96,7 @@ public class InfoCommand implements SubCommand
 								CommandUtil.sendMessageToPlayer(player, "    " + ChatColor.GREEN + "X: " + ChatColor.BLUE + game.spawnManager.getEntities().get(acc).getLocation().getBlockX());
 								CommandUtil.sendMessageToPlayer(player, "    " + ChatColor.GREEN + "Y: " + ChatColor.BLUE + game.spawnManager.getEntities().get(acc).getLocation().getBlockY());
 								CommandUtil.sendMessageToPlayer(player, "    " + ChatColor.GREEN + "Z: " + ChatColor.BLUE + game.spawnManager.getEntities().get(acc).getLocation().getBlockZ());
-								CommandUtil.sendMessageToPlayer(player, "  " + ChatColor.GREEN + "Health: " + ChatColor.BLUE + ((LivingEntity) game.spawnManager.getEntities().get(acc)));
+								CommandUtil.sendMessageToPlayer(player, "  " + ChatColor.GREEN + "Health: " + ChatColor.BLUE + (game.spawnManager.getEntities().get(acc)));
 							}
 						}
 

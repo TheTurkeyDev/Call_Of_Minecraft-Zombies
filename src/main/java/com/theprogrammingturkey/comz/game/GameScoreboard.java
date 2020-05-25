@@ -67,7 +67,7 @@ public class GameScoreboard
 
 	public void update()
 	{
-		round.setScore(game.waveNumber);
+		round.setScore(game.getWave());
 		zombiesLeft.setScore((game.spawnManager.getZombiesToSpawn() - game.spawnManager.getZombiesSpawned()) + game.spawnManager.getZombiesAlive());
 
 		for(Player player : playerScores.keySet())

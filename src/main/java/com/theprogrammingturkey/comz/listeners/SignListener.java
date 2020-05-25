@@ -128,7 +128,7 @@ public class SignListener implements Listener
 				IGameSign signLogic = GAME_SIGNS.get(lineTwo);
 				if(signLogic != null && (game != null || !signLogic.requiresGame()))
 				{
-					if(game != null && signLogic.requiresGame() && game.mode != Game.ArenaStatus.INGAME)
+					if(game != null && signLogic.requiresGame() && game.getMode() != Game.ArenaStatus.INGAME)
 						return;
 					signLogic.onInteract(game, player, sign);
 				}

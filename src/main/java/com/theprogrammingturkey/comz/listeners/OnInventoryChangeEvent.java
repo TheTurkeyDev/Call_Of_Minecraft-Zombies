@@ -18,12 +18,12 @@ public class OnInventoryChangeEvent implements Listener
 	{
 		Player player = (Player) event.getWhoClicked();
 		if(GameManager.INSTANCE.isPlayerInGame(player))
-		{
 			event.setCancelled(true);
-		}
+
 		Game game = GameManager.INSTANCE.getGame(player);
-		if(game == null || !(game.mode == ArenaStatus.INGAME))
+		if(game == null || game.getMode() != ArenaStatus.INGAME)
 			return;
+
 		if(game.getPlayersGun(player) != null)
 		{
 			PlayerWeaponManager gunManager = game.getPlayersGun(player);

@@ -122,7 +122,7 @@ public class BarrierManager
 	public void addBarrier(Barrier barrier)
 	{
 		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
-		if(game.mode == Game.ArenaStatus.DISABLED || game.mode == Game.ArenaStatus.WAITING)
+		if(game.getMode() == Game.ArenaStatus.DISABLED || game.getMode() == Game.ArenaStatus.WAITING)
 		{
 			boolean same = false;
 			for(Barrier b : barriers)
@@ -160,7 +160,7 @@ public class BarrierManager
 	public void UpdateBarrier(Barrier barrier)
 	{
 		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
-		if(game.mode == Game.ArenaStatus.DISABLED || game.mode == Game.ArenaStatus.WAITING)
+		if(game.getMode() == Game.ArenaStatus.DISABLED || game.getMode() == Game.ArenaStatus.WAITING)
 		{
 			boolean same = false;
 			for(Barrier b : barriers)

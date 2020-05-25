@@ -110,7 +110,7 @@ public class BoxManager
 	public void addBox(RandomBox box)
 	{
 		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
-		if(game.mode == Game.ArenaStatus.DISABLED || game.mode == Game.ArenaStatus.WAITING)
+		if(game.getMode() == Game.ArenaStatus.DISABLED || game.getMode() == Game.ArenaStatus.WAITING)
 		{
 			boolean same = false;
 			for(RandomBox b : boxes)

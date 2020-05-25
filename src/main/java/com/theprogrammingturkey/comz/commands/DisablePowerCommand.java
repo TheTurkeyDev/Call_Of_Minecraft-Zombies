@@ -14,7 +14,6 @@ public class DisablePowerCommand implements SubCommand
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		if(player.hasPermission("zombies.admin") || player.hasPermission("zombies.disablepower"))
 		{
 			if(args.length == 1)
@@ -27,7 +26,7 @@ public class DisablePowerCommand implements SubCommand
 				if(GameManager.INSTANCE.isValidArena(args[1]))
 				{
 					Game game = GameManager.INSTANCE.getGame(args[1]);
-					if(!(game.mode == ArenaStatus.DISABLED))
+					if(game.getMode() != ArenaStatus.DISABLED)
 					{
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must disable this arena first!");
 						return true;

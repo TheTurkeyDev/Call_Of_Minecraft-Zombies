@@ -19,7 +19,7 @@ public class OnPlayerLeaveEvent implements Listener
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
 			Game game = GameManager.INSTANCE.getGame(player);
-			game.playerLeave(player, false);
+			game.removePlayer(player);
 			player.removePotionEffect(PotionEffectType.BLINDNESS);
 			player.removePotionEffect(PotionEffectType.SLOW);
 		}

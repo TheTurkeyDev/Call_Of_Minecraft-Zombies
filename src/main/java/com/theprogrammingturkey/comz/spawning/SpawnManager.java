@@ -161,7 +161,7 @@ public class SpawnManager
 
 	public void addPoint(SpawnPoint point)
 	{
-		if(game.mode == ArenaStatus.DISABLED)
+		if(game.getMode() == ArenaStatus.DISABLED)
 			points.add(point);
 	}
 
@@ -218,9 +218,9 @@ public class SpawnManager
 
 	private void smartSpawn(final int wave, final List<Player> players)
 	{
-		if(!this.canSpawn || wave != game.waveNumber)
+		if(!this.canSpawn || wave != game.getWave())
 			return;
-		if(game.mode != ArenaStatus.INGAME)
+		if(game.getMode() != ArenaStatus.INGAME)
 			return;
 		if(this.zombiesSpawned >= this.zombiesToSpawn)
 			return;
@@ -261,7 +261,7 @@ public class SpawnManager
 
 	private void scheduleSpawn(int time, SpawnPoint loc, final int wave, final List<Player> players)
 	{
-		if(!this.canSpawn || wave < game.waveNumber)
+		if(!this.canSpawn || wave < game.getWave())
 			return;
 
 		double strength = ((wave * 100d) + 50) / 50d;
@@ -278,10 +278,10 @@ public class SpawnManager
 		setTotalHealth(zomb, strength);
 		zomb.setHealth(Math.min(strength, 20D));
 
-		if(game.waveNumber > 4)
+		if(game.getWave() > 4)
 		{
-			if(COMZombies.rand.nextInt(100) < 20 + (15 * (game.waveNumber - 5)))
-				setSpeed(zomb, 1.5f);
+			if(COMZombies.rand.nextInt(100) < 20 + (15 * (game.getWave() - 5)))
+				setSpeed(zomb, 1.25f);
 		}
 
 		mobs.add(zomb);
@@ -308,8 +308,9 @@ public class SpawnManager
 
 	public void update()
 	{
-		if(game.mode != ArenaStatus.INGAME)
+		if(game.getMode() != ArenaStatus.INGAME)
 			return;
+
 		COMZombies.scheduleTask(100, new Runnable()
 		{
 			@Override

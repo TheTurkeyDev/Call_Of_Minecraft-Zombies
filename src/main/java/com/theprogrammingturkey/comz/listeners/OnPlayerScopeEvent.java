@@ -29,7 +29,7 @@ public class OnPlayerScopeEvent implements Listener
 			boolean isSniper = false;
 			if(g.getType().type.equals(WeaponType.SNIPER_RIFLES))
 				isSniper = true;
-			if(game.mode.equals(Game.ArenaStatus.INGAME))
+			if(game.getMode().equals(Game.ArenaStatus.INGAME))
 			{
 				if(player.isSneaking())
 				{

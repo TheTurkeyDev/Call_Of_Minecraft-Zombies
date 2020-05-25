@@ -2,7 +2,11 @@ package com.theprogrammingturkey.comz.game;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.listeners.customEvents.GameStartEvent;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 /**
  * Arena auto start class.
@@ -25,10 +29,6 @@ public class AutoStart
 	 */
 	public boolean started = false;
 	/**
-	 * Countdown class used as a timer.
-	 */
-	private Countdown timer;
-	/**
 	 * If the arena is force started, value is true.
 	 */
 	public boolean forced = false;
@@ -36,7 +36,6 @@ public class AutoStart
 	 * If this is false, the timer will not continue.
 	 */
 	public boolean stopped = false;
-	private int timeLeft = 0;
 
 	/**
 	 * Constructs a new AutoStart based off of the params
@@ -61,14 +60,9 @@ public class AutoStart
 		if(seconds > 0 && !started)
 		{
 			started = true;
-			timer = new Countdown(seconds);
+			Countdown timer = new Countdown(seconds);
 			timer.run();
 		}
-	}
-
-	public int getTimeLeft()
-	{
-		return timeLeft;
 	}
 
 	public void endTimer()
@@ -94,7 +88,7 @@ public class AutoStart
 		@Override
 		public void run()
 		{
-			if(game.mode == Game.ArenaStatus.INGAME || game.players.isEmpty())
+			if(game.getMode() == Game.ArenaStatus.INGAME || game.players.isEmpty())
 				return;
 
 			remain = remain - 1;
@@ -111,7 +105,9 @@ public class AutoStart
 					game.sendMessageToPlayers(warnings[index] + " seconds!");
 					index = index - 1;
 				}
-				timeLeft = remain;
+				for(Player player : game.players)
+					player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.RED + "Starting In: " + remain));
+
 				game.signManager.updateGame();
 				if(!stopped)
 					COMZombies.scheduleTask(20, this);

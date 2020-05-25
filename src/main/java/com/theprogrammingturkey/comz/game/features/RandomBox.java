@@ -111,7 +111,7 @@ public class RandomBox
 				item.setTicksLived(5960);
 				item.setPickupDelay(1000);
 				item.setVelocity(new Vector(0, 0, 0));
-				if(boxGame.mode == Game.ArenaStatus.INGAME)
+				if(boxGame.getMode() == Game.ArenaStatus.INGAME)
 				{
 					if(time > 0)
 					{

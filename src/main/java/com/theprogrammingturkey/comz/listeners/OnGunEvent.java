@@ -40,17 +40,14 @@ public class OnGunEvent implements Listener
 		if(!(event.getAction().equals(Action.RIGHT_CLICK_AIR)) || !(event.getAction().equals(Action.RIGHT_CLICK_AIR)))
 			return;
 
-		if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
-		{
-			if(BlockUtils.isSign(event.getClickedBlock().getType()))
-				return;
-		}
+		if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && BlockUtils.isSign(event.getClickedBlock().getType()))
+			return;
 
 		Player player = event.getPlayer();
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
 			Game game = GameManager.INSTANCE.getGame(player);
-			if(!(game.mode == ArenaStatus.INGAME))
+			if(game.getMode() != ArenaStatus.INGAME)
 				return;
 
 			if(game.getPlayersGun(player) != null)
@@ -79,10 +76,9 @@ public class OnGunEvent implements Listener
 			if(GameManager.INSTANCE.isPlayerInGame(player))
 			{
 				Game game = GameManager.INSTANCE.getGame(player);
-				if(!(game.mode == ArenaStatus.INGAME))
-				{
+				if(game.getMode() != ArenaStatus.INGAME)
 					return;
-				}
+
 				if(game.getPlayersGun(player) != null)
 				{
 					PlayerWeaponManager gunManager = game.getPlayersGun(player);
@@ -235,10 +231,9 @@ public class OnGunEvent implements Listener
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
 			Game game = GameManager.INSTANCE.getGame(player);
-			if(!(game.mode == ArenaStatus.INGAME))
-			{
+			if(game.getMode() != ArenaStatus.INGAME)
 				return;
-			}
+
 			if(player.getInventory().getItemInMainHand().getType().equals(Material.SLIME_BALL))
 			{
 				player.getInventory().removeItem(new ItemStack(Material.SLIME_BALL, 1));

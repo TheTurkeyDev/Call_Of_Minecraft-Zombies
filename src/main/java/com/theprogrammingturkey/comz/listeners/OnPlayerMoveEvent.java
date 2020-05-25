@@ -29,7 +29,7 @@ public class OnPlayerMoveEvent implements Listener
 			{
 				return;
 			}
-			if(game.mode == ArenaStatus.INGAME)
+			if(game.getMode() == ArenaStatus.INGAME)
 			{
 				player.teleport(game.getPlayerSpawn());
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Please do not leave the arena!");

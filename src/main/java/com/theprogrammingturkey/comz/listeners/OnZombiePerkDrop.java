@@ -26,44 +26,33 @@ import java.util.ArrayList;
 
 public class OnZombiePerkDrop implements Listener
 {
-	private static ArrayList<ItemStack> currentPerks = new ArrayList<>();
-	private ArrayList<Entity> droppedItems = new ArrayList<>();
+	private static ArrayList<Entity> currentPerks = new ArrayList<>();
 
 	public void perkDrop(Entity zombie, Entity ent)
 	{
 		if(!(zombie instanceof Zombie))
-		{
 			return;
-		}
 		if(!(ent instanceof Player))
-		{
 			return;
-		}
+
 		Player player = (Player) ent;
 		int chance = (int) (Math.random() * 100);
 		if(chance <= COMZombies.getPlugin().getConfig().getInt("config.Perks.PercentDropchance"))
 		{
 			Game game;
 			int randomPerk = (int) (Math.random() * 6);
-			try
-			{
-				game = GameManager.INSTANCE.getGame(zombie.getLocation());
-				if(!(game.mode == ArenaStatus.INGAME))
-				{
-					return;
-				}
-				if(!GameManager.INSTANCE.isPlayerInGame(player))
-				{
-					return;
-				}
-			} catch(NullPointerException e)
-			{
+			game = GameManager.INSTANCE.getGame(zombie.getLocation());
+			if(game.getMode() != ArenaStatus.INGAME)
 				return;
-			}
+			if(!GameManager.INSTANCE.isPlayerInGame(player))
+				return;
+
 			if(randomPerk == 0)
 			{
 				if(!ConfigManager.getMainConfig().maxAmmo)
+				{
 					perkDrop(zombie, player);
+				}
 				else
 				{
 					ItemStack drop = new ItemStack(Material.CHEST, 1);
@@ -78,7 +67,6 @@ public class OnZombiePerkDrop implements Listener
 				{
 					ItemStack drop = new ItemStack(Material.DIAMOND_SWORD, 1);
 					dropItem((Zombie) zombie, drop);
-					game.perkManager.setCurrentPerkDrops(currentPerks);
 				}
 			}
 			if(randomPerk == 2)
@@ -122,7 +110,6 @@ public class OnZombiePerkDrop implements Listener
 					dropItem((Zombie) zombie, drop);
 				}
 			}
-			game.perkManager.setCurrentPerkDrops(currentPerks);
 		}
 	}
 
@@ -136,18 +123,13 @@ public class OnZombiePerkDrop implements Listener
 	{
 		Location loc = zombie.getLocation();
 		Entity droppedItem = loc.getWorld().dropItem(loc, stack);
-		droppedItems.add(droppedItem);
-		currentPerks.add(stack);
+		currentPerks.add(droppedItem);
 		scheduleRemove(droppedItem);
 	}
 
 	private void scheduleRemove(final Entity ent)
 	{
-		COMZombies.scheduleTask(20 * 30, () ->
-		{
-			ent.remove();
-			droppedItems.remove(ent);
-		});
+		COMZombies.scheduleTask(20 * 30, ent::remove);
 	}
 
 	@EventHandler
@@ -167,7 +149,7 @@ public class OnZombiePerkDrop implements Listener
 					event.setCancelled(true);
 					return;
 				}
-				if(!currentPerks.contains(event.getItem().getItemStack()))
+				if(!currentPerks.contains(event.getEntity()))
 				{
 					event.getItem().remove();
 					event.setCancelled(true);
@@ -180,19 +162,19 @@ public class OnZombiePerkDrop implements Listener
 					case MAX_AMMO:
 						player.getInventory().remove(item);
 						notifyAll(game, PowerUp.MAX_AMMO);
-						currentPerks.remove(event.getItem().getItemStack());
+						currentPerks.remove(event.getEntity());
 						for(Player pl : game.players)
 						{
 							PlayerWeaponManager manager = game.getPlayersGun(pl);
 							for(GunInstance gun : manager.getGuns())
 								gun.maxAmmo();
-							
+
 						}
 						event.getItem().remove();
 						event.setCancelled(true);
 						return;
 					case INSTA_KILL:
-						currentPerks.remove(event.getItem().getItemStack());
+						currentPerks.remove(event.getEntity());
 						player.getInventory().remove(item);
 						game.setInstaKill(true);
 						notifyAll(game, PowerUp.INSTA_KILL);
@@ -201,7 +183,7 @@ public class OnZombiePerkDrop implements Listener
 						event.setCancelled(true);
 						return;
 					case CARPENTER:
-						currentPerks.remove(event.getItem().getItemStack());
+						currentPerks.remove(event.getEntity());
 						player.getInventory().remove(item);
 						notifyAll(game, PowerUp.CARPENTER);
 						for(Barrier barrier : game.barrierManager.getBrriers())
@@ -210,7 +192,7 @@ public class OnZombiePerkDrop implements Listener
 						event.setCancelled(true);
 						return;
 					case NUKE:
-						currentPerks.remove(event.getItem().getItemStack());
+						currentPerks.remove(event.getEntity());
 						player.getInventory().remove(item);
 						notifyAll(game, PowerUp.NUKE);
 						for(Player pl : game.players)
@@ -226,7 +208,7 @@ public class OnZombiePerkDrop implements Listener
 						event.getItem().remove();
 						return;
 					case DOUBLE_POINTS:
-						currentPerks.remove(event.getItem().getItemStack());
+						currentPerks.remove(event.getEntity());
 						player.getInventory().remove(item);
 						game.setDoublePoints(true);
 						notifyAll(game, PowerUp.DOUBLE_POINTS);
@@ -235,7 +217,7 @@ public class OnZombiePerkDrop implements Listener
 						event.setCancelled(true);
 						return;
 					case FIRE_SALE:
-						currentPerks.remove(event.getItem().getItemStack());
+						currentPerks.remove(event.getEntity());
 						player.getInventory().remove(item);
 						game.setFireSale(true);
 						game.boxManager.FireSale(true);
@@ -250,7 +232,7 @@ public class OnZombiePerkDrop implements Listener
 						return;
 					default:
 						player.updateInventory();
-						currentPerks.remove(event.getItem().getItemStack());
+						currentPerks.remove(event.getEntity());
 						COMZombies.scheduleTask(5, () -> player.getInventory().removeItem(eItem.getItemStack()));
 						break;
 				}
@@ -271,21 +253,9 @@ public class OnZombiePerkDrop implements Listener
 		}
 	}
 
-	/**
-	 * Returns the list of all item per drops.
-	 *
-	 * @return list of perk drop
-	 */
-	public ArrayList<ItemStack> getCurrentDroppedPerks()
+	public static boolean isDroppedPerkEnt(Entity ent)
 	{
-		return currentPerks;
+		return currentPerks.contains(ent);
 	}
 
-	public void removeItemFromList(ItemStack stack)
-	{
-		if(currentPerks.contains(stack))
-		{
-			currentPerks.remove(stack);
-		}
-	}
 }

@@ -10,15 +10,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.ArrayList;
 
 public class OnOutsidePlayerInteractEvent implements Listener
 {
-	private ArrayList<ItemStack> currentPerks = new ArrayList<>();
-
 	@EventHandler
 	public void onOusidePlayerItemPickUp(EntityPickupItemEvent e)
 	{
@@ -26,19 +20,18 @@ public class OnOutsidePlayerInteractEvent implements Listener
 			return;
 		Player player = (Player) e.getEntity();
 		Game game = GameManager.INSTANCE.getGame(player.getLocation());
-		if(game == null || game.mode == null) return;
-		if(!(game.mode.equals(ArenaStatus.INGAME)))
-		{
+		if(game == null || game.getMode() == null)
 			return;
-		}
+
+		if(game.getMode() != ArenaStatus.INGAME)
+			return;
+
 		if(!GameManager.INSTANCE.isPlayerInGame(player) && GameManager.INSTANCE.isLocationInGame(player.getLocation()))
-		{
 			e.setCancelled(true);
-		}
+
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
-			currentPerks = game.perkManager.getCurrentDroppedPerks();
-			if(!currentPerks.contains(e.getItem()))
+			if(!OnZombiePerkDrop.isDroppedPerkEnt(e.getEntity()))
 			{
 				e.getItem().remove();
 				return;
@@ -59,15 +52,12 @@ public class OnOutsidePlayerInteractEvent implements Listener
 		Location loc = player.getLocation();
 		if(GameManager.INSTANCE.isLocationInGame(loc))
 		{
-			if(!(GameManager.INSTANCE.getGame(loc).mode == ArenaStatus.INGAME))
-			{
+			if(GameManager.INSTANCE.getGame(loc).getMode() != ArenaStatus.INGAME)
 				return;
-			}
+
 			event.setCancelled(true);
 			if(!GameManager.INSTANCE.isPlayerInGame(player))
-			{
 				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Do not drop items in this arena!");
-			}
 		}
 	}
 }

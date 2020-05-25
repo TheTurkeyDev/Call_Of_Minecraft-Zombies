@@ -65,25 +65,25 @@ public class SignManager
 		{
 			for(Sign s : gameSigns)
 			{
-				if(game.mode.equals(Game.ArenaStatus.DISABLED))
+				if(game.getMode().equals(Game.ArenaStatus.DISABLED))
 				{
 					s.setLine(0, ChatColor.DARK_RED + "[maintenance]".toUpperCase());
 					s.setLine(1, game.getName());
 					s.setLine(2, "Game will be");
 					s.setLine(3, "available soon!");
 				}
-				else if(game.mode.equals(Game.ArenaStatus.WAITING) || game.mode.equals(Game.ArenaStatus.STARTING))
+				else if(game.getMode().equals(Game.ArenaStatus.WAITING) || game.getMode().equals(Game.ArenaStatus.STARTING))
 				{
 					s.setLine(0, ChatColor.RED + "[Zombies]");
 					s.setLine(1, ChatColor.AQUA + "Join");
 					s.setLine(2, game.getName());
 					s.setLine(3, ChatColor.GREEN + "Players: " + game.players.size() + "/" + game.maxPlayers);
 				}
-				else if(game.mode.equals(Game.ArenaStatus.INGAME))
+				else if(game.getMode().equals(Game.ArenaStatus.INGAME))
 				{
 					s.setLine(0, ChatColor.GREEN + game.getName());
 					s.setLine(1, ChatColor.RED + "InProgress");
-					s.setLine(2, ChatColor.RED + "Wave:" + game.waveNumber);
+					s.setLine(2, ChatColor.RED + "Wave: " + game.getWave());
 					s.setLine(3, ChatColor.DARK_RED + "Alive: " + game.players.size());
 				}
 				s.update();

@@ -75,7 +75,7 @@ public class Game
 	/**
 	 * Status of the game.
 	 */
-	public ArenaStatus mode = ArenaStatus.DISABLED;
+	private ArenaStatus mode = ArenaStatus.DISABLED;
 
 	/**
 	 * Assuring that the game has every warp, spectator, game, and lobby.
@@ -125,7 +125,7 @@ public class Game
 	/**
 	 * Current wave number.
 	 */
-	public int waveNumber = 0;
+	private int waveNumber = 0;
 
 	/**
 	 * World name for the game.
@@ -363,6 +363,16 @@ public class Game
 		return powerEnabled;
 	}
 
+	public ArenaStatus getMode()
+	{
+		return this.mode;
+	}
+
+	public int getWave()
+	{
+		return this.waveNumber;
+	}
+
 	public void removePower(Player player)
 	{
 		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
@@ -414,22 +424,33 @@ public class Game
 	/**
 	 * force starts the arena
 	 */
-	public void forceStart()
+	public void setStarting(boolean forced)
 	{
-		if(mode == ArenaStatus.INGAME)
+		if(mode != ArenaStatus.WAITING && mode != ArenaStatus.STARTING)
 			return;
 
-		if(starter != null && starter.forced)
+		if(mode == ArenaStatus.STARTING && !forced)
 			return;
 
-		sendMessageToPlayers("Game force started!");
-		if(starter != null)
+		if(forced && mode == ArenaStatus.STARTING && !starter.forced)
+		{
 			starter.endTimer();
-		starter = new AutoStart(this, 6);
-		starter.startTimer();
-		mode = ArenaStatus.STARTING;
-		starter.forced = true;
+		}
 
+
+		int delay = ConfigManager.getMainConfig().arenaStartTime + 1;
+
+		if(forced)
+			delay = 6;
+
+		starter = new AutoStart(this, delay);
+		starter.startTimer();
+
+		if(forced)
+			starter.forced = true;
+
+		sendMessageToPlayers(ChatColor.RED + "" + ChatColor.BOLD + "Game starting soon!");
+		mode = ArenaStatus.STARTING;
 	}
 
 	/**
@@ -440,6 +461,7 @@ public class Game
 		if(mode == ArenaStatus.INGAME)
 			return;
 
+		waveNumber = 0;
 		mode = ArenaStatus.INGAME;
 		for(Player player : players)
 		{
@@ -490,7 +512,6 @@ public class Game
 				}
 			}
 		}
-		this.waveNumber = 0;
 		nextWave();
 		signManager.updateGame();
 		KitManager.giveOutKits(this);
@@ -521,7 +542,7 @@ public class Game
 
 		if(mode != ArenaStatus.INGAME)
 		{
-			waveNumber = 0;
+			endGame();
 			return;
 		}
 
@@ -594,7 +615,6 @@ public class Game
 			assignPlayerInventory(player);
 			player.setGameMode(GameMode.SURVIVAL);
 			String gunName = ConfigManager.getConfig(COMZConfig.GUNS).getString("StartingGun", "M1911");
-			waveNumber = 0;
 
 			COMZombies plugin = COMZombies.getPlugin();
 			for(Player pl : players)
@@ -620,23 +640,7 @@ public class Game
 			sendMessageToPlayers(player.getName() + " has joined with " + players.size() + "/" + maxPlayers + "!");
 			if(players.size() >= minPlayers)
 			{
-				if(starter == null)
-				{
-					starter = new AutoStart(this, ConfigManager.getMainConfig().arenaStartTime + 1);
-					starter.startTimer();
-					sendMessageToPlayers(ChatColor.RED + "" + ChatColor.BOLD + "Game starting soon!");
-					mode = ArenaStatus.STARTING;
-				}
-				else
-				{
-					if(starter.started)
-						return;
-
-					starter = new AutoStart(this, ConfigManager.getMainConfig().arenaStartTime + 1);
-					starter.startTimer();
-					sendMessageToPlayers("Game starting soon!");
-					mode = ArenaStatus.STARTING;
-				}
+				setStarting(false);
 				signManager.updateGame();
 			}
 		}
@@ -644,41 +648,6 @@ public class Game
 		{
 			CommandUtil.sendMessageToPlayer(player, "Something could have went wrong here, COM Zombies has picked this up and will continue without error.");
 		}
-		signManager.updateGame();
-	}
-
-	/**
-	 * Removes the given player from the game
-	 *
-	 * @param player to be removed from the game
-	 */
-	public void playerLeave(Player player, boolean endGame)
-	{
-		if(!endGame)
-		{
-			players.remove(player);
-			if(players.size() == 0)
-			{
-				if(!isDisabled)
-				{
-					mode = ArenaStatus.WAITING;
-					starter = null;
-					waveNumber = 0;
-					PointManager.clearGamePoints(this);
-					endGame();
-
-					for(int i = 0; i < doorManager.getDoors().size(); i++)
-						doorManager.getDoors().get(i).closeDoor();
-				}
-			}
-
-			downedPlayerManager.removeDownedPlayer(player);
-		}
-
-		resetPlayer(player);
-		playersGuns.remove(player);
-		player.setFlying(pInfo.getFly(player));
-		PointManager.playerLeaveGame(player);
 		signManager.updateGame();
 	}
 
@@ -696,29 +665,15 @@ public class Game
 			sendMessageToPlayers(player.getName() + " has left the game! Only " + players.size() + "/" + this.maxPlayers + " player(s) left!");
 
 		if(players.size() == 0)
-		{
 			if(!isDisabled)
-			{
-				mode = ArenaStatus.WAITING;
-				starter = null;
-				waveNumber = 0;
-				PointManager.clearGamePoints(this);
 				endGame();
-				for(int i = 0; i < doorManager.getDoors().size(); i++)
-					doorManager.getDoors().get(i).closeDoor();
-			}
-		}
-
-
-		playersGuns.remove(player);
-		resetPlayer(player);
-		player.setFlying(pInfo.getFly(player));
-		PointManager.playerLeaveGame(player);
-		signManager.updateGame();
 	}
 
 	private void resetPlayer(Player player)
 	{
+		playersGuns.remove(player);
+		PointManager.playerLeaveGame(player);
+
 		for(PotionEffectType t : PotionEffectType.values())
 			player.removePotionEffect(t);
 
@@ -744,6 +699,8 @@ public class Game
 			else
 				pl.hidePlayer(plugin, player);
 		}
+
+
 		signManager.updateGame();
 	}
 
@@ -873,7 +830,7 @@ public class Game
 			COMZombies.getPlugin().vault.addMoney(p, points);
 			CommandUtil.sendMessageToPlayer(p, "You got " + points + " for getting to round " + waveNumber + "!");
 			scoreboard.removePlayer(p);
-			playerLeave(p, true);
+			resetPlayer(p);
 		}
 		spawnManager.killAll(false);
 		spawnManager.reset();
@@ -897,6 +854,7 @@ public class Game
 		waveNumber = 0;
 		clearArena();
 		clearArenaItems();
+		PointManager.clearGamePoints(this);
 
 		COMZombies plugin = COMZombies.getPlugin();
 		for(Player pl : Bukkit.getOnlinePlayers())

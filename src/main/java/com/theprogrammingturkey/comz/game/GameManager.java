@@ -121,12 +121,10 @@ public class GameManager
 	{
 		for(Game gl : games)
 		{
-			if(gl.mode != ArenaStatus.WAITING && gl.mode != ArenaStatus.INGAME && gl.mode != ArenaStatus.STARTING)
+			if(gl.getMode() == ArenaStatus.DISABLED)
 				return false;
-
-			if(gl.arena.containsBlock(loc))
-				if(gl.mode != ArenaStatus.DISABLED)
-					return true;
+			else if(gl.arena.containsBlock(loc))
+				return true;
 		}
 		return false;
 	}

@@ -108,13 +108,13 @@ public class OnEntityDamageEvent implements Listener
 			if(GameManager.INSTANCE.getGame(player).downedPlayerManager.isPlayerDowned(player))
 				e.setCancelled(true);
 
-			if(GameManager.INSTANCE.getGame(player) != null && GameManager.INSTANCE.getGame(player).mode == ArenaStatus.STARTING)
+			if(GameManager.INSTANCE.getGame(player) != null && GameManager.INSTANCE.getGame(player).getMode() == ArenaStatus.STARTING)
 				e.setCancelled(true);
 
 			if(GameManager.INSTANCE.isPlayerInGame(player))
 			{
 				Game game = GameManager.INSTANCE.getGame(player);
-				if(game.mode == ArenaStatus.INGAME)
+				if(game.getMode() == ArenaStatus.INGAME)
 				{
 					float damage = game.damagePlayer(player, (float) e.getDamage());
 					e.setDamage(damage);
