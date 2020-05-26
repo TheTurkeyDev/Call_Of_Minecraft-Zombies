@@ -21,6 +21,7 @@ import com.theprogrammingturkey.comz.game.managers.BoxManager;
 import com.theprogrammingturkey.comz.game.managers.DoorManager;
 import com.theprogrammingturkey.comz.game.managers.DownedPlayerManager;
 import com.theprogrammingturkey.comz.game.managers.PerkManager;
+import com.theprogrammingturkey.comz.game.managers.PowerUpManager;
 import com.theprogrammingturkey.comz.game.managers.SignManager;
 import com.theprogrammingturkey.comz.game.managers.TeleporterManager;
 import com.theprogrammingturkey.comz.game.weapons.GunInstance;
@@ -30,7 +31,6 @@ import com.theprogrammingturkey.comz.game.weapons.WeaponManager;
 import com.theprogrammingturkey.comz.kits.KitManager;
 import com.theprogrammingturkey.comz.leaderboards.Leaderboard;
 import com.theprogrammingturkey.comz.leaderboards.PlayerStats;
-import com.theprogrammingturkey.comz.listeners.OnZombiePerkDrop;
 import com.theprogrammingturkey.comz.spawning.SpawnManager;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import com.theprogrammingturkey.comz.util.CommandUtil;
@@ -71,6 +71,8 @@ public class Game
 	public List<Player> players = new ArrayList<>();
 
 	private ArrayList<Player> beingHealed = new ArrayList<>();
+
+	private boolean debugMode = false;
 
 	/**
 	 * Status of the game.
@@ -193,10 +195,14 @@ public class Game
 	public DoorManager doorManager;
 
 	/**
-	 * contains all of the perks in the game as well as the perks that are currently dropped in the
-	 * map
+	 * contains all of the perks in the game for the players
 	 */
 	public PerkManager perkManager;
+
+	/**
+	 * contains all of the powerUps in the game as well as the powerUps that are currently dropped
+	 */
+	public PowerUpManager powerUpManager;
 
 	/**
 	 * contains all of the teleporters in the game
@@ -251,6 +257,7 @@ public class Game
 		barrierManager = new BarrierManager(this);
 		doorManager = new DoorManager(this);
 		perkManager = new PerkManager();
+		powerUpManager = new PowerUpManager();
 		teleporterManager = new TeleporterManager(this);
 		downedPlayerManager = new DownedPlayerManager();
 		signManager = new SignManager(this);
@@ -847,7 +854,6 @@ public class Game
 		boxManager.loadAllBoxes();
 		barrierManager.unloadAllBarriers();
 		players.clear();
-		this.starter = null;
 		scoreboard = new GameScoreboard(this);
 		instaKill = false;
 		doublePoints = false;
@@ -986,8 +992,8 @@ public class Game
 			return false;
 		}
 
-		powerEnabled = ConfigManager.getConfig(COMZConfig.ARENAS).getBoolean(arenaName + ".Power", false);
-		minPlayers = ConfigManager.getConfig(COMZConfig.ARENAS).getInt(arenaName + ".minPlayers");
+		powerEnabled = conf.getBoolean(arenaName + ".Power", false);
+		minPlayers = conf.getInt(arenaName + ".minPlayers", 1);
 
 		int x1 = conf.getInt(arenaName + ".Location.P1.x");
 		int y1 = conf.getInt(arenaName + ".Location.P1.y");
@@ -1021,16 +1027,18 @@ public class Game
 		playerTPLocation = pwarp.add(0.5, 0, 0.5);
 		spectateLocation = swarp.add(0.5, 0, 0.5);
 		lobbyLocation = lwarp.add(0.5, 0, 0.5);
+
 		arena = new Arena(min, max, world);
 		mode = ArenaStatus.WAITING;
 
+		powerUpManager.loadAllPowerUps(arenaName);
 		spawnManager.loadAllSpawnsToGame();
 		boxManager.loadAllBoxesToGame();
 		barrierManager.loadAllBarriersToGame();
 		doorManager.loadAllDoorsToGame();
 		teleporterManager.loadAllTeleportersToGame();
 
-		if(ConfigManager.getConfig(COMZConfig.ARENAS).getBoolean(arenaName + ".IsForceNight", false))
+		if(conf.getBoolean(arenaName + ".IsForceNight", false))
 			forceNight();
 
 		return true;
@@ -1297,68 +1305,61 @@ public class Game
 
 	public void damageZombie(Zombie zombie, Player player, float damageAmount)
 	{
-		double totalHealth;
-		if(this.spawnManager.totalHealth().containsKey(zombie))
-		{
-			totalHealth = this.spawnManager.totalHealth().get(zombie);
-		}
-		else
-		{
-			this.spawnManager.setTotalHealth(zombie, 20);
-			totalHealth = 20D;
-		}
+		double zombHealth = zombie.getHealth() - damageAmount;
+		zombie.playEffect(EntityEffect.HURT);
 
-		if(totalHealth >= 20)
+		if(isInstaKill())
 		{
-			zombie.setHealth(20D);
-			if(this.isDoublePoints())
-				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit * 2);
-			else
-				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit);
-			this.spawnManager.setTotalHealth(zombie, (int) (totalHealth - damageAmount));
-			if(this.spawnManager.totalHealth().get(zombie) < 20)
-				zombie.setHealth(this.spawnManager.totalHealth().get(zombie));
-
-			PointManager.notifyPlayer(player);
-		}
-		else if(totalHealth < 1 || totalHealth - damageAmount <= 1)
-		{
-			OnZombiePerkDrop perkdrop = new OnZombiePerkDrop();
-			perkdrop.perkDrop(zombie, player);
+			player.getWorld().playSound(zombie.getLocation(), Sound.ENTITY_ZOMBIE_DEATH, 1f, 1f);
+			powerUpManager.powerUpDrop(zombie, player);
 			zombie.remove();
-			if(this.isDoublePoints())
-			{
+			if(isDoublePoints())
 				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
-			}
 			else
-			{
 				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
-			}
-			zombie.playEffect(EntityEffect.DEATH);
+
 			PointManager.notifyPlayer(player);
-			this.spawnManager.removeEntity(zombie);
-			this.zombieKilled(player);
+			spawnManager.removeEntity(zombie);
+			zombieKilled(player);
+			if(spawnManager.getEntities().size() <= 0)
+				nextWave();
+		}
+		else if(zombHealth < 1)
+		{
+			player.getWorld().playSound(zombie.getLocation(), Sound.ENTITY_ZOMBIE_DEATH, 1f, 1f);
+			powerUpManager.powerUpDrop(zombie, player);
+			zombie.remove();
+			if(isDoublePoints())
+				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
+			else
+				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
+
+			PointManager.notifyPlayer(player);
+			spawnManager.removeEntity(zombie);
+			zombieKilled(player);
+			if(spawnManager.getEntities().size() <= 0)
+				nextWave();
 		}
 		else
 		{
-			if(this.isDoublePoints())
+			zombie.setHealth(zombHealth);
+			player.getWorld().playSound(zombie.getLocation(), Sound.ENTITY_ZOMBIE_HURT, 1f, 1f);
+			if(isDoublePoints())
 				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit * 2);
 			else
 				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit);
-
 			PointManager.notifyPlayer(player);
 		}
 
-		this.spawnManager.setTotalHealth(zombie, (int) (totalHealth - damageAmount));
-
-		if(this.isInstaKill())
+		if(debugMode)
 		{
-			zombie.remove();
-			this.spawnManager.removeEntity(zombie);
+			zombie.setCustomName(String.valueOf(zombHealth));
+			zombie.setCustomNameVisible(true);
 		}
-
-		for(Player pl : this.players)
-			pl.playSound(zombie.getLocation().add(0, 1, 0), Sound.BLOCK_STONE_STEP, 1, 1);
+		else
+		{
+			zombie.setCustomNameVisible(false);
+		}
 	}
 
 	public float damagePlayer(Player player, float damageAmount)
@@ -1455,6 +1456,7 @@ public class Game
 			PlayerStats stat = new PlayerStats(player.getName(), 1);
 			Leaderboard.addPlayerStats(stat);
 		}
+
 		if(COMZombies.getPlugin().vault != null)
 		{
 			try
@@ -1478,5 +1480,15 @@ public class Game
 	{
 		for(Player player : players)
 			player.sendRawMessage(COMZombies.PREFIX + message);
+	}
+
+	public void setDebugMode(boolean debugMode)
+	{
+		this.debugMode = debugMode;
+	}
+
+	public boolean getDebugMode()
+	{
+		return this.debugMode;
 	}
 }

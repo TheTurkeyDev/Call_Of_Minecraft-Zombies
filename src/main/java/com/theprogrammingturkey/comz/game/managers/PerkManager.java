@@ -8,10 +8,11 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class PerkManager
 {
-	private HashMap<Player, ArrayList<PerkType>> playersPerks = new HashMap<>();
+	private HashMap<Player, List<PerkType>> playersPerks = new HashMap<>();
 
 	public void removePerkEffect(Player player, PerkType effect)
 	{
@@ -24,7 +25,7 @@ public class PerkManager
 		}
 	}
 
-	public ArrayList<PerkType> getPlayersPerks(Player player)
+	public List<PerkType> getPlayersPerks(Player player)
 	{
 		return playersPerks.computeIfAbsent(player, k -> new ArrayList<>());
 	}
@@ -32,10 +33,7 @@ public class PerkManager
 	public boolean hasPerk(Player player, PerkType type)
 	{
 		if(playersPerks.containsKey(player))
-		{
-			ArrayList<PerkType> effects = playersPerks.get(player);
-			return effects.contains(type);
-		}
+			return playersPerks.get(player).contains(type);
 		return false;
 	}
 
@@ -43,7 +41,7 @@ public class PerkManager
 	{
 		if(playersPerks.containsKey(player))
 		{
-			ArrayList<PerkType> current = playersPerks.get(player);
+			List<PerkType> current = playersPerks.get(player);
 			if(current.size() >= ConfigManager.getMainConfig().maxPerks)
 			{
 				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You can only have " + ConfigManager.getMainConfig().maxPerks + " perks!");
@@ -55,7 +53,7 @@ public class PerkManager
 		}
 		else
 		{
-			ArrayList<PerkType> newEffects = new ArrayList<>();
+			List<PerkType> newEffects = new ArrayList<>();
 			newEffects.add(type);
 			playersPerks.put(player, newEffects);
 		}
@@ -91,11 +89,9 @@ public class PerkManager
 	public void clearPlayersPerks(Player player)
 	{
 		playersPerks.remove(player);
-		ArrayList<PerkType> empty = new ArrayList<>();
+		List<PerkType> empty = new ArrayList<>();
 		playersPerks.put(player, empty);
 		for(int i = 4; i <= 7; i++)
-		{
 			player.getInventory().clear(i);
-		}
 	}
 }

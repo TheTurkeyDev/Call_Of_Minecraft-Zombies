@@ -179,17 +179,13 @@ public class BoxManager
 	public void unloadAllBoxes()
 	{
 		for(RandomBox b : boxes)
-		{
 			b.removeBox();
-		}
 	}
 
 	public void loadAllBoxes()
 	{
 		for(RandomBox b : boxes)
-		{
 			b.loadBox();
-		}
 	}
 
 	// Finds the closest locations to point loc, it results numToGet amount of
@@ -198,6 +194,11 @@ public class BoxManager
 	public int getTotalBoxes()
 	{
 		return boxes.size();
+	}
+
+	public boolean isMultiBox()
+	{
+		return multiBox;
 	}
 
 	public Game getGame()

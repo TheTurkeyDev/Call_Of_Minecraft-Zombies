@@ -1,6 +1,5 @@
 package com.theprogrammingturkey.comz.listeners;
 
-import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
@@ -8,7 +7,6 @@ import com.theprogrammingturkey.comz.particleutilities.ParticleEffects;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
@@ -49,51 +47,11 @@ public class OnPlayerVelocityEvent implements Listener
 							eff1.sendToPlayer(pl, player.getLocation(), x, y, z, 1, 1);
 						}
 					}
+
 					for(Entity e : player.getNearbyEntities(5, 5, 5))
-					{
 						if(e instanceof Zombie)
-						{
-							Double totalHealth;
-							if(game.spawnManager.totalHealth().containsKey(e))
-							{
-								totalHealth = game.spawnManager.totalHealth().get(e);
-							}
-							else
-							{
-								game.spawnManager.setTotalHealth(e, 20);
-								totalHealth = 20D;
-							}
-							if(totalHealth >= 20)
-							{
-								((LivingEntity) e).setHealth(20D);
-								if(game.spawnManager.totalHealth().get(e) <= 20)
-								{
-									((LivingEntity) e).setHealth(game.spawnManager.totalHealth().get(e));
-								}
-								else
-								{
-									game.spawnManager.setTotalHealth(e, totalHealth - 12);
-								}
-								PointManager.notifyPlayer(player);
-							}
-							else if(totalHealth - 12 < 1)
-							{
-								OnZombiePerkDrop perkdrop = new OnZombiePerkDrop();
-								perkdrop.perkDrop(e, player);
-								e.remove();
-								game.spawnManager.removeEntity(e);
-								game.zombieKilled(player);
-								if(game.spawnManager.getEntities().size() <= 0)
-								{
-									game.nextWave();
-								}
-							}
-							else
-							{
-								((LivingEntity) e).damage(12D);
-							}
-						}
-					}
+							game.damageZombie((Zombie) e, player, 12);
+
 					player.setHealth(pHealth);
 				}
 			}
@@ -103,29 +61,23 @@ public class OnPlayerVelocityEvent implements Listener
 	@EventHandler
 	public void ProjectileHit(EntityDamageEvent event)
 	{
-		if(event.getCause().toString().equalsIgnoreCase("BLOCK_EXPLOSION") || event.getCause().toString().equalsIgnoreCase(DamageCause.ENTITY_EXPLOSION.toString()))
+		if(event.getCause() == DamageCause.BLOCK_EXPLOSION || event.getCause() == DamageCause.ENTITY_EXPLOSION)
 		{
 			if(event.getEntity() instanceof Player)
 			{
 				Player player = (Player) event.getEntity();
 				if(GameManager.INSTANCE.isPlayerInGame(player))
-				{
 					event.setCancelled(true);
-				}
 			}
 		}
-		else if(event.getCause().toString().equalsIgnoreCase("FALL"))
+		else if(event.getCause() == DamageCause.FALL)
 		{
 			if(event.getEntity() instanceof Player)
 			{
 				Player player = (Player) event.getEntity();
 				if(GameManager.INSTANCE.isPlayerInGame(player))
-				{
 					if(GameManager.INSTANCE.getGame(player).perkManager.hasPerk(player, PerkType.PHD_FLOPPER))
-					{
 						event.setCancelled(true);
-					}
-				}
 			}
 		}
 	}

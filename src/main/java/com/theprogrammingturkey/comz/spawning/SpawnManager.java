@@ -22,16 +22,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class SpawnManager
 {
 	private Game game;
-	private HashMap<Entity, Double> health = new HashMap<>();
-	private ArrayList<SpawnPoint> points = new ArrayList<>();
-	private ArrayList<Entity> mobs = new ArrayList<>();
+	private List<SpawnPoint> points = new ArrayList<>();
+	private List<Entity> mobs = new ArrayList<>();
 	private boolean canSpawn = false;
 	private double zombieSpawnInterval;
 	private double zombieSpawnDelayFactor;
@@ -104,7 +102,7 @@ public class SpawnManager
 		return points.size();
 	}
 
-	public ArrayList<SpawnPoint> getPoints()
+	public List<SpawnPoint> getPoints()
 	{
 		return points;
 	}
@@ -135,28 +133,19 @@ public class SpawnManager
 		mobs.clear();
 	}
 
-	public ArrayList<Entity> getEntities()
+	public List<Entity> getEntities()
 	{
 		return mobs;
 	}
 
 	public void removeEntity(Entity entity)
 	{
-		if(mobs.contains(entity))
-		{
-			health.remove(entity);
-			mobs.remove(entity);
-		}
+		mobs.remove(entity);
 
 		if((mobs.size() == 0) && (zombiesSpawned >= zombiesToSpawn))
 			game.nextWave();
 
 		game.scoreboard.update();
-	}
-
-	public HashMap<Entity, Double> totalHealth()
-	{
-		return health;
 	}
 
 	public void addPoint(SpawnPoint point)
@@ -275,8 +264,8 @@ public class SpawnManager
 		});
 		zomb.setBaby(false);
 		setFollowDistance(zomb);
-		setTotalHealth(zomb, strength);
-		zomb.setHealth(Math.min(strength, 20D));
+		zomb.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(strength);
+		zomb.setHealth(strength);
 
 		if(game.getWave() > 4)
 		{
@@ -375,18 +364,13 @@ public class SpawnManager
 		return maySpawn;
 	}
 
-	public void setTotalHealth(Entity entity, double totalHealth)
-	{
-		health.remove(entity);
-		health.put(entity, totalHealth);
-	}
-
 	private void oopsWeHadAnError()
 	{
+		if(game.getMode() != ArenaStatus.INGAME)
+			return;
+
 		for(Player pl : game.players)
-		{
 			pl.sendMessage(ChatColor.RED + "Well..  I guess we had an error trying to pick a spawn point out of the many we had! We'll have to end your game because of our lack of skillez.");
-		}
 		game.endGame();
 	}
 
@@ -404,12 +388,17 @@ public class SpawnManager
 	{
 		canSpawn = true;
 
-		if(players.size() == 0)
+		if(players.size() == 0 && game.getMode() == ArenaStatus.INGAME)
 		{
 			this.game.endGame();
 			Bukkit.broadcastMessage(COMZombies.PREFIX + "SmartSpawn was sent a players list with no players in it! Game was ended");
 			return;
 		}
+		else if(game.getMode() != ArenaStatus.INGAME)
+		{
+			return;
+		}
+
 		this.smartSpawn(wave, players);
 	}
 

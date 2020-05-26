@@ -3,6 +3,7 @@ package com.theprogrammingturkey.comz.listeners;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.game.managers.PowerUpManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -31,7 +32,7 @@ public class OnOutsidePlayerInteractEvent implements Listener
 
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
-			if(!OnZombiePerkDrop.isDroppedPerkEnt(e.getEntity()))
+			if(!PowerUpManager.currentPowerUps.contains(e.getEntity()))
 			{
 				e.getItem().remove();
 				return;

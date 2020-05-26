@@ -2,25 +2,19 @@ package com.theprogrammingturkey.comz.game.weapons;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.ConfigManager;
-import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
-import com.theprogrammingturkey.comz.listeners.OnZombiePerkDrop;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Snowball;
 import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -191,39 +185,7 @@ public class GunInstance
 						{
 							World world = player.getWorld();
 							world.strikeLightningEffect(ent.getLocation());
-							Double totalHealth;
-							if(game.spawnManager.totalHealth().containsKey(ent))
-							{
-								totalHealth = game.spawnManager.totalHealth().get(ent);
-							}
-							else
-							{
-								game.spawnManager.setTotalHealth(ent, 20);
-								totalHealth = 20.0;
-							}
-							if(totalHealth >= 20)
-							{
-								((LivingEntity) ent).setHealth(20D);
-								if(game.spawnManager.totalHealth().get(ent) <= 20)
-									((LivingEntity) ent).setHealth(game.spawnManager.totalHealth().get(ent));
-								else
-									game.spawnManager.setTotalHealth(ent, totalHealth - 10);
-								PointManager.notifyPlayer(player);
-							}
-							else if(totalHealth - 10 < 1)
-							{
-								OnZombiePerkDrop perkdrop = new OnZombiePerkDrop();
-								perkdrop.perkDrop(ent, player);
-								ent.remove();
-								game.spawnManager.removeEntity(ent);
-								game.zombieKilled(player);
-								if(game.spawnManager.getEntities().size() <= 0)
-									game.nextWave();
-							}
-							else
-							{
-								((LivingEntity) ent).damage(10D);
-							}
+							game.damageZombie((Zombie) ent, player, 10);
 						}
 					}
 				}
@@ -245,67 +207,25 @@ public class GunInstance
 	 * Called when the gun was shot, decrements total ammo count and reloads if
 	 * the bullet shot was the last in the clip.
 	 */
-	public void wasShot()
+	public boolean wasShot()
 	{
 		if(isReloading)
-			return;
+			return false;
 
 		if(!canFire)
-			return;
+			return false;
 
 		if(totalAmmo == 0 && clipAmmo == 0)
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "No ammo!");
 			player.getWorld().playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
-			return;
+			return false;
 		}
 
 		if(clipAmmo - 1 < 1 && !(totalAmmo == 0))
 			reload();
 
 		clipAmmo -= 1;
-		if(getType().type.equals(WeaponType.SHOTGUNS))
-		{
-			Projectile ls = player.launchProjectile(Snowball.class);
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().add(new Vector(getAdjust(), getAdjust(), getAdjust())).multiply(0.3));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().add(new Vector(getAdjust(), getAdjust(), getAdjust())).multiply(0.3));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().add(new Vector(getAdjust(), getAdjust(), getAdjust())).multiply(0.3));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().add(new Vector(getAdjust(), getAdjust(), getAdjust())).multiply(0.3));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().add(new Vector(getAdjust(), getAdjust(), getAdjust())).multiply(0.3));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().add(new Vector(getAdjust(), getAdjust(), getAdjust())).multiply(0.3));
-			player.launchProjectile(Snowball.class).setVelocity(ls.getVelocity().add(new Vector(getAdjust(), getAdjust(), getAdjust())).multiply(0.3));
-			ls.setVelocity(ls.getVelocity().multiply(.3));
-		}
-		if(getType().type.equals(WeaponType.PISTOLS))
-		{
-			Projectile ls = player.launchProjectile(Snowball.class);
-			ls.setVelocity(ls.getVelocity().multiply(this.gun.speed));
-		}
-		if(getType().type.equals(WeaponType.ASSAULT_RIFLES))
-		{
-			Projectile ls = player.launchProjectile(Snowball.class);
-			ls.setVelocity(ls.getVelocity().multiply(this.gun.speed));
-		}
-		if(getType().type.equals(WeaponType.SNIPER_RIFLES))
-		{
-			Projectile ls = player.launchProjectile(Snowball.class);
-			ls.setVelocity(ls.getVelocity().multiply(this.gun.speed));
-		}
-		if(getType().type.equals(WeaponType.LIGHT_MACHINE_GUNS))
-		{
-			Projectile ls = player.launchProjectile(Snowball.class);
-			ls.setVelocity(ls.getVelocity().multiply(this.gun.speed));
-		}
-		if(getType().type.equals(WeaponType.SUB_MACHINE_GUNS))
-		{
-			Projectile ls = player.launchProjectile(Snowball.class);
-			ls.setVelocity(ls.getVelocity().multiply(this.gun.speed));
-		}
-		if(getType().type.equals(WeaponType.SPECIAL))
-		{
-			Projectile ls = player.launchProjectile(Snowball.class);
-			ls.setVelocity(ls.getVelocity().multiply(this.gun.speed));
-		}
 
 		World world = player.getWorld();
 
@@ -419,9 +339,8 @@ public class GunInstance
 		updateGun();
 		canFire = false;
 
-		Runnable delayedSpawnFunc = () -> canFire = true;
-
-		COMZombies.scheduleTask(this.gun.fireDelay, delayedSpawnFunc);
+		COMZombies.scheduleTask(this.gun.fireDelay, () -> canFire = true);
+		return true;
 	}
 
 	public double getAdjust()

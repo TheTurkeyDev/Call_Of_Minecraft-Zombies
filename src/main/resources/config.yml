@@ -2,14 +2,7 @@ config:
   settings:
     useNoSlashForCommand: false
     checkForUpdates: true
-  Perks:
-    PercentDropchance: 3
-    MaxAmmo: true
-    FireSale: true
-    InstaKill: true
-    Carpenter: true
-    Nuke: true
-    DoublePoints: true
+  perks:
     maxPerks: 4
   gameSettings:
     #Range to allow knife attacks. (Values over 6 are set to 6, the vanilla value.)

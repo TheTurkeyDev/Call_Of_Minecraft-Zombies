@@ -1,17 +1,17 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.config.ConfigManager;
-import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.weapons.GunInstance;
 import com.theprogrammingturkey.comz.game.weapons.PlayerWeaponManager;
+import com.theprogrammingturkey.comz.game.weapons.WeaponType;
 import com.theprogrammingturkey.comz.particleutilities.ParticleEffects;
 import com.theprogrammingturkey.comz.util.BlockUtils;
+import com.theprogrammingturkey.comz.util.RayTrace;
 import org.bukkit.Bukkit;
-import org.bukkit.EntityEffect;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -21,23 +21,23 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Snowball;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import java.util.List;
 
-public class OnGunEvent implements Listener
+public class WeaponListener implements Listener
 {
-	@EventHandler
-	public void onBlockInteractEvent(PlayerInteractEvent event)
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerInteractEvent(PlayerInteractEvent event)
 	{
-		if(!(event.getAction().equals(Action.RIGHT_CLICK_AIR)) || !(event.getAction().equals(Action.RIGHT_CLICK_AIR)))
+		if(!event.getAction().equals(Action.RIGHT_CLICK_AIR))
 			return;
 
 		if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && BlockUtils.isSign(event.getClickedBlock().getType()))
@@ -59,9 +59,73 @@ public class OnGunEvent implements Listener
 					if(gun.isReloading())
 					{
 						player.getLocation().getWorld().playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
-						return;
 					}
-					gun.wasShot();
+					else if(gun.wasShot())
+					{
+						int shots = 1;
+						if(gun.getType().getWeaponType() == WeaponType.SHOTGUNS)
+							shots = 7;
+
+						for(int shot = 0; shot < shots; shot++)
+						{
+							Vector dirVec = event.getPlayer().getEyeLocation().getDirection();
+
+							if(shots > 1)
+								dirVec.add(new Vector((Math.random() - 0.5) / 2.0, (Math.random() - 0.5) / 2.0, (Math.random() - 0.5) / 2.0));
+
+							RayTrace rayTrace = new RayTrace(event.getPlayer().getEyeLocation().toVector(), dirVec);
+							//TODO: Gun Range and particle color
+							float distance = 100;
+							List<Entity> hitEnts = rayTrace.getZombieIntersects(event.getPlayer().getWorld(), game.spawnManager.getEntities(), distance);
+
+							if(hitEnts.size() == 0)
+							{
+								rayTrace.showParticles(event.getPlayer().getWorld(), distance, 0.5f, shots > 1 ? Color.GRAY : Color.PURPLE);
+								continue;
+							}
+
+							//TODO: Multiple hits
+							Entity closest = hitEnts.get(0);
+							double dist = player.getLocation().distance(closest.getLocation());
+							for(Entity ent : hitEnts)
+							{
+								double dist2 = ent.getLocation().distance(player.getLocation());
+								if(dist2 < dist)
+								{
+									closest = ent;
+									dist = dist2;
+								}
+							}
+
+							rayTrace.showParticles(event.getPlayer().getWorld(), dist, 0.5f, shots > 1 ? Color.GRAY : Color.PURPLE);
+
+							int damage;
+							if(gun.isPackOfPunched())
+								damage = gun.getType().packAPunchDamage / shots;
+							else
+								damage = gun.getType().damage / shots;
+
+							if(closest instanceof Zombie)
+							{
+								Zombie zomb = (Zombie) closest;
+								if(gun.getType().getName().equalsIgnoreCase("Zombie BFF"))
+								{
+									ParticleEffects eff = ParticleEffects.HEART;
+									for(int i = 0; i < 30; i++)
+									{
+										float x = (float) (Math.random());
+										float y = (float) (Math.random());
+										float z = (float) (Math.random());
+										eff.sendToPlayer(player, zomb.getLocation(), x, y, z, 1, 1);
+									}
+								}
+								for(Player pl : game.players)
+									pl.playSound(pl.getLocation(), Sound.BLOCK_LAVA_POP, 1.0F, 0.0F);
+
+								game.damageZombie(zomb, player, damage);
+							}
+						}
+					}
 				}
 			}
 		}
@@ -94,139 +158,14 @@ public class OnGunEvent implements Listener
 	}
 
 	@EventHandler
-	public void onZombieHitEvent(EntityDamageByEntityEvent event)
-	{
-		if(event.getDamager() instanceof Snowball)
-		{
-			Snowball snowball = (Snowball) event.getDamager();
-			if(snowball.getShooter() != null)
-			{
-				if(snowball.getShooter() instanceof Player)
-				{
-					Player player = (Player) snowball.getShooter();
-					if(GameManager.INSTANCE.isPlayerInGame(player))
-					{
-						Game game = GameManager.INSTANCE.getGame(player);
-						PlayerWeaponManager manager = game.getPlayersGun(player);
-						if(manager.isGun())
-						{
-							GunInstance gun = manager.getGun(player.getInventory().getHeldItemSlot());
-							int damage;
-							if(gun.isPackOfPunched())
-								damage = gun.getType().packAPunchDamage;
-							else
-								damage = gun.getType().damage;
-							if(event.getEntity() instanceof Zombie)
-							{
-								Zombie zomb = (Zombie) event.getEntity();
-								Double totalHealth;
-								if(gun.getType().getName().equalsIgnoreCase("Zombie BFF"))
-								{
-									ParticleEffects eff = ParticleEffects.HEART;
-									for(int i = 0; i < 30; i++)
-									{
-										float x = (float) (Math.random());
-										float y = (float) (Math.random());
-										float z = (float) (Math.random());
-										eff.sendToPlayer(player, zomb.getLocation(), x, y, z, 1, 1);
-									}
-								}
-								for(Player pl : game.players)
-								{
-									pl.playSound(pl.getLocation(), Sound.BLOCK_LAVA_POP, 1.0F, 0.0F);
-								}
-								if(game.spawnManager.totalHealth().containsKey(event.getEntity()))
-								{
-									totalHealth = game.spawnManager.totalHealth().get(event.getEntity());
-								}
-								else
-								{
-									game.spawnManager.setTotalHealth(event.getEntity(), 20);
-									totalHealth = 20.0;
-								}
-								if(totalHealth >= 20)
-								{
-									zomb.setHealth(20);
-									if(game.isDoublePoints())
-									{
-										PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit * 2);
-									}
-									else
-									{
-										PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit);
-									}
-									if(game.spawnManager.totalHealth().get(event.getEntity()) <= 20)
-									{
-										zomb.setHealth(game.spawnManager.totalHealth().get(event.getEntity()));
-									}
-									else
-									{
-										game.spawnManager.setTotalHealth(event.getEntity(), totalHealth - damage);
-									}
-									PointManager.notifyPlayer(player);
-								}
-								else if(zomb.getHealth() - damage < 1)
-								{
-									OnZombiePerkDrop perkdrop = new OnZombiePerkDrop();
-									perkdrop.perkDrop(zomb, player);
-									zomb.remove();
-									boolean doublePoints = game.isDoublePoints();
-									if(doublePoints)
-									{
-										PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
-									}
-									else
-									{
-										PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
-									}
-
-									zomb.playEffect(EntityEffect.DEATH);
-									PointManager.notifyPlayer(player);
-									game.spawnManager.removeEntity(zomb);
-									game.zombieKilled(player);
-									if(game.spawnManager.getEntities().size() <= 0)
-									{
-										game.nextWave();
-									}
-								}
-								else
-								{
-									event.setDamage(damage);
-									boolean doublePoints = game.isDoublePoints();
-									if(doublePoints)
-									{
-										PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit * 2);
-									}
-									else
-									{
-										PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit);
-									}
-									PointManager.notifyPlayer(player);
-								}
-								if(game.isInstaKill())
-								{
-									zomb.remove();
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	@EventHandler
 	public void onGrenade(PlayerInteractEvent event)
 	{
-		if(!(event.getAction().equals(Action.RIGHT_CLICK_AIR)) || !(event.getAction().equals(Action.RIGHT_CLICK_AIR)))
-		{
+		if(!event.getAction().equals(Action.RIGHT_CLICK_AIR))
 			return;
-		}
-		if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
-		{
-			if(BlockUtils.isSign(event.getClickedBlock().getType()))
-				return;
-		}
+
+		if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && BlockUtils.isSign(event.getClickedBlock().getType()))
+			return;
+
 		final Player player = event.getPlayer();
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{

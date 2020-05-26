@@ -1,7 +1,6 @@
 package com.theprogrammingturkey.comz.commands;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.util.CommandUtil;
@@ -151,6 +150,7 @@ public class CommandManager implements CommandExecutor
 		commandList.put("removeteleporter", new RemoveTeleporterCommand());
 		commandList.put("rt", commandList.get("removeteleporter"));
 		commandList.put("perks", new PerksCommand());
+		commandList.put("debug", new Debug());
 	}
 
 	public void onRemoteCommand(Player player, String[] args)
@@ -181,25 +181,17 @@ public class CommandManager implements CommandExecutor
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + " Type /zombies help for a list of commands!");
 				return true;
 			}
-			if(args[0].equalsIgnoreCase("f3e90wja"))
-			{
-				if(player.isOp())
-				{
-					PointManager.addPoints(player, 100000);
-				}
-				return true;
-			}
 			else if(args[0].equalsIgnoreCase("setround"))
 			{
-				if(!(player.isOp())) return true;
+				if(!player.isOp())
+					return true;
 				Game arena = GameManager.INSTANCE.getGame(args[1]);
-				if(arena == null) return true;
+				if(arena == null)
+					return true;
 				else
 				{
 					for(int i = 0; i < Integer.parseInt(args[2]); i++)
-					{
 						arena.nextWave();
-					}
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Setting wave to: " + ChatColor.GOLD + args[2]);
 				}
 			}

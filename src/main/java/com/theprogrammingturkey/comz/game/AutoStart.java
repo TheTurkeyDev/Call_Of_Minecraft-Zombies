@@ -100,17 +100,20 @@ public class AutoStart
 			}
 			else
 			{
+				if(stopped)
+					return;
+
 				if(remain == warnings[index])
 				{
 					game.sendMessageToPlayers(warnings[index] + " seconds!");
 					index = index - 1;
 				}
+
 				for(Player player : game.players)
 					player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.RED + "Starting In: " + remain));
 
 				game.signManager.updateGame();
-				if(!stopped)
-					COMZombies.scheduleTask(20, this);
+				COMZombies.scheduleTask(20, this);
 			}
 		}
 	}

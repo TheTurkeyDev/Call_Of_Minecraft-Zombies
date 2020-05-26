@@ -112,7 +112,7 @@ public class COMZombies extends JavaPlugin
 	public void registerEvents()
 	{
 		PluginManager m = getServer().getPluginManager();
-		m.registerEvents(new OnGunEvent(), this);
+		m.registerEvents(new WeaponListener(), this);
 		m.registerEvents(new ArenaAntiBreak(), this);
 		m.registerEvents(new OnEntitySpawnEvent(), this);
 		m.registerEvents(new OnEntityCombustEvent(), this);
@@ -128,7 +128,7 @@ public class COMZombies extends JavaPlugin
 		m.registerEvents(new OnPreCommandEvent(), this);
 		m.registerEvents(new OnBlockInteractEvent(), this);
 		m.registerEvents(new OnExpEvent(), this);
-		m.registerEvents(new OnZombiePerkDrop(), this);
+		m.registerEvents(new PowerUpDropListener(), this);
 		m.registerEvents(new OnOutsidePlayerInteractEvent(), this);
 		m.registerEvents(new OnPlayerGetEXPEvent(), this);
 		m.registerEvents(new OnInventoryChangeEvent(), this);
