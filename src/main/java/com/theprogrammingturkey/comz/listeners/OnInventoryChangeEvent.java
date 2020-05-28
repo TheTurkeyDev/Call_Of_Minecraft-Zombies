@@ -4,7 +4,7 @@ import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.weapons.GunInstance;
-import com.theprogrammingturkey.comz.game.weapons.PlayerWeaponManager;
+import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

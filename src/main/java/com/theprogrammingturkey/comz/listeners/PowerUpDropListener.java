@@ -9,7 +9,8 @@ import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.PowerUp;
 import com.theprogrammingturkey.comz.game.managers.PowerUpManager;
 import com.theprogrammingturkey.comz.game.weapons.GunInstance;
-import com.theprogrammingturkey.comz.game.weapons.PlayerWeaponManager;
+import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
+import com.theprogrammingturkey.comz.util.PacketUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -27,20 +28,25 @@ public class PowerUpDropListener implements Listener
 		{
 			Player player = (Player) event.getEntity();
 			final Item eItem = event.getItem();
+
 			if(!GameManager.INSTANCE.isPlayerInGame(player))
+			{
+				if(PowerUpManager.currentPowerUps.contains(event.getItem()))
+					event.setCancelled(true);
+				return;
+			}
+			else if(!PowerUpManager.currentPowerUps.contains(event.getItem()))
 			{
 				event.setCancelled(true);
 				return;
 			}
+
 			final Game game = GameManager.INSTANCE.getGame(player);
 
 			event.getItem().remove();
 			event.setCancelled(true);
-			if(!PowerUpManager.currentPowerUps.remove(event.getItem()))
-			{
-				System.out.println("Not a dropped Perk! " + PowerUpManager.currentPowerUps.size() + "   " + event.getItem());
-				return;
-			}
+
+			PowerUpManager.currentPowerUps.remove(event.getItem());
 
 			ItemStack item = event.getItem().getItemStack();
 			PowerUp powerUp = PowerUp.getPowerUpForMaterial(item.getType());
@@ -51,6 +57,7 @@ public class PowerUpDropListener implements Listener
 				notifyAll(game, powerUp);
 			}
 
+			int duration = -1;
 			switch(powerUp)
 			{
 				case MAX_AMMO:
@@ -60,16 +67,17 @@ public class PowerUpDropListener implements Listener
 						for(GunInstance gun : manager.getGuns())
 							gun.maxAmmo();
 					}
-					return;
+					break;
 				case INSTA_KILL:
 					game.setInstaKill(true);
-					COMZombies.scheduleTask(ConfigManager.getMainConfig().instaKillTimer * 20, () -> game.setInstaKill(false));
-					return;
+					duration = ConfigManager.getMainConfig().instaKillTimer * 20;
+					COMZombies.scheduleTask(duration, () -> game.setInstaKill(false));
+					break;
 				case CARPENTER:
 					for(Barrier barrier : game.barrierManager.getBrriers())
 						barrier.repairFull();
 					event.setCancelled(true);
-					return;
+					break;
 				case NUKE:
 					for(Player pl : game.players)
 					{
@@ -80,28 +88,47 @@ public class PowerUpDropListener implements Listener
 						PointManager.notifyPlayer(pl);
 					}
 					game.spawnManager.nuke();
-					return;
+					break;
 				case DOUBLE_POINTS:
-					COMZombies.scheduleTask(ConfigManager.getMainConfig().doublePointsTimer * 20, () -> game.setDoublePoints(false));
-					return;
+					duration = ConfigManager.getMainConfig().doublePointsTimer * 20;
+					COMZombies.scheduleTask(duration, () -> game.setDoublePoints(false));
+					break;
 				case FIRE_SALE:
 					game.boxManager.FireSale(true);
-					COMZombies.scheduleTask(ConfigManager.getMainConfig().fireSaleTimer * 20, () ->
+					duration = ConfigManager.getMainConfig().fireSaleTimer * 20;
+					COMZombies.scheduleTask(duration, () ->
 					{
 						game.setFireSale(false);
 						game.boxManager.FireSale(false);
 					});
-					return;
+					break;
 				default:
 					player.updateInventory();
 					COMZombies.scheduleTask(5, () -> player.getInventory().removeItem(eItem.getItemStack()));
 					break;
 			}
+
+			if(duration != -1)
+				for(Player pl : game.players)
+					powerUpDisplayTimer(pl, powerUp, duration);
 		}
 		else
 		{
 			event.setCancelled(true);
 		}
+	}
+
+	public void powerUpDisplayTimer(Player player, PowerUp powerUp, int duration)
+	{
+		if(!GameManager.INSTANCE.isPlayerInGame(player))
+			return;
+
+		PacketUtil.sendActionBarMessage(player, ChatColor.RED + powerUp.getDisplay() + ": " + (duration / 20));
+		COMZombies.scheduleTask(20, () ->
+		{
+			if(duration - 20 > 0)
+				powerUpDisplayTimer(player, powerUp, duration - 20);
+		});
 	}
 
 	public void notifyAll(Game game, PowerUp powerUp)

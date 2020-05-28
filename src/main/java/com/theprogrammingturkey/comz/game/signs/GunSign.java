@@ -3,10 +3,11 @@ package com.theprogrammingturkey.comz.game.signs;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.weapons.BaseGun;
 import com.theprogrammingturkey.comz.game.weapons.GunInstance;
-import com.theprogrammingturkey.comz.game.weapons.GunType;
-import com.theprogrammingturkey.comz.game.weapons.PlayerWeaponManager;
-import com.theprogrammingturkey.comz.game.weapons.WeaponManager;
+import com.theprogrammingturkey.comz.game.weapons.BasicGun;
+import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
+import com.theprogrammingturkey.comz.game.managers.WeaponManager;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -27,18 +28,18 @@ public class GunSign implements IGameSign
 	{
 		int BuyPoints = Integer.parseInt(sign.getLine(3).substring(0, sign.getLine(3).indexOf("/") - 1).trim());
 		int RefillPoints = Integer.parseInt(sign.getLine(3).substring(sign.getLine(3).indexOf("/") + 2).trim());
-		GunType guntype = WeaponManager.getGun(sign.getLine(2));
+		BaseGun gunType = WeaponManager.getGun(sign.getLine(2));
 
-		if(guntype == null)
+		if(gunType == null)
 		{
 			player.sendRawMessage(COMZombies.PREFIX + " Sorry! That gun doesn't seem to exist!");
 			return;
 		}
 
 		PlayerWeaponManager manager = game.getPlayersGun(player);
-		int slot = manager.getCorrectSlot(guntype);
+		int slot = manager.getCorrectSlot(gunType);
 		GunInstance gun = manager.getGun(player.getInventory().getHeldItemSlot());
-		if(manager.isGun() && gun.getType().getName().equalsIgnoreCase(guntype.getName()))
+		if(manager.isGun() && gun.getType().getName().equalsIgnoreCase(gunType.getName()))
 		{
 			if(PointManager.canBuy(player, RefillPoints))
 			{
@@ -56,9 +57,9 @@ public class GunSign implements IGameSign
 		{
 			if(PointManager.canBuy(player, BuyPoints))
 			{
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You got the " + ChatColor.GOLD + "" + ChatColor.BOLD + guntype.getName() + ChatColor.RED + ChatColor.BOLD + "!");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You got the " + ChatColor.GOLD + "" + ChatColor.BOLD + gunType.getName() + ChatColor.RED + ChatColor.BOLD + "!");
 				manager.removeGun(manager.getGun(slot));
-				manager.addGun(new GunInstance(guntype, player, slot));
+				manager.addGun(new GunInstance(gunType, player, slot));
 				player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1, 1);
 				PointManager.takePoints(player, BuyPoints);
 				PointManager.notifyPlayer(player);

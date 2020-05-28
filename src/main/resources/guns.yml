@@ -4,269 +4,472 @@ Resource Sounds: off
 Guns:
   Pistols:
     B23R:
-      Ammo: 15/105
+      ClipAmmo: 15
+      TotalAmmo: 105
       Damage: 3
       FireDelay: 10
-      ProjectileSpeed: 1
-      PackAPunch:
-        Damage: 15
-        Name: B34R
-        Ammo: 20/180
+      MaxDistance: 15
+      multiHit: false
+      PackAPunchGun: B34R
+    B34R:
+      ClipAmmo: 20
+      TotalAmmo: 180
+      Damage: 15
+      FireDelay: 10
+      MaxDistance: 15
+      multiHit: true
+      isPackAPunchGun: true
     Executioner:
-      Ammo: 5/75
+      ClipAmmo: 5
+      TotalAmmo: 75
       Damage: 23
       FireDelay: 10
-      ProjectileSpeed: 1
-      PackAPunch:
-        Damage: 40
-        Name: Voice of Justice
-        Ammo: 5/100
+      MaxDistance: 15
+      multiHit: true
+      PackAPunchGun: Voice of Justice
+    Voice of Justice:
+      ClipAmmo: 5
+      TotalAmmo: 100
+      Damage: 40
+      FireDelay: 10
+      MaxDistance: 15
+      multiHit: true
+      isPackAPunchGun: true
     Five-Seven:
-      Ammo: 20/120
+      ClipAmmo: 20
+      TotalAmmo: 120
       Damage: 3
       FireDelay: 10
-      ProjectileSpeed: 1
-      PackAPunch:
-        Damage: 15
-        Name: Ultra
-        Ammo: 20/200
+      MaxDistance: 15
+      multiHit: false
+      PackAPunchGun: Ultra
+    Ultra:
+      Damage: 15
+      ClipAmmo: 20
+      TotalAmmo: 200
+      FireDelay: 10
+      MaxDistance: 15
+      multiHit: true
+      isPackAPunchGun: true
     Kap-40:
-      Ammo: 12/96
+      ClipAmmo: 12
+      TotalAmmo: 96
       Damage: 3
       FireDelay: 10
-      ProjectileSpeed: 1
-      PackAPunch:
-        Damage: 12
-        Name: Karmic Atom Perforator-4000
-        Ammo: 15/180
+      MaxDistance: 15
+      multiHit: false
+      PackAPunchGun: Karmic Atom Perforator-4000
+    Karmic Atom Perforator-4000:
+      Damage: 12
+      ClipAmmo: 15
+      TotalAmmo: 180
+      FireDelay: 10
+      MaxDistance: 15
+      multiHit: true
+      isPackAPunchGun: true
     M1911:
-      Ammo: 8/80
+      ClipAmmo: 8
+      TotalAmmo: 80
       Damage: 2
       FireDelay: 10
-      ProjectileSpeed: 1
-      PackAPunch:
-        Damage: 30
-        Name: C-3000 b1at-ch35
-        Ammo: 6/40
+      MaxDistance: 15
+      multiHit: false
+      PackAPunchGun: C-3000 b1at-ch35
+    C-3000 b1at-ch35:
+      Damage: 30
+      ClipAmmo: 6
+      TotalAmmo: 50
+      FireDelay: 10
+      MaxDistance: 15
+      multiHit: true
+      isPackAPunchGun: true
     Python:
-      Ammo: 6/84
+      ClipAmmo: 6
+      TotalAmmo: 84
       Damage: 30
       FireDelay: 10
-      ProjectileSpeed: 1
-      PackAPunch:
-        Damage: 50
-        Name: Cobra
-        Ammo: 12/96
+      MaxDistance: 15
+      multiHit: false
+      PackAPunchGun: Cobra
+    Cobra:
+      Damage: 50
+      ClipAmmo: 12
+      TotalAmmo: 96
+      FireDelay: 10
+      MaxDistance: 15
+      multiHit: true
+      isPackAPunchGun: true
   Shotguns:
     M1216:
-      Ammo: 16/84
+      ClipAmmo: 16
+      TotalAmmo: 84
       Damage: 30
       FireDelay: 15
-      ProjectileSpeed: 1
-      PackAPunch:
-        Damage: 40
-        Name: Mesmerizer
-        Ammo: 24/72
+      MaxDistance: 7
+      multiHit: false
+      PackAPunchGun: Mesmerizer
+    Mesmerizer:
+      Damage: 40
+      ClipAmmo: 24
+      TotalAmmo: 72
+      FireDelay: 15
+      MaxDistance: 7
+      multiHit: true
+      isPackAPunchGun: true
     Olympia:
-      Ammo: 2/38
+      ClipAmmo: 2
+      TotalAmmo: 38
       Damage: 20
       FireDelay: 15
-      ProjectileSpeed: 1
-      PackAPunch:
-        Damage: 30
-        Name: Hades
-        Ammo: 2/60
+      MaxDistance: 7
+      multiHit: false
+      PackAPunchGun: Hades
+    Hades:
+      Damage: 30
+      ClipAmmo: 2
+      TotalAmmo: 60
+      FireDelay: 15
+      MaxDistance: 7
+      multiHit: true
+      isPackAPunchGun: true
     R870 MCS:
-      Ammo: 6/48
+      ClipAmmo: 6
+      TotalAmmo: 48
       Damage: 22
       FireDelay: 15
-      ProjectileSpeed: 1
-      PackAPunch:
-        Damage: 30
-        Name: Refitted-870 Mechanical Cranium Sequencer
-        Ammo: 10/70
+      MaxDistance: 7
+      multiHit: false
+      PackAPunchGun: Refitted-870 Mechanical Cranium Sequencer
+    Refitted-870 Mechanical Cranium Sequencer:
+      Damage: 30
+      ClipAmmo: 10
+      TotalAmmo: 70
+      FireDelay: 15
+      MaxDistance: 7
+      multiHit: true
+      isPackAPunchGun: true
     S12:
-      Ammo: 10/30
+      ClipAmmo: 10
+      TotalAmmo: 30
       Damage: 24
       FireDelay: 15
-      ProjectileSpeed: 1
-      PackAPunch:
-        Damage: 30
-        Name: Synthetic Dozen
-        Ammo: 10/50
+      MaxDistance: 7
+      multiHit: false
+      PackAPunchGun: Synthetic Dozen
+    Synthetic Dozen:
+      Damage: 30
+      ClipAmmo: 10
+      TotalAmmo: 50
+      FireDelay: 15
+      MaxDistance: 7
+      multiHit: true
+      isPackAPunchGun: true
   Assault_Rifles:
     AN-94:
-      Ammo: 30/90
+      ClipAmmo: 30
+      TotalAmmo: 90
       Damage: 5
       FireDelay: 7
-      ProjectileSpeed: 1.5
-      PackAPunch:
-        Damage: 10
-        Name: Actuated Neutralizer 94000
-        Ammo: 50/600
+      MaxDistance: 25
+      multiHit: false
+      PackAPunchGun: Actuated Neutralizer 94000
+    Actuated Neutralizer 94000:
+      Damage: 10
+      ClipAmmo: 50
+      TotalAmmo: 600
+      FireDelay: 7
+      MaxDistance: 25
+      multiHit: true
+      isPackAPunchGun: true
     Colt M16A1:
-      Ammo: 30/120
+      ClipAmmo: 30
+      TotalAmmo: 120
       Damage: 4
       FireDelay: 7
-      ProjectileSpeed: 1.5
-      PackAPunch:
-        Damage: 13
-        Name: Skullcrusher
-        Ammo: 30/270
+      MaxDistance: 25
+      multiHit: false
+      PackAPunchGun: Skullcrusher
+    Skullcrusher:
+      Damage: 13
+      ClipAmmo: 30
+      TotalAmmo: 270
+      FireDelay: 7
+      MaxDistance: 25
+      multiHit: true
+      isPackAPunchGun: true
     FAL:
-      Ammo: 20/180
+      ClipAmmo: 20
+      TotalAmmo: 180
       Damage: 7
       FireDelay: 7
-      ProjectileSpeed: 1.5
-      PackAPunch:
-        Damage: 15
-        Name: EPC WN
-        Ammo: 30/360
+      MaxDistance: 25
+      multiHit: false
+      PackAPunchGun: EPC WN
+    EPC WN:
+      Damage: 15
+      ClipAmmo: 30
+      TotalAmmo: 360
+      FireDelay: 7
+      MaxDistance: 25
+      multiHit: true
+      isPackAPunchGun: true
     M8A1:
-      Ammo: 32/192
+      ClipAmmo: 32
+      TotalAmmo: 192
       Damage: 3
       FireDelay: 7
-      ProjectileSpeed: 1.5
-      PackAPunch:
-        Damage: 7
-        Name: Micro Aerator
-        Ammo: 42/336
+      MaxDistance: 25
+      multiHit: false
+      PackAPunchGun: Micro Aerator
+    Micro Aerator:
+      Damage: 7
+      ClipAmmo: 42
+      TotalAmmo: 336
+      FireDelay: 7
+      MaxDistance: 25
+      multiHit: true
+      isPackAPunchGun: true
     M14:
-      Ammo: 8/96
+      ClipAmmo: 8
+      TotalAmmo: 96
       Damage: 4
       FireDelay: 7
-      ProjectileSpeed: 1.5
-      PackAPunch:
-        Damage: 7
-        Name: Mnesia
-        Ammo: 16/192
+      MaxDistance: 25
+      multiHit: false
+      PackAPunchGun: Mnesia
+    Mnesia:
+      Damage: 7
+      ClipAmmo: 16
+      TotalAmmo: 192
+      FireDelay: 7
+      MaxDistance: 25
+      multiHit: true
+      isPackAPunchGun: true
     M27:
-      Ammo: 30/240
+      ClipAmmo: 30
+      TotalAmmo: 240
       Damage: 5
       FireDelay: 7
-      ProjectileSpeed: 1.5
-      PackAPunch:
-        Damage: 10
-        Name: Mystifier
-        Ammo: 30/360
+      MaxDistance: 25
+      multiHit: false
+      PackAPunchGun: Mystifier
+    Mystifier:
+      Damage: 10
+      ClipAmmo: 30
+      TotalAmmo: 360
+      FireDelay: 7
+      MaxDistance: 25
+      multiHit: true
+      isPackAPunchGun: true
     MTAR:
-      Ammo: 30/240
+      ClipAmmo: 30
+      TotalAmmo: 240
       Damage: 5
       FireDelay: 7
-      ProjectileSpeed: 1.5
-      PackAPunch:
-        Damage: 10
-        Name: Malevolent Taxonomic Anodized Redeemer
-        Ammo: 30/360
+      MaxDistance: 25
+      multiHit: false
+      PackAPunchGun: Malevolent Taxonomic Anodized Redeemer
+    Malevolent Taxonomic Anodized Redeemer:
+      Damage: 10
+      ClipAmmo: 30
+      TotalAmmo: 360
+      FireDelay: 7
+      MaxDistance: 25
+      multiHit: true
+      isPackAPunchGun: true
     SMR:
-      Ammo: 20/140
+      ClipAmmo: 20
+      TotalAmmo: 140
       Damage: 3
       FireDelay: 7
-      ProjectileSpeed: 1.5
-      PackAPunch:
-        Damage: 8
-        Name: SM1L3R
-        Ammo: 30/390
+      MaxDistance: 25
+      multiHit: false
+      PackAPunchGun: SM1L3R
+    SM1L3R:
+      Damage: 8
+      ClipAmmo: 30
+      TotalAmmo: 390
+      FireDelay: 7
+      MaxDistance: 25
+      multiHit: true
+      isPackAPunchGun: true
     Type 25:
-      Ammo: 30/150
+      ClipAmmo: 30
+      TotalAmmo: 150
       Damage: 4
       FireDelay: 7
-      ProjectileSpeed: 1.5
-      PackAPunch:
-        Damage: 12
-        Name: Strain 25
-        Ammo: 30/270
+      MaxDistance: 25
+      multiHit: false
+      PackAPunchGun: Strain 25
+    Strain 25:
+      Damage: 12
+      ClipAmmo: 30
+      TotalAmmo: 270
+      FireDelay: 7
+      MaxDistance: 25
+      multiHit: true
+      isPackAPunchGun: true
   Light_Machine_Guns:
     HAMR:
-      Ammo: 135/375
+      ClipAmmo: 135
+      TotalAmmo: 1375
       Damage: 10
       FireDelay: 5
-      ProjectileSpeed: 2
-      PackAPunch:
-        Damage: 15
-        Name: SLDG-HAMR
-        Ammo: 125/625
+      MaxDistance: 35
+      multiHit: false
+      PackAPunchGun: SLDG-HAMR
+    SLDG-HAMR:
+      Damage: 15
+      ClipAmmo: 125
+      TotalAmmo: 625
+      FireDelay: 5
+      MaxDistance: 35
+      multiHit: true
+      isPackAPunchGun: true
     LSAT:
-      Ammo: 100/400
+      ClipAmmo: 100
+      TotalAmmo: 400
       Damage: 12
       FireDelay: 5
-      ProjectileSpeed: 2
-      PackAPunch:
-        Damage: 16
-        Name: FSIRT
-        Ammo: 100/600
+      MaxDistance: 35
+      multiHit: false
+      PackAPunchGun: FSIRT
+    FSIRT:
+      Damage: 16
+      ClipAmmo: 100
+      TotalAmmo: 600
+      FireDelay: 5
+      MaxDistance: 35
+      multiHit: true
+      isPackAPunchGun: true
     RPD:
-      Ammo: 100/400
+      ClipAmmo: 100
+      TotalAmmo: 400
       Damage: 10
       FireDelay: 5
-      ProjectileSpeed: 2
-      PackAPunch:
-        Damage: 15
-        Name: Relativistic Punishment Device
-        Ammo: 125/750
+      MaxDistance: 35
+      multiHit: false
+      PackAPunchGun: Relativistic Punishment Device
+    Relativistic Punishment Device:
+      Damage: 15
+      ClipAmmo: 125
+      TotalAmmo: 750
+      FireDelay: 5
+      MaxDistance: 35
+      multiHit: true
+      isPackAPunchGun: true
   Sub_Machine_Guns:
     Chicom CQB:
-      Ammo: 40/120
+      ClipAmmo: 40
+      TotalAmmo: 120
       Damage: 2
       FireDelay: 5
-      ProjectileSpeed: 3
-      PackAPunch:
-        Damage: 7
-        Name: Chicom Cataclysmic Quadruple Burst
-        Ammo: 40/200
+      MaxDistance: 40
+      multiHit: false
+      PackAPunchGun: Chicom Cataclysmic Quadruple Burst
+    Chicom Cataclysmic Quadruple Burst:
+      Damage: 7
+      ClipAmmo: 40
+      TotalAmmo: 200
+      FireDelay: 5
+      MaxDistance: 40
+      multiHit: true
+      isPackAPunchGun: true
     MP5:
-      Ammo: 30/120
+      ClipAmmo: 30
+      TotalAmmo: 120
       Damage: 3
       FireDelay: 5
-      ProjectileSpeed: 3
-      PackAPunch:
-        Damage: 7
-        Name: MP115 Kollider
-        Ammo: 40/200
+      MaxDistance: 40
+      multiHit: false
+      PackAPunchGun: MP115 Kollider
+    MP115 Kollider:
+      Damage: 7
+      ClipAmmo: 40
+      TotalAmmo: 200
+      FireDelay: 5
+      MaxDistance: 40
+      multiHit: true
+      isPackAPunchGun: true
     PDW-57:
-      Ammo: 50/200
+      ClipAmmo: 50
+      TotalAmmo: 200
       Damage: 2
       FireDelay: 5
-      ProjectileSpeed: 3
-      PackAPunch:
-        Damage: 6
-        Name: Predictive Death Wish 57000
-        Ammo: 50/350
+      MaxDistance: 40
+      multiHit: false
+      PackAPunchGun: Predictive Death Wish 57000
+    Predictive Death Wish 57000:
+      Damage: 6
+      ClipAmmo: 50
+      TotalAmmo: 350
+      FireDelay: 5
+      MaxDistance: 40
+      multiHit: true
+      isPackAPunchGun: true
   Sniper_Rifles:
     Barret M82A1:
-      Ammo: 5/30
+      ClipAmmo: 5
+      TotalAmmo: 30
       Damage: 50
       FireDelay: 20
-      ProjectileSpeed: 7
-      PackAPunch:
-        Damage: 70
-        Name: Macro Annihilator
-        Ammo: 7/42
+      MaxDistance: 100
+      multiHit: true
+      PackAPunchGun: Macro Annihilator
+    Macro Annihilator:
+      Damage: 70
+      ClipAmmo: 7
+      TotalAmmo: 42
+      FireDelay: 20
+      MaxDistance: 100
+      multiHit: true
+      isPackAPunchGun: true
     DSR 50:
-      Ammo: 4/48
+      ClipAmmo: 4
+      TotalAmmo: 48
       Damage: 50
       FireDelay: 20
-      ProjectileSpeed: 7
-      PackAPunch:
-        Damage: 70
-        Name: Dead Specimen Reactor 5000
-        Ammo: 8/96
+      MaxDistance: 100
+      multiHit: true
+      PackAPunchGun: Dead Specimen Reactor 5000
+    Dead Specimen Reactor 5000:
+      Damage: 70
+      ClipAmmo: 8
+      TotalAmmo: 96
+      FireDelay: 20
+      MaxDistance: 100
+      multiHit: true
+      isPackAPunchGun: true
     SVU-AS:
-      Ammo: 12/48
+      ClipAmmo: 12
+      TotalAmmo: 48
       Damage: 30
       FireDelay: 20
-      ProjectileSpeed: 7
-      PackAPunch:
-        Damage: 50
-        Name: Shadowy Veil Utilizer
-        Ammo: 12/192
+      MaxDistance: 100
+      multiHit: true
+      PackAPunchGun: Shadowy Veil Utilizer
+    Shadowy Veil Utilizer:
+      Damage: 50
+      ClipAmmo: 12
+      TotalAmmo: 192
+      FireDelay: 20
+      MaxDistance: 100
+      multiHit: true
+      isPackAPunchGun: true
   Special:
     Ray Gun:
-      Ammo: 20/160
+      ClipAmmo: 20
+      TotalAmmo: 160
       Damage: 90
       FireDelay: 7
-      ProjectileSpeed: 4
-      PackAPunch:
-        Damage: 120
-        Name: Porter's X2 Ray Gun
-        Ammo: 40/200
+      MaxDistance: 50
+      multiHit: true
+      PackAPunchGun: Porter's X2 Ray Gun
+    Porter's X2 Ray Gun:
+      Damage: 120
+      ClipAmmo: 40
+      TotalAmmo: 200
+      FireDelay: 20
+      MaxDistance: 100
+      multiHit: true
+      isPackAPunchGun: true

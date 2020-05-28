@@ -4,7 +4,7 @@ import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.PerkType;
 import com.theprogrammingturkey.comz.game.weapons.GunInstance;
-import com.theprogrammingturkey.comz.game.weapons.PlayerWeaponManager;
+import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -45,7 +45,7 @@ public class PackAPunchSign implements IGameSign
 				{
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Your " + ChatColor.GOLD + gun.getType().getName() + ChatColor.RED + " was Pack-A-Punched");
 					player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
-					gun.setPackOfPunch(true);
+					gun.setPackOfPunch();
 					PointManager.takePoints(player, cost);
 				}
 			}
@@ -85,7 +85,7 @@ public class PackAPunchSign implements IGameSign
 			}
 		}
 		event.setLine(0, ChatColor.RED + "[Zombies]");
-		event.setLine(1, ChatColor.AQUA + "pack-a-punch");
+		event.setLine(1, ChatColor.AQUA + "Pack-A-Punch");
 		event.setLine(2, Integer.toString(cost));
 		event.setLine(3, "");
 	}

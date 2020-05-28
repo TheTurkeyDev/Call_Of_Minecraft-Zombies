@@ -5,6 +5,7 @@ import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
+import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -25,7 +26,7 @@ public class GunInstance
 	/**
 	 * Contains gun ammo, damage, total ammo, and name
 	 */
-	private GunType gun;
+	private BaseGun gun;
 	/**
 	 * Guns total clip capacity.
 	 */
@@ -34,10 +35,6 @@ public class GunInstance
 	 * Guns total ammo capacity
 	 */
 	public int totalAmmo;
-	/**
-	 * If the gun was pack-a-punched, this is true
-	 */
-	private boolean packed;
 	/**
 	 * If the reload has been scheduled, reload it true until it the scheduled
 	 * reload has been ran
@@ -64,13 +61,13 @@ public class GunInstance
 	 * @param type   : Type of the gun.
 	 * @param player : Player who contains this gun.
 	 */
-	public GunInstance(GunType type, Player player, int slot)
+	public GunInstance(BaseGun type, Player player, int slot)
 	{
 		this.gun = type;
 		this.player = player;
 		this.slot = slot;
-		clipAmmo = type.clipammo;
-		totalAmmo = type.totalammo;
+		clipAmmo = type.clipAmmo;
+		totalAmmo = type.totalAmmo;
 		this.canFire = true;
 		updateGun();
 	}
@@ -82,21 +79,20 @@ public class GunInstance
 	 */
 	public boolean isPackOfPunched()
 	{
-		return packed;
+		return gun instanceof PackAPunchGun;
 	}
 
 	/**
 	 * Used to pack-a-punch a gun.
-	 *
-	 * @param isPacked : If the gun is pack-a-punched
 	 */
-	public void setPackOfPunch(boolean isPacked)
+	public void setPackOfPunch()
 	{
-		packed = isPacked;
-		if(isPacked)
+		if(gun.isPackAPunchable())
 		{
-			clipAmmo = gun.packAPunchClipAmmo;
-			totalAmmo = gun.packAPunchTotalAmmo;
+			gun = gun.getPackAPunchGun();
+			clipAmmo = gun.clipAmmo;
+			totalAmmo = gun.totalAmmo;
+			this.canFire = true;
 			updateGun();
 		}
 	}
@@ -118,10 +114,6 @@ public class GunInstance
 	 */
 	public int getDamage()
 	{
-		if(packed)
-		{
-			return gun.packAPunchDamage;
-		}
 		return gun.damage;
 	}
 
@@ -147,7 +139,7 @@ public class GunInstance
 
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
-			if(gun.clipammo == clipAmmo) return;
+			if(gun.clipAmmo == clipAmmo) return;
 			Game game = GameManager.INSTANCE.getGame(player);
 			final int reloadTime;
 			if(game.perkManager.hasPerk(player, PerkType.SPEED_COLA))
@@ -156,10 +148,10 @@ public class GunInstance
 			COMZombies.scheduleTask(reloadTime * 20, () ->
 			{
 
-				if(!(totalAmmo - (gun.clipammo - clipAmmo) < 0))
+				if(!(totalAmmo - (gun.clipAmmo - clipAmmo) < 0))
 				{
-					totalAmmo -= (gun.clipammo - clipAmmo);
-					clipAmmo = gun.clipammo;
+					totalAmmo -= (gun.clipAmmo - clipAmmo);
+					clipAmmo = gun.clipAmmo;
 				}
 				else
 				{
@@ -198,7 +190,7 @@ public class GunInstance
 	 *
 	 * @return Gun type
 	 */
-	public GunType getType()
+	public BaseGun getType()
 	{
 		return gun;
 	}
@@ -327,14 +319,10 @@ public class GunInstance
 		}
 		else
 		{
-			if(packed)
-			{
+			if(gun instanceof PackAPunchGun)
 				world.playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1, 1);
-			}
 			else
-			{
 				world.playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
-			}
 		}
 		updateGun();
 		canFire = false;
@@ -353,21 +341,12 @@ public class GunInstance
 	 *
 	 * @param gun : Gun to change to
 	 */
-	public void changeGun(GunType gun, boolean isPacked)
+	public void changeGun(BasicGun gun)
 	{
-		packed = isPacked;
 		this.gun = gun;
-		this.gun.updateAmmo(gun.clipammo, gun.totalammo);
-		if(packed)
-		{
-			clipAmmo = gun.packAPunchClipAmmo;
-			totalAmmo = gun.packAPunchTotalAmmo;
-		}
-		else
-		{
-			clipAmmo = gun.clipammo;
-			totalAmmo = gun.totalammo;
-		}
+		this.gun.updateAmmo(gun.clipAmmo, gun.totalAmmo);
+		clipAmmo = gun.clipAmmo;
+		totalAmmo = gun.totalAmmo;
 		updateGun();
 	}
 
@@ -387,11 +366,11 @@ public class GunInstance
 		{
 			data.setDisplayName(ChatColor.RED + "Reloading!");
 		}
-		else if(packed)
+		else if(gun instanceof PackAPunchGun)
 		{
-			data.setDisplayName(ChatColor.BLUE + gun.packAPunchName + " " + clipAmmo + "/" + totalAmmo);
+			data.setDisplayName(ChatColor.BLUE + gun.getName() + " " + clipAmmo + "/" + totalAmmo);
 			data.addEnchant(Enchantment.KNOCKBACK, 1, true);
-			ArrayList<String> lore = new ArrayList<>();
+			List<String> lore = new ArrayList<>();
 			lore.add("PACK-A-PUNCHED");
 			data.setLore(lore);
 		}
@@ -418,10 +397,7 @@ public class GunInstance
 	 */
 	public void maxAmmo()
 	{
-		if(packed)
-			totalAmmo = gun.packAPunchTotalAmmo;
-		else
-			totalAmmo = gun.totalammo;
+		totalAmmo = gun.totalAmmo;
 		updateGun();
 	}
 }

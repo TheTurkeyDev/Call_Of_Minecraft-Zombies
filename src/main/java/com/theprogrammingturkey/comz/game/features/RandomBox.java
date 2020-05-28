@@ -4,8 +4,8 @@ import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.game.managers.WeaponManager;
 import com.theprogrammingturkey.comz.game.weapons.Weapon;
-import com.theprogrammingturkey.comz.game.weapons.WeaponManager;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.util.PacketUtil;
 import org.bukkit.Bukkit;
@@ -40,9 +40,11 @@ public class RandomBox
 
 	private boolean running;
 	private boolean gunSelected;
+	private boolean isTeddyBear = false;
 	private Weapon weapon;
 	private Item item;
 	private ArmorStand namePlate;
+
 
 	public RandomBox(Location loc, BlockFace facing, Game game, String key, int cost)
 	{
@@ -53,6 +55,7 @@ public class RandomBox
 		boxCost = cost;
 		this.running = false;
 		this.gunSelected = false;
+		this.isTeddyBear = false;
 	}
 
 	public void Start(final Player player, int PointsNeeded)
@@ -83,7 +86,7 @@ public class RandomBox
 			PacketUtil.playChestAction(chestLocation, true);
 
 		running = true;
-		weapon = WeaponManager.getRandomWeapon();
+		weapon = WeaponManager.getRandomWeapon(false);
 		Location itemLoc;
 
 		if(chestLocation != null)
@@ -115,25 +118,56 @@ public class RandomBox
 				{
 					if(time > 0)
 					{
-						weapon = WeaponManager.getRandomWeapon();
+						weapon = WeaponManager.getRandomWeapon(false);
 						item.setItemStack(new ItemStack(weapon.getMaterial()));
 						namePlate.setCustomName(weapon.getName());
 						player.getWorld().playSound(boxLoc, Sound.BLOCK_NOTE_BLOCK_HARP, 1f, 1f);
 					}
 					else if(time == 0)
 					{
-//						if(!boxGame.isFireSale() && boxGame.boxManager.getTotalBoxes() > 0 && )
-//						{
-//							CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "TeadyBear!!!!!!");
-//							boxGame.boxManager.teddyBear();
-//							return;
-//						}
-						player.getWorld().playSound(boxLoc, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
-						gunSelected = true;
+						if(!boxGame.isFireSale() && !boxGame.boxManager.isMultiBox() && COMZombies.rand.nextInt(100) == 0)
+						{
+							CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "Teddy Bear!!!!!!");
+							item.setItemStack(new ItemStack(Material.TOTEM_OF_UNDYING));
+							namePlate.setCustomName("");
+							namePlate.setCustomNameVisible(false);
+							item.setGravity(false);
+							item.setCustomName("Teddy Bear");
+							item.setCustomNameVisible(true);
+							isTeddyBear = true;
+
+							COMZombies.scheduleTask(40, () ->
+							{
+								int velTask = COMZombies.scheduleTask(0, 5, () -> item.setVelocity(new Vector(0, 0.1, 0)));
+
+								COMZombies.scheduleTask(60, () ->
+								{
+									Bukkit.getScheduler().cancelTask(velTask);
+									boxGame.boxManager.teddyBear();
+									reset();
+//									Location nextboxLoc = boxGame.boxManager.getCurrentbox().getLocation().clone();
+//									for(double d = 0; d <= 50; d += 0.2)
+//									{
+//										nextboxLoc.add(0, 0.2, 0);
+//										player.getWorld().spawnParticle(Particle.PORTAL, nextboxLoc.getX(), nextboxLoc.getY(), nextboxLoc.getZ(), 0, 0, 0, 0, 1);
+//									}
+								});
+							});
+						}
+						else
+						{
+							player.getWorld().playSound(boxLoc, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
+							gunSelected = true;
+						}
 					}
 					else if(time == -15)
 					{
 						reset();
+					}
+					else
+					{
+						if(!isTeddyBear)
+							namePlate.setCustomName(weapon.getName() + " (" + (15 + time) + ")");
 					}
 					time--;
 				}
@@ -163,6 +197,7 @@ public class RandomBox
 	public void reset()
 	{
 		gunSelected = false;
+		isTeddyBear = false;
 		if(item != null)
 			item.remove();
 		if(namePlate != null)

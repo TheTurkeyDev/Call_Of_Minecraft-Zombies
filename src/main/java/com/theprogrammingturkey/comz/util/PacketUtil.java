@@ -1,6 +1,9 @@
 package com.theprogrammingturkey.comz.util;
 
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.server.v1_15_R1.*;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
@@ -42,5 +45,10 @@ public class PacketUtil
 	{
 		PacketPlayOutNamedSoundEffect packet = new PacketPlayOutNamedSoundEffect(new SoundEffect(new MinecraftKey(sound)), SoundCategory.AMBIENT, player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ(), 1.0F, 1.0F);
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+	}
+
+	public static void sendActionBarMessage(Player player, String message)
+	{
+		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
 	}
 }

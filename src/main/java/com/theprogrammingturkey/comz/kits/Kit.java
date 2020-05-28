@@ -8,10 +8,11 @@ import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
+import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
+import com.theprogrammingturkey.comz.game.managers.WeaponManager;
+import com.theprogrammingturkey.comz.game.weapons.BaseGun;
+import com.theprogrammingturkey.comz.game.weapons.BasicGun;
 import com.theprogrammingturkey.comz.game.weapons.GunInstance;
-import com.theprogrammingturkey.comz.game.weapons.GunType;
-import com.theprogrammingturkey.comz.game.weapons.PlayerWeaponManager;
-import com.theprogrammingturkey.comz.game.weapons.WeaponManager;
 import com.theprogrammingturkey.comz.listeners.customEvents.PlayerPerkPurchaseEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -23,7 +24,7 @@ public class Kit
 {
 	private String name;
 
-	private GunType[] guns = new GunType[3];
+	private BaseGun[] guns = new BasicGun[3];
 	private PerkType[] perks = new PerkType[4];
 	private int points = 500;
 
@@ -48,7 +49,7 @@ public class Kit
 				if(guns[i] == null)
 					continue;
 
-				GunType gun = WeaponManager.getGun(guns[0]);
+				BaseGun gun = WeaponManager.getGun(guns[0]);
 				if(gun == null)
 					Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] Kit Gun: " + guns[i] + "  is an invalid gun name!");
 				this.guns[i] = gun;
@@ -87,7 +88,7 @@ public class Kit
 
 		for(int i = 0; i < guns.length; i++)
 		{
-			GunType gun = guns[i];
+			BaseGun gun = guns[i];
 			if(gun == null)
 				continue;
 			manager.removeGun(i + 1);

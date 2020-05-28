@@ -1,6 +1,6 @@
 package com.theprogrammingturkey.comz.commands;
 
-import com.theprogrammingturkey.comz.game.weapons.WeaponManager;
+import com.theprogrammingturkey.comz.game.managers.WeaponManager;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.entity.Player;
 

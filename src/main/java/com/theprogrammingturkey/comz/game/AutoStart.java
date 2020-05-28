@@ -2,8 +2,7 @@ package com.theprogrammingturkey.comz.game;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.listeners.customEvents.GameStartEvent;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import com.theprogrammingturkey.comz.util.PacketUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -110,7 +109,7 @@ public class AutoStart
 				}
 
 				for(Player player : game.players)
-					player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.RED + "Starting In: " + remain));
+					PacketUtil.sendActionBarMessage(player, ChatColor.RED + "Starting In: " + remain);
 
 				game.signManager.updateGame();
 				COMZombies.scheduleTask(20, this);

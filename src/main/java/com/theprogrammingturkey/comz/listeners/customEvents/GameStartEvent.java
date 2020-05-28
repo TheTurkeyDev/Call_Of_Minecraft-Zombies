@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.listeners.customEvents;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.theprogrammingturkey.comz.game.Game;
 import org.bukkit.entity.Player;
@@ -18,7 +19,7 @@ public class GameStartEvent extends Event
 		this.game = game;
 	}
 
-	public ArrayList<Player> getInGamePlayers()
+	public List<Player> getInGamePlayers()
 	{
 		return (ArrayList<Player>) game.players;
 	}

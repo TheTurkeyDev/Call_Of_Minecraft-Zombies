@@ -6,6 +6,7 @@ import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.ArenaAntiBreak;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.actions.BaseAction;
+import com.theprogrammingturkey.comz.game.managers.WeaponManager;
 import com.theprogrammingturkey.comz.kits.KitManager;
 import com.theprogrammingturkey.comz.listeners.*;
 import org.bukkit.Bukkit;
@@ -63,6 +64,7 @@ public class COMZombies extends JavaPlugin
 	{
 		reloadConfig();
 		ConfigManager.loadFiles();
+		WeaponManager.loadGuns();
 		KitManager.loadKits();
 		PointManager.saveAll();
 		vault = new Vault();

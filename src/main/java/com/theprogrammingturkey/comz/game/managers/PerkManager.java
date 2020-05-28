@@ -62,22 +62,9 @@ public class PerkManager
 
 	public int getAvaliblePerkSlot(Player player)
 	{
-		if(player.getInventory().getItem(4) == null)
-		{
-			return 4;
-		}
-		else if(player.getInventory().getItem(5) == null)
-		{
-			return 5;
-		}
-		else if(player.getInventory().getItem(6) == null)
-		{
-			return 6;
-		}
-		if(player.getInventory().getItem(7) == null)
-		{
-			return 7;
-		}
+		for(int i = 4; i <= 7; i++)
+			if(player.getInventory().getItem(i) == null)
+				return i;
 		return 4;
 	}
 

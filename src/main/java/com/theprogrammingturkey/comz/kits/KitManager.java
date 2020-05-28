@@ -1,19 +1,18 @@
 package com.theprogrammingturkey.comz.kits;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import org.bukkit.entity.Player;
 
-import com.theprogrammingturkey.comz.COMZombies;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class KitManager
 {
 	private static final Kit ERROR_KIT = new Kit();
-	private static ArrayList<Kit> kits = new ArrayList<>();
+	private static List<Kit> kits = new ArrayList<>();
 	private static HashMap<Player, Kit> selectedKits = new HashMap<>();
 
 	private KitManager()
@@ -47,9 +46,7 @@ public class KitManager
 	public static void giveOutKits(Game game)
 	{
 		for(Player player : selectedKits.keySet())
-		{
 			selectedKits.get(player).GivePlayerStartingItems(player);
-		}
 	}
 
 	public static void addPlayersSelectedKit(Player player, Kit kit)

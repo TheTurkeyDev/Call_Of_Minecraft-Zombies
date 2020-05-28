@@ -1,21 +1,12 @@
 package com.theprogrammingturkey.comz.config;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.game.weapons.GunType;
-import com.theprogrammingturkey.comz.game.weapons.PlayerWeaponManager;
-import com.theprogrammingturkey.comz.game.weapons.Weapon;
-import com.theprogrammingturkey.comz.game.weapons.WeaponManager;
-import com.theprogrammingturkey.comz.game.weapons.WeaponType;
+import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.leaderboards.Leaderboard;
 import com.theprogrammingturkey.comz.leaderboards.PlayerStats;
 
 public class ConfigSetup
 {
-	/**
-	 * Weather or not to spawn multiple MysteryBoxes
-	 */
-	public boolean MultiBox;
-
 	/**
 	 * Default points when a player shoots a zombie.
 	 */
@@ -69,15 +60,6 @@ public class ConfigSetup
 	 */
 	public int fireSaleTimer;
 	/**
-	 * True for all if enabled.
-	 */
-	public boolean maxAmmo;
-	public boolean instaKill;
-	public boolean carpenter;
-	public boolean nuke;
-	public boolean doublePoints;
-	public boolean fireSale;
-	/**
 	 * Time it takes for an arena to start.
 	 */
 	public int arenaStartTime;
@@ -94,7 +76,6 @@ public class ConfigSetup
 	public void setup()
 	{
 		COMZombies plugin = COMZombies.getPlugin();
-		MultiBox = plugin.getConfig().getBoolean("config.gameSettings.MultipleMysteryBoxes");
 		doublePointsTimer = plugin.getConfig().getInt("config.gameSettings.doublePointsTimer");
 		instaKillTimer = plugin.getConfig().getInt("config.gameSettings.instaKillTimer");
 		fireSaleTimer = plugin.getConfig().getInt("config.gameSettings.fireSaleTimer");
@@ -109,34 +90,6 @@ public class ConfigSetup
 		configVersion = plugin.getConfig().getString("vID");
 		reloadTime = plugin.getConfig().getInt("config.gameSettings.reloadTime");
 
-		CustomConfig conf = ConfigManager.getConfig(COMZConfig.GUNS);
-		PlayerWeaponManager.customResources = conf.getString("Resource Sounds", "off").equalsIgnoreCase("on");
-
-		WeaponManager.clear();
-		for(String group : conf.getConfigurationSection("Guns").getKeys(false))
-		{
-			for(String gun : conf.getConfigurationSection("Guns." + group).getKeys(false))
-			{
-				String ammo = conf.getString("Guns." + group + "." + gun + ".Ammo");
-				String packAmmo = conf.getString("Guns." + group + "." + gun + ".PackAPunch.Ammo");
-				int clipAmmo = Integer.parseInt(ammo.substring(0, ammo.indexOf("/")));
-				int totalAmmo = Integer.parseInt(ammo.substring(ammo.indexOf("/") + 1));
-				int damage = conf.getInt("Guns." + group + "." + gun + ".Damage");
-				int fireDelay = conf.getInt("Guns." + group + "." + gun + ".FireDelay", 5);
-				double speed = conf.getDouble("Guns." + group + "." + gun + ".ProjectileSpeed", 3);
-				int pClip = Integer.parseInt(packAmmo.substring(0, packAmmo.indexOf("/")));
-				int pTotal = Integer.parseInt(packAmmo.substring(packAmmo.indexOf("/") + 1));
-				int packDamage = conf.getInt("Guns." + group + "." + gun + ".PackAPunch.Damage");
-				String packGunName = conf.getString("Guns." + group + "." + gun + ".PackAPunch.Name");
-				WeaponManager.registerWeapon(new GunType(WeaponType.getWeapon(group), gun, damage, fireDelay, speed, clipAmmo, totalAmmo, pClip, pTotal, packDamage, packGunName));
-			}
-		}
-		maxAmmo = plugin.getConfig().getBoolean("config.Perks.MaxAmmo");
-		instaKill = plugin.getConfig().getBoolean("config.Perks.InstaKill");
-		carpenter = plugin.getConfig().getBoolean("config.Perks.Carpenter");
-		nuke = plugin.getConfig().getBoolean("config.Perks.Nuke");
-		fireSale = MultiBox && plugin.getConfig().getBoolean("config.Perks.FireSale");
-		doublePoints = plugin.getConfig().getBoolean("config.Perks.DoublePoints");
 		arenaStartTime = plugin.getConfig().getInt("config.gameSettings.arenaStartTime");
 		maxPerks = plugin.getConfig().getInt("config.Perks.maxPerks");
 		KillMoney = plugin.getConfig().getInt("config.Economy.MoneyPerKill");

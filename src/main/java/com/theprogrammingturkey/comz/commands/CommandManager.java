@@ -150,7 +150,7 @@ public class CommandManager implements CommandExecutor
 		commandList.put("removeteleporter", new RemoveTeleporterCommand());
 		commandList.put("rt", commandList.get("removeteleporter"));
 		commandList.put("perks", new PerksCommand());
-		commandList.put("debug", new Debug());
+		commandList.put("debug", new DebugCommand());
 	}
 
 	public void onRemoteCommand(Player player, String[] args)

@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.game.managers;
 
+import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
@@ -14,7 +15,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class BoxManager
 {
@@ -27,24 +27,24 @@ public class BoxManager
 	public BoxManager(Game game)
 	{
 		this.game = game;
-		multiBox = ConfigManager.getMainConfig().MultiBox;
 	}
 
 	public void loadAllBoxesToGame()
 	{
 		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
+		multiBox = config.getBoolean(game.getName() + ".MultipleMysteryBoxes", false);
 		boxes.clear();
 		numbers.clear();
-		ConfigurationSection sec = config.getConfigurationSection(game.getName() + ".MysteryBoxs");
+		ConfigurationSection sec = config.getConfigurationSection(game.getName() + ".MysteryBoxes");
 		if(sec != null)
 		{
 			for(String key : sec.getKeys(false))
 			{
-				double x = config.getDouble(game.getName() + ".MysteryBoxs." + key + ".x");
-				double y = config.getDouble(game.getName() + ".MysteryBoxs." + key + ".y");
-				double z = config.getDouble(game.getName() + ".MysteryBoxs." + key + ".z");
-				String facing = config.getString(game.getName() + ".MysteryBoxs." + key + ".Face");
-				int cost = config.getInt(game.getName() + ".MysteryBoxs." + key + ".Cost");
+				double x = config.getDouble(game.getName() + ".MysteryBoxes." + key + ".x");
+				double y = config.getDouble(game.getName() + ".MysteryBoxes." + key + ".y");
+				double z = config.getDouble(game.getName() + ".MysteryBoxes." + key + ".z");
+				String facing = config.getString(game.getName() + ".MysteryBoxes." + key + ".Face");
+				int cost = config.getInt(game.getName() + ".MysteryBoxes." + key + ".Cost");
 				Location loc = new Location(game.getWorld(), x, y, z);
 				RandomBox point = new RandomBox(loc, BlockFace.valueOf(facing), game, key, cost);
 				boxes.add(point);
@@ -70,24 +70,26 @@ public class BoxManager
 	public RandomBox getBox(Location loc)
 	{
 		for(RandomBox b : boxes)
-		{
 			if(b.getLocation().equals(loc))
-			{
 				return b;
-			}
-		}
 		return null;
 	}
 
-	public RandomBox getRandomBox()
+	public RandomBox getRandomBox(RandomBox exclude)
 	{
 		if(boxes.size() == 0)
-		{
 			return null;
-		}
-		Random r = new Random();
-		int num = r.nextInt(boxes.size());
-		return boxes.get(num);
+
+		// Just to prevent infinite loop below
+		if(boxes.size() == 1)
+			return boxes.get(0);
+
+		RandomBox newBox;
+		do
+			newBox = boxes.get(COMZombies.rand.nextInt(boxes.size()));
+		while(newBox == exclude);
+
+		return newBox;
 	}
 
 	public void removeBox(Player player, RandomBox box)
@@ -96,7 +98,7 @@ public class BoxManager
 		if(boxes.contains(box))
 		{
 			Location loc = box.getLocation();
-			conf.set(game.getName() + ".MysteryBoxs." + box.getName(), null);
+			conf.set(game.getName() + ".MysteryBoxes." + box.getName(), null);
 			conf.saveConfig();
 			loadAllBoxesToGame();
 			player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "MysteryBox removed!");
@@ -125,11 +127,11 @@ public class BoxManager
 			{
 				Location loc = box.getLocation();
 				String name = box.getName();
-				conf.set(game.getName() + ".MysteryBoxs." + name + ".x", loc.getBlockX());
-				conf.set(game.getName() + ".MysteryBoxs." + name + ".y", loc.getBlockY());
-				conf.set(game.getName() + ".MysteryBoxs." + name + ".z", loc.getBlockZ());
-				conf.set(game.getName() + ".MysteryBoxs." + name + ".Cost", box.getCost());
-				conf.set(game.getName() + ".MysteryBoxs." + name + ".Face", box.getFacing().name());
+				conf.set(game.getName() + ".MysteryBoxes." + name + ".x", loc.getBlockX());
+				conf.set(game.getName() + ".MysteryBoxes." + name + ".y", loc.getBlockY());
+				conf.set(game.getName() + ".MysteryBoxes." + name + ".z", loc.getBlockZ());
+				conf.set(game.getName() + ".MysteryBoxes." + name + ".Cost", box.getCost());
+				conf.set(game.getName() + ".MysteryBoxes." + name + ".Face", box.getFacing().name());
 				conf.saveConfig();
 				boxes.add(box);
 				numbers.add(Integer.parseInt(box.getName().substring(3)));
@@ -169,7 +171,7 @@ public class BoxManager
 		else
 		{
 			unloadAllBoxes();
-			RandomBox b = getRandomBox();
+			RandomBox b = getRandomBox(null);
 			if(b != null)
 				currentBox = b;
 			currentBox.loadBox();
@@ -210,18 +212,17 @@ public class BoxManager
 	{
 		int a = 0;
 		while(numbers.contains(a))
-		{
 			a++;
-		}
 		return "Box" + a;
 	}
 
 	public void teddyBear()
 	{
 		currentBox.removeBox();
-		RandomBox b = getRandomBox();
+		RandomBox b = getRandomBox(currentBox);
 		if(b != null)
 			currentBox = b;
 		currentBox.loadBox();
+
 	}
 }

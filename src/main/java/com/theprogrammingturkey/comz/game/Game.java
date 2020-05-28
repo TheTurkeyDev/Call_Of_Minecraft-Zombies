@@ -16,18 +16,9 @@ import com.theprogrammingturkey.comz.game.actions.BaseAction;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.game.features.DownedPlayer;
 import com.theprogrammingturkey.comz.game.features.RandomBox;
-import com.theprogrammingturkey.comz.game.managers.BarrierManager;
-import com.theprogrammingturkey.comz.game.managers.BoxManager;
-import com.theprogrammingturkey.comz.game.managers.DoorManager;
-import com.theprogrammingturkey.comz.game.managers.DownedPlayerManager;
-import com.theprogrammingturkey.comz.game.managers.PerkManager;
-import com.theprogrammingturkey.comz.game.managers.PowerUpManager;
-import com.theprogrammingturkey.comz.game.managers.SignManager;
-import com.theprogrammingturkey.comz.game.managers.TeleporterManager;
+import com.theprogrammingturkey.comz.game.managers.*;
+import com.theprogrammingturkey.comz.game.weapons.BaseGun;
 import com.theprogrammingturkey.comz.game.weapons.GunInstance;
-import com.theprogrammingturkey.comz.game.weapons.GunType;
-import com.theprogrammingturkey.comz.game.weapons.PlayerWeaponManager;
-import com.theprogrammingturkey.comz.game.weapons.WeaponManager;
 import com.theprogrammingturkey.comz.kits.KitManager;
 import com.theprogrammingturkey.comz.leaderboards.Leaderboard;
 import com.theprogrammingturkey.comz.leaderboards.PlayerStats;
@@ -440,9 +431,7 @@ public class Game
 			return;
 
 		if(forced && mode == ArenaStatus.STARTING && !starter.forced)
-		{
 			starter.endTimer();
-		}
 
 
 		int delay = ConfigManager.getMainConfig().arenaStartTime + 1;
@@ -469,6 +458,7 @@ public class Game
 			return;
 
 		waveNumber = 0;
+		changingRound = false;
 		mode = ArenaStatus.INGAME;
 		for(Player player : players)
 		{
@@ -482,7 +472,7 @@ public class Game
 		}
 
 		scoreboard.update();
-		if(ConfigManager.getMainConfig().MultiBox)
+		if(this.boxManager.isMultiBox())
 		{
 			sendMessageToPlayers(ChatColor.RED + "[Zombies] All mystery boxes are being generated.");
 			this.boxManager.loadAllBoxes();
@@ -490,7 +480,7 @@ public class Game
 		else
 		{
 			this.boxManager.unloadAllBoxes();
-			RandomBox b = this.boxManager.getRandomBox();
+			RandomBox b = this.boxManager.getRandomBox(null);
 			if(b != null)
 			{
 				this.boxManager.setCurrentBox(b);
@@ -535,7 +525,7 @@ public class Game
 			return;
 		}
 
-		if(!(spawnManager.getZombiesAlive() == 0) || !(spawnManager.getZombiesToSpawn() <= spawnManager.getZombiesSpawned()))
+		if(spawnManager.getZombiesAlive() != 0 || spawnManager.getZombiesToSpawn() > spawnManager.getZombiesSpawned())
 			return;
 		if(changingRound)
 			return;
@@ -635,7 +625,7 @@ public class Game
 				}
 			}
 
-			GunType gun = WeaponManager.getGun(gunName);
+			BaseGun gun = WeaponManager.getGun(gunName);
 			Game game = GameManager.INSTANCE.getGame(player);
 			if(!(game == null))
 			{
@@ -671,7 +661,7 @@ public class Game
 		if(!isDisabled)
 			sendMessageToPlayers(player.getName() + " has left the game! Only " + players.size() + "/" + this.maxPlayers + " player(s) left!");
 
-		if(players.size() == 0)
+		if(players.size() == 0 && mode != ArenaStatus.WAITING)
 			if(!isDisabled)
 				endGame();
 	}
@@ -830,6 +820,9 @@ public class Game
 	 */
 	public void endGame()
 	{
+		if(this.mode == ArenaStatus.WAITING)
+			return;
+
 		this.mode = ArenaStatus.WAITING;
 		for(Player p : players)
 		{
@@ -858,6 +851,7 @@ public class Game
 		instaKill = false;
 		doublePoints = false;
 		waveNumber = 0;
+		changingRound = false;
 		clearArena();
 		clearArenaItems();
 		PointManager.clearGamePoints(this);
@@ -1130,7 +1124,7 @@ public class Game
 		String spawnDelay = loc + ".ZombieSpawnDelay";
 		conf.set(spawnDelay, 15);
 		// Setup starting items data, default vaules added.
-		ArrayList<String> startItems = new ArrayList<>();
+		List<String> startItems = new ArrayList<>();
 		conf.set(loc + ".StartingItems", startItems);
 		conf.set(loc, null);
 		conf.set(loc + ".maxPlayers", 8);

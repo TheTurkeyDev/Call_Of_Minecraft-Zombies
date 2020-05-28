@@ -60,7 +60,7 @@ public class RayTrace
 				break;
 
 			for(Entity ent : ents)
-				if(intersects(position, ent.getBoundingBox().getMin(), ent.getBoundingBox().getMax()))
+				if(!hit.contains(ent) && intersects(position, ent.getBoundingBox().getMin(), ent.getBoundingBox().getMax()))
 					hit.add(ent);
 		}
 		return hit;

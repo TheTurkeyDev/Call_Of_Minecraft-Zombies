@@ -73,6 +73,8 @@ public class GameScoreboard
 		for(Player player : playerScores.keySet())
 			playerScores.get(player).setScore(PointManager.getPlayersPoints(player));
 
+
+
 		game.signManager.updateGame();
 	}
 }

@@ -1,8 +1,11 @@
-package com.theprogrammingturkey.comz.game.weapons;
+package com.theprogrammingturkey.comz.game.managers;
 
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
+import com.theprogrammingturkey.comz.game.weapons.GunInstance;
+import com.theprogrammingturkey.comz.game.weapons.BasicGun;
+import com.theprogrammingturkey.comz.game.weapons.Weapon;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -93,10 +96,10 @@ public class PlayerWeaponManager
 	public void addWeapon(Weapon weapon)
 	{
 		int slot = this.getCorrectSlot(weapon);
-		if(slot >= 1 && slot <= 3 && weapon instanceof GunType)
+		if(slot >= 1 && slot <= 3 && weapon instanceof BasicGun)
 		{
 			removeGun(getGun(slot));
-			addGun(new GunInstance((GunType) weapon, player, slot));
+			addGun(new GunInstance((BasicGun) weapon, player, slot));
 		}
 		else if(slot == 8)
 		{
@@ -174,7 +177,7 @@ public class PlayerWeaponManager
 		return null;
 	}
 
-	public boolean hasGun(GunType gun)
+	public boolean hasGun(BasicGun gun)
 	{
 		for(GunInstance g : guns)
 			if(g.getType().equals(gun))

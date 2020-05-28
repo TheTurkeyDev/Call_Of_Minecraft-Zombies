@@ -17,7 +17,6 @@ sourceCompatibility = targetCompatibility = '1.8'
 repositories {
     mavenCentral()
     mavenLocal()
-    maven { url 'https://jitpack.io' }
     maven { url 'http://nexus.hc.to/content/repositories/pub_releases/' }
     maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
@@ -25,10 +24,28 @@ repositories {
 }
 
 dependencies {
-    compile "com.github.MilkBowl:VaultAPI:1.7"
+    compile "net.milkbowl.vault:VaultAPI:1.7"
     compileOnly 'org.spigotmc:spigot:1.15.2-R0.1-SNAPSHOT'
 }
 
 processResources {
     expand projectVersion: project.version
 }
+
+//def reobfFile = file("$buildDir/reobfJar/output.jar")
+//def reobfArtifact = artifacts.add('default', reobfFile) {
+//    type 'jar'
+//    builtBy 'reobfJar'
+//}
+//publishing {
+//    publications {
+//        mavenJava(MavenPublication) {
+//            artifact reobfArtifact
+//        }
+//    }
+//    repositories {
+//        maven {
+//            url "file:///${project.projectDir}/mcmodsrepo"
+//        }
+//    }
+//}
