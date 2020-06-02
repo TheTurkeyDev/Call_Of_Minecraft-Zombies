@@ -37,7 +37,7 @@ public class OnPlayerChatEvent implements Listener
 			}
 			else
 			{
-				action.onChatMessage(playerChat, message);
+				COMZombies.scheduleTask(1, () -> action.onChatMessage(playerChat, message));
 			}
 		}
 
