@@ -7,9 +7,9 @@ import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.PowerUp;
+import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.game.managers.PowerUpManager;
 import com.theprogrammingturkey.comz.game.weapons.GunInstance;
-import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.util.PacketUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Item;
@@ -76,7 +76,6 @@ public class PowerUpDropListener implements Listener
 				case CARPENTER:
 					for(Barrier barrier : game.barrierManager.getBrriers())
 						barrier.repairFull();
-					event.setCancelled(true);
 					break;
 				case NUKE:
 					for(Player pl : game.players)
@@ -90,16 +89,18 @@ public class PowerUpDropListener implements Listener
 					game.spawnManager.nuke();
 					break;
 				case DOUBLE_POINTS:
+					game.setDoublePoints(true);
 					duration = ConfigManager.getMainConfig().doublePointsTimer * 20;
 					COMZombies.scheduleTask(duration, () -> game.setDoublePoints(false));
 					break;
 				case FIRE_SALE:
-					game.boxManager.FireSale(true);
+					game.setFireSale(true);
+					game.boxManager.FireSale();
 					duration = ConfigManager.getMainConfig().fireSaleTimer * 20;
 					COMZombies.scheduleTask(duration, () ->
 					{
 						game.setFireSale(false);
-						game.boxManager.FireSale(false);
+						game.boxManager.FireSale();
 					});
 					break;
 				default:

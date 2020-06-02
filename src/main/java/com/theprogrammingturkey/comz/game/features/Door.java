@@ -162,7 +162,7 @@ public class Door
 			if(block.getType().equals(Material.AIR))
 				continue;
 
-			COMZombies.scheduleTask(interval, () -> block.setType(Material.AIR));
+			COMZombies.scheduleTask(interval, () -> BlockUtils.setBlockToAir(block));
 			interval += 1;
 		}
 		isOpened = true;
@@ -176,7 +176,7 @@ public class Door
 	public void closeDoor()
 	{
 		for(Block block : blocks.keySet())
-			block.setType(blocks.get(block));
+			BlockUtils.setBlockTypeHelper(block, blocks.get(block));
 
 		for(Sign sign : signs)
 		{
@@ -219,7 +219,7 @@ public class Door
 			int z = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".z");
 			Location loc = new Location(game.getWorld(), x, y, z);
 			Material mat = BlockUtils.getMaterialFromKey(config.getString(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".mat"));
-			loc.getBlock().setType(mat);
+			BlockUtils.setBlockTypeHelper(loc.getBlock(), mat);
 			blocks.put(loc.getBlock(), mat);
 		}
 	}

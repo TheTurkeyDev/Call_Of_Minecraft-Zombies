@@ -23,7 +23,7 @@ public class DebugCommand implements SubCommand
 						player.sendRawMessage("===== INFO =====");
 						player.sendRawMessage("Status: " + game.getMode());
 						player.sendRawMessage("Zombies Alive: " + game.spawnManager.getZombiesAlive());
-						player.sendRawMessage("Zombies Round Info: " + game.spawnManager.getZombiesSpawned() + "/" + game.spawnManager.getZombiesToSpawn());
+						player.sendRawMessage("Zombies Round Info: " + game.spawnManager.getMobsSpawned() + "/" + game.spawnManager.getMobsToSpawn());
 						player.sendRawMessage("Power: " + game.isPowered());
 						player.sendRawMessage("Created: " + game.isCreated());
 						player.sendRawMessage("Double Points: " + game.isDoublePoints());

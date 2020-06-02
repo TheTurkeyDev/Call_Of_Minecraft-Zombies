@@ -61,7 +61,6 @@ public class ArenaSetupAction extends BaseAction
 		}
 		else if(message.equalsIgnoreCase("sw"))
 		{
-			//TODO: Don't Limit to be inside arena
 			Location loc = player.getLocation();
 			if(!game.setSpectateLocation(player, loc))
 			{

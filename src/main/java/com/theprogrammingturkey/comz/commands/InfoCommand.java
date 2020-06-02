@@ -50,8 +50,8 @@ public class InfoCommand implements SubCommand
 							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Mode: " + ChatColor.BLUE + game.getMode().toString());
 							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Wave Number: " + ChatColor.BLUE + game.getWave());
 							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Zombies: " + ChatColor.BLUE + game.spawnManager.getEntities().size());
-							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Zombies Spawned: " + ChatColor.BLUE + game.spawnManager.getZombiesSpawned());
-							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Zombies To Spawn: " + ChatColor.BLUE + game.spawnManager.getZombiesToSpawn());
+							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Zombies Spawned: " + ChatColor.BLUE + game.spawnManager.getMobsSpawned());
+							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Zombies To Spawn: " + ChatColor.BLUE + game.spawnManager.getMobsToSpawn());
 							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Spawn Rate: " + ChatColor.BLUE + "1 zombie / every " + game.spawnManager.getSpawnInterval() + " second(s)");
 							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Is double points: " + ChatColor.BLUE + game.isDoublePoints());
 							CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Is insta-kill: " + ChatColor.BLUE + game.isInstaKill());

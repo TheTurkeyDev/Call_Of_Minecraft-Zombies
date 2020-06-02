@@ -12,8 +12,8 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -171,13 +171,13 @@ public class GunInstance
 				List<Entity> near = player.getNearbyEntities(6, 6, 6);
 				for(Entity ent : near)
 				{
-					if(ent instanceof Zombie)
+					if(ent instanceof Mob)
 					{
 						if(game.spawnManager.getEntities().contains(ent))
 						{
 							World world = player.getWorld();
 							world.strikeLightningEffect(ent.getLocation());
-							game.damageZombie((Zombie) ent, player, 10);
+							game.damageMob((Mob) ent, player, 10);
 						}
 					}
 				}

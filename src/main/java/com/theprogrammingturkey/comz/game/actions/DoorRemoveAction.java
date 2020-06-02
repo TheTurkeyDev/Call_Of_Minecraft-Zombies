@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.game.actions;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.util.BlockUtils;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.Door;
@@ -66,8 +67,8 @@ public class DoorRemoveAction extends BaseAction
 
 		door.removeSelfFromConfig();
 		event.setCancelled(true);
-		for(final Sign sign : door.getSigns())
-			sign.getLocation().getBlock().setType(Material.AIR);
+		for(Sign sign : door.getSigns())
+			BlockUtils.setBlockToAir(sign.getBlock());
 
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "" + ChatColor.BOLD + "Door removed!");
 		game.doorManager.removeDoor(door);

@@ -7,8 +7,8 @@ import com.theprogrammingturkey.comz.particleutilities.ParticleEffects;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -49,8 +49,8 @@ public class OnPlayerVelocityEvent implements Listener
 					}
 
 					for(Entity e : player.getNearbyEntities(5, 5, 5))
-						if(e instanceof Zombie)
-							game.damageZombie((Zombie) e, player, 12);
+						if(e instanceof Mob)
+							game.damageMob((Mob) e, player, 12);
 
 					player.setHealth(pHealth);
 				}

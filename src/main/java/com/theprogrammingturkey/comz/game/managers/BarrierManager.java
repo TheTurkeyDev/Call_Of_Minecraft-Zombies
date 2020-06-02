@@ -9,7 +9,6 @@ import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import com.theprogrammingturkey.comz.util.BlockUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -43,7 +42,7 @@ public class BarrierManager
 			Barrier barrier = new Barrier(number, game);
 			barrier.setBarrierBlock(loc);
 
-			loc.getBlock().setType(BlockUtils.getMaterialFromKey(conf.getString(game.getName() + ".Barriers." + key + ".bb")));
+			BlockUtils.setBlockTypeHelper(loc.getBlock(), BlockUtils.getMaterialFromKey(conf.getString(game.getName() + ".Barriers." + key + ".bb")));
 
 			double rx = conf.getDouble(game.getName() + ".Barriers." + key + ".rx");
 			double ry = conf.getDouble(game.getName() + ".Barriers." + key + ".ry");
@@ -114,7 +113,7 @@ public class BarrierManager
 			conf.saveConfig();
 			loadAllBarriersToGame();
 			player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Barrier removed!");
-			game.getWorld().getBlockAt(barrier.getRepairLoc()).setType(Material.AIR);
+			BlockUtils.setBlockToAir(barrier.getRepairLoc());
 			barriers.remove(barrier);
 		}
 	}

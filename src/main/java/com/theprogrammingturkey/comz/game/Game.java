@@ -22,8 +22,10 @@ import com.theprogrammingturkey.comz.game.weapons.GunInstance;
 import com.theprogrammingturkey.comz.kits.KitManager;
 import com.theprogrammingturkey.comz.leaderboards.Leaderboard;
 import com.theprogrammingturkey.comz.leaderboards.PlayerStats;
+import com.theprogrammingturkey.comz.spawning.RoundSpawnType;
 import com.theprogrammingturkey.comz.spawning.SpawnManager;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
+import com.theprogrammingturkey.comz.util.BlockUtils;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.util.PacketUtil;
 import org.bukkit.Bukkit;
@@ -38,6 +40,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
@@ -109,6 +112,8 @@ public class Game
 	 * If the game has power enabled
 	 */
 	private boolean powerEnabled;
+
+	private int teddyBearPercent;
 
 	/**
 	 * Contains a player and the gun manager corresponding to that player.
@@ -400,11 +405,8 @@ public class Game
 			if(action.getGame().equals(this))
 				return;
 
-		for(int i = 0; i < spawnManager.getPoints().size(); i++)
-		{
-			Location loc = spawnManager.getPoints().get(i).getLocation();
-			loc.getBlock().setType(Material.AIR);
-		}
+		for(SpawnPoint point : spawnManager.getPoints())
+			BlockUtils.setBlockToAir(point.getLocation());
 	}
 
 	/**
@@ -525,7 +527,7 @@ public class Game
 			return;
 		}
 
-		if(spawnManager.getZombiesAlive() != 0 || spawnManager.getZombiesToSpawn() > spawnManager.getZombiesSpawned())
+		if(spawnManager.getZombiesAlive() != 0 || spawnManager.getMobsToSpawn() > spawnManager.getMobsSpawned())
 			return;
 		if(changingRound)
 			return;
@@ -544,6 +546,7 @@ public class Game
 		}
 
 		waveNumber++;
+		int delay = 0;
 		if(waveNumber != 1)
 		{
 			for(Player pl : players)
@@ -551,35 +554,33 @@ public class Game
 				pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, 1, 1);
 				pl.sendTitle(ChatColor.RED + "Round " + waveNumber, ChatColor.GRAY + "starting in 10 seconds", 10, 60, 10);
 			}
-
-			spawnManager.nextWave(waveNumber, players);
-
-			COMZombies.scheduleTask(200, () ->
-			{
-				for(Player pl : players)
-					pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_TRAVEL, 1, 1);
-
-				spawnManager.startWave(waveNumber, players);
-				signManager.updateGame();
-				changingRound = false;
-				scoreboard.update();
-			});
+			delay = 200;
 		}
-		else
+
+		RoundSpawnType spawnType = spawnManager.nextWave(waveNumber, players);
+
+		COMZombies.scheduleTask(delay, () ->
 		{
 			for(Player pl : players)
 			{
 				pl.sendTitle(ChatColor.RED + "Round " + waveNumber, "", 10, 60, 10);
-				pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_TRAVEL, 1, 1);
+				switch(spawnType)
+				{
+					case REGULAR:
+						pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_TRAVEL, 1, 1);
+						break;
+					case HELL_HOUNDS:
+						pl.playSound(pl.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
+						break;
+				}
 			}
 
-			spawnManager.nextWave(waveNumber, players);
 			spawnManager.startWave(waveNumber, players);
 			signManager.updateGame();
 			changingRound = false;
-		}
+			scoreboard.update();
+		});
 
-		scoreboard.update();
 	}
 
 	/**
@@ -1011,6 +1012,7 @@ public class Game
 		int pitch5 = conf.getInt(arenaName + ".LobbySpawn.pitch");
 		int yaw5 = conf.getInt(arenaName + ".LobbySpawn.yaw");
 		maxPlayers = conf.getInt(arenaName + ".maxPlayers", 8);
+		teddyBearPercent = conf.getInt(arenaName + ".TeddyBearChance", 100);
 		Location minLoc = new Location(world, x1, y1, z1);
 		Location maxLoc = new Location(world, x2, y2, z2);
 		Location pwarp = new Location(world, x3, y3, z3, yaw3, pitch3);
@@ -1297,47 +1299,59 @@ public class Game
 		return isFireSale;
 	}
 
-	public void damageZombie(Zombie zombie, Player player, float damageAmount)
+	public void damageMob(Mob mob, Player player, float damageAmount)
 	{
-		double zombHealth = zombie.getHealth() - damageAmount;
-		zombie.playEffect(EntityEffect.HURT);
+		double zombHealth = mob.getHealth() - damageAmount;
+		mob.playEffect(EntityEffect.HURT);
 
 		if(isInstaKill())
 		{
-			player.getWorld().playSound(zombie.getLocation(), Sound.ENTITY_ZOMBIE_DEATH, 1f, 1f);
-			powerUpManager.powerUpDrop(zombie, player);
-			zombie.remove();
+			if(mob instanceof Zombie)
+				player.getWorld().playSound(mob.getLocation(), Sound.ENTITY_ZOMBIE_DEATH, 1f, 1f);
+			else
+				player.getWorld().playSound(mob.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1f, 1f);
+
+			powerUpManager.powerUpDrop(mob, player);
+			mob.remove();
 			if(isDoublePoints())
 				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
 			else
 				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
 
 			PointManager.notifyPlayer(player);
-			spawnManager.removeEntity(zombie);
+			spawnManager.removeEntity(mob);
 			zombieKilled(player);
 			if(spawnManager.getEntities().size() <= 0)
 				nextWave();
 		}
 		else if(zombHealth < 1)
 		{
-			player.getWorld().playSound(zombie.getLocation(), Sound.ENTITY_ZOMBIE_DEATH, 1f, 1f);
-			powerUpManager.powerUpDrop(zombie, player);
-			zombie.remove();
+			if(mob instanceof Zombie)
+				player.getWorld().playSound(mob.getLocation(), Sound.ENTITY_ZOMBIE_DEATH, 1f, 1f);
+			else
+				player.getWorld().playSound(mob.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1f, 1f);
+
+			powerUpManager.powerUpDrop(mob, player);
+			mob.remove();
 			if(isDoublePoints())
 				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
 			else
 				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
 
 			PointManager.notifyPlayer(player);
-			spawnManager.removeEntity(zombie);
+			spawnManager.removeEntity(mob);
 			zombieKilled(player);
 			if(spawnManager.getEntities().size() <= 0)
 				nextWave();
 		}
 		else
 		{
-			zombie.setHealth(zombHealth);
-			player.getWorld().playSound(zombie.getLocation(), Sound.ENTITY_ZOMBIE_HURT, 1f, 1f);
+			mob.setHealth(zombHealth);
+			if(mob instanceof Zombie)
+				player.getWorld().playSound(mob.getLocation(), Sound.ENTITY_ZOMBIE_HURT, 1f, 1f);
+			else
+				player.getWorld().playSound(mob.getLocation(), Sound.ENTITY_GENERIC_HURT, 1f, 1f);
+
 			if(isDoublePoints())
 				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit * 2);
 			else
@@ -1347,12 +1361,12 @@ public class Game
 
 		if(debugMode)
 		{
-			zombie.setCustomName(String.valueOf(zombHealth));
-			zombie.setCustomNameVisible(true);
+			mob.setCustomName(String.valueOf(zombHealth));
+			mob.setCustomNameVisible(true);
 		}
 		else
 		{
-			zombie.setCustomNameVisible(false);
+			mob.setCustomNameVisible(false);
 		}
 	}
 
@@ -1415,15 +1429,11 @@ public class Game
 		});
 	}
 
-	public void removeDownedPlayer(Player player)
+	public int getTeddyBearPercent()
 	{
-		GameManager.INSTANCE.getGame(player).downedPlayerManager.removeDownedPlayer(player);
+		return teddyBearPercent;
 	}
 
-	public boolean isDownedPlayer(String name)
-	{
-		return GameManager.INSTANCE.getGame(Bukkit.getPlayer(name)).downedPlayerManager.isPlayerDowned(Bukkit.getPlayer(name));
-	}
 
 	public void zombieKilled(Player player)
 	{

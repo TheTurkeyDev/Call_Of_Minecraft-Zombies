@@ -6,10 +6,9 @@ import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.RandomBox;
+import com.theprogrammingturkey.comz.util.BlockUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -44,7 +43,7 @@ public class BoxManager
 				double y = config.getDouble(game.getName() + ".MysteryBoxes." + key + ".y");
 				double z = config.getDouble(game.getName() + ".MysteryBoxes." + key + ".z");
 				String facing = config.getString(game.getName() + ".MysteryBoxes." + key + ".Face");
-				int cost = config.getInt(game.getName() + ".MysteryBoxes." + key + ".Cost");
+				int cost = config.getInt(game.getName() + ".MysteryBoxes." + key + ".Cost", 2000);
 				Location loc = new Location(game.getWorld(), x, y, z);
 				RandomBox point = new RandomBox(loc, BlockFace.valueOf(facing), game, key, cost);
 				boxes.add(point);
@@ -97,13 +96,11 @@ public class BoxManager
 		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 		if(boxes.contains(box))
 		{
-			Location loc = box.getLocation();
 			conf.set(game.getName() + ".MysteryBoxes." + box.getName(), null);
 			conf.saveConfig();
 			loadAllBoxesToGame();
 			player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "MysteryBox removed!");
-			Block block = loc.getBlock();
-			block.setType(Material.AIR);
+			BlockUtils.setBlockToAir(box.getLocation());
 			boxes.remove(box);
 			numbers.remove(Integer.parseInt(box.getName().substring(3)));
 		}
@@ -162,9 +159,9 @@ public class BoxManager
 		currentBox.loadBox();
 	}
 
-	public void FireSale(boolean toggle)
+	public void FireSale()
 	{
-		if(toggle)
+		if(game.isFireSale())
 		{
 			loadAllBoxes();
 		}

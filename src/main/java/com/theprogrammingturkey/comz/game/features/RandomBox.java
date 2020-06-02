@@ -6,6 +6,7 @@ import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.managers.WeaponManager;
 import com.theprogrammingturkey.comz.game.weapons.Weapon;
+import com.theprogrammingturkey.comz.util.BlockUtils;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.util.PacketUtil;
 import org.bukkit.Bukkit;
@@ -40,7 +41,7 @@ public class RandomBox
 
 	private boolean running;
 	private boolean gunSelected;
-	private boolean isTeddyBear = false;
+	private boolean isTeddyBear;
 	private Weapon weapon;
 	private Item item;
 	private ArmorStand namePlate;
@@ -125,7 +126,7 @@ public class RandomBox
 					}
 					else if(time == 0)
 					{
-						if(!boxGame.isFireSale() && !boxGame.boxManager.isMultiBox() && COMZombies.rand.nextInt(100) == 0)
+						if(!boxGame.isFireSale() && !boxGame.boxManager.isMultiBox() && COMZombies.rand.nextInt(boxGame.getTeddyBearPercent()) == 0)
 						{
 							CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "Teddy Bear!!!!!!");
 							item.setItemStack(new ItemStack(Material.TOTEM_OF_UNDYING));
@@ -145,12 +146,6 @@ public class RandomBox
 									Bukkit.getScheduler().cancelTask(velTask);
 									boxGame.boxManager.teddyBear();
 									reset();
-//									Location nextboxLoc = boxGame.boxManager.getCurrentbox().getLocation().clone();
-//									for(double d = 0; d <= 50; d += 0.2)
-//									{
-//										nextboxLoc.add(0, 0.2, 0);
-//										player.getWorld().spawnParticle(Particle.PORTAL, nextboxLoc.getX(), nextboxLoc.getY(), nextboxLoc.getZ(), 0, 0, 0, 0, 1);
-//									}
 								});
 							});
 						}
@@ -217,21 +212,13 @@ public class RandomBox
 			Bukkit.getServer().broadcastMessage("Mysterybox " + this.getName() + "Is broken and has no location!! what did you do!!");
 			return;
 		}
-		Block block = boxLoc.getBlock();
-		block.setType(Material.OAK_WALL_SIGN);
-		BlockData blockData = block.getBlockData();
-		((Directional) blockData).setFacing(facing);
-		block.setBlockData(blockData);
-		Sign sign = (Sign) block.getState();
-		sign.setLine(0, ChatColor.RED + "[Zombies]");
-		sign.setLine(1, ChatColor.AQUA + "Mystery Box");
-		sign.setLine(2, "" + boxCost);
-		sign.update();
+
+		updateSign();
 	}
 
 	public void removeBox()
 	{
-		boxLoc.getBlock().setType(Material.AIR);
+		BlockUtils.setBlockToAir(boxLoc);
 	}
 
 	public Location getLocation()
@@ -249,8 +236,23 @@ public class RandomBox
 		return boxNum;
 	}
 
+
 	public int getCost()
 	{
-		return boxCost;
+		return boxGame.isFireSale() ? 10 : boxCost;
+	}
+
+	public void updateSign()
+	{
+		Block block = boxLoc.getBlock();
+		block.setType(Material.OAK_WALL_SIGN);
+		BlockData blockData = block.getBlockData();
+		((Directional) blockData).setFacing(facing);
+		block.setBlockData(blockData);
+		Sign sign = (Sign) block.getState();
+		sign.setLine(0, ChatColor.RED + "[Zombies]");
+		sign.setLine(1, ChatColor.AQUA + "Mystery Box");
+		sign.setLine(2, String.valueOf(boxGame.isFireSale() ? 10 : boxCost));
+		sign.update();
 	}
 }

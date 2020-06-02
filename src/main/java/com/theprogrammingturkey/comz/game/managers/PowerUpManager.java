@@ -10,7 +10,6 @@ import com.theprogrammingturkey.comz.game.features.PowerUp;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -40,27 +39,25 @@ public class PowerUpManager
 	/**
 	 * Drops a given itemstack on the ground at the given location.
 	 *
-	 * @param zombie to get location from
-	 * @param stack  to drop on the ground
+	 * @param mob   to get location from
+	 * @param stack to drop on the ground
 	 */
-	private void dropItem(Zombie zombie, ItemStack stack)
+	private void dropItem(Entity mob, ItemStack stack)
 	{
-		Location loc = zombie.getLocation();
+		Location loc = mob.getLocation();
 		Entity droppedItem = loc.getWorld().dropItem(loc, stack);
 		currentPowerUps.add(droppedItem);
 		COMZombies.scheduleTask(20 * 30, droppedItem::remove);
 	}
 
-	public void powerUpDrop(Entity zombie, Entity ent)
+	public void powerUpDrop(Entity mob, Entity entPlayer)
 	{
-		if(!(zombie instanceof Zombie))
-			return;
-		if(!(ent instanceof Player))
+		if(!(entPlayer instanceof Player) || !GameManager.INSTANCE.isEntityInGame(mob) || !GameManager.INSTANCE.isEntityInGame(entPlayer))
 			return;
 
-		Player player = (Player) ent;
+		Player player = (Player) entPlayer;
 
-		Game game = GameManager.INSTANCE.getGame(zombie.getLocation());
+		Game game = GameManager.INSTANCE.getGame(mob.getLocation());
 		if(game.getMode() != Game.ArenaStatus.INGAME)
 			return;
 		if(!GameManager.INSTANCE.isPlayerInGame(player))
@@ -72,8 +69,7 @@ public class PowerUpManager
 			List<PowerUp> availableRewards = powerups.keySet().stream().filter(k -> powerups.get(k)).collect(Collectors.toList());
 			if(availableRewards.size() == 0)
 				return;
-
-			//TODO: It reduces the price to 10 points....
+			
 			if(availableRewards.contains(PowerUp.FIRE_SALE))
 				if(game.boxManager.isMultiBox())
 					availableRewards.remove(PowerUp.FIRE_SALE);
@@ -81,7 +77,7 @@ public class PowerUpManager
 			int randomPerk = COMZombies.rand.nextInt(availableRewards.size());
 
 			PowerUp powerUp = availableRewards.get(randomPerk);
-			dropItem((Zombie) zombie, new ItemStack(powerUp.getMaterial(), 1));
+			dropItem(mob, new ItemStack(powerUp.getMaterial(), 1));
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.game.actions;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.util.BlockUtils;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
@@ -42,7 +43,7 @@ public class BarrierSetupAction extends BaseAction
 		for(Barrier barrier : game.barrierManager.getBrriers())
 		{
 			barrier.repairFull();
-			game.getWorld().getBlockAt(barrier.getRepairLoc()).setType(Material.AIR);
+			BlockUtils.setBlockToAir(barrier.getRepairLoc());
 		}
 		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Door removal operation has been canceled!");
 	}

@@ -19,8 +19,8 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -37,9 +37,6 @@ public class WeaponListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteractEvent(PlayerInteractEvent event)
 	{
-		if(!event.getAction().equals(Action.RIGHT_CLICK_AIR))
-			return;
-
 		if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && BlockUtils.isSign(event.getClickedBlock().getType()))
 			return;
 
@@ -114,9 +111,9 @@ public class WeaponListener implements Listener
 
 							for(Entity entToDamage : toDamage)
 							{
-								if(entToDamage instanceof Zombie)
+								if(entToDamage instanceof Mob)
 								{
-									Zombie zomb = (Zombie) entToDamage;
+									Mob mob = (Mob) entToDamage;
 									if(gun.getType().getName().equalsIgnoreCase("Zombie BFF"))
 									{
 										ParticleEffects eff = ParticleEffects.HEART;
@@ -125,13 +122,13 @@ public class WeaponListener implements Listener
 											float x = (float) (Math.random());
 											float y = (float) (Math.random());
 											float z = (float) (Math.random());
-											eff.sendToPlayer(player, zomb.getLocation(), x, y, z, 1, 1);
+											eff.sendToPlayer(player, mob.getLocation(), x, y, z, 1, 1);
 										}
 									}
 									for(Player pl : game.players)
 										pl.playSound(pl.getLocation(), Sound.BLOCK_LAVA_POP, 1.0F, 0.0F);
 
-									game.damageZombie(zomb, player, damage);
+									game.damageMob(mob, player, damage);
 								}
 							}
 						}
@@ -194,16 +191,16 @@ public class WeaponListener implements Listener
 				{
 					Location loc = item.getLocation();
 					player.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 0.0F, false, false);
-					List<Entity> ents = game.spawnManager.getEntities();
+					List<Mob> ents = game.spawnManager.getEntities();
 					int ticker = COMZombies.scheduleTask(0, 5, () ->
 							item.getWorld().spawnParticle(Particle.SMOKE_NORMAL, item.getLocation().clone(), 0, Math.random() - 0.5, 0.5, Math.random() - 0.5, 0.05));
 
 					for(int i = ents.size() - 1; i >= 0; i--)
 					{
-						Entity e = ents.get(i);
-						float dist = (float) e.getLocation().distance(item.getLocation());
-						if(e instanceof Zombie && dist < 5)
-							game.damageZombie((Zombie) e, player, 50f / (dist * dist * dist));
+						Mob mob = ents.get(i);
+						float dist = (float) mob.getLocation().distance(item.getLocation());
+						if(dist < 5)
+							game.damageMob(mob, player, 50f / (dist * dist * dist));
 					}
 
 					item.remove();
@@ -224,29 +221,27 @@ public class WeaponListener implements Listener
 				attackEnt.setAI(false);
 				item.addPassenger(attackEnt);
 
-				for(Entity e : game.spawnManager.getEntities())
-					if(e instanceof Zombie)
-						((Zombie) e).setTarget(attackEnt);
+				for(Mob e : game.spawnManager.getEntities())
+					e.setTarget(attackEnt);
 
 				int ticker = COMZombies.scheduleTask(0, 5, () ->
 				{
 					item.getWorld().spawnParticle(Particle.SMOKE_NORMAL, item.getLocation().clone(), 0, Math.random() - 0.5, 0.5, Math.random() - 0.5, 0.05);
-					for(Entity e : game.spawnManager.getEntities())
-						if(e instanceof Zombie)
-							((Zombie) e).setTarget(attackEnt);
+					for(Mob e : game.spawnManager.getEntities())
+						e.setTarget(attackEnt);
 				});
 
 				COMZombies.scheduleTask(140, () ->
 				{
 					Location loc = item.getLocation();
 					player.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 0.0F, false, false);
-					List<Entity> ents = game.spawnManager.getEntities();
+					List<Mob> ents = game.spawnManager.getEntities();
 					for(int i = ents.size() - 1; i >= 0; i--)
 					{
-						Entity e = ents.get(i);
-						float dist = (float) e.getLocation().distance(item.getLocation());
-						if(e instanceof Zombie && dist < 5)
-							game.damageZombie((Zombie) e, player, 50f / (dist * dist * dist));
+						Mob mob = ents.get(i);
+						float dist = (float) mob.getLocation().distance(item.getLocation());
+						if(dist < 5)
+							game.damageMob(mob, player, 50f / (dist * dist * dist));
 					}
 
 					item.remove();

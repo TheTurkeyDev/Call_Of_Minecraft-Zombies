@@ -1,8 +1,10 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.signs.*;
 import com.theprogrammingturkey.comz.util.BlockUtils;
 import com.theprogrammingturkey.comz.util.CommandUtil;
@@ -93,6 +95,27 @@ public class SignListener implements Listener
 			IGameSign signLogic = GAME_SIGNS.get(lineTwo);
 			if(signLogic != null && (game != null || !signLogic.requiresGame()))
 				signLogic.onBreak(INSTANCE.getGame(sign.getLocation()), event.getPlayer(), sign);
+		}
+		else if(lineOne.equalsIgnoreCase("[BarrierRepair]"))
+		{
+			Player player = event.getPlayer();
+			if(GameManager.INSTANCE.isPlayerInGame(player))
+			{
+				Game game = GameManager.INSTANCE.getGame(player);
+				Barrier b = game.barrierManager.getBarrierFromRepair(sign.getLocation());
+				if(b != null)
+				{
+					b.repair();
+					PointManager.addPoints(player, b.getReward());
+					PointManager.notifyPlayer(player);
+					event.setCancelled(true);
+				}
+				else
+				{
+					CommandUtil.sendMessageToPlayer(player, "Congrats! You broke the plugin! JK its all fixed now.");
+					BlockUtils.setBlockToAir(event.getBlock());
+				}
+			}
 		}
 	}
 

@@ -8,8 +8,9 @@ import com.theprogrammingturkey.comz.game.features.PerkType;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LightningStrike;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -62,36 +63,39 @@ public class OnEntityDamageEvent implements Listener
 				}
 			}
 		}
-		else if(e.getEntity() instanceof Zombie)
+		else if(e.getEntity() instanceof Mob)
 		{
 			Entity entity = e.getEntity();
-			if(!(GameManager.INSTANCE.isEntityInGame(entity)))
-				return;
 			Game game = GameManager.INSTANCE.getGame(entity);
-			if(game != null)
+
+			if(game == null)
+				return;
+
+			if(e.getDamager() instanceof Player)
 			{
-				if(e.getDamager() instanceof Player)
+				if(e.getCause().equals(DamageCause.ENTITY_SWEEP_ATTACK))
 				{
-					if(e.getCause().equals(DamageCause.ENTITY_SWEEP_ATTACK))
-					{
-						e.setCancelled(true);
-						return;
-					}
-
-					Player player = (Player) e.getDamager();
-					if(player.getInventory().getItemInMainHand().getType().equals(Material.IRON_SWORD))
-					{
-						if(game.players.contains(player))
-						{
-							Zombie zombie = (Zombie) entity;
-							double dist = zombie.getLocation().distance(player.getLocation());
-							if(dist <= ConfigManager.getMainConfig().meleeRange)
-								game.damageZombie(zombie, player, 5);
-
-						}
-					}
 					e.setCancelled(true);
+					return;
 				}
+
+				Player player = (Player) e.getDamager();
+				if(player.getInventory().getItemInMainHand().getType().equals(Material.IRON_SWORD))
+				{
+					if(game.players.contains(player))
+					{
+						Mob mob = (Mob) entity;
+						double dist = mob.getLocation().distance(player.getLocation());
+						if(dist <= ConfigManager.getMainConfig().meleeRange)
+							game.damageMob(mob, player, 5);
+
+					}
+				}
+				e.setCancelled(true);
+			}
+			else if(e.getDamager() instanceof LightningStrike)
+			{
+				e.setCancelled(true);
 			}
 		}
 	}
@@ -99,41 +103,36 @@ public class OnEntityDamageEvent implements Listener
 	@EventHandler
 	public void damgeEvent(EntityDamageEvent e)
 	{
+		if(!GameManager.INSTANCE.isEntityInGame(e.getEntity()))
+			return;
+
 		if(e.getEntity() instanceof Player)
 		{
 			Player player = (Player) e.getEntity();
-			if(GameManager.INSTANCE.getGame(player) == null)
-				return;
+			Game game = GameManager.INSTANCE.getGame(player);
 
-			if(GameManager.INSTANCE.getGame(player).downedPlayerManager.isPlayerDowned(player))
+			if(game.downedPlayerManager.isPlayerDowned(player))
 				e.setCancelled(true);
 
-			if(GameManager.INSTANCE.getGame(player) != null && GameManager.INSTANCE.getGame(player).getMode() == ArenaStatus.STARTING)
+			if(game.getMode() == ArenaStatus.STARTING)
 				e.setCancelled(true);
 
-			if(GameManager.INSTANCE.isPlayerInGame(player))
+			if(game.getMode() == ArenaStatus.INGAME)
 			{
-				Game game = GameManager.INSTANCE.getGame(player);
-				if(game.getMode() == ArenaStatus.INGAME)
-				{
-					float damage = game.damagePlayer(player, (float) e.getDamage());
-					e.setDamage(damage);
-					if(damage == 0)
-						e.setCancelled(true);
-				}
+				float damage = game.damagePlayer(player, (float) e.getDamage());
+				e.setDamage(damage);
+				if(damage == 0)
+					e.setCancelled(true);
 			}
 
-			if(GameManager.INSTANCE.isPlayerInGame(player))
-				player.getLocation().getWorld().playEffect(player.getLocation().add(0, 1, 0), Effect.STEP_SOUND, 152);
+			player.getLocation().getWorld().playEffect(player.getLocation().add(0, 1, 0), Effect.STEP_SOUND, 152);
 		}
-		else if(e.getCause().equals(DamageCause.LAVA) && e.getEntity() instanceof Zombie)
+		else if(e.getCause().equals(DamageCause.LAVA) && e.getEntity() instanceof Mob)
 		{
-			Zombie z = (Zombie) e.getEntity();
-			Game game = GameManager.INSTANCE.getGame(z);
-			if(game == null)
-				return;
-			z.setFireTicks(0);
-			z.teleport(game.getPlayerSpawn());
+			Mob m = (Mob) e.getEntity();
+			Game game = GameManager.INSTANCE.getGame(m);
+			m.setFireTicks(0);
+			m.teleport(game.getPlayerSpawn());
 			e.setCancelled(true);
 		}
 	}

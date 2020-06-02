@@ -6,41 +6,49 @@ import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
-import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.Door;
+import com.theprogrammingturkey.comz.util.BlockUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Zombie;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SpawnManager
 {
+	private static final Map<RoundSpawnType, RoundSpawner> roundSpawnerMap = new HashMap<>();
+
+	static
+	{
+		roundSpawnerMap.put(RoundSpawnType.REGULAR, new ZombieSpawner());
+		roundSpawnerMap.put(RoundSpawnType.HELL_HOUNDS, new HellHoundSpawner());
+	}
+
 	private Game game;
 	private List<SpawnPoint> points = new ArrayList<>();
-	private List<Entity> mobs = new ArrayList<>();
+	private List<Mob> mobs = new ArrayList<>();
+	private RoundSpawner roundSpawner = new ZombieSpawner();
 	private boolean canSpawn = false;
-	private double zombieSpawnInterval;
-	private double zombieSpawnDelayFactor;
-	private int zombiesSpawned = 0;
-	private int zombiesToSpawn = 0;
+	private double spawnInterval;
+	private double spawnDelayFactor;
+	private int mobsSpawned = 0;
+	private int mobsToSpawn = 0;
 
 	public SpawnManager(Game game)
 	{
 		this.game = game;
-		zombieSpawnInterval = COMZombies.getPlugin().getConfig().getDouble("config.gameSettings.zombieSpawnDelay");
-		zombieSpawnDelayFactor = COMZombies.getPlugin().getConfig().getDouble("config.gameSettings.zombieSpawnDelayFactor");
+		spawnInterval = COMZombies.getPlugin().getConfig().getDouble("config.gameSettings.zombieSpawnDelay");
+		spawnDelayFactor = COMZombies.getPlugin().getConfig().getDouble("config.gameSettings.zombieSpawnDelayFactor");
 	}
 
 	public void loadAllSpawnsToGame()
@@ -86,13 +94,11 @@ public class SpawnManager
 		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
 		if(points.contains(point))
 		{
-			Location loc = point.getLocation();
 			config.set(game.getName() + ".ZombieSpawns." + point.getID(), null);
 			config.saveConfig();
 			loadAllSpawnsToGame();
 			player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Spawn point removed!");
-			Block block = loc.getBlock();
-			block.setType(Material.AIR);
+			BlockUtils.setBlockToAir(point.getLocation());
 			points.remove(point);
 		}
 	}
@@ -133,7 +139,7 @@ public class SpawnManager
 		mobs.clear();
 	}
 
-	public List<Entity> getEntities()
+	public List<Mob> getEntities()
 	{
 		return mobs;
 	}
@@ -142,7 +148,7 @@ public class SpawnManager
 	{
 		mobs.remove(entity);
 
-		if((mobs.size() == 0) && (zombiesSpawned >= zombiesToSpawn))
+		if((mobs.size() == 0) && (mobsSpawned >= mobsToSpawn))
 			game.nextWave();
 
 		game.scoreboard.update();
@@ -211,12 +217,12 @@ public class SpawnManager
 			return;
 		if(game.getMode() != ArenaStatus.INGAME)
 			return;
-		if(this.zombiesSpawned >= this.zombiesToSpawn)
+		if(this.mobsSpawned >= this.mobsToSpawn)
 			return;
 
 		if(mobs.size() >= ConfigManager.getMainConfig().maxZombies)
 		{
-			COMZombies.scheduleTask((int) zombieSpawnInterval * 20, () -> smartSpawn(wave, players));
+			COMZombies.scheduleTask((int) spawnInterval * 20, () -> smartSpawn(wave, players));
 			return;
 		}
 
@@ -225,7 +231,7 @@ public class SpawnManager
 		int selectPlayer = COMZombies.rand.nextInt(playersSize);
 		SpawnPoint selectPoint = null;
 		Player player = players.get(selectPlayer);
-		List<SpawnPoint> points = getNearestPoints(player.getLocation(), zombiesToSpawn);
+		List<SpawnPoint> points = getNearestPoints(player.getLocation(), mobsToSpawn);
 		int totalRetries = 0;
 		int curr = 0;
 		while(selectPoint == null)
@@ -233,7 +239,7 @@ public class SpawnManager
 			if(curr == points.size())
 			{
 				player = players.get(COMZombies.rand.nextInt(playersSize));
-				points = getNearestPoints(player.getLocation(), zombiesToSpawn / playersSize);
+				points = getNearestPoints(player.getLocation(), mobsToSpawn / playersSize);
 				curr = 0;
 				continue;
 			}
@@ -245,54 +251,31 @@ public class SpawnManager
 				oopsWeHadAnError();
 			totalRetries++;
 		}
-		scheduleSpawn((int) zombieSpawnInterval, selectPoint, wave, players);
-	}
 
-	private void scheduleSpawn(int time, SpawnPoint loc, final int wave, final List<Player> players)
-	{
-		if(!this.canSpawn || wave < game.getWave())
-			return;
-
-		double strength = ((wave * 100d) + 50) / 50d;
-		Location location = new Location(loc.getLocation().getWorld(), loc.getLocation().getBlockX(), loc.getLocation().getBlockY(), loc.getLocation().getBlockZ());
-		location.add(0.5, 0, 0.5);
-		Zombie zomb = (Zombie) location.getWorld().spawnEntity(location, EntityType.ZOMBIE);
-		COMZombies.scheduleTask(10, () ->
+		final SpawnPoint finalPoint = selectPoint;
+		COMZombies.scheduleTask((int) spawnInterval * 20L, () ->
 		{
-			if(zomb.getEquipment() != null)
-				zomb.getEquipment().clear();
+			if(!this.canSpawn || wave != game.getWave())
+				return;
+
+			Mob ent = roundSpawner.spawnEntity(game, finalPoint, wave, players);
+			mobs.add(ent);
+			Player closestPlayer = players.get(0);
+			double dist = closestPlayer.getLocation().distance(ent.getLocation());
+			for(Player pl : players)
+			{
+				double dist2 = pl.getLocation().distance(ent.getLocation());
+				if(dist > dist2)
+				{
+					closestPlayer = pl;
+					dist = dist2;
+				}
+			}
+			ent.setTarget(closestPlayer);
+
+			mobsSpawned++;
+			smartSpawn(wave, players);
 		});
-		zomb.setBaby(false);
-		setFollowDistance(zomb);
-		zomb.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(strength);
-		zomb.setHealth(strength);
-
-		if(game.getWave() > 4)
-		{
-			if(COMZombies.rand.nextInt(100) < 20 + (15 * (game.getWave() - 5)))
-				setSpeed(zomb, 1.25f);
-		}
-
-		mobs.add(zomb);
-		zombiesSpawned++;
-
-		Barrier b = game.barrierManager.getBarrier(loc);
-		if(b != null)
-			b.initBarrier(zomb);
-
-		COMZombies.scheduleTask(time * 20L, () -> smartSpawn(wave, players));
-	}
-
-	public void setFollowDistance(Zombie zomb)
-	{
-		AttributeInstance attr = zomb.getAttribute(Attribute.GENERIC_FOLLOW_RANGE);
-		attr.setBaseValue(512);
-	}
-
-	public void setSpeed(Zombie zomb, float mult)
-	{
-		AttributeInstance attr = zomb.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
-		attr.setBaseValue(attr.getValue() * mult);
 	}
 
 	public void update()
@@ -307,17 +290,11 @@ public class SpawnManager
 			{
 				for(int i = mobs.size() - 1; i >= 0; i--)
 				{
-					Entity zomb = mobs.get(i);
-					if(zomb.isDead())
-					{
-						removeEntity(zomb);
-					}
+					Mob mob = mobs.get(i);
+					if(mob.isDead())
+						removeEntity(mob);
 					else
-					{
-						Player closest = getNearestPlayer(zomb);
-						Zombie z = (Zombie) zomb;
-						z.setTarget(closest);
-					}
+						mob.setTarget(getNearestPlayer(mob));
 				}
 
 				update();
@@ -336,7 +313,7 @@ public class SpawnManager
 
 	public void setSpawnInterval(double interval)
 	{
-		this.zombieSpawnInterval = interval;
+		this.spawnInterval = interval;
 	}
 
 	private boolean canSpawn(SpawnPoint point)
@@ -374,14 +351,30 @@ public class SpawnManager
 		game.endGame();
 	}
 
-	public void nextWave(int wave, final List<Player> players)
+	public RoundSpawnType nextWave(int wave, final List<Player> players)
 	{
 		canSpawn = false;
-		zombiesSpawned = 0;
-		zombiesToSpawn = (int) ((wave * 0.15) * 30) + (2 * players.size());
-		setSpawnInterval(zombieSpawnInterval / zombieSpawnDelayFactor);
-		if(zombieSpawnInterval < 0.5)
-			zombieSpawnInterval = 0.5;
+		mobsSpawned = 0;
+
+		//TODO: Configure round number
+		if(wave % 5 == 0)
+		{
+			mobsToSpawn = 10;
+			roundSpawner = roundSpawnerMap.get(RoundSpawnType.HELL_HOUNDS);
+			setSpawnInterval(spawnInterval / spawnDelayFactor);
+			if(spawnInterval < 0.5)
+				spawnInterval = 0.5;
+			return RoundSpawnType.HELL_HOUNDS;
+		}
+		else
+		{
+			mobsToSpawn = (int) ((wave * 0.15) * 30) + (2 * players.size());
+			roundSpawner = roundSpawnerMap.get(RoundSpawnType.REGULAR);
+			setSpawnInterval(spawnInterval / spawnDelayFactor);
+			if(spawnInterval < 0.5)
+				spawnInterval = 0.5;
+			return RoundSpawnType.REGULAR;
+		}
 	}
 
 	public void startWave(int wave, final List<Player> players)
@@ -402,14 +395,14 @@ public class SpawnManager
 		this.smartSpawn(wave, players);
 	}
 
-	public int getZombiesToSpawn()
+	public int getMobsToSpawn()
 	{
-		return this.zombiesToSpawn;
+		return this.mobsToSpawn;
 	}
 
-	public int getZombiesSpawned()
+	public int getMobsSpawned()
 	{
-		return this.zombiesSpawned;
+		return this.mobsSpawned;
 	}
 
 	public int getZombiesAlive()
@@ -419,7 +412,7 @@ public class SpawnManager
 
 	public int getSpawnInterval()
 	{
-		return (int) this.zombieSpawnInterval;
+		return (int) this.spawnInterval;
 	}
 
 	public boolean isEntitySpawned(Entity ent)
@@ -431,9 +424,9 @@ public class SpawnManager
 	{
 		this.mobs.clear();
 		this.canSpawn = false;
-		this.zombiesSpawned = 0;
-		this.zombiesToSpawn = 0;
-		this.zombieSpawnInterval = COMZombies.getPlugin().getConfig().getInt("config.gameSettings.zombieSpawnDelay");
+		this.mobsSpawned = 0;
+		this.mobsToSpawn = 0;
+		this.spawnInterval = COMZombies.getPlugin().getConfig().getInt("config.gameSettings.zombieSpawnDelay");
 	}
 
 	public int getNewSpawnPointNum()

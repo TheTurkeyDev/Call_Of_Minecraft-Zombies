@@ -3,7 +3,7 @@ package com.theprogrammingturkey.comz.game.features;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
-import org.bukkit.Bukkit;
+import com.theprogrammingturkey.comz.util.BlockUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -56,7 +56,7 @@ public class Barrier implements Runnable
 
 		if(stage >= 5)
 		{
-			game.getWorld().getBlockAt(loc).setType(Material.AIR);
+			BlockUtils.setBlockToAir(loc);
 			return true;
 		}
 		else
@@ -88,24 +88,11 @@ public class Barrier implements Runnable
 
 		game.updateBarrierDamage(stage, block);
 
-		if(stage > -1)
-		{
-			game.getWorld().getBlockAt(this.repairLoc).setType(Material.OAK_WALL_SIGN);
-			Sign sign = (Sign) game.getWorld().getBlockAt(this.repairLoc).getState();
-			((Directional) sign.getBlockData()).setFacing(signFacing);
-			sign.setLine(0, "[BarrierRepair]");
-			sign.setLine(1, "Break this to");
-			sign.setLine(2, "repair the");
-			sign.setLine(3, "barrier");
-			sign.update();
-		}
-		else
-		{
-			game.getWorld().getBlockAt(this.repairLoc).setType(Material.AIR);
-		}
+		if(stage == -1)
+			BlockUtils.setBlockToAir(repairLoc);
 
 		if(game.getWorld().getBlockAt(loc).getType().equals(Material.AIR))
-			game.getWorld().getBlockAt(loc).setType(blockMat);
+			BlockUtils.setBlockTypeHelper(game.getWorld().getBlockAt(loc), blockMat);
 		return stage <= -1;
 	}
 
@@ -116,9 +103,9 @@ public class Barrier implements Runnable
 		game.updateBarrierDamage(-1, block);
 
 		if(game.getWorld().getBlockAt(loc).getType().equals(Material.AIR))
-			game.getWorld().getBlockAt(loc).setType(blockMat);
+			BlockUtils.setBlockTypeHelper(loc.getBlock(), blockMat);
 
-		game.getWorld().getBlockAt(this.repairLoc).setType(Material.AIR);
+		BlockUtils.setBlockToAir(repairLoc);
 
 		this.breaking = false;
 	}

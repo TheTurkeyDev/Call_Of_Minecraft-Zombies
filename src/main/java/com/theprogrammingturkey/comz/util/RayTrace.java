@@ -4,6 +4,7 @@ import org.bukkit.Color;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Mob;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class RayTrace
 	}
 
 	//intersection detection for current raytrace
-	public List<Entity> getZombieIntersects(World world, List<Entity> ents, double blocksAway)
+	public List<Entity> getZombieIntersects(World world, List<Mob> ents, double blocksAway)
 	{
 		List<Entity> hit = new ArrayList<>();
 		List<Vector> positions = traverse(blocksAway, ACCURACY);

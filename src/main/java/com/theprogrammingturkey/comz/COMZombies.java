@@ -3,7 +3,7 @@ package com.theprogrammingturkey.comz;
 import com.theprogrammingturkey.comz.commands.CommandManager;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.economy.PointManager;
-import com.theprogrammingturkey.comz.game.ArenaAntiBreak;
+import com.theprogrammingturkey.comz.listeners.ArenaListener;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.actions.BaseAction;
 import com.theprogrammingturkey.comz.game.managers.WeaponManager;
@@ -115,12 +115,11 @@ public class COMZombies extends JavaPlugin
 	{
 		PluginManager m = getServer().getPluginManager();
 		m.registerEvents(new WeaponListener(), this);
-		m.registerEvents(new ArenaAntiBreak(), this);
+		m.registerEvents(new ArenaListener(), this);
 		m.registerEvents(new OnEntitySpawnEvent(), this);
 		m.registerEvents(new OnEntityCombustEvent(), this);
 		m.registerEvents(new OnPlayerVelocityEvent(), this);
 		m.registerEvents(new OnBlockPlaceEvent(), this);
-		m.registerEvents(new OnBlockBreakEvent(), this);
 		m.registerEvents(new OnPlayerMoveEvent(), this);
 		m.registerEvents(new OnPlayerChatEvent(), this);
 		m.registerEvents(new SignListener(), this);
@@ -129,7 +128,7 @@ public class COMZombies extends JavaPlugin
 		m.registerEvents(new OnPlayerJoinEvent(), this);
 		m.registerEvents(new OnPreCommandEvent(), this);
 		m.registerEvents(new OnBlockInteractEvent(), this);
-		m.registerEvents(new OnExpEvent(), this);
+		m.registerEvents(new EXPListener(), this);
 		m.registerEvents(new PowerUpDropListener(), this);
 		m.registerEvents(new OnOutsidePlayerInteractEvent(), this);
 		m.registerEvents(new OnPlayerGetEXPEvent(), this);

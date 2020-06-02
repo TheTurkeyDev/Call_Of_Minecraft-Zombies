@@ -120,20 +120,20 @@ public class GameManager
 	public boolean isLocationInGame(Location loc)
 	{
 		for(Game gl : games)
-		{
-			if(gl.getMode() == ArenaStatus.DISABLED)
-				return false;
-			else if(gl.arena.containsBlock(loc))
+			if(gl.arena.containsBlock(loc) && gl.getMode() != ArenaStatus.DISABLED)
 				return true;
-		}
 		return false;
 	}
 
 	public boolean isEntityInGame(Entity entity)
 	{
+		if(entity instanceof Player)
+			return isPlayerInGame((Player) entity);
+
 		for(Game game : games)
 			if(game.spawnManager.isEntitySpawned(entity))
 				return true;
+
 		return false;
 	}
 
