@@ -121,6 +121,15 @@ public class HellHoundSpawner extends RoundSpawner
 
 		setSpeed(wolf, 1.5f);
 
+
+		//Incase they can't get to the player
+		COMZombies.scheduleTask(1200, () ->
+		{
+			if(!wolf.isDead())
+				wolf.remove();
+		});
+
+
 		return wolf;
 	}
 }
