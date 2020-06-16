@@ -1,12 +1,10 @@
 package com.theprogrammingturkey.comz.commands;
 
 import com.theprogrammingturkey.comz.leaderboards.Leaderboard;
-import com.theprogrammingturkey.comz.leaderboards.PlayerStats;
+import com.theprogrammingturkey.comz.leaderboards.StatsCategory;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
-import java.util.ArrayList;
 
 public class LeaderboardsCommand implements SubCommand
 {
@@ -15,51 +13,37 @@ public class LeaderboardsCommand implements SubCommand
 	{
 		if(player.hasPermission("zombies.leaderboards") || player.hasPermission("zombies.user"))
 		{
-			if(args.length == 1)
+			if(args.length < 2)
 			{
-				CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "" + ChatColor.STRIKETHROUGH + "---------- " + ChatColor.GOLD + "Leaderboards" + ChatColor.GREEN + "" + ChatColor.STRIKETHROUGH + " ----------");
-				ArrayList<PlayerStats> topPlayers = Leaderboard.createLeaderboard(10, player);
-				if(topPlayers.size() == 0)
+				CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "Try /z leaderboard <catergory>");
+				StringBuilder cats = new StringBuilder();
+				for(StatsCategory cat : StatsCategory.values())
+					cats.append(cat.name().toLowerCase()).append(", ");
+				cats.delete(cats.length() - 2, cats.length());
+				CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "Categories: " + cats.toString());
+			}
+			else if(args.length == 2)
+			{
+				//TODO: dynamic length
+				String catName = args[1].toLowerCase();
+				for(StatsCategory cat : StatsCategory.values())
 				{
-					CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "No Avalible Stats!");
-					return true;
+					if(cat.name().toLowerCase().equals(catName))
+					{
+						Leaderboard.getTopX(cat, 15, player);
+						return true;
+					}
 				}
-				for(int i = 0; (i < topPlayers.size() - 1 && i < 10); i++)
-				{
-					int b = i + 1;
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Rank " + ChatColor.GOLD + b + ChatColor.RED + ": " + ChatColor.GREEN + topPlayers.get(i).getPlayer() + " - " + topPlayers.get(i).getKills() + " Kills");
-				}
-				return true;
+				CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + catName + " is not a valid category! ");
+				StringBuilder cats = new StringBuilder();
+				for(StatsCategory cat : StatsCategory.values())
+					cats.append(cat.name().toLowerCase()).append(", ");
+				cats.delete(cats.length() - 2, cats.length());
+				CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "Categories: " + cats.toString());
 			}
 			else
 			{
-				if(args.length == 2)
-				{
-					try
-					{
-						Integer.parseInt(args[1]);
-					} catch(Exception e)
-					{
-						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + args[1] + " is not a number!");
-						return true;
-					}
-					int toGet = Integer.parseInt(args[1]);
-					ArrayList<PlayerStats> topPlayers = Leaderboard.createLeaderboard(toGet, player);
-					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "" + ChatColor.STRIKETHROUGH + "---------- " + ChatColor.GOLD + "Leaderboards" + ChatColor.GREEN + "" + ChatColor.STRIKETHROUGH + " ----------");
-					for(int i = 0; (i < topPlayers.size() - 1 && i < toGet); i++)
-					{
-						int b = i + 1;
-						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Rank " + ChatColor.GOLD + b + ChatColor.RED + ": " + ChatColor.GREEN + topPlayers.get(i).getPlayer() + " - " + topPlayers.get(i).getKills() + " Kills");
-					}
-					if(!topPlayers.contains(Leaderboard.getPlayerStatFromPlayer(player)))
-					{
-						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Your Rank: " + ChatColor.GOLD + Leaderboard.getRank(player) + ChatColor.RED + ": " + ChatColor.GREEN + topPlayers.get(toGet).getPlayer() + " - " + topPlayers.get(toGet).getKills() + " Kills");
-					}
-				}
-				else
-				{
-					CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "Invalid leaderboard command");
-				}
+				CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "Invalid leaderboard command");
 			}
 		}
 		else

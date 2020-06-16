@@ -13,7 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class OnPlayerScopeEvent implements Listener
+public class ScopeListener implements Listener
 {
 	@EventHandler
 	public void onPlayerSneak(final PlayerToggleSneakEvent e)
@@ -24,29 +24,25 @@ public class OnPlayerScopeEvent implements Listener
 		{
 			Game game = GameManager.INSTANCE.getGame(player);
 			PlayerWeaponManager manager = game.getPlayersGun(player);
-			if(!manager.isGun()) return;
+			if(!manager.isGun())
+				return;
 			GunInstance g = manager.getGun(player.getInventory().getHeldItemSlot());
-			boolean isSniper = false;
-			if(g.getType().type.equals(WeaponType.SNIPER_RIFLES))
-				isSniper = true;
 			if(game.getMode().equals(Game.ArenaStatus.INGAME))
 			{
 				if(player.isSneaking())
 				{
 					player.setWalkSpeed(0.2F);
-					player.getInventory().setHelmet(new ItemStack(Material.CHAINMAIL_HELMET, 1));
+					player.getInventory().setHelmet(new ItemStack(Material.LEATHER_HELMET, 1));
 				}
 				else
 				{
 					if(player.getWalkSpeed() == 0.2F)
 					{
-						if(isSniper)
+						if(g.getType().type.equals(WeaponType.SNIPER_RIFLES))
 						{
 							player.setWalkSpeed(-0.2F);
 							if(plugin.getConfig().getBoolean("config.gameSettings.ZoomTexture"))
-							{
 								player.getInventory().setHelmet(new ItemStack(Material.PUMPKIN, 1));
-							}
 						}
 						else
 						{
@@ -55,10 +51,10 @@ public class OnPlayerScopeEvent implements Listener
 					}
 				}
 			}
-			else if((player.getWalkSpeed() == 0.2F) || (player.getWalkSpeed() == 0.15F))
+			else if(player.getWalkSpeed() == 0.2F || player.getWalkSpeed() == 0.15F)
 			{
 				player.setWalkSpeed(-0.2F);
-				player.getInventory().setHelmet(new ItemStack(Material.CHAINMAIL_HELMET, 1));
+				player.getInventory().setHelmet(new ItemStack(Material.LEATHER_HELMET, 1));
 			}
 		}
 	}

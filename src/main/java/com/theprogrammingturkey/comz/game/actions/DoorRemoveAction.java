@@ -39,6 +39,7 @@ public class DoorRemoveAction extends BaseAction
 		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type cancel to cancel this operation.");
 	}
 
+	@Override
 	public void cancelAction()
 	{
 		for(Door door : game.doorManager.getDoors())

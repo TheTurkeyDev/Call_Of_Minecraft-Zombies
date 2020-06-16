@@ -5,7 +5,7 @@ public enum COMZConfig
 	ARENAS("arenas"),
 	GUNS("guns"),
 	KITS("kits"),
-	KILLS("kills"),
+	STATS("stats"),
 	SIGNS("signs");
 
 	private String name;

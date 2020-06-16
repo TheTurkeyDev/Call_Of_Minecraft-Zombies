@@ -1,19 +1,18 @@
 package com.theprogrammingturkey.comz.game.actions;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import com.theprogrammingturkey.comz.util.BlockUtils;
+import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -102,7 +101,7 @@ public class DoorSetupAction extends BaseAction
 	}
 
 	@Override
-	public void onChatMessage(AsyncPlayerChatEvent playerChat, String message)
+	public void onChatMessage(String message)
 	{
 		if(message.equalsIgnoreCase("done"))
 		{
@@ -112,7 +111,6 @@ public class DoorSetupAction extends BaseAction
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Door points for door number " + door.doorNumber + " set!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now select any spawn points in the room the door leads to.");
 				door.saveBlocks(door.p1, door.p2);
-				playerChat.setCancelled(true);
 			}
 			else if(door.arePointsFinal() && !door.areSpawnPointsFinal() && !door.areSignsFinal())
 			{
@@ -127,14 +125,12 @@ public class DoorSetupAction extends BaseAction
 
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn points for door number " + door.doorNumber + " set!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now select any signs that can open this door.");
-				playerChat.setCancelled(true);
 			}
 			else if(door.arePointsFinal() && door.areSpawnPointsFinal() && !door.areSignsFinal())
 			{
 				door.setSignsFinal(true);
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Signs for door number " + door.doorNumber + " set!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now type in a price for the doors.");
-				playerChat.setCancelled(true);
 			}
 		}
 		else if(door.arePointsFinal() && door.areSpawnPointsFinal() && door.areSignsFinal())
@@ -149,7 +145,6 @@ public class DoorSetupAction extends BaseAction
 
 			door.setPrice(price);
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Door setup complete!");
-			playerChat.setCancelled(true);
 			door.closeDoor();
 			COMZombies.scheduleTask(1, () -> COMZombies.getPlugin().activeActions.remove(player));
 		}

@@ -11,8 +11,6 @@ import com.theprogrammingturkey.comz.util.BlockUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Mob;
@@ -89,7 +87,7 @@ public class SpawnManager
 		return null;
 	}
 
-	public void removePoint(Player player, SpawnPoint point)
+	public void removePoint(SpawnPoint point)
 	{
 		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
 		if(points.contains(point))
@@ -97,7 +95,6 @@ public class SpawnManager
 			config.set(game.getName() + ".ZombieSpawns." + point.getID(), null);
 			config.saveConfig();
 			loadAllSpawnsToGame();
-			player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Spawn point removed!");
 			BlockUtils.setBlockToAir(point.getLocation());
 			points.remove(point);
 		}
@@ -154,10 +151,11 @@ public class SpawnManager
 		game.scoreboard.update();
 	}
 
-	public void addPoint(SpawnPoint point)
+	public boolean addPoint(SpawnPoint point)
 	{
 		if(game.getMode() == ArenaStatus.DISABLED)
-			points.add(point);
+			return points.add(point);
+		return false;
 	}
 
 	// Finds the closest locations to point loc, it results numToGet amount of
@@ -436,10 +434,14 @@ public class SpawnManager
 			return 0;
 
 		List<Integer> keys = sec.getKeys(false).stream().map(Integer::parseInt).sorted(Integer::compareTo).collect(Collectors.toList());
-		int last = 0;
+		int next = 0;
 		for(Integer key : keys)
-			if(key != last + 1)
-				return last + 1;
+		{
+			if(key != next)
+				return next;
+			next++;
+		}
+
 		return keys.size();
 	}
 

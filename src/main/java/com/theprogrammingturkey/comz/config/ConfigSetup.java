@@ -95,14 +95,6 @@ public class ConfigSetup
 		KillMoney = plugin.getConfig().getInt("config.Economy.MoneyPerKill");
 		//PistolMaterial = plugin.getConfig().getInt("config.Guns.PistolMaterial");
 
-		CustomConfig killsconf = ConfigManager.getConfig(COMZConfig.KILLS);
-		if(killsconf.getConfigurationSection("Kills") != null)
-		{
-			for(String a : killsconf.getConfigurationSection("Kills").getKeys(false))
-			{
-				PlayerStats stat = new PlayerStats(a, killsconf.getInt("Kills." + a));
-				Leaderboard.addPlayerStats(stat);
-			}
-		}
+		Leaderboard.loadLeaderboard();
 	}
 }

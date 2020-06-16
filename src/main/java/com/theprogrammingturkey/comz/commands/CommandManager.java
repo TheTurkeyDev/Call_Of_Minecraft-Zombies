@@ -73,7 +73,7 @@ public class CommandManager implements CommandExecutor
 		// zombies.join
 		commandList.put("j", commandList.get("join"));
 		commandList.put("joinarena", commandList.get("join"));
-		commandList.put("leaderboards", new LeaderboardsCommand()); // Base
+		commandList.put("leaderboard", new LeaderboardsCommand()); // Base
 		// leaderboards
 		// command:
 		// Perm
@@ -101,13 +101,7 @@ public class CommandManager implements CommandExecutor
 		// given arena: Perm -
 		// zombies.info
 		commandList.put("information", commandList.get("info"));
-		commandList.put("addspawn", new AddSpawnCommand()); // Adds a zombie
-		// spawn to the
-		// given arena:
-		// Perm -
-		// zombies.addspawn
-		commandList.put("as", commandList.get("addspawn"));
-		commandList.put("rs", new DeleteSpawnCommand()); // Delete spawn
+		commandList.put("es", new EditZSpawnCommand()); // Delete spawn
 		// operation:
 		// Perm -
 		// zombies.deletespawns

@@ -121,7 +121,7 @@ public class COMZombies extends JavaPlugin
 		m.registerEvents(new OnPlayerVelocityEvent(), this);
 		m.registerEvents(new OnBlockPlaceEvent(), this);
 		m.registerEvents(new OnPlayerMoveEvent(), this);
-		m.registerEvents(new OnPlayerChatEvent(), this);
+		m.registerEvents(new PlayerChatListener(), this);
 		m.registerEvents(new SignListener(), this);
 		m.registerEvents(new OnEntityDamageEvent(), this);
 		m.registerEvents(new OnPlayerLeaveEvent(), this);
@@ -133,7 +133,7 @@ public class COMZombies extends JavaPlugin
 		m.registerEvents(new OnOutsidePlayerInteractEvent(), this);
 		m.registerEvents(new OnPlayerGetEXPEvent(), this);
 		m.registerEvents(new OnInventoryChangeEvent(), this);
-		m.registerEvents(new OnPlayerScopeEvent(), this);
+		m.registerEvents(new ScopeListener(), this);
 	}
 
 	public void registerSpecificClass(Listener c)

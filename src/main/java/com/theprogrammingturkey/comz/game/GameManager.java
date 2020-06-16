@@ -120,7 +120,7 @@ public class GameManager
 	public boolean isLocationInGame(Location loc)
 	{
 		for(Game gl : games)
-			if(gl.arena.containsBlock(loc) && gl.getMode() != ArenaStatus.DISABLED)
+			if(gl.arena != null && gl.arena.containsBlock(loc) && gl.getMode() != ArenaStatus.DISABLED)
 				return true;
 		return false;
 	}

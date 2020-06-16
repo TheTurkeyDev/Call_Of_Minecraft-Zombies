@@ -471,6 +471,7 @@ public class Game
 			player.setFoodLevel(20);
 			player.setLevel(0);
 			PointManager.setPoints(player, 500);
+			Leaderboard.getPlayerStatFromPlayer(player).incGamesPlayed();
 		}
 
 		scoreboard.update();
@@ -656,6 +657,14 @@ public class Game
 	 */
 	public void removePlayer(Player player)
 	{
+		PlayerStats stats = Leaderboard.getPlayerStatFromPlayer(player);
+		if(stats.getHighestRound() < this.waveNumber)
+			stats.setHighestRound(this.waveNumber);
+
+		int playerPoints = PointManager.getPlayersPoints(player);
+		if(stats.getMostPoints() < playerPoints)
+			stats.setMostPoints(playerPoints);
+
 		players.remove(player);
 		resetPlayer(player);
 
@@ -702,26 +711,6 @@ public class Game
 		signManager.updateGame();
 	}
 
-	/**
-	 * Sets the spectator warp location
-	 *
-	 * @param p   player the set the location
-	 * @param loc location where the warp will be
-	 * @return if the spawn was set or not
-	 */
-	public boolean setSpectateLocation(Player p, Location loc)
-	{
-		if(min == null || max == null || playerTPLocation == null || lobbyLocation == null)
-		{
-			CommandUtil.sendMessageToPlayer(p, "Set the spectator location last!");
-			return false;
-		}
-		spectateLocation = loc;
-		saveLocationsInConfig(p);
-		hasWarps = true;
-		mode = ArenaStatus.WAITING;
-		return true;
-	}
 
 	/**
 	 * Causes the game to always be at night time.
@@ -740,54 +729,74 @@ public class Game
 	}
 
 	/**
+	 * Sets the players warp location in game.
+	 *
+	 * @param loc location where the point will be set
+	 */
+	public void setPlayerTPLocation(Location loc)
+	{
+		playerTPLocation = loc;
+		if(arena != null)
+			saveLocationsInConfig();
+		if(spectateLocation != null && lobbyLocation != null)
+			hasWarps = true;
+	}
+
+	/**
+	 * Sets the spectator warp location
+	 *
+	 * @param loc location where the warp will be
+	 */
+	public void setSpectateLocation(Location loc)
+	{
+		spectateLocation = loc;
+		if(arena != null)
+			saveLocationsInConfig();
+		if(playerTPLocation != null && lobbyLocation != null)
+			hasWarps = true;
+	}
+
+	/**
 	 * Sets the lobby spawn location
 	 *
-	 * @param player that set the spawn
-	 * @param loc    location where the spawn wll be
-	 * @return if the spawn was set or not
+	 * @param loc location where the spawn wll be
 	 */
-	public boolean setLobbySpawn(Player player, Location loc)
+	public void setLobbySpawn(Location loc)
 	{
-		if(min == null || max == null)
-		{
-			CommandUtil.sendMessageToPlayer(player, "Set arena points first!");
-			return false;
-		}
 		lobbyLocation = loc;
-		return true;
+		if(arena != null)
+			saveLocationsInConfig();
+		if(playerTPLocation != null && spectateLocation != null)
+			hasWarps = true;
 	}
 
 	/**
 	 * Sets the first point in the arena
 	 *
-	 * @param p   player that set the point
 	 * @param loc location that
 	 */
-	public void addPointOne(Player p, Location loc)
+	public void addPointOne(Location loc)
 	{
-		min = loc;
-		saveLocationsInConfig(p);
+		min = new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+		if(arena != null)
+			saveLocationsInConfig();
 		world = loc.getWorld();
 	}
 
 	/**
 	 * Sets the Second point in the arena
 	 *
-	 * @param p   player that set the point
 	 * @param loc location that
 	 * @return if the point was set or not
 	 */
-	public boolean addPointTwo(Player p, Location loc)
+	public boolean addPointTwo(Location loc)
 	{
 		if(min == null)
-		{
-			CommandUtil.sendMessageToPlayer(p, "Type p1 before p2!");
 			return false;
-		}
-		World world = min.getWorld();
-		max = loc;
-		arena = new Arena(min, max, world);
-		saveLocationsInConfig(p);
+
+		max = new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+		if(arena != null)
+			saveLocationsInConfig();
 		hasPoints = true;
 		return true;
 	}
@@ -871,25 +880,6 @@ public class Game
 	}
 
 	/**
-	 * Sets the players warp location in game.
-	 *
-	 * @param p   player that set the point
-	 * @param loc location where the point will be set
-	 * @return if the point was set or not
-	 */
-	public boolean setPlayerTPLocation(Player p, Location loc)
-	{
-		if(min == null || max == null)
-		{
-			CommandUtil.sendMessageToPlayer(p, "Set the player warp after spawns are set!");
-			return false;
-		}
-		playerTPLocation = loc;
-		saveLocationsInConfig(p);
-		return true;
-	}
-
-	/**
 	 * Sets the name of the game
 	 *
 	 * @param name Name of the arena to be set to
@@ -906,36 +896,13 @@ public class Game
 
 	/**
 	 * Saves all locations to the config
-	 *
-	 * @param player that saved the locations
 	 */
-	public void saveLocationsInConfig(Player player)
+	public void saveLocationsInConfig()
 	{
 		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 
 		if(min.getWorld() != null)
 			conf.set(arenaName + ".Location.world", min.getWorld().getName());
-
-		if(min == null || max == null)
-		{
-			player.sendRawMessage(COMZombies.PREFIX + "P1 or P2 is not set!");
-			return;
-		}
-		if(playerTPLocation == null)
-		{
-			player.sendRawMessage(COMZombies.PREFIX + "player warp is not set!");
-			return;
-		}
-		if(spectateLocation == null)
-		{
-			player.sendRawMessage(COMZombies.PREFIX + "spectator warp is not set!");
-			return;
-		}
-		if(lobbyLocation == null)
-		{
-			player.sendRawMessage(COMZombies.PREFIX + "lobby warp not set!");
-			return;
-		}
 
 		conf.set(arenaName + ".Location.P1.x", min.getBlockX());
 		conf.set(arenaName + ".Location.P1.y", min.getBlockY());
@@ -960,9 +927,6 @@ public class Game
 		conf.set(arenaName + ".LobbySpawn.yaw", lobbyLocation.getYaw());
 		conf.saveConfig();
 		conf.reloadConfig();
-
-		CommandUtil.sendMessageToPlayer(player, "Arena " + arenaName + " setup!");
-		hasWarps = true;
 	}
 
 	/**
@@ -1037,13 +1001,26 @@ public class Game
 		if(conf.getBoolean(arenaName + ".IsForceNight", false))
 			forceNight();
 
+		hasWarps = true;
+		hasPoints = true;
+
 		return true;
+	}
+
+	public Location getLoc1()
+	{
+		return min;
+	}
+
+	public Location getLoc2()
+	{
+		return max;
 	}
 
 	/**
 	 * Sets up the arena when the server loads
 	 */
-	public void setup()
+	public void setupConfig()
 	{
 
 		// Sets up ArenaConfig
@@ -1437,29 +1414,7 @@ public class Game
 
 	public void zombieKilled(Player player)
 	{
-		CustomConfig conf = ConfigManager.getConfig(COMZConfig.KILLS);
-		if(conf.contains("Kills." + player.getName()))
-		{
-			int kills = conf.getInt("Kills." + player.getName());
-			kills++;
-			conf.set("Kills." + player.getName(), kills);
-			PlayerStats stat = Leaderboard.getPlayerStatFromPlayer(player);
-			if(stat == null)
-			{
-				PlayerStats newstat = new PlayerStats(player.getName(), 1);
-				Leaderboard.addPlayerStats(newstat);
-			}
-			else
-			{
-				stat.setKills(stat.getKills() + 1);
-			}
-		}
-		else
-		{
-			conf.set("Kills." + player.getName(), 1);
-			PlayerStats stat = new PlayerStats(player.getName(), 1);
-			Leaderboard.addPlayerStats(stat);
-		}
+		Leaderboard.getPlayerStatFromPlayer(player).incKills();
 
 		if(COMZombies.getPlugin().vault != null)
 		{
@@ -1471,7 +1426,6 @@ public class Game
 				e.printStackTrace();
 			}
 		}
-		conf.saveConfig();
 	}
 
 	public void updateBarrierDamage(int damage, Block block)
@@ -1484,6 +1438,28 @@ public class Game
 	{
 		for(Player player : players)
 			player.sendRawMessage(COMZombies.PREFIX + message);
+	}
+
+	public boolean gameSetupComplete(Player player)
+	{
+		if(!hasPoints)
+		{
+			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Either P1 or P2 or both are not set!");
+			return false;
+		}
+
+		if(!hasWarps)
+		{
+			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "One or multiple of the game warps (gw, lw, sw) are not set!");
+			return false;
+		}
+
+		saveLocationsInConfig();
+		arena = new Arena(min, max, world);
+		mode = ArenaStatus.DISABLED;
+		maxPlayers = 8;
+		CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Arena [" + arenaName + "] is setup!");
+		return true;
 	}
 
 	public void setDebugMode(boolean debugMode)

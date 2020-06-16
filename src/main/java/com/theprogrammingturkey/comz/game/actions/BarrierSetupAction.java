@@ -1,19 +1,18 @@
 package com.theprogrammingturkey.comz.game.actions;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.util.BlockUtils;
-import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
+import com.theprogrammingturkey.comz.util.BlockUtils;
+import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -45,7 +44,7 @@ public class BarrierSetupAction extends BaseAction
 			barrier.repairFull();
 			BlockUtils.setBlockToAir(barrier.getRepairLoc());
 		}
-		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Door removal operation has been canceled!");
+		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier removal operation has been canceled!");
 	}
 
 	@Override
@@ -91,7 +90,8 @@ public class BarrierSetupAction extends BaseAction
 		}
 	}
 
-	public void onChatMessage(AsyncPlayerChatEvent playerChat, String message)
+	@Override
+	public void onChatMessage(String message)
 	{
 		if(barrier == null)
 		{
@@ -104,13 +104,11 @@ public class BarrierSetupAction extends BaseAction
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier block for barrier " + barrier.getNum() + " set!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now select where the repair sign will be located at.");
-				playerChat.setCancelled(true);
 			}
 			else if(barrier.getSpawnPoint() == null)
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier block repair sign location for barrier " + barrier.getNum() + " set!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now select the spawn point that is located behind the barrier.");
-				playerChat.setCancelled(true);
 			}
 			else
 			{
@@ -120,7 +118,6 @@ public class BarrierSetupAction extends BaseAction
 
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn point for barrier number " + barrier.getNum() + " set!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now type in the ammount the player will receive per repairation level of the barrier.");
-				playerChat.setCancelled(true);
 			}
 		}
 		else if(barrier.getSpawnPoint() != null && barrier.getBlock() != null && barrier.getRepairLoc() != null)
@@ -136,7 +133,6 @@ public class BarrierSetupAction extends BaseAction
 			barrier.setReward(price);
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier setup complete!");
 			barrier.getGame().barrierManager.addBarrier(barrier);
-			playerChat.setCancelled(true);
 			COMZombies.scheduleTask(1, () -> COMZombies.getPlugin().activeActions.remove(player));
 		}
 	}

@@ -13,7 +13,6 @@ public class EnableCommand implements SubCommand
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		if(player.hasPermission("zombies.enable") || player.hasPermission("zombies.admin"))
 		{
 			if(args.length == 1)

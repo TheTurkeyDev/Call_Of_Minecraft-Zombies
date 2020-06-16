@@ -1,65 +1,72 @@
 package com.theprogrammingturkey.comz.leaderboards;
 
+import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.config.ConfigManager;
+import com.theprogrammingturkey.comz.config.CustomConfig;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class Leaderboard
 {
+	private static List<PlayerStats> allPlayers = new ArrayList<>();
 
-	// String being player, PlayerStats being the object that contains info
-	// about that "player" or string
-	private static ArrayList<PlayerStats> allPlayers = new ArrayList<>();
-
-	private Leaderboard()
+	public static void getTopX(StatsCategory cat, int size, Player player)
 	{
+		String uuid = player.getUniqueId().toString();
+		List<PlayerStats> sorted = sort(cat);
+		List<PlayerStats> toReturn = sorted.subList(0, Math.min(sorted.size(), Math.min(size, 20)));
 
-	}
+		boolean has = false;
+		for(int i = 0; i < toReturn.size(); i++)
+		{
+			PlayerStats stat = toReturn.get(i);
+			player.sendRawMessage((i + 1) + ") " + stat.getStat(cat) + "  " + stat.getPlayerDisplay());
+			if(stat.getPlayerUUID().equalsIgnoreCase(uuid))
+				has = true;
+		}
 
-	public static ArrayList<PlayerStats> createLeaderboard(int size, Player player)
-	{
-		if(allPlayers.size() < size)
+		if(!has)
 		{
-			return allPlayers;
+			for(int i = 0; i < sorted.size(); i++)
+			{
+				PlayerStats stat = sorted.get(i);
+				if(stat.getPlayerUUID().equalsIgnoreCase(uuid))
+					player.sendRawMessage((i + 1) + ") " + stat.getStat(cat) + "  " + stat.getPlayerDisplay());
+			}
 		}
-		ArrayList<PlayerStats> toReturn = new ArrayList<>();
-		for(int a = 0; a < size; a++)
-		{
-			toReturn.add(allPlayers.get(a));
-		}
-		toReturn.add(getPlayerStatFromPlayer(player));
-		return toReturn;
 	}
 
 	public static void addPlayerStats(PlayerStats stat)
 	{
-		if(allPlayers.size() == 0)
-		{
-			allPlayers.add(stat);
-		}
-		for(int a = 0; a < allPlayers.size(); a++)
-		{
-			if(stat.getKills() > allPlayers.get(a).getKills())
-			{
-				allPlayers.add(a, stat);
-				return;
-			}
-		}
 		allPlayers.add(stat);
 	}
 
 	public static PlayerStats getPlayerStatFromPlayer(Player p)
 	{
 		for(PlayerStats ps : allPlayers)
-		{
-			if(ps.getPlayer().equals(p.getName()))
+			if(ps.getPlayerUUID().equals(p.getUniqueId().toString()))
 				return ps;
-		}
-		return null;
+
+		PlayerStats stat = PlayerStats.initPlayerStats(p);
+		allPlayers.add(stat);
+		return stat;
 	}
 
-	public static int getRank(Player p)
+	private static List<PlayerStats> sort(StatsCategory cat)
 	{
-		return 0;
+		List<PlayerStats> sortingList = new ArrayList<>(allPlayers);
+		sortingList.sort(Comparator.comparingInt(a -> a.getStat(cat)));
+		return sortingList;
+	}
+
+	public static void loadLeaderboard()
+	{
+		CustomConfig statsConf = ConfigManager.getConfig(COMZConfig.STATS);
+		if(statsConf.getConfigurationSection("stats") != null)
+			for(String a : statsConf.getConfigurationSection("stats").getKeys(false))
+				Leaderboard.addPlayerStats(PlayerStats.loadPlayerStats(a));
 	}
 }

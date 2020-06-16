@@ -1,8 +1,8 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.game.actions.BaseAction;
+import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -12,7 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-public class OnPlayerChatEvent implements Listener
+public class PlayerChatListener implements Listener
 {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -22,22 +22,23 @@ public class OnPlayerChatEvent implements Listener
 		Player player = playerChat.getPlayer();
 		String message = playerChat.getMessage().replaceFirst(" ", "");
 
-		if(COMZombies.getPlugin().activeActions.containsKey(player))
+		if(plugin.activeActions.containsKey(player))
 		{
-			BaseAction action = COMZombies.getPlugin().activeActions.get(player);
+			BaseAction action = plugin.activeActions.get(player);
 
 			if(message.equalsIgnoreCase("cancel"))
 			{
 				COMZombies.scheduleTask(1, () ->
 				{
-					COMZombies.getPlugin().activeActions.remove(player);
+					plugin.activeActions.remove(player);
 					action.cancelAction();
 				});
 				playerChat.setCancelled(true);
 			}
 			else
 			{
-				COMZombies.scheduleTask(1, () -> action.onChatMessage(playerChat, message));
+				COMZombies.scheduleTask(1, () -> action.onChatMessage(message));
+				playerChat.setCancelled(true);
 			}
 		}
 

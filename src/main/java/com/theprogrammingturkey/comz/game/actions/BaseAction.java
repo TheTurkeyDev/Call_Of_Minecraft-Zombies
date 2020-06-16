@@ -3,7 +3,6 @@ package com.theprogrammingturkey.comz.game.actions;
 import com.theprogrammingturkey.comz.game.Game;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class BaseAction
@@ -32,7 +31,7 @@ public class BaseAction
 
 	}
 
-	public void onChatMessage(AsyncPlayerChatEvent playerChat, String message)
+	public void onChatMessage(String message)
 	{
 
 	}

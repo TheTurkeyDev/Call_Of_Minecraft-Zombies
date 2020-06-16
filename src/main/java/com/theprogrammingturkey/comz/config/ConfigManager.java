@@ -21,7 +21,7 @@ public class ConfigManager
 		configs.put(COMZConfig.ARENAS, new CustomConfig(plugin.getDataFolder(), COMZConfig.ARENAS, true));
 		configs.put(COMZConfig.SIGNS, new CustomConfig(plugin.getDataFolder(), COMZConfig.SIGNS, true));
 		configs.put(COMZConfig.KITS, new CustomConfig(plugin.getDataFolder(), COMZConfig.KITS, true));
-		configs.put(COMZConfig.KILLS, new CustomConfig(plugin.getDataFolder(), COMZConfig.KILLS, true));
+		configs.put(COMZConfig.STATS, new CustomConfig(plugin.getDataFolder(), COMZConfig.STATS, true));
 
 		mainConfig.setup();
 	}
