@@ -26,124 +26,178 @@ public class CommandManager implements CommandExecutor
 
 	private void load()
 	{
-		commandList.put("createarena", new CreateArenaCommand()); // Creates
-		// an
-		// arena:
+		// Creates an arena:
 		// Perm
-		// -
-		// zombies.createarena
+		// - zombies.createarena
+		commandList.put("createarena", new CreateArenaCommand());
 		commandList.put("ca", commandList.get("createarena"));
 		commandList.put("addarena", commandList.get("createarena"));
 		commandList.put("newarena", commandList.get("createarena"));
-		commandList.put("r", new ReloadCommand()); // Reloads the plugin:
-		// Perm - zombies.reload
+
+		// Reloads the plugin:
+		// Perm
+		// - zombies.reload
+		commandList.put("r", new ReloadCommand());
 		commandList.put("reload", commandList.get("r"));
-		commandList.put("ra", new RemoveArenaCommand()); // Removes the
-		// given arena:
-		// Perm -
-		// zombies.removearena
+
+		// Removes the given arena:
+		// Perm
+		// - zombies.removearena
+		commandList.put("ra", new RemoveArenaCommand());
 		commandList.put("removearena", commandList.get("ra"));
 		commandList.put("delarena", commandList.get("ra"));
-		commandList.put("d", new DisableCommand()); // Disables the given
-		// arena: Perm -
-		// zombies.disable
+
+		// Disables the given arena:
+		// Perm
+		// - zombies.disable
+		commandList.put("d", new DisableCommand());
 		commandList.put("disable", commandList.get("d"));
-		commandList.put("start", new StartCommand()); // Force starts the
-		// given arena: Perm
-		// -
-		// zombies.forcestart
+
+		// Force starts the given arena:
+		// Perm
+		// - zombies.forcestart
+		commandList.put("start", new StartCommand());
 		commandList.put("s", commandList.get("start"));
 		commandList.put("forcestart", commandList.get("start"));
 
-		commandList.put("end", new EndCommand()); // Force ends the
-		// given arena: Perm
-		// -
-		// zombies.forceend
+		// Force ends the given arena:
+		// Perm
+		// - zombies.forceend
+		commandList.put("end", new EndCommand());
 		commandList.put("forceend", commandList.get("end"));
 
-		commandList.put("e", new EnableCommand()); // Enables the given
-		// arena: Perm -
-		// zombies.enable
+		// Enables the given arena:
+		// Perm
+		// - zombies.enable
+		commandList.put("e", new EnableCommand());
 		commandList.put("enable", commandList.get("e"));
 		commandList.put("enablearena", commandList.get("e"));
-		commandList.put("join", new JoinCommand()); // Puts you if
-		// applicable in the
-		// arena specified or
-		// not specified: Perm -
-		// zombies.join
+
+		// Puts you if applicable in the arena specified or not specified:
+		// Perm
+		// - zombies.join
+		// - zombies.user
+		commandList.put("join", new JoinCommand());
 		commandList.put("j", commandList.get("join"));
 		commandList.put("joinarena", commandList.get("join"));
-		commandList.put("leaderboard", new LeaderboardsCommand()); // Base
-		// leaderboards
-		// command:
+
+		// Base leaderboard command:
 		// Perm
-		// -
-		// zombies.leaderboards
-		commandList.put("lead", commandList.get("leaderboards"));
-		commandList.put("leaders", commandList.get("leaderboards"));
-		commandList.put("leave", new LeaveCommand()); // Leave the given
-		// arena: Perm -
-		// zombies.leave
+		// - zombies.leaderboards
+		// - zombies.user
+		commandList.put("leaderboard", new LeaderboardsCommand());
+		commandList.put("lead", commandList.get("leaderboard"));
+		commandList.put("leaders", commandList.get("leaderboard"));
+
+		// Leave the given arena:
+		// Perm
+		// - zombies.leave
+		// - zombies.user
+		commandList.put("leave", new LeaveCommand());
 		commandList.put("l", commandList.get("leave"));
-		commandList.put("cancel", new CancelCommand()); // Cancel an
-		// operation: Perm -
-		// zombies.cancel
-		commandList.put("c", commandList.get("cancel"));
-		commandList.put("listarenas", new ArenaListCommand()); // Shows a
-		// list of
-		// all the
-		// arenas:
+
+		// Cancel an operation:
 		// Perm -
-		// zombies.listarenas
+		// zombies.cancel
+		commandList.put("cancel", new CancelCommand());
+		commandList.put("c", commandList.get("cancel"));
+
+		// Shows a list of all the arenas:
+		// Perm
+		// - zombies.listarenas
+		// - zombies.user
+		commandList.put("listarenas", new ArenaListCommand());
 		commandList.put("arenalist", commandList.get("listarenas"));
 		commandList.put("la", commandList.get("listarenas"));
-		commandList.put("info", new InfoCommand()); // Information on the
-		// given arena: Perm -
-		// zombies.info
+
+		// Information on the given arena:
+		// Perm
+		// - zombies.info
+		commandList.put("info", new InfoCommand());
 		commandList.put("information", commandList.get("info"));
-		commandList.put("es", new EditZSpawnCommand()); // Delete spawn
-		// operation:
-		// Perm -
-		// zombies.deletespawns
-		commandList.put("removespawns", commandList.get("rs"));
-		commandList.put("deletespawns", commandList.get("rs"));
-		commandList.put("kick", new KickCommand()); // Kicks a player from
-		// the given arena: Perm
+
+		// Edit spawn operation:
+		// Perm
+		// - zombies.editspawns
+		commandList.put("es", new EditZSpawnCommand());
+		commandList.put("editspawns", commandList.get("es"));
+
+		// Kicks a player from the given arena:
+		// Perm
 		// - zombies.kick
+		commandList.put("kick", new KickCommand());
 		commandList.put("k", commandList.get("kick"));
-		commandList.put("edit", new EditCommand()); // Puts the player into
-		// arena creation mode:
+
+		// Puts the player into arena creation mode:
 		// Perm -
 		// zombies.editarena
+		commandList.put("edit", new EditCommand());
 		commandList.put("editarena", commandList.get("edit"));
-		commandList.put("adddoor", new AddDoorCommand()); // Puts the given
-		// player into
-		// door creation
-		// mode: Perm -
-		// zombies.adddoor
+
+		// Puts the given player into door creation mode:
+		// Perm
+		// - zombies.adddoor
+		commandList.put("adddoor", new AddDoorCommand());
 		commandList.put("ad", commandList.get("adddoor"));
-		commandList.put("listguns", new GunListCommand()); // Shows the list
-		// of every gun:
-		// Perm -
-		// zombies.listguns
+
+		// Shows the list of every gun:
+		// Perm
+		// - zombies.listguns
+		commandList.put("listguns", new GunListCommand());
 		commandList.put("lg", commandList.get("listguns"));
-		commandList.put("rd", new RemoveDoorCommand()); // Removes a door
-		// from the given
-		// arena: Perm -
-		// zombies.removedoor
-		commandList.put("addbarrier", new AddBarrier());
-		commandList.put("removebarrier", new RemoveBarrierCommand());
+
+		// Removes a door from the given arena:
+		// Perm
+		// - zombies.removedoor
+		commandList.put("rd", new RemoveDoorCommand());
 		commandList.put("removedoors", commandList.get("rd"));
 		commandList.put("removedoor", commandList.get("rd"));
+
+		// adds a barrier from the given arena:
+		// Perm
+		// - zombies.addbarrier
+		commandList.put("addbarrier", new AddBarrier());
+		commandList.put("ab", commandList.get("addbarrier"));
+
+		// removes a barrier from the given arena:
+		// Perm
+		// - zombies.removebarrier
+		commandList.put("removebarrier", new RemoveBarrierCommand());
+		commandList.put("rb", commandList.get("removebarrier"));
+
+		// disables power for the given arena:
+		// Perm
+		// - zombies.disablepower
 		commandList.put("disablepower", new DisablePowerCommand());
 		commandList.put("dp", commandList.get("disablepower"));
+
+		// removes a barrier from the given arena:
+		// Perm
+		// - zombies.spectate
+		// - zombies.user
 		commandList.put("spec", new SpectateCommand());
 		commandList.put("spectate", commandList.get("spec"));
+
+		// adds a teleporter the given arena:
+		// Perm
+		// - zombies.addteleporter
 		commandList.put("addteleporter", new AddTeleporterCommand());
 		commandList.put("at", commandList.get("addteleporter"));
+
+		// removes a teleporter from the given arena:
+		// Perm
+		// - zombies.removeteleporter
 		commandList.put("removeteleporter", new RemoveTeleporterCommand());
 		commandList.put("rt", commandList.get("removeteleporter"));
+
+		// lists the available perks:
+		// Perm
+		// - zombies.perks
 		commandList.put("perks", new PerksCommand());
+
+		// enters into a helpful debug mods:
+		// Perm
+		// - zombies.zombies.debug
 		commandList.put("debug", new DebugCommand());
 	}
 

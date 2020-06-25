@@ -13,9 +13,7 @@ public class SpectateCommand implements SubCommand
 {
 	public boolean onCommand(Player player, String[] args)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
-
-		if(player.hasPermission("zombies.spectate"))
+		if(player.hasPermission("zombies.spectate") || player.hasPermission("zombies.user") || player.hasPermission("zombies.admin"))
 		{
 			if(args.length == 1)
 			{

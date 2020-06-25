@@ -11,7 +11,7 @@ public class LeaderboardsCommand implements SubCommand
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
-		if(player.hasPermission("zombies.leaderboards") || player.hasPermission("zombies.user"))
+		if(player.hasPermission("zombies.leaderboards") || player.hasPermission("zombies.user") || player.hasPermission("zombies.admin"))
 		{
 			if(args.length < 2)
 			{
