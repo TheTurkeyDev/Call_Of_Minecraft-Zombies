@@ -1,6 +1,5 @@
 package com.theprogrammingturkey.comz.particleutilities;
 
-import net.minecraft.server.v1_15_R1.ParticleParamBlock;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
