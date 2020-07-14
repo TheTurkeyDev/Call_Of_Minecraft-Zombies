@@ -3,10 +3,11 @@ package com.theprogrammingturkey.comz.game.managers;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
-import com.theprogrammingturkey.comz.game.weapons.GunInstance;
 import com.theprogrammingturkey.comz.game.weapons.BasicGun;
+import com.theprogrammingturkey.comz.game.weapons.GunInstance;
 import com.theprogrammingturkey.comz.game.weapons.Weapon;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -86,6 +87,22 @@ public class PlayerWeaponManager
 						if(slot < 1)
 							slot = 1;
 					}
+
+					ItemStack slotStack = player.getInventory().getItem(slot);
+					int tempSlot = slot;
+					while(slotStack != null && !slotStack.getType().equals(Material.AIR))
+					{
+						tempSlot++;
+						if(game.perkManager.hasPerk(player, PerkType.MULE_KICK) && tempSlot == 4)
+							tempSlot = 1;
+						else if(!game.perkManager.hasPerk(player, PerkType.MULE_KICK) && tempSlot == 3)
+							tempSlot = 1;
+
+						slotStack = player.getInventory().getItem(tempSlot);
+						if(tempSlot == slot)
+							break;
+					}
+					slot = tempSlot;
 				}
 				break;
 		}

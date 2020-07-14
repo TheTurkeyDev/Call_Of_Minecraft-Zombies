@@ -1,10 +1,14 @@
 package com.theprogrammingturkey.comz.game.managers;
 
 import com.theprogrammingturkey.comz.config.ConfigManager;
+import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.PerkType;
+import com.theprogrammingturkey.comz.listeners.customEvents.PlayerPerkPurchaseEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,5 +84,15 @@ public class PerkManager
 		playersPerks.put(player, empty);
 		for(int i = 4; i <= 7; i++)
 			player.getInventory().clear(i);
+	}
+
+	public static void givePerk(Game game, Player player, PerkType perk)
+	{
+		if(!game.perkManager.addPerk(player, perk))
+			return;
+		int slot = game.perkManager.getAvaliblePerkSlot(player);
+		perk.initialEffect(player, perk, slot);
+		if(perk.equals(PerkType.STAMIN_UP))
+			player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
 	}
 }

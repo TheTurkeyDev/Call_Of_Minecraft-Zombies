@@ -203,6 +203,9 @@ public class RandomBox
 		if(id != null)
 			Bukkit.getScheduler().cancelTask(id);
 		running = false;
+
+		if(!boxGame.isFireSale() && boxGame.boxManager.getCurrentbox() != this)
+			this.removeBox();
 	}
 
 	public void loadBox()
@@ -218,7 +221,8 @@ public class RandomBox
 
 	public void removeBox()
 	{
-		BlockUtils.setBlockToAir(boxLoc);
+		if(!this.running)
+			BlockUtils.setBlockToAir(boxLoc);
 	}
 
 	public Location getLocation()

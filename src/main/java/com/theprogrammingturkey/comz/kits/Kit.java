@@ -8,24 +8,24 @@ import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
+import com.theprogrammingturkey.comz.game.managers.PerkManager;
 import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.game.managers.WeaponManager;
-import com.theprogrammingturkey.comz.game.weapons.BaseGun;
-import com.theprogrammingturkey.comz.game.weapons.BasicGun;
-import com.theprogrammingturkey.comz.game.weapons.GunInstance;
-import com.theprogrammingturkey.comz.listeners.customEvents.PlayerPerkPurchaseEvent;
+import com.theprogrammingturkey.comz.game.weapons.Weapon;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Kit
 {
 	private String name;
 
-	private BaseGun[] guns = new BasicGun[3];
-	private PerkType[] perks = new PerkType[4];
+	private List<Weapon> weapons = new ArrayList<>();
+	private List<PerkType> perks = new ArrayList<>();
+	private List<RoundReward> roundRewards = new ArrayList<>();
 	private int points = 500;
 
 	public Kit(String perkName)
@@ -41,40 +41,70 @@ public class Kit
 	public void load()
 	{
 		CustomConfig config = ConfigManager.getConfig(COMZConfig.KITS);
-		if(config.getString(name + ".Guns") != null)
+		for(String weaponName : config.getString(name + ".Weapons", "").split(","))
 		{
-			String[] guns = config.getString(name + ".Guns").split(",");
-			for(int i = 0; i < guns.length; i++)
+			Weapon weapon = WeaponManager.getGun(weaponName);
+			if(weapon == null)
 			{
-				if(guns[i] == null)
+				Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] Kit Weapon: " + weaponName + "  is an invalid gun name!");
+				continue;
+			}
+			this.weapons.add(weapon);
+		}
+
+		for(String perkName : config.getString(name + ".Perks", "").split(","))
+		{
+			PerkType perk = PerkType.getPerkType(perkName);
+			if(perk == null)
+			{
+				Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] Perk: " + perkName + "  is an invalid perk name!");
+				continue;
+			}
+			if(perks.size() < 4)
+				this.perks.add(perk);
+		}
+
+		points = config.getInt(name + ".Points", 0);
+
+
+		if(config.getConfigurationSection(name + ".Round_Rewards") != null)
+		{
+			List<Weapon> weapons = new ArrayList<>();
+			List<String> weaponStrings = config.getStringList(name + ".Round_Rewards.Weapons", new ArrayList<>());
+			for(String wep : weaponStrings)
+			{
+				Weapon weapon = WeaponManager.getWeapon(wep);
+				if(weapon == null)
+				{
+					Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] Kit Round Reward weapon: " + wep + "  is an invalid weapon name!");
 					continue;
-
-				BaseGun gun = WeaponManager.getGun(guns[0]);
-				if(gun == null)
-					Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] Kit Gun: " + guns[i] + "  is an invalid gun name!");
-				this.guns[i] = gun;
+				}
+				weapons.add(weapon);
 			}
-		}
 
-		if(config.getString(name + ".Perks") != null)
-		{
-			String[] perks = config.getString(name + ".Perks").split(",");
-
-			for(int i = 0; i < perks.length; i++)
+			List<PerkType> perks = new ArrayList<>();
+			List<String> perksStrings = config.getStringList(name + ".Round_Rewards.Perks", new ArrayList<>());
+			for(String ps : perksStrings)
 			{
-				String perkName = perks[i];
-				PerkType perk = PerkType.DEADSHOT_DAIQ;
-				perk = perk.getPerkType(perkName);
+				PerkType perk = PerkType.getPerkType(ps);
 				if(perk == null)
-					Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] Perk: " + perkName + "  is an invalid perk name!");
-				this.perks[i] = perk;
+				{
+					Bukkit.broadcastMessage(ChatColor.RED + "[Zombies]  Kit Round Reward Perk: " + ps + "  is an invalid perk name!");
+					continue;
+				}
+				perks.add(perk);
 			}
-		}
 
-		points = config.getInt(name + ".Points");
+			int points = config.getInt(name + ".Round_Rewards.Points", 0);
+			int roundEnd = config.getInt(name + ".Round_Rewards.Round_End", 1);
+
+			roundRewards.add(new RoundReward(roundEnd, points, weapons, perks));
+
+			config.saveConfig();
+		}
 	}
 
-	public void GivePlayerStartingItems(Player player)
+	public void givePlayerStartingItems(Player player)
 	{
 		COMZombies plugin = COMZombies.getPlugin();
 
@@ -86,32 +116,46 @@ public class Kit
 
 		PlayerWeaponManager manager = game.getPlayersGun(player);
 
-		for(int i = 0; i < guns.length; i++)
-		{
-			BaseGun gun = guns[i];
-			if(gun == null)
-				continue;
-			manager.removeGun(i + 1);
-			manager.addGun(new GunInstance(gun, player, i + 1));
-		}
+		for(Weapon wep : weapons)
+			manager.addWeapon(wep);
 
 		for(PerkType perk : perks)
 		{
 			if(perk == null)
 				continue;
 
-			if(!game.perkManager.addPerk(player, perk))
-				return;
-			plugin.getServer().getPluginManager().callEvent(new PlayerPerkPurchaseEvent(player, perk));
-			int slot = game.perkManager.getAvaliblePerkSlot(player);
-			perk.initialEffect(player, perk, slot);
-			if(perk.equals(PerkType.STAMIN_UP))
-				player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
+			PerkManager.givePerk(game, player, perk);
 		}
 		PointManager.addPoints(player, points - 500);
 		game.scoreboard.update();
 		player.updateInventory();
+	}
 
+	public void handOutRoundRewards(int roundEnd, Player player)
+	{
+		for(RoundReward roundReward : roundRewards)
+		{
+			if(roundReward.getRoundEnd() == roundEnd)
+			{
+				if(!GameManager.INSTANCE.isPlayerInGame(player) && !player.hasPermission("zombies.kit." + name))
+					return;
+				Game game = GameManager.INSTANCE.getGame(player);
+				if(game == null)
+					return;
+
+				PlayerWeaponManager manager = game.getPlayersGun(player);
+
+				for(Weapon weapon : roundReward.getWeapons())
+					manager.addWeapon(weapon);
+
+				for(PerkType perk : roundReward.getPerks())
+					PerkManager.givePerk(game, player, perk);
+
+				PointManager.addPoints(player, roundReward.getPoints() - 500);
+				game.scoreboard.update();
+				player.updateInventory();
+			}
+		}
 	}
 
 	public String getName()

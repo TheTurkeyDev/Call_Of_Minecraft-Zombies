@@ -22,7 +22,7 @@ public enum PerkType
 	MULE_KICK,
 	ELECTRIC_C;
 
-	public PerkType getPerkType(String name)
+	public static PerkType getPerkType(String name)
 	{
 		for(PerkType pt : values())
 			if((ChatColor.GOLD + pt.toString()).equalsIgnoreCase(name) || (pt.toString().toLowerCase().equalsIgnoreCase(name)))

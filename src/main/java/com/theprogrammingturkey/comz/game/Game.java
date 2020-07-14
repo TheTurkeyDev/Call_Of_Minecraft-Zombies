@@ -550,6 +550,7 @@ public class Game
 		int delay = 0;
 		if(waveNumber != 1)
 		{
+			KitManager.giveOutKitRoundRewards(this);
 			for(Player pl : players)
 			{
 				pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, 1, 1);

@@ -1,9 +1,7 @@
 package com.theprogrammingturkey.comz.config;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.leaderboards.Leaderboard;
-import com.theprogrammingturkey.comz.leaderboards.PlayerStats;
 
 public class ConfigSetup
 {
@@ -91,7 +89,7 @@ public class ConfigSetup
 		reloadTime = plugin.getConfig().getInt("config.gameSettings.reloadTime");
 
 		arenaStartTime = plugin.getConfig().getInt("config.gameSettings.arenaStartTime");
-		maxPerks = plugin.getConfig().getInt("config.Perks.maxPerks");
+		maxPerks = plugin.getConfig().getInt("config.perks.maxPerks", 4);
 		KillMoney = plugin.getConfig().getInt("config.Economy.MoneyPerKill");
 		//PistolMaterial = plugin.getConfig().getInt("config.Guns.PistolMaterial");
 

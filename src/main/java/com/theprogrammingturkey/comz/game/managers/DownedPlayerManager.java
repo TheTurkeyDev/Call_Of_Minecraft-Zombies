@@ -7,12 +7,7 @@ import org.bukkit.entity.Player;
 
 public class DownedPlayerManager
 {
-
 	private ArrayList<DownedPlayer> downedPlayers = new ArrayList<>();
-
-	public DownedPlayerManager()
-	{
-	}
 
 	public void addDownedPlayer(DownedPlayer down)
 	{

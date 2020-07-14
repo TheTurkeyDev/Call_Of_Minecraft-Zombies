@@ -42,6 +42,19 @@ public class WeaponManager
 		return weapons.stream().filter(weapon -> weapon instanceof BaseGun && (weapon.getName().equalsIgnoreCase(name))).map(weapon -> (BaseGun) weapon).findFirst().orElse(null);
 	}
 
+	/**
+	 * Gets a weapon based off of the name given
+	 *
+	 * @param name to get weapon from
+	 * @return weapon based off the name
+	 */
+	public static Weapon getWeapon(String name)
+	{
+		//TODO: Default gun
+		//LOL this line length xD
+		return weapons.stream().filter(weapon -> weapon.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
+	}
+
 	public static Weapon getRandomWeapon(boolean includePackaPunch)
 	{
 		List<Weapon> weaponsToChoose = weapons;

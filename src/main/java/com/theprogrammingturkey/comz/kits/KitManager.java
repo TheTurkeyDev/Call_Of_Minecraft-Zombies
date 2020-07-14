@@ -46,7 +46,13 @@ public class KitManager
 	public static void giveOutKits(Game game)
 	{
 		for(Player player : selectedKits.keySet())
-			selectedKits.get(player).GivePlayerStartingItems(player);
+			selectedKits.get(player).givePlayerStartingItems(player);
+	}
+
+	public static void giveOutKitRoundRewards(Game game)
+	{
+		for(Player player : selectedKits.keySet())
+			selectedKits.get(player).handOutRoundRewards(game.getWave() - 1, player);
 	}
 
 	public static void addPlayersSelectedKit(Player player, Kit kit)
