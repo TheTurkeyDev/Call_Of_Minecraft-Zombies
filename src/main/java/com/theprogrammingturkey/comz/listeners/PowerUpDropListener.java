@@ -69,6 +69,8 @@ public class PowerUpDropListener implements Listener
 					}
 					break;
 				case INSTA_KILL:
+					if(game.isInstaKill())
+						break;
 					game.setInstaKill(true);
 					duration = ConfigManager.getMainConfig().instaKillTimer * 20;
 					COMZombies.scheduleTask(duration, () -> game.setInstaKill(false));
@@ -89,11 +91,15 @@ public class PowerUpDropListener implements Listener
 					game.spawnManager.nuke();
 					break;
 				case DOUBLE_POINTS:
+					if(game.isDoublePoints())
+						break;
 					game.setDoublePoints(true);
 					duration = ConfigManager.getMainConfig().doublePointsTimer * 20;
 					COMZombies.scheduleTask(duration, () -> game.setDoublePoints(false));
 					break;
 				case FIRE_SALE:
+					if(game.isFireSale())
+						break;
 					game.setFireSale(true);
 					game.boxManager.FireSale();
 					duration = ConfigManager.getMainConfig().fireSaleTimer * 20;

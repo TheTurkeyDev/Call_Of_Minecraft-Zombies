@@ -8,7 +8,9 @@ import org.bukkit.entity.Mob;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /*
 Thanks CJP10 for the base code!
@@ -51,9 +53,9 @@ public class RayTrace
 	}
 
 	//intersection detection for current raytrace
-	public List<Entity> getZombieIntersects(World world, List<Mob> ents, double blocksAway)
+	public List<RayEntityIntersection> getZombieIntersects(World world, List<Mob> ents, double blocksAway)
 	{
-		List<Entity> hit = new ArrayList<>();
+		Map<Entity, RayEntityIntersection> hit = new HashMap<>();
 		List<Vector> positions = traverse(blocksAway, ACCURACY);
 		for(Vector position : positions)
 		{
@@ -61,10 +63,10 @@ public class RayTrace
 				break;
 
 			for(Entity ent : ents)
-				if(!hit.contains(ent) && intersects(position, ent.getBoundingBox().getMin(), ent.getBoundingBox().getMax()))
-					hit.add(ent);
+				if(!hit.containsKey(ent) && intersects(position, ent.getBoundingBox().getMin(), ent.getBoundingBox().getMax()))
+					hit.put(ent, new RayEntityIntersection(ent, position));
 		}
-		return hit;
+		return new ArrayList<>(hit.values());
 	}
 
 	//general intersection detection
@@ -83,4 +85,16 @@ public class RayTrace
 			world.spawnParticle(Particle.REDSTONE, position.getX(), position.getY(), position.getZ(), 0, 0, 0, 0, 1, new Particle.DustOptions(color, 1));
 	}
 
+
+	public static class RayEntityIntersection
+	{
+		public Entity hitEnt;
+		public Vector intersection;
+
+		public RayEntityIntersection(Entity hitEnt, Vector intersection)
+		{
+			this.hitEnt = hitEnt;
+			this.intersection = intersection;
+		}
+	}
 }

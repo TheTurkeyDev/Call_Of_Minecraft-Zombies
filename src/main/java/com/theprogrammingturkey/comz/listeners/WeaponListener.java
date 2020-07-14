@@ -11,6 +11,7 @@ import com.theprogrammingturkey.comz.particleutilities.ParticleEffects;
 import com.theprogrammingturkey.comz.util.BlockUtils;
 import com.theprogrammingturkey.comz.util.RayTrace;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -72,7 +73,7 @@ public class WeaponListener implements Listener
 
 							RayTrace rayTrace = new RayTrace(event.getPlayer().getEyeLocation().toVector(), dirVec);
 							double distance = gun.getType().distance;
-							List<Entity> hitEnts = rayTrace.getZombieIntersects(event.getPlayer().getWorld(), game.spawnManager.getEntities(), distance);
+							List<RayTrace.RayEntityIntersection> hitEnts = rayTrace.getZombieIntersects(event.getPlayer().getWorld(), game.spawnManager.getEntities(), distance);
 
 							if(hitEnts.size() == 0)
 							{
@@ -81,7 +82,7 @@ public class WeaponListener implements Listener
 							}
 
 							//TODO: Multiple hits
-							List<Entity> toDamage = new ArrayList<>();
+							List<RayTrace.RayEntityIntersection> toDamage = new ArrayList<>();
 							double dist = distance;
 
 							if(gun.getType().multiHit)
@@ -90,11 +91,11 @@ public class WeaponListener implements Listener
 							}
 							else
 							{
-								Entity closest = hitEnts.get(0);
-								dist = player.getLocation().distance(closest.getLocation());
-								for(Entity ent : hitEnts)
+								RayTrace.RayEntityIntersection closest = hitEnts.get(0);
+								dist = player.getLocation().distance(closest.hitEnt.getLocation());
+								for(RayTrace.RayEntityIntersection ent : hitEnts)
 								{
-									double dist2 = ent.getLocation().distance(player.getLocation());
+									double dist2 = ent.hitEnt.getLocation().distance(player.getLocation());
 									if(dist2 < dist)
 									{
 										closest = ent;
@@ -107,10 +108,11 @@ public class WeaponListener implements Listener
 
 							rayTrace.showParticles(event.getPlayer().getWorld(), dist, 0.5f, gun.getType().particleColor);
 
-							int damage = gun.getType().damage / shots;
+							float damage = (float) gun.getType().damage / shots;
 
-							for(Entity entToDamage : toDamage)
+							for(RayTrace.RayEntityIntersection toDamageIntesect : toDamage)
 							{
+								Entity entToDamage = toDamageIntesect.hitEnt;
 								if(entToDamage instanceof Mob)
 								{
 									Mob mob = (Mob) entToDamage;
@@ -127,6 +129,15 @@ public class WeaponListener implements Listener
 									}
 									for(Player pl : game.players)
 										pl.playSound(pl.getLocation(), Sound.BLOCK_LAVA_POP, 1.0F, 0.0F);
+
+									double zombieHitLocY = toDamageIntesect.intersection.getY() - entToDamage.getLocation().getY();
+									double eyeHeight = ((Mob) entToDamage).getEyeHeight();
+									if(zombieHitLocY > eyeHeight - (entToDamage.getHeight() - eyeHeight))
+									{
+										damage *= 1.5f;
+										for(int i = 0; i < 20; i++)
+											event.getPlayer().getWorld().spawnParticle(Particle.CRIT_MAGIC, entToDamage.getLocation().getX(), entToDamage.getLocation().getY() + eyeHeight, entToDamage.getLocation().getZ(), 0, (Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2, 1);
+									}
 
 									game.damageMob(mob, player, damage);
 								}

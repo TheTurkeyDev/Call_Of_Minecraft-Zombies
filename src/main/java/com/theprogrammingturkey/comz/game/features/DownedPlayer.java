@@ -5,9 +5,10 @@ import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
-import com.theprogrammingturkey.comz.game.weapons.GunInstance;
 import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.game.managers.WeaponManager;
+import com.theprogrammingturkey.comz.game.weapons.GunInstance;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -31,16 +32,16 @@ public class DownedPlayer implements Listener
 	private boolean isPlayerDown;
 	private boolean isBeingRevived = false;
 	private Location reviverLocation;
-	private boolean hasMoved;
 	private int downTime = 0;
 
 	private GunInstance[] guns = new GunInstance[2];
+
+	private int taskID = -1;
 
 	public DownedPlayer(Player player, Game game)
 	{
 		this.player = player;
 		this.game = game;
-		hasMoved = false;
 		COMZombies.getPlugin().registerSpecificClass(this);
 	}
 
@@ -71,24 +72,27 @@ public class DownedPlayer implements Listener
 			if(isPlayerDown && hasChanged(reviverLocation, event.getTo()))
 			{
 				reviver.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You Moved! You are no longer reviving " + player.getName());
-				hasMoved = true;
 				reviver = null;
 				isBeingRevived = false;
+				Bukkit.getScheduler().cancelTask(taskID);
 			}
 		}
 		else
 		{
-			if(event.getPlayer().equals(player)) if(isPlayerDown)
-				if(event.getTo().getY() > event.getFrom().getY())
-					event.getPlayer().teleport(event.getFrom());
+			if(event.getPlayer().equals(player))
+				if(isPlayerDown)
+					if(event.getTo().getY() > event.getFrom().getY())
+						event.getPlayer().teleport(event.getFrom());
 		}
 	}
 
 	private boolean hasChanged(Location from, Location to)
 	{
+		if(from == null)
+			return true;
+
 		double fromX, fromY, fromZ;
 		double toX, toY, toZ;
-		if(from == null) return true;
 		fromX = from.getBlockX();
 		fromY = from.getBlockY();
 		fromZ = from.getBlockZ();
@@ -105,27 +109,24 @@ public class DownedPlayer implements Listener
 		if(game.perkManager.getPlayersPerks(pl).contains(PerkType.QUICK_REVIVE))
 			reviveTime /= 2;
 
-		COMZombies.scheduleTask(reviveTime, () ->
+		taskID = COMZombies.scheduleTask(reviveTime, () ->
 		{
-			if(!hasMoved)
-			{
-				isPlayerDown = false;
-				game.downedPlayerManager.removeDownedPlayer(DownedPlayer.this);
-				player.sendMessage(ChatColor.GREEN + "You have been revived!");
-				player.setGameMode(GameMode.SURVIVAL);
-				if(!(reviver == null))
-					reviver.sendMessage(ChatColor.GREEN + "You revived " + ChatColor.DARK_GREEN + player.getName());
-				isBeingRevived = false;
-				PlayerWeaponManager manager = game.getPlayersGun(player);
-				manager.removeGun(1);
-				manager.addGun(guns[0]);
-				manager.addGun(guns[1]);
-				player.setWalkSpeed(0.2F);
-				player.setHealth(20);
-				setPlayerDown(false);
-				PointManager.addPoints(reviver, 10);
-				reviver = null;
-			}
+			isPlayerDown = false;
+			game.downedPlayerManager.removeDownedPlayer(DownedPlayer.this);
+			player.sendMessage(ChatColor.GREEN + "You have been revived!");
+			player.setGameMode(GameMode.SURVIVAL);
+			if(reviver != null)
+				reviver.sendMessage(ChatColor.GREEN + "You revived " + ChatColor.DARK_GREEN + player.getName());
+			isBeingRevived = false;
+			PlayerWeaponManager manager = game.getPlayersGun(player);
+			manager.removeGun(1);
+			manager.addGun(guns[0]);
+			manager.addGun(guns[1]);
+			player.setWalkSpeed(0.2F);
+			player.setHealth(20);
+			setPlayerDown(false);
+			PointManager.addPoints(reviver, 10);
+			reviver = null;
 		});
 	}
 
@@ -167,7 +168,6 @@ public class DownedPlayer implements Listener
 				isBeingRevived = true;
 				reviverLocation = reviver.getLocation();
 				RevivePlayer(player);
-				hasMoved = false;
 				event.setCancelled(true);
 			}
 		}
