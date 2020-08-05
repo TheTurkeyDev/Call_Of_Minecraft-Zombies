@@ -3,6 +3,7 @@ package com.theprogrammingturkey.comz.leaderboards;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -39,12 +40,31 @@ public class Leaderboard
 		}
 	}
 
+	public static PlayerStats getPosX(StatsCategory cat, int pos)
+	{
+		List<PlayerStats> sorted = sort(cat);
+		if(sorted.size() > pos)
+			return sorted.get(pos);
+		return null;
+	}
+
 	public static void addPlayerStats(PlayerStats stat)
 	{
 		allPlayers.add(stat);
 	}
 
 	public static PlayerStats getPlayerStatFromPlayer(Player p)
+	{
+		for(PlayerStats ps : allPlayers)
+			if(ps.getPlayerUUID().equals(p.getUniqueId().toString()))
+				return ps;
+
+		PlayerStats stat = PlayerStats.initPlayerStats(p);
+		allPlayers.add(stat);
+		return stat;
+	}
+
+	public static PlayerStats getPlayerStatFromPlayer(OfflinePlayer p)
 	{
 		for(PlayerStats ps : allPlayers)
 			if(ps.getPlayerUUID().equals(p.getUniqueId().toString()))

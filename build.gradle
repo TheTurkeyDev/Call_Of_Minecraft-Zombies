@@ -21,12 +21,14 @@ repositories {
     maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url 'https://oss.sonatype.org/content/repositories/central' }
+    maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
 }
 
 dependencies {
     compileOnly "net.milkbowl.vault:VaultAPI:1.7"
-    compile group: 'org.spigotmc', name: 'spigot-api', version:'1.16.1-R0.1-SNAPSHOT'
-    compile group: 'org.spigotmc', name: 'spigot', version:'1.16.1-R0.1-SNAPSHOT'
+    compile group: 'org.spigotmc', name: 'spigot-api', version: '1.16.1-R0.1-SNAPSHOT'
+    compile group: 'org.spigotmc', name: 'spigot', version: '1.16.1-R0.1-SNAPSHOT'
+    compileOnly 'me.clip:placeholderapi:2.10.8'
 }
 
 processResources {
