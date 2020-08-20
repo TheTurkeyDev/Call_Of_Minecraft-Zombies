@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.config;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -224,6 +225,10 @@ public class CustomConfig
 		return this.fileConfig.getBoolean(path);
 	}
 
+	public Location getLocation(String path)
+	{
+		return this.fileConfig.getLocation(path);
+	}
 
 	public ConfigurationSection getConfigurationSection(String path)
 	{

@@ -30,7 +30,7 @@ public class DoorSetupAction extends BaseAction
 		if(!player.getInventory().contains(Material.WOODEN_SWORD))
 			player.getInventory().addItem(new ItemStack(Material.WOODEN_SWORD));
 
-		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------" + ChatColor.DARK_RED + "Door Setup" + ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------");
+		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "-------" + ChatColor.DARK_RED + "Door Setup" + ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "-------");
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Select a door region using the wooden sword.");
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "When both ends are selected, type done, go into the room the door opens to and click on any ender portal frame (spawn point) that is in there with the sword.");
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Once you have this complete, type done, find any signs that open this door and click them with the sword.");
@@ -75,8 +75,6 @@ public class DoorSetupAction extends BaseAction
 				{
 					Sign sign = (Sign) event.getClickedBlock().getState();
 					door.addSign(sign);
-					Game game = GameManager.INSTANCE.getGame(door);
-					game.doorManager.addDoorSignToConfig(door, sign.getLocation());
 					event.setCancelled(true);
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Sign selected!");
 				}

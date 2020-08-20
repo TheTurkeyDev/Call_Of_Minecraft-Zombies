@@ -34,28 +34,15 @@ public class DoorRemoveAction extends BaseAction
 				sign.update(true);
 			}
 		}
-		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------" + ChatColor.DARK_RED + "Door Removal" + ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------");
+		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "-------" + ChatColor.DARK_RED + "Door Removal" + ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "-------");
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Break any sign that leads to a door to remove the door!");
-		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type cancel to cancel this operation.");
+		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type done to exit this operation.");
 	}
 
 	@Override
 	public void cancelAction()
 	{
-		for(Door door : game.doorManager.getDoors())
-		{
-			if(door.isOpened())
-				door.closeDoor();
-			for(Sign sign : door.getSigns())
-			{
-				sign.setLine(0, ChatColor.RED + "[Zombies]");
-				sign.setLine(1, ChatColor.GOLD + "Door");
-				sign.setLine(2, ChatColor.GOLD + "Price:");
-				sign.setLine(3, Integer.toString(door.getCost()));
-				sign.update();
-			}
-		}
-		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Door removal operation has been canceled!");
+
 	}
 
 	@Override
@@ -78,6 +65,16 @@ public class DoorRemoveAction extends BaseAction
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "No doors left!");
 			cancelAction();
 			COMZombies.getPlugin().activeActions.remove(player);
+		}
+	}
+
+	@Override
+	public void onChatMessage(String message)
+	{
+		if(message.equalsIgnoreCase("done"))
+		{
+			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Exiting door removal!");
+			COMZombies.scheduleTask(1, () -> COMZombies.getPlugin().activeActions.remove(player));
 		}
 	}
 }

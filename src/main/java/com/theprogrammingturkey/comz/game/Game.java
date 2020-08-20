@@ -39,8 +39,11 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Mob;
+import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
@@ -48,6 +51,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -553,7 +557,7 @@ public class Game
 			KitManager.giveOutKitRoundRewards(this);
 			for(Player pl : players)
 			{
-				pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, 1, 1);
+				pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, 0.5f, 1);
 				pl.sendTitle(ChatColor.RED + "Round " + waveNumber, ChatColor.GRAY + "starting in 10 seconds", 10, 60, 10);
 			}
 			delay = 200;
@@ -569,7 +573,7 @@ public class Game
 				switch(spawnType)
 				{
 					case REGULAR:
-						pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_TRAVEL, 1, 1);
+						pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.5f, 1);
 						break;
 					case HELL_HOUNDS:
 						pl.playSound(pl.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
@@ -1227,22 +1231,21 @@ public class Game
 		player.updateInventory();
 	}
 
+	public static final List<Class<? extends Entity>> BLACKLISTED_ENTITIES = Arrays.asList(Player.class, Minecart.class, Painting.class, ItemFrame.class);
+
 	/**
 	 * Clears the arena
 	 */
 	public void clearArena()
 	{
-		if(this.getWorld() == null)
+		if(this.getWorld() == null || arena == null)
 			return;
 		for(Entity entity : this.getWorld().getEntities())
 		{
-			if(arena.containsBlock(entity.getLocation()))
+			if(BLACKLISTED_ENTITIES.contains(entity.getClass()) && arena.containsBlock(entity.getLocation()))
 			{
-				if(!(entity instanceof Player))
-				{
-					entity.setTicksLived(Integer.MAX_VALUE);
-					entity.remove();
-				}
+				entity.setTicksLived(Integer.MAX_VALUE);
+				entity.remove();
 			}
 		}
 	}

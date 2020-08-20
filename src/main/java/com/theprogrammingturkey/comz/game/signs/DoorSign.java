@@ -14,7 +14,6 @@ public class DoorSign implements IGameSign
 	@Override
 	public void onBreak(Game game, Player player, Sign sign)
 	{
-
 	}
 
 	@Override

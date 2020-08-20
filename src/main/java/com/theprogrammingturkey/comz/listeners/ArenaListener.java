@@ -33,9 +33,6 @@ public class ArenaListener implements Listener
 		COMZombies plugin = COMZombies.getPlugin();
 		Player player = event.getPlayer();
 
-		if(BlockUtils.isSign(event.getBlock().getType()))
-			return;
-
 		if(plugin.activeActions.containsKey(player))
 			plugin.activeActions.get(player).onBlockBreakevent(event);
 

@@ -7,7 +7,6 @@ import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import com.theprogrammingturkey.comz.util.BlockUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -99,11 +98,7 @@ public class Door
 		{
 			for(String key : config.getConfigurationSection(location + ".Signs").getKeys(false))
 			{
-				int x = config.getInt(location + ".Signs." + key + ".x");
-				int y = config.getInt(location + ".Signs." + key + ".y");
-				int z = config.getInt(location + ".Signs." + key + ".z");
-				World world = Bukkit.getWorld(config.getString(game.getName() + ".Location.world"));
-				Location loc = new Location(world, x, y, z);
+				Location loc = config.getLocation(location + ".Signs." + key);
 				Block block = loc.getBlock();
 				if(BlockUtils.isSign(block.getType()))
 				{
@@ -196,7 +191,32 @@ public class Door
 
 	public void addSign(Sign sign)
 	{
+		Location location = sign.getLocation();
+
+		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
+		int num = getCurrentDoorSignNumber(this.doorNumber);
+		conf.set(game.getName() + ".Doors.door" + this.doorNumber + ".Signs.Sign" + num, location);
+
+		conf.saveConfig();
 		signs.add(sign);
+	}
+
+	/**
+	 * gets the current door sign number the game is on
+	 *
+	 * @return the number of the current sign number
+	 */
+	private int getCurrentDoorSignNumber(int doorNumber)
+	{
+		int i = 1;
+		try
+		{
+			i += ConfigManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Signs").getKeys(false).size();
+		} catch(Exception ex)
+		{
+			return 1;
+		}
+		return i;
 	}
 
 	public List<Sign> getSigns()
