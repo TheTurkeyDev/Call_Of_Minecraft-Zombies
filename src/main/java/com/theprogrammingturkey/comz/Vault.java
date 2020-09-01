@@ -17,31 +17,35 @@ public class Vault
 	/**
 	 * Sets up the economy plugin for the COM:Z to use
 	 */
-	private void setupEconomy()
+	private boolean setupEconomy()
 	{
 		RegisteredServiceProvider<Economy> economyProvider = COMZombies.getPlugin().getServer().getServicesManager().getRegistration(Economy.class);
 		if(economyProvider != null)
+		{
 			this.economy = economyProvider.getProvider();
+			return false;
+		}
+		return true;
 	}
 
 	/**
 	 * Sets up the permissions for the economy plugin
 	 */
-	private void setupPermission()
+	private boolean setupPermission()
 	{
 		RegisteredServiceProvider<Permission> permissionProvider = COMZombies.getPlugin().getServer().getServicesManager().getRegistration(Permission.class);
 		if(permissionProvider != null)
+		{
 			this.permission = permissionProvider.getProvider();
+			return false;
+		}
+		return true;
 	}
 
 	public Vault()
 	{
-		if(Bukkit.getPluginManager().isPluginEnabled("Vault"))
-		{
-			setupEconomy();
-			setupPermission();
+		if(Bukkit.getPluginManager().isPluginEnabled("Vault") && setupEconomy() && setupPermission())
 			this.enabled = true;
-		}
 	}
 
 	/**

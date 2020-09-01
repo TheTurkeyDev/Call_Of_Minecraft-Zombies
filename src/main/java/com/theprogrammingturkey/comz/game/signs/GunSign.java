@@ -75,7 +75,7 @@ public class GunSign implements IGameSign
 	public void onChange(Game game, Player player, SignChangeEvent event)
 	{
 		String thirdLine = ChatColor.stripColor(event.getLine(2));
-		String fourthLine = ChatColor.stripColor(event.getLine(2));
+		String fourthLine = ChatColor.stripColor(event.getLine(3));
 
 		if(thirdLine.equalsIgnoreCase(""))
 		{

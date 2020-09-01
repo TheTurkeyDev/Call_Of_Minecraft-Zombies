@@ -89,26 +89,6 @@ public class DoorManager
 	}
 
 	/**
-	 * Adds a soor sign to the config
-	 *
-	 * @param door     that contains the sign
-	 * @param location of the sign
-	 */
-	public void addDoorSignToConfig(Door door, Location location)
-	{
-		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
-		int x = location.getBlockX();
-		int y = location.getBlockY();
-		int z = location.getBlockZ();
-		int num = getCurrentDoorSignNumber(door.doorNumber);
-		conf.set(game.getName() + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".x", x);
-		conf.set(game.getName() + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".y", y);
-		conf.set(game.getName() + ".Doors.door" + door.doorNumber + ".Signs.Sign" + num + ".z", z);
-
-		conf.saveConfig();
-	}
-
-	/**
 	 * Adds a spawn point dehind a door to the config
 	 *
 	 * @param door       to add the spawn point to
@@ -124,24 +104,6 @@ public class DoorManager
 		conf.set(game.getName() + ".Doors.door" + door.doorNumber + ".SpawnPoints", spawnPoints);
 
 		conf.saveConfig();
-	}
-
-	/**
-	 * gets the current door sign number the game is on
-	 *
-	 * @return the number of the current sign number
-	 */
-	private int getCurrentDoorSignNumber(int doorNumber)
-	{
-		int i = 1;
-		try
-		{
-			i += ConfigManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Signs").getKeys(false).size();
-		} catch(Exception ex)
-		{
-			return 1;
-		}
-		return i;
 	}
 
 	/**
