@@ -9,6 +9,7 @@ import com.theprogrammingturkey.comz.game.actions.BaseAction;
 import com.theprogrammingturkey.comz.game.managers.WeaponManager;
 import com.theprogrammingturkey.comz.kits.KitManager;
 import com.theprogrammingturkey.comz.listeners.*;
+import com.theprogrammingturkey.comz.util.PlaceholderHook;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
@@ -67,7 +68,14 @@ public class COMZombies extends JavaPlugin
 		WeaponManager.loadGuns();
 		KitManager.loadKits();
 		PointManager.saveAll();
+
 		vault = new Vault();
+
+		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
+		{
+			new PlaceholderHook().register();
+		}
+
 		registerEvents();
 
 		boolean say = true;

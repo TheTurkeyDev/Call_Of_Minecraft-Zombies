@@ -4,6 +4,7 @@ import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -188,5 +189,22 @@ public class PlayerStats
 		config.saveConfig();
 
 		return new PlayerStats(player.getUniqueId().toString(), player.getDisplayName(), sec);
+	}
+
+	public static PlayerStats initPlayerStats(OfflinePlayer player)
+	{
+		CustomConfig config = ConfigManager.getConfig(COMZConfig.STATS);
+		ConfigurationSection sec = new YamlConfiguration();
+		config.set("stats." + player.getUniqueId(), sec);
+		sec.set("kills", 0);
+		sec.set("revives", 0);
+		sec.set("deaths", 0);
+		sec.set("downs", 0);
+		sec.set("games_played", 0);
+		sec.set("highest_round", 0);
+		sec.set("most_points", 0);
+		config.saveConfig();
+
+		return new PlayerStats(player.getUniqueId().toString(), player.getName(), sec);
 	}
 }
