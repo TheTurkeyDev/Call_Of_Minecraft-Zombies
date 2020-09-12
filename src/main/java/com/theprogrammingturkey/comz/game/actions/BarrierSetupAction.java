@@ -20,6 +20,8 @@ public class BarrierSetupAction extends BaseAction
 {
 	private Barrier barrier;
 
+	private int state = 0;
+
 	public BarrierSetupAction(Player player, Game game, Barrier barrier)
 	{
 		super(player, game);
@@ -29,9 +31,9 @@ public class BarrierSetupAction extends BaseAction
 		if(!player.getInventory().contains(Material.WOODEN_SWORD))
 			player.getInventory().addItem(new ItemStack(Material.WOODEN_SWORD));
 
-		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------" + ChatColor.DARK_RED + "Door Setup" + ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------");
-		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Select a block to be the barrier using the wooden sword.");
-		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Once you have this complete, type done, go into the room the brarrier blocks to and click on any ender portal frame (spawn point) that is in there with the sword.");
+		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "------" + ChatColor.DARK_RED + "Barrier Setup" + ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "-----");
+		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Select each block individually to be the barrier using the wooden sword.");
+		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Once you have this complete, type done, go into the room the barrier blocks to and click on any ender portal frames (spawn points) that is in there with the sword.");
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Lastly! In chat, type a price for the each repairation stage of the barrier");
 		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type cancel to cancel this operation.");
 	}
@@ -44,7 +46,7 @@ public class BarrierSetupAction extends BaseAction
 			barrier.repairFull();
 			BlockUtils.setBlockToAir(barrier.getRepairLoc());
 		}
-		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier removal operation has been canceled!");
+		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier setup operation has been canceled!");
 	}
 
 	@Override
@@ -54,16 +56,23 @@ public class BarrierSetupAction extends BaseAction
 		if(clickedBlock == null)
 			return;
 
-		if(barrier.getBlock() == null)
+		if(state == 0)
 		{
-			if(event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+			if(!barrier.hasBarrierLoc(clickedBlock))
 			{
-				barrier.setBarrierBlock(clickedBlock.getLocation());
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier Selected!");
-				event.setCancelled(true);
+				if(event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+				{
+					barrier.addBarrierBlock(clickedBlock.getLocation());
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Block added!");
+					event.setCancelled(true);
+				}
+			}
+			else
+			{
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "The block has already been added!");
 			}
 		}
-		else if(barrier.getRepairLoc() == null)
+		else if(state == 1)
 		{
 			if(event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
 			{
@@ -74,16 +83,16 @@ public class BarrierSetupAction extends BaseAction
 				event.setCancelled(true);
 			}
 		}
-		else if(barrier.getSpawnPoint() == null)
+		else if(state == 2)
 		{
 			if(clickedBlock.getType().equals(Material.END_PORTAL_FRAME))
 			{
 				Game game = GameManager.INSTANCE.getGame(clickedBlock.getLocation());
 				SpawnPoint point = game.spawnManager.getSpawnPoint(clickedBlock.getLocation());
-				if(point == null)
+				if(point == null || barrier.hasSpawnPoint(point))
 					return;
 
-				barrier.assingSpawnPoint(point);
+				barrier.addSpawnPoint(point);
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn point selected!");
 				event.setCancelled(true);
 			}
@@ -100,15 +109,17 @@ public class BarrierSetupAction extends BaseAction
 		}
 		if(message.equalsIgnoreCase("done"))
 		{
-			if(barrier.getRepairLoc() == null)
+			if(state == 0)
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier block for barrier " + barrier.getNum() + " set!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now select where the repair sign will be located at.");
+				state++;
 			}
-			else if(barrier.getSpawnPoint() == null)
+			else if(state == 1)
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier block repair sign location for barrier " + barrier.getNum() + " set!");
-				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now select the spawn point that is located behind the barrier.");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now select the spawn points that are located behind the barrier.");
+				state++;
 			}
 			else
 			{
@@ -117,10 +128,10 @@ public class BarrierSetupAction extends BaseAction
 				COMZombies.scheduleTask(1, game::resetSpawnLocationBlocks);
 
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn point for barrier number " + barrier.getNum() + " set!");
-				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now type in the ammount the player will receive per repairation level of the barrier.");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now type in the amount the player will receive per repairation level of the barrier.");
 			}
 		}
-		else if(barrier.getSpawnPoint() != null && barrier.getBlock() != null && barrier.getRepairLoc() != null)
+		else if(!barrier.getSpawnPoints().isEmpty() && !barrier.getBlocks().isEmpty() && barrier.getRepairLoc() != null)
 		{
 			if(!message.matches("[0-9]{1,5}"))
 			{

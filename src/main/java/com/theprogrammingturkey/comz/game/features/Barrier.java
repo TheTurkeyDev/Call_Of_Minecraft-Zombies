@@ -14,21 +14,19 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Entity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Barrier implements Runnable
 {
-
-	private Location loc;
-	private Block block;
-	private Material blockMat;
+	private Map<Block, Material> blocks = new HashMap<>();
 	private Location repairLoc;
 	private BlockFace signFacing;
+	private List<SpawnPoint> spawns = new ArrayList<>();
 
 	private int stage;
 	private boolean breaking = false;
-
-	private SpawnPoint spawn;
 
 	private int number;
 
@@ -52,11 +50,12 @@ public class Barrier implements Runnable
 		if(stage > 5)
 			stage = 5;
 
-		game.updateBarrierDamage(stage, block);
+		game.updateBarrierDamage(stage, blocks.keySet());
 
 		if(stage >= 5)
 		{
-			BlockUtils.setBlockToAir(loc);
+			for(Block b : blocks.keySet())
+				BlockUtils.setBlockToAir(b);
 			return true;
 		}
 		else
@@ -86,13 +85,14 @@ public class Barrier implements Runnable
 		if(stage < -1)
 			stage = -1;
 
-		game.updateBarrierDamage(stage, block);
+		game.updateBarrierDamage(stage, blocks.keySet());
 
 		if(stage == -1)
 			BlockUtils.setBlockToAir(repairLoc);
 
-		if(game.getWorld().getBlockAt(loc).getType().equals(Material.AIR))
-			BlockUtils.setBlockTypeHelper(game.getWorld().getBlockAt(loc), blockMat);
+		for(Block b : blocks.keySet())
+			if(game.getWorld().getBlockAt(b.getLocation()).getType().equals(Material.AIR))
+				BlockUtils.setBlockTypeHelper(game.getWorld().getBlockAt(b.getLocation()), blocks.get(b));
 		return stage <= -1;
 	}
 
@@ -100,31 +100,41 @@ public class Barrier implements Runnable
 	{
 		stage = -1;
 
-		game.updateBarrierDamage(-1, block);
+		game.updateBarrierDamage(-1, blocks.keySet());
 
-		if(game.getWorld().getBlockAt(loc).getType().equals(Material.AIR))
-			BlockUtils.setBlockTypeHelper(loc.getBlock(), blockMat);
+		for(Block b : blocks.keySet())
+			if(b.getType().equals(Material.AIR))
+				BlockUtils.setBlockTypeHelper(b, blocks.get(b));
 
 		BlockUtils.setBlockToAir(repairLoc);
 
 		this.breaking = false;
 	}
 
-	public void setBarrierBlock(Location loc)
+	public void addBarrierBlock(Location loc)
 	{
-		this.loc = loc;
-		block = loc.getBlock();
-		blockMat = block.getType();
+		Block block = loc.getBlock();
+		this.addBarrierBlock(block, block.getType());
 	}
 
-	public Location getLocation()
+	public void addBarrierBlock(Block block, Material mat)
 	{
-		return loc;
+		blocks.put(block, mat);
 	}
 
-	public Block getBlock()
+	public List<Block> getBlocks()
 	{
-		return block;
+		return new ArrayList<>(blocks.keySet());
+	}
+
+	public boolean hasBarrierLoc(Block b)
+	{
+		return blocks.containsKey(b);
+	}
+
+	public Material getMaterial(Block b)
+	{
+		return blocks.get(b);
 	}
 
 	public int getStage()
@@ -132,14 +142,24 @@ public class Barrier implements Runnable
 		return stage;
 	}
 
-	public void assingSpawnPoint(SpawnPoint sp)
+	public void addSpawnPoints(List<SpawnPoint> sps)
 	{
-		spawn = sp;
+		spawns.addAll(sps);
 	}
 
-	public SpawnPoint getSpawnPoint()
+	public void addSpawnPoint(SpawnPoint sp)
 	{
-		return spawn;
+		spawns.add(sp);
+	}
+
+	public boolean hasSpawnPoint(SpawnPoint sp)
+	{
+		return spawns.contains(sp);
+	}
+
+	public List<SpawnPoint> getSpawnPoints()
+	{
+		return spawns;
 	}
 
 	public int getNum()

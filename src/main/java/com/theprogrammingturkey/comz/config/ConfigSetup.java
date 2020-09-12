@@ -68,6 +68,8 @@ public class ConfigSetup
 
 	public int KillMoney;
 
+	public float roundSoundVolume;
+
 	/**
 	 * Main method to assign values to every field.
 	 */
@@ -87,6 +89,7 @@ public class ConfigSetup
 		meleeRange = (float) plugin.getConfig().getDouble("config.gameSettings.MeleeRange");
 		configVersion = plugin.getConfig().getString("vID");
 		reloadTime = plugin.getConfig().getInt("config.gameSettings.reloadTime");
+		roundSoundVolume = (float) plugin.getConfig().getDouble("config.gameSettings.roundSoundVolume");
 
 		arenaStartTime = plugin.getConfig().getInt("config.gameSettings.arenaStartTime");
 		maxPerks = plugin.getConfig().getInt("config.perks.maxPerks", 4);

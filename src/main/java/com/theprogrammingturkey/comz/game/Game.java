@@ -52,6 +52,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,12 +111,12 @@ public class Game
 	/**
 	 * If the power is on
 	 */
-	private boolean power;
+	private boolean powerOn = false;
 
 	/**
 	 * If the game has power enabled
 	 */
-	private boolean powerEnabled;
+	private boolean powerSetup;
 
 	private int teddyBearPercent;
 
@@ -337,7 +338,7 @@ public class Game
 	 */
 	public boolean isPowered()
 	{
-		return power;
+		return powerOn;
 	}
 
 	/**
@@ -345,7 +346,7 @@ public class Game
 	 */
 	public void turnOffPower()
 	{
-		power = false;
+		powerOn = false;
 	}
 
 	/**
@@ -353,7 +354,7 @@ public class Game
 	 */
 	public void turnOnPower()
 	{
-		power = true;
+		powerOn = true;
 
 		for(Player pl : players)
 		{
@@ -365,9 +366,9 @@ public class Game
 	/**
 	 * @return if power is enabled for the game
 	 */
-	public boolean containsPower()
+	public boolean hasPower()
 	{
-		return powerEnabled;
+		return powerSetup;
 	}
 
 	public ArenaStatus getMode()
@@ -384,7 +385,7 @@ public class Game
 	{
 		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 		conf.set(this.getName() + ".Power", false);
-		powerEnabled = false;
+		powerSetup = false;
 		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Power disabled!");
 		conf.saveConfig();
 		conf.reloadConfig();
@@ -557,7 +558,7 @@ public class Game
 			KitManager.giveOutKitRoundRewards(this);
 			for(Player pl : players)
 			{
-				pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, 0.5f, 1);
+				pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, ConfigManager.getMainConfig().roundSoundVolume, 1);
 				pl.sendTitle(ChatColor.RED + "Round " + waveNumber, ChatColor.GRAY + "starting in 10 seconds", 10, 60, 10);
 			}
 			delay = 200;
@@ -573,10 +574,10 @@ public class Game
 				switch(spawnType)
 				{
 					case REGULAR:
-						pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.5f, 1);
+						pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_TRAVEL, ConfigManager.getMainConfig().roundSoundVolume, 1);
 						break;
 					case HELL_HOUNDS:
-						pl.playSound(pl.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
+						pl.playSound(pl.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, ConfigManager.getMainConfig().roundSoundVolume, 1);
 						break;
 				}
 			}
@@ -956,7 +957,7 @@ public class Game
 			return false;
 		}
 
-		powerEnabled = conf.getBoolean(arenaName + ".Power", false);
+		powerSetup = conf.getBoolean(arenaName + ".Power", false);
 		minPlayers = conf.getInt(arenaName + ".minPlayers", 1);
 
 		int x1 = conf.getInt(arenaName + ".Location.P1.x");
@@ -1432,10 +1433,11 @@ public class Game
 		}
 	}
 
-	public void updateBarrierDamage(int damage, Block block)
+	public void updateBarrierDamage(int damage, Collection<Block> blocks)
 	{
-		for(Player player : this.players)
-			PacketUtil.playBlockBreakAction(player, damage, block);
+		for(Block block : blocks)
+			for(Player player : this.players)
+				PacketUtil.playBlockBreakAction(player, damage, block);
 	}
 
 	public void sendMessageToPlayers(String message)

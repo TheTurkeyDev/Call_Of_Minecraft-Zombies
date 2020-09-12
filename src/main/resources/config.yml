@@ -1,7 +1,4 @@
 config:
-  settings:
-    useNoSlashForCommand: false
-    checkForUpdates: true
   perks:
     maxPerks: 4
   gameSettings:
@@ -33,6 +30,8 @@ config:
     arenaStartTime: 60
     #Apply Scope when zooming in if textured
     ZoomTexture: false
+    #Change the volume of the round sound
+    roundSoundVolume: 0.2
   ReviveSettings:
     ReviveTimer: 4
     ReviveRange: 2

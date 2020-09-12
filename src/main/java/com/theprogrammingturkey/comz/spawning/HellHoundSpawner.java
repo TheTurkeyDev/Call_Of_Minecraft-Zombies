@@ -41,47 +41,27 @@ public class HellHoundSpawner extends RoundSpawner
 				boolean found = false;
 				for(int y = 0; y < 255; y++)
 				{
-					Location spawnLoc = spawnPlayer.getLocation().clone().add(x, y, z);
-					if(game.arena.containsBlock(spawnLoc) && !spawnLoc.getBlock().isEmpty() && !spawnLoc.getBlock().isPassable())
+					for(int i = -1; i < 2; i += 2)
 					{
-						spawnLoc.add(0, 1, 0);
-						if(spawnLoc.getBlock().isEmpty() || spawnLoc.getBlock().isPassable())
+						if(found)
+							continue;
+						Location spawnLoc = spawnPlayer.getLocation().clone().add(x, y * i, z);
+						if(game.arena.containsBlock(spawnLoc) && !spawnLoc.getBlock().isEmpty() && !spawnLoc.getBlock().isPassable())
 						{
-							double dist = spawnLoc.distance(spawnPlayer.getLocation());
-							if(dist <= radiusMax && dist >= radiusMin)
+							spawnLoc.add(0, 1, 0);
+							if(spawnLoc.getBlock().isEmpty() || spawnLoc.getBlock().isPassable())
 							{
-								possibleSpawns.add(spawnLoc);
-								found = true;
-								break;
-							}
-							else if(backupLocation == null)
-							{
-								backupLocation = spawnLoc;
-							}
-						}
-					}
-				}
-
-				if(found)
-					continue;
-
-				for(int y = 0; y > -255; y--)
-				{
-					Location spawnLoc = spawnPlayer.getLocation().clone().add(x, y, z);
-					if(game.arena.containsBlock(spawnLoc) && !spawnLoc.getBlock().isEmpty() && !spawnLoc.getBlock().isPassable())
-					{
-						spawnLoc.add(0, 1, 0);
-						if(spawnLoc.getBlock().isEmpty() || spawnLoc.getBlock().isPassable())
-						{
-							double dist = spawnLoc.distance(spawnPlayer.getLocation());
-							if(dist <= radiusMax && dist >= radiusMin)
-							{
-								possibleSpawns.add(spawnLoc);
-								break;
-							}
-							else if(backupLocation == null)
-							{
-								backupLocation = spawnLoc;
+								double dist = spawnLoc.distance(spawnPlayer.getLocation());
+								if(dist <= radiusMax && dist >= radiusMin)
+								{
+									possibleSpawns.add(spawnLoc);
+									found = true;
+									break;
+								}
+								else if(backupLocation == null)
+								{
+									backupLocation = spawnLoc;
+								}
 							}
 						}
 					}
