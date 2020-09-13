@@ -126,7 +126,7 @@ public class RandomBox
 					}
 					else if(time == 0)
 					{
-						if(!boxGame.isFireSale() && !boxGame.boxManager.isMultiBox() && COMZombies.rand.nextInt(boxGame.getTeddyBearPercent()) == 0)
+						if(!boxGame.isFireSale() && !boxGame.boxManager.isMultiBox() && boxGame.getTeddyBearPercent() != 0 && COMZombies.rand.nextInt(boxGame.getTeddyBearPercent()) == 0)
 						{
 							CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "Teddy Bear!!!!!!");
 							item.setItemStack(new ItemStack(Material.TOTEM_OF_UNDYING));

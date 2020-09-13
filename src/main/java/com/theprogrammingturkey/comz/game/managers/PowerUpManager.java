@@ -7,10 +7,14 @@ import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PowerUp;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +28,7 @@ public class PowerUpManager
 
 	private int dropChance = 0;
 	private Map<PowerUp, Boolean> powerups = new HashMap<>();
+	private Map<Entity, Integer> powerupTasks = new HashMap<>();
 
 
 	public void loadAllPowerUps(String arenaName)
@@ -46,8 +51,40 @@ public class PowerUpManager
 	{
 		Location loc = mob.getLocation();
 		Entity droppedItem = loc.getWorld().dropItem(loc, stack);
+		droppedItem.setVelocity(new Vector());
+		ArmorStand namePlate = (ArmorStand) mob.getWorld().spawnEntity(droppedItem.getLocation().clone().add(0, -1.7, 0), EntityType.ARMOR_STAND);
+		namePlate.setVisible(false);
+		namePlate.setGravity(false);
+		namePlate.setAI(false);
+		namePlate.setCustomName("30");
+		namePlate.setCustomNameVisible(true);
 		currentPowerUps.add(droppedItem);
-		COMZombies.scheduleTask(20 * 30, droppedItem::remove);
+		int id = COMZombies.scheduleTask(0, 20, new Runnable()
+		{
+			int time = 30;
+
+			@Override
+			public void run()
+			{
+				if(!currentPowerUps.contains(droppedItem))
+				{
+					namePlate.remove();
+					Bukkit.getScheduler().cancelTask(powerupTasks.get(droppedItem));
+					return;
+				}
+
+				time--;
+				namePlate.setCustomName(String.valueOf(time));
+				if(time == 0)
+				{
+					namePlate.remove();
+					droppedItem.remove();
+					currentPowerUps.remove(droppedItem);
+					Bukkit.getScheduler().cancelTask(powerupTasks.get(droppedItem));
+				}
+			}
+		});
+		powerupTasks.put(droppedItem, id);
 	}
 
 	public void powerUpDrop(Entity mob, Entity entPlayer)
@@ -69,7 +106,7 @@ public class PowerUpManager
 			List<PowerUp> availableRewards = powerups.keySet().stream().filter(k -> powerups.get(k)).collect(Collectors.toList());
 			if(availableRewards.size() == 0)
 				return;
-			
+
 			if(availableRewards.contains(PowerUp.FIRE_SALE))
 				if(game.boxManager.isMultiBox())
 					availableRewards.remove(PowerUp.FIRE_SALE);

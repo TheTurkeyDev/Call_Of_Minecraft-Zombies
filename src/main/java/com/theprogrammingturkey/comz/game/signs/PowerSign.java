@@ -18,7 +18,7 @@ public class PowerSign implements IGameSign
 	@Override
 	public void onInteract(Game game, Player player, Sign sign)
 	{
-		if(game.containsPower())
+		if(game.hasPower())
 		{
 			if(game.isPowered())
 			{

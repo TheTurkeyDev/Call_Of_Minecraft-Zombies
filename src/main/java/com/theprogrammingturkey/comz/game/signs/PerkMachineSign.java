@@ -27,15 +27,13 @@ public class PerkMachineSign implements IGameSign
 		String perkName = sign.getLine(2);
 		PerkType perk = PerkType.DEADSHOT_DAIQ;
 		perk = perk.getPerkType(perkName);
-		if(game.containsPower())
+		if(game.hasPower() && !game.isPowered())
 		{
-			if(!game.isPowered())
-			{
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must turn on the power first!");
-				PerkType.noPower(player);
-				return;
-			}
+			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must turn on the power first!");
+			PerkType.noPower(player);
+			return;
 		}
+
 		if(perk == null)
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "An error occured when trying to buy this perk! Leave the game and contact an admin please.");

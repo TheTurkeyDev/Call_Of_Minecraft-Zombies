@@ -9,11 +9,15 @@ import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import com.theprogrammingturkey.comz.util.BlockUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class BarrierManager
 {
@@ -34,53 +38,73 @@ public class BarrierManager
 			return;
 		for(String key : sec.getKeys(false))
 		{
-			double x = conf.getDouble(game.getName() + ".Barriers." + key + ".x");
-			double y = conf.getDouble(game.getName() + ".Barriers." + key + ".y");
-			double z = conf.getDouble(game.getName() + ".Barriers." + key + ".z");
-			Location loc = new Location(game.getWorld(), x, y, z);
-			int number = Integer.parseInt(key);
-			Barrier barrier = new Barrier(number, game);
-			barrier.setBarrierBlock(loc);
+			if(conf.contains(game.getName() + ".Barriers." + key + ".bb"))
+			{
+				double x = conf.getDouble(game.getName() + ".Barriers." + key + ".x");
+				double y = conf.getDouble(game.getName() + ".Barriers." + key + ".y");
+				double z = conf.getDouble(game.getName() + ".Barriers." + key + ".z");
+				Location loc = new Location(game.getWorld(), x, y, z);
+				int number = Integer.parseInt(key);
+				Barrier barrier = new Barrier(number, game);
+				barrier.addBarrierBlock(loc);
 
-			BlockUtils.setBlockTypeHelper(loc.getBlock(), BlockUtils.getMaterialFromKey(conf.getString(game.getName() + ".Barriers." + key + ".bb")));
+				BlockUtils.setBlockTypeHelper(loc.getBlock(), BlockUtils.getMaterialFromKey(conf.getString(game.getName() + ".Barriers." + key + ".bb")));
 
-			double rx = conf.getDouble(game.getName() + ".Barriers." + key + ".rx");
-			double ry = conf.getDouble(game.getName() + ".Barriers." + key + ".ry");
-			double rz = conf.getDouble(game.getName() + ".Barriers." + key + ".rz");
-			barrier.setRepairLoc(new Location(game.getWorld(), rx, ry, rz));
-			String facing = conf.getString(game.getName() + ".Barriers." + key + ".facing");
-			barrier.setSignFacing(BlockFace.valueOf(facing));
+				double rx = conf.getDouble(game.getName() + ".Barriers." + key + ".rx");
+				double ry = conf.getDouble(game.getName() + ".Barriers." + key + ".ry");
+				double rz = conf.getDouble(game.getName() + ".Barriers." + key + ".rz");
+				barrier.setRepairLoc(new Location(game.getWorld(), rx, ry, rz));
+				String facing = conf.getString(game.getName() + ".Barriers." + key + ".facing");
+				barrier.setSignFacing(BlockFace.valueOf(facing));
 
-			SpawnPoint point = game.spawnManager.getSpawnPoint(conf.getInt(game.getName() + ".Barriers." + key + ".sp"));
-			barrier.assingSpawnPoint(point);
+				SpawnPoint point = game.spawnManager.getSpawnPoint(conf.getInt(game.getName() + ".Barriers." + key + ".sp"));
+				barrier.addSpawnPoint(point);
 
-			barrier.setReward(conf.getInt(game.getName() + ".Barriers." + key + ".reward"));
+				barrier.setReward(conf.getInt(game.getName() + ".Barriers." + key + ".reward"));
+				conf.set(game.getName() + ".Barriers." + barrier.getNum(), null);
+				conf.saveConfig();
 
-			barriers.add(barrier);
+				addBarrier(barrier);
+			}
+			else
+			{
+				int number = Integer.parseInt(key);
+				Barrier barrier = new Barrier(number, game);
+
+				barrier.setRepairLoc(conf.getLocation(game.getName() + ".Barriers." + number + ".repairLoc"));
+				barrier.setSignFacing(BlockFace.valueOf(conf.getString(game.getName() + ".Barriers." + number + ".facing")));
+
+				ConfigurationSection barrierBlocksSec = conf.getConfigurationSection(game.getName() + ".Barriers." + number + ".barrierblocks");
+				for(String bkey : barrierBlocksSec.getKeys(false))
+				{
+					Location loc = conf.getLocation(game.getName() + ".Barriers." + number + ".barrierblocks." + bkey);
+					Material mat = BlockUtils.getMaterialFromKey(conf.getString(game.getName() + ".Barriers." + number + ".barriermats." + bkey));
+					barrier.addBarrierBlock(game.world.getBlockAt(loc), mat);
+				}
+
+				barrier.addSpawnPoints(conf.getStringList(game.getName() + ".Barriers." + number + ".SpawnPoints").stream().map(sp -> game.spawnManager.getSpawnPoint(Integer.parseInt(sp))).collect(Collectors.toList()));
+
+				barrier.setReward(conf.getInt(game.getName() + ".Barriers." + number + ".reward"));
+
+				barriers.add(barrier);
+			}
 		}
 	}
 
 	public Barrier getBarrier(Location loc)
 	{
 		for(Barrier b : barriers)
-		{
-			if(b.getLocation().equals(loc))
-			{
-				return b;
-			}
-		}
+			for(Block block : b.getBlocks())
+				if(block.getLocation().equals(loc))
+					return b;
 		return null;
 	}
 
 	public Barrier getBarrier(int num)
 	{
 		for(Barrier b : barriers)
-		{
 			if(b.getNum() == num)
-			{
 				return b;
-			}
-		}
 		return null;
 	}
 
@@ -95,12 +119,9 @@ public class BarrierManager
 	public Barrier getBarrier(SpawnPoint p)
 	{
 		for(Barrier b : barriers)
-		{
-			if(b.getSpawnPoint().getLocation().equals(p.getLocation()))
-			{
-				return b;
-			}
-		}
+			for(SpawnPoint sp : b.getSpawnPoints())
+				if(sp.getLocation().equals(p.getLocation()))
+					return b;
 		return null;
 	}
 
@@ -126,67 +147,35 @@ public class BarrierManager
 			boolean same = false;
 			for(Barrier b : barriers)
 			{
-				if(b.getLocation().equals(barrier.getLocation()))
+				for(Block block : b.getBlocks())
 				{
-					same = true;
-					break;
+					if(barrier.hasBarrierLoc(block))
+					{
+						same = true;
+						break;
+					}
 				}
 			}
 			if(!same)
 			{
-				Location loc = barrier.getLocation();
-				Location loc2 = barrier.getRepairLoc();
-				SpawnPoint sp = barrier.getSpawnPoint();
+				Location signLoc = barrier.getRepairLoc();
 				int name = barrier.getNum();
 
-				conf.set(game.getName() + ".Barriers." + name + ".x", loc.getBlockX());
-				conf.set(game.getName() + ".Barriers." + name + ".y", loc.getBlockY());
-				conf.set(game.getName() + ".Barriers." + name + ".z", loc.getBlockZ());
-				conf.set(game.getName() + ".Barriers." + name + ".rx", loc2.getBlockX());
-				conf.set(game.getName() + ".Barriers." + name + ".ry", loc2.getBlockY());
-				conf.set(game.getName() + ".Barriers." + name + ".rz", loc2.getBlockZ());
+				conf.set(game.getName() + ".Barriers." + name + ".repairLoc", signLoc);
 				conf.set(game.getName() + ".Barriers." + name + ".facing", barrier.getSignFacing().name());
-				conf.set(game.getName() + ".Barriers." + name + ".sp", sp.getID());
-				conf.set(game.getName() + ".Barriers." + name + ".bb", barrier.getBlock().getType().getKey().getKey());
+
+				for(Block block : barrier.getBlocks())
+				{
+					conf.set(game.getName() + ".Barriers." + name + ".barrierblocks." + block.getLocation().hashCode() + "", block.getLocation().toString());
+					conf.set(game.getName() + ".Barriers." + name + ".barriermats." + block.getLocation().hashCode() + "", barrier.getMaterial(block).getKey().getKey());
+				}
+
+				List<Integer> spawnPoints = barrier.getSpawnPoints().stream().map(SpawnPoint::getID).collect(Collectors.toList());
+				conf.set(game.getName() + ".Barriers." + name + ".SpawnPoints", spawnPoints);
+
 				conf.set(game.getName() + ".Barriers." + name + ".reward", barrier.getReward());
 				conf.saveConfig();
 				conf.reloadConfig();
-				barriers.add(barrier);
-			}
-		}
-	}
-
-	public void UpdateBarrier(Barrier barrier)
-	{
-		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
-		if(game.getMode() == Game.ArenaStatus.DISABLED || game.getMode() == Game.ArenaStatus.WAITING)
-		{
-			boolean same = false;
-			for(Barrier b : barriers)
-			{
-				if(b.getLocation().equals(barrier.getLocation()))
-				{
-					same = true;
-					break;
-				}
-			}
-			if(!same)
-			{
-				Location loc = barrier.getLocation();
-				Location loc2 = barrier.getRepairLoc();
-				SpawnPoint sp = barrier.getSpawnPoint();
-				int name = barrier.getNum();
-				conf.set(game.getName() + ".Barriers." + name + ".x", loc.getBlockX());
-				conf.set(game.getName() + ".Barriers." + name + ".y", loc.getBlockY());
-				conf.set(game.getName() + ".Barriers." + name + ".z", loc.getBlockZ());
-				conf.set(game.getName() + ".Barriers." + name + ".rx", loc2.getBlockX());
-				conf.set(game.getName() + ".Barriers." + name + ".ry", loc2.getBlockY());
-				conf.set(game.getName() + ".Barriers." + name + ".rz", loc2.getBlockZ());
-				conf.set(game.getName() + ".Barriers." + name + ".facing", barrier.getSignFacing().name());
-				conf.set(game.getName() + ".Barriers." + name + ".sp", sp.getID());
-				conf.set(game.getName() + ".Barriers." + name + ".bb", barrier.getBlock().getType().getKey().getKey());
-				conf.set(game.getName() + ".Barriers." + name + ".reward", barrier.getReward());
-				conf.saveConfig();
 				barriers.add(barrier);
 			}
 		}

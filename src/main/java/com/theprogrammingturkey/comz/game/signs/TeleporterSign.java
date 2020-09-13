@@ -33,7 +33,7 @@ public class TeleporterSign implements IGameSign
 		{
 			if(game.teleporterManager.getTeleporters().containsKey(sign.getLine(2)))
 			{
-				if(!(game.isPowered()))
+				if(game.hasPower() && !game.isPowered())
 				{
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must turn on the power first!");
 					PerkType.noPower(player);

@@ -23,7 +23,7 @@ public class PackAPunchSign implements IGameSign
 	@Override
 	public void onInteract(Game game, Player player, Sign sign)
 	{
-		if(game.containsPower() && !game.isPowered())
+		if(game.hasPower() && !game.isPowered())
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must turn on the power before You can Pack-A-punch!");
 			PerkType.noPower(player);
@@ -85,7 +85,7 @@ public class PackAPunchSign implements IGameSign
 			}
 		}
 		event.setLine(0, ChatColor.RED + "[Zombies]");
-		event.setLine(1, ChatColor.AQUA + "Pack-A-Punch");
+		event.setLine(1, ChatColor.AQUA + "Pack-a-Punch");
 		event.setLine(2, Integer.toString(cost));
 		event.setLine(3, "");
 	}
