@@ -5,7 +5,7 @@ version: ${projectVersion}
 authors: [Turkey2349]
 api-version: '1.15'
 load: POSTWORLD
-softdepend: [Multiverse-Core, Vault, PlaceholderAPI]
+softdepend: [Multiverse-Core, Vault, PlaceholderAPI, My_Worlds]
 commands:
   zombies:
     description: Type /zombies help for more info!
