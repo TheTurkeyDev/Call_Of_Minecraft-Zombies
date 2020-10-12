@@ -166,7 +166,7 @@ public class BarrierManager
 
 				for(Block block : barrier.getBlocks())
 				{
-					conf.set(game.getName() + ".Barriers." + name + ".barrierblocks." + block.getLocation().hashCode() + "", block.getLocation().toString());
+					conf.set(game.getName() + ".Barriers." + name + ".barrierblocks." + block.getLocation().hashCode() + "", block.getLocation());
 					conf.set(game.getName() + ".Barriers." + name + ".barriermats." + block.getLocation().hashCode() + "", barrier.getMaterial(block).getKey().getKey());
 				}
 
