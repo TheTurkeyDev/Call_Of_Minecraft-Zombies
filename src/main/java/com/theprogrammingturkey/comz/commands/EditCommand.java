@@ -18,7 +18,7 @@ public class EditCommand implements SubCommand
 		{
 			if(plugin.activeActions.containsKey(player))
 			{
-				CommandUtil.sendMessageToPlayer(player, "You are currently performing another action and cannot add a door right now!");
+				CommandUtil.sendMessageToPlayer(player, "You are currently performing another action and cannot edit an arena right now!");
 			}
 			else if(args.length == 1)
 			{

@@ -17,9 +17,13 @@ public class AddBarrier implements SubCommand
 	{
 		if(player.hasPermission("zombies.addbarrier") || player.hasPermission("zombies.admin"))
 		{
+			if(COMZombies.getPlugin().activeActions.containsKey(player))
+			{
+				CommandUtil.sendMessageToPlayer(player, "You are currently performing another action and cannot add a barrier right now!");
+			}
 			if(args.length < 2)
 			{
-				CommandUtil.sendMessageToPlayer(player, "Please specify an arena to add a door to!");
+				CommandUtil.sendMessageToPlayer(player, "Please specify an arena to add a barrier to!");
 			}
 			else
 			{

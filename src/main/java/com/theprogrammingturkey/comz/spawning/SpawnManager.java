@@ -178,11 +178,11 @@ public class SpawnManager
 			return new ArrayList<>();
 
 		int numPoints = Math.min(numToGet, points.size());
-		ArrayList<SpawnPoint> results = new ArrayList<>(numPoints);
+		List<SpawnPoint> results = new ArrayList<>(numPoints);
 		for(int i = 0; i < numPoints; i++)
 			results.add(points.get(i));
 
-		ArrayList<Double> distances = new ArrayList<>();
+		List<Double> distances = new ArrayList<>();
 		for(int i = 0; i < numToGet; i++)
 			distances.add(Double.POSITIVE_INFINITY);
 

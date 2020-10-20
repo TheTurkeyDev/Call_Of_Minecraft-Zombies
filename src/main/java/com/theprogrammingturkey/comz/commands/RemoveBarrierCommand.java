@@ -19,7 +19,7 @@ public class RemoveBarrierCommand implements SubCommand
 		{
 			if(plugin.activeActions.containsKey(player))
 			{
-				CommandUtil.sendMessageToPlayer(player, "You are currently performing another action and cannot add a door right now!");
+				CommandUtil.sendMessageToPlayer(player, "You are currently performing another action and cannot remove a barrier right now!");
 			}
 			if(args.length < 2)
 			{

@@ -18,7 +18,7 @@ public class CreateArenaCommand implements SubCommand
 		{
 			if(plugin.activeActions.containsKey(player))
 			{
-				CommandUtil.sendMessageToPlayer(player, "You are currently performing another action and cannot add a door right now!");
+				CommandUtil.sendMessageToPlayer(player, "You are currently performing another action and cannot create another arena right now!");
 			}
 			else if(args.length < 2)
 			{

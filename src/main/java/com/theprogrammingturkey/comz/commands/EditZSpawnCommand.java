@@ -18,7 +18,7 @@ public class EditZSpawnCommand implements SubCommand
 		{
 			if(plugin.activeActions.containsKey(player))
 			{
-				CommandUtil.sendMessageToPlayer(player, "You are currently performing another action and cannot edit another arena right now!");
+				CommandUtil.sendMessageToPlayer(player, "You are currently performing another action and cannot edit zombie spawns right now!");
 			}
 			else if(args.length == 1)
 			{
