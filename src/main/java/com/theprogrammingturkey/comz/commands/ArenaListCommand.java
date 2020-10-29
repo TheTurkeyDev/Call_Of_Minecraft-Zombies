@@ -13,7 +13,6 @@ public class ArenaListCommand implements SubCommand
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		if(player.hasPermission("zombies.listarenas") || player.hasPermission("zombies.user") || player.hasPermission("zombies.admin"))
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "---------------" + ChatColor.DARK_RED + "Arenas" + ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "---------------");

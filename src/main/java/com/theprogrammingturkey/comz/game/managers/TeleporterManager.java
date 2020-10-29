@@ -1,9 +1,5 @@
 package com.theprogrammingturkey.comz.game.managers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
@@ -11,6 +7,9 @@ import com.theprogrammingturkey.comz.game.Game;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TeleporterManager
 {

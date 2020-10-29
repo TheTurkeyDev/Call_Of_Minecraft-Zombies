@@ -2,7 +2,6 @@ package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
 import org.bukkit.Effect;
@@ -12,21 +11,39 @@ import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-public class OnEntityDamageEvent implements Listener
+public class EntityListener implements Listener
 {
+	@EventHandler(priority = EventPriority.HIGH)
+	public void entityCombustEvent(EntityCombustEvent event)
+	{
+		if(GameManager.INSTANCE.isEntityInGame(event.getEntity()))
+			event.setCancelled(true);
+	}
+
 	@EventHandler
-	public void damge(EntityDamageByEntityEvent e)
+	public void spawn(CreatureSpawnEvent event)
+	{
+		Entity entity = event.getEntity();
+		if(!event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.CUSTOM))
+			if(GameManager.INSTANCE.isLocationInGame(entity.getLocation()))
+				event.setCancelled(true);
+	}
+
+	@EventHandler
+	public void damage(EntityDamageByEntityEvent e)
 	{
 		if(e.getEntity() instanceof Player)
 		{
 			if(GameManager.INSTANCE.isPlayerInGame((Player) e.getEntity()))
 			{
-				if(e.getCause() == DamageCause.ENTITY_ATTACK)
+				if(e.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK)
 				{
 					if(e.getDamager() instanceof Player)
 					{
@@ -73,7 +90,7 @@ public class OnEntityDamageEvent implements Listener
 
 			if(e.getDamager() instanceof Player)
 			{
-				if(e.getCause().equals(DamageCause.ENTITY_SWEEP_ATTACK))
+				if(e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK))
 				{
 					e.setCancelled(true);
 					return;
@@ -114,10 +131,10 @@ public class OnEntityDamageEvent implements Listener
 			if(game.downedPlayerManager.isPlayerDowned(player))
 				e.setCancelled(true);
 
-			if(game.getMode() == ArenaStatus.STARTING)
+			if(game.getMode() == Game.ArenaStatus.STARTING)
 				e.setCancelled(true);
 
-			if(game.getMode() == ArenaStatus.INGAME)
+			if(game.getMode() == Game.ArenaStatus.INGAME)
 			{
 				float damage = game.damagePlayer(player, (float) e.getDamage());
 				e.setDamage(damage);
@@ -127,7 +144,7 @@ public class OnEntityDamageEvent implements Listener
 
 			player.getLocation().getWorld().playEffect(player.getLocation().add(0, 1, 0), Effect.STEP_SOUND, 152);
 		}
-		else if(e.getCause().equals(DamageCause.LAVA) && e.getEntity() instanceof Mob)
+		else if(e.getCause().equals(EntityDamageEvent.DamageCause.LAVA) && e.getEntity() instanceof Mob)
 		{
 			Mob m = (Mob) e.getEntity();
 			Game game = GameManager.INSTANCE.getGame(m);

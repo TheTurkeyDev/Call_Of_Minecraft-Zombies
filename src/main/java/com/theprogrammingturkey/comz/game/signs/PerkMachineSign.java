@@ -25,8 +25,7 @@ public class PerkMachineSign implements IGameSign
 	public void onInteract(Game game, Player player, Sign sign)
 	{
 		String perkName = sign.getLine(2);
-		PerkType perk = PerkType.DEADSHOT_DAIQ;
-		perk = perk.getPerkType(perkName);
+		PerkType perk = PerkType.getPerkType(perkName);
 		if(game.hasPower() && !game.isPowered())
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must turn on the power first!");
@@ -93,8 +92,7 @@ public class PerkMachineSign implements IGameSign
 		String thirdLine = ChatColor.stripColor(sign.getLine(2));
 		String fourthLine = ChatColor.stripColor(sign.getLine(3));
 
-		PerkType type = PerkType.DEADSHOT_DAIQ;
-		type = type.getPerkType(thirdLine);
+		PerkType type = PerkType.getPerkType(thirdLine);
 		if(type == null)
 		{
 			sign.setLine(0, ChatColor.RED + "" + ChatColor.BOLD + "No such");

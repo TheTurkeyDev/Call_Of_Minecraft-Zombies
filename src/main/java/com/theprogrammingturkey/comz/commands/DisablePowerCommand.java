@@ -1,6 +1,5 @@
 package com.theprogrammingturkey.comz.commands;
 
-import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;

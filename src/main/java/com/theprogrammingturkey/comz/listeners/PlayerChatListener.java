@@ -33,13 +33,12 @@ public class PlayerChatListener implements Listener
 					plugin.activeActions.remove(player);
 					action.cancelAction();
 				});
-				playerChat.setCancelled(true);
 			}
 			else
 			{
 				COMZombies.scheduleTask(1, () -> action.onChatMessage(message));
-				playerChat.setCancelled(true);
 			}
+			playerChat.setCancelled(true);
 		}
 
 		if(plugin.isEditingASign.containsKey(player))

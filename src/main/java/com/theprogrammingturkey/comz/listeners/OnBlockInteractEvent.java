@@ -27,18 +27,4 @@ public class OnBlockInteractEvent implements Listener
 				event.setCancelled(true);
 		}
 	}
-
-	@EventHandler
-	public void grenadeUse(PlayerInteractEvent event)
-	{
-		Player player = event.getPlayer();
-		if(GameManager.INSTANCE.isPlayerInGame(player))
-		{
-			if(player.getInventory().getItemInMainHand().getType().equals(Material.MAGMA_CREAM))
-			{
-				Game game = GameManager.INSTANCE.getGame(player);
-				game.getName();
-			}
-		}
-	}
 }

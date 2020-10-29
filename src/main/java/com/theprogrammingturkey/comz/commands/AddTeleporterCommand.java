@@ -13,7 +13,6 @@ public class AddTeleporterCommand implements SubCommand
 {
 	public boolean onCommand(Player player, String[] args)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
 		if(player.hasPermission("zombies.addteleporter") || player.hasPermission("zombies.admin"))
 		{
 			Location loc = player.getLocation();

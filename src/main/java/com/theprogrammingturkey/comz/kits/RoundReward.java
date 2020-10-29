@@ -3,7 +3,6 @@ package com.theprogrammingturkey.comz.kits;
 import com.theprogrammingturkey.comz.game.features.PerkType;
 import com.theprogrammingturkey.comz.game.weapons.Weapon;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RoundReward

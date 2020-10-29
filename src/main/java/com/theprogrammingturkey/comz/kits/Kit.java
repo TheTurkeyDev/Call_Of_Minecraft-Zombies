@@ -106,8 +106,6 @@ public class Kit
 
 	public void givePlayerStartingItems(Player player)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
-
 		if(!GameManager.INSTANCE.isPlayerInGame(player) && !player.hasPermission("zombies.kit." + name))
 			return;
 		Game game = GameManager.INSTANCE.getGame(player);

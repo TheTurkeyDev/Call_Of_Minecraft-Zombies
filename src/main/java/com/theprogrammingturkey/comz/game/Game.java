@@ -421,9 +421,7 @@ public class Game
 	{
 		if(isDisabled)
 			return false;
-		if(hasPoints && hasWarps && !isDisabled)
-			return true;
-		return false;
+		return hasPoints && hasWarps;
 	}
 
 	/**

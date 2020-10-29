@@ -50,4 +50,10 @@ public class PacketUtil
 	{
 		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
 	}
+
+	public static void sendParticleToPlayer(ParticleType particle, Player player, Location location, float offsetX, float offsetY, float offsetZ, float speed, int count)
+	{
+		PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(particle, true, location.getX(), location.getY(), location.getZ(), offsetX, offsetY, offsetZ, speed, count);
+		((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+	}
 }

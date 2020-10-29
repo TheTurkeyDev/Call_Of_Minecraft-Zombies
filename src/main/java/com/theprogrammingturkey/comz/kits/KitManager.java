@@ -20,11 +20,6 @@ public class KitManager
 
 	}
 
-	public static void newKit(String name)
-	{
-
-	}
-
 	public static Kit getKit(String name)
 	{
 		for(Kit k : kits)

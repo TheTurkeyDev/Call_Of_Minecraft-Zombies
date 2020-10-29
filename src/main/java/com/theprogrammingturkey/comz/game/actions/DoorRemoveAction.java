@@ -1,10 +1,10 @@
 package com.theprogrammingturkey.comz.game.actions;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.util.BlockUtils;
-import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.Door;
+import com.theprogrammingturkey.comz.util.BlockUtils;
+import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -37,12 +37,6 @@ public class DoorRemoveAction extends BaseAction
 		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "-------" + ChatColor.DARK_RED + "Door Removal" + ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "-------");
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Break any sign that leads to a door to remove the door!");
 		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type done to exit this operation.");
-	}
-
-	@Override
-	public void cancelAction()
-	{
-
 	}
 
 	@Override

@@ -7,11 +7,11 @@ import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.game.weapons.GunInstance;
 import com.theprogrammingturkey.comz.game.weapons.WeaponType;
-import com.theprogrammingturkey.comz.particleutilities.ParticleEffects;
 import com.theprogrammingturkey.comz.util.BlockUtils;
+import com.theprogrammingturkey.comz.util.PacketUtil;
 import com.theprogrammingturkey.comz.util.RayTrace;
+import net.minecraft.server.v1_16_R2.Particles;
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -118,13 +118,12 @@ public class WeaponListener implements Listener
 									Mob mob = (Mob) entToDamage;
 									if(gun.getType().getName().equalsIgnoreCase("Zombie BFF"))
 									{
-										ParticleEffects eff = ParticleEffects.HEART;
 										for(int i = 0; i < 30; i++)
 										{
 											float x = (float) (Math.random());
 											float y = (float) (Math.random());
 											float z = (float) (Math.random());
-											eff.sendToPlayer(player, mob.getLocation(), x, y, z, 1, 1);
+											PacketUtil.sendParticleToPlayer(Particles.HEART, player, mob.getLocation(), x, y, z, 1, 1);
 										}
 									}
 									for(Player pl : game.players)

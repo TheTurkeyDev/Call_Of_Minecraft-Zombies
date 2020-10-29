@@ -30,32 +30,20 @@ public class PointManager
 
 	public static PlayerPoints getPlayerPoints(Player player)
 	{
-		if(allPlayers.contains(player))
-		{
-			return playersPoints.get(player);
-		}
-		else
+		if(!allPlayers.contains(player))
 		{
 			allPlayers.add(player);
 			if(!playersPoints.containsKey(player))
-			{
 				initalizePlayer(player);
-			}
-			return playersPoints.get(player);
 		}
+		return playersPoints.get(player);
 	}
 
 	public static void addPoints(Player player, int amount)
 	{
-		if(allPlayers.contains(player) && playersPoints.containsKey(player))
-		{
-			playersPoints.get(player).addPoints(amount);
-		}
-		else
-		{
+		if(!allPlayers.contains(player) || !playersPoints.containsKey(player))
 			initalizePlayer(player);
-			playersPoints.get(player).addPoints(amount);
-		}
+		playersPoints.get(player).addPoints(amount);
 	}
 
 	/**
@@ -71,15 +59,10 @@ public class PointManager
 
 	public static void takePoints(Player player, int amount)
 	{
-		if(allPlayers.contains(player))
-		{
-			playersPoints.get(player).takePoints(amount);
-		}
-		else
-		{
+		if(!allPlayers.contains(player))
 			initalizePlayer(player);
-			playersPoints.get(player).takePoints(amount);
-		}
+		
+		playersPoints.get(player).takePoints(amount);
 	}
 
 	public static void unloadPlayer(Player player)

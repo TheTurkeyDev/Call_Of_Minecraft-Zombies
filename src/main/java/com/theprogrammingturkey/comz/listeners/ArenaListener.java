@@ -9,6 +9,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
@@ -40,6 +41,14 @@ public class ArenaListener implements Listener
 
 		if(GameManager.INSTANCE.isLocationInGame(event.getBlock().getLocation()))
 			event.setCancelled(true);
+	}
+
+	@EventHandler
+	public void onBlockPlaceEvent(BlockPlaceEvent interact)
+	{
+		Player player = interact.getPlayer();
+		if(GameManager.INSTANCE.isPlayerInGame(player) || GameManager.INSTANCE.isLocationInGame(interact.getBlock().getLocation()))
+			interact.setCancelled(true);
 	}
 
 	/**

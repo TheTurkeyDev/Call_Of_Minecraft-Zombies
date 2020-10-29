@@ -3,7 +3,6 @@ package com.theprogrammingturkey.comz.game.managers;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.PerkType;
-import com.theprogrammingturkey.comz.listeners.customEvents.PlayerPerkPurchaseEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

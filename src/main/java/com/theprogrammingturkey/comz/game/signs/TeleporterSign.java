@@ -4,8 +4,9 @@ import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
-import com.theprogrammingturkey.comz.particleutilities.ParticleEffects;
 import com.theprogrammingturkey.comz.util.CommandUtil;
+import com.theprogrammingturkey.comz.util.PacketUtil;
+import net.minecraft.server.v1_16_R2.Particles;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -51,11 +52,10 @@ public class TeleporterSign implements IGameSign
 
 					player.teleport(loc);
 					player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 30));
-					ParticleEffects eff = ParticleEffects.MOB_SPELL;
 
 					for(int i = 0; i < 50; i++)
 						for(Player pl : Bukkit.getOnlinePlayers())
-							eff.sendToPlayer(pl, player.getLocation(), (float) (Math.random()), (float) (Math.random()), (float) (Math.random()), 1, 1);
+							PacketUtil.sendParticleToPlayer(Particles.WITCH, pl, player.getLocation(), (float) (Math.random()), (float) (Math.random()), (float) (Math.random()), 1, 1);
 
 					PointManager.takePoints(player, points);
 					PointManager.notifyPlayer(player);

@@ -13,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -58,7 +59,7 @@ public class CustomConfig
 			try
 			{
 				file.createNewFile();
-				Reader defConfigStream = new InputStreamReader(plugin.getResource(config.getFileName()), "UTF8");
+				Reader defConfigStream = new InputStreamReader(plugin.getResource(config.getFileName()), StandardCharsets.UTF_8);
 				BufferedWriter writter = new BufferedWriter(new FileWriter(file.getAbsolutePath()));
 				BufferedReader reader = new BufferedReader(defConfigStream);
 				String line;

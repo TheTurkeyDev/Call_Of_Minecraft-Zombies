@@ -143,6 +143,9 @@ public class SpawnManager
 
 	public void removeEntity(Entity entity)
 	{
+		if(!(entity instanceof Mob))
+			return;
+
 		mobs.remove(entity);
 
 		if((mobs.size() == 0) && (mobsSpawned >= mobsToSpawn))
@@ -413,7 +416,7 @@ public class SpawnManager
 		return (int) this.spawnInterval;
 	}
 
-	public boolean isEntitySpawned(Entity ent)
+	public boolean isEntitySpawned(Mob ent)
 	{
 		return this.mobs.contains(ent);
 	}
