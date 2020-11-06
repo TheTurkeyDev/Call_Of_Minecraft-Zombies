@@ -61,7 +61,7 @@ public class DoorSetupAction extends BaseAction
 				return;
 
 			door.addSpawnPoint(point);
-			game.doorManager.addDoorSpawnPointToConfig(door, point);
+			GameManager.INSTANCE.saveAllGames();
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn point selected!");
 			event.setCancelled(true);
 		}
@@ -106,7 +106,7 @@ public class DoorSetupAction extends BaseAction
 			if(door.hasBothLocations() && !door.areSpawnPointsFinal() && !door.arePointsFinal())
 			{
 				door.setPointsFinal(true);
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Door points for door number " + door.doorNumber + " set!");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Door points for door set!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now select any spawn points in the room the door leads to.");
 				door.saveBlocks(door.p1, door.p2);
 			}
@@ -121,13 +121,13 @@ public class DoorSetupAction extends BaseAction
 
 				COMZombies.scheduleTask(1, game::resetSpawnLocationBlocks);
 
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn points for door number " + door.doorNumber + " set!");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn points for door set!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now select any signs that can open this door.");
 			}
 			else if(door.arePointsFinal() && door.areSpawnPointsFinal() && !door.areSignsFinal())
 			{
 				door.setSignsFinal(true);
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Signs for door number " + door.doorNumber + " set!");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Signs for door set!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now type in a price for the doors.");
 			}
 		}

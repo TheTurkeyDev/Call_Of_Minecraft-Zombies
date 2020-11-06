@@ -1,8 +1,7 @@
 package com.theprogrammingturkey.comz.game.managers;
 
+import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.config.COMZConfig;
-import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
@@ -31,14 +30,29 @@ public class PowerUpManager
 	private Map<Entity, Integer> powerupTasks = new HashMap<>();
 
 
-	public void loadAllPowerUps(String arenaName)
+	public void loadAllPowerUps(JsonObject powerUpSettings)
 	{
-		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
-		dropChance = config.getInt(arenaName + ".powerups.PercentDropchance", 3);
+		dropChance = CustomConfig.getInt(powerUpSettings, "drop_percentage", 3);
 
+		JsonObject powerUpsJson = powerUpSettings.get("powerups").getAsJsonObject();
 		for(PowerUp powerUp : PowerUp.values())
 			if(powerUp != PowerUp.NONE)
-				powerups.put(powerUp, config.getBoolean(arenaName + ".powerups." + powerUp.name().toLowerCase(), true));
+				powerups.put(powerUp, CustomConfig.getBoolean(powerUpsJson, powerUp.name().toLowerCase(), true));
+	}
+
+	public JsonObject save()
+	{
+		JsonObject saveJson = new JsonObject();
+		saveJson.addProperty("drop_percentage", dropChance);
+
+		JsonObject powerUpsJson = new JsonObject();
+		for(PowerUp powerUp : PowerUp.values())
+			if(powerUp != PowerUp.NONE)
+				powerUpsJson.addProperty(powerUp.name().toLowerCase(), powerups.get(powerUp));
+
+		saveJson.add("powerups", powerUpsJson);
+
+		return saveJson;
 	}
 
 	/**

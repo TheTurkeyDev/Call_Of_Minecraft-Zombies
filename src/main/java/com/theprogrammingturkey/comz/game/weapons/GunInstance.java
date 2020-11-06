@@ -5,7 +5,6 @@ import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
-import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -134,9 +133,6 @@ public class GunInstance
 	 */
 	public void reload()
 	{
-		if(PlayerWeaponManager.customResources)
-			player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
-
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
 			if(gun.clipAmmo == clipAmmo) return;
@@ -221,109 +217,11 @@ public class GunInstance
 
 		World world = player.getWorld();
 
-		if(PlayerWeaponManager.customResources)
-		{
-			switch(gun.getName())
-			{
-				case "B23R":
-					world.playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
-					break;
-				case "Executioner":
-					world.playSound(player.getLocation(), Sound.ENTITY_ARROW_HIT, 1, 1);
-					break;
-				case "Five-Seven":
-					world.playSound(player.getLocation(), Sound.ENTITY_BAT_HURT, 1, 1);
-					break;
-				case "Kap-40":
-					world.playSound(player.getLocation(), Sound.ENTITY_BLAZE_HURT, 1, 1);
-					break;
-				case "M1911":
-					world.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1, 1);
-					break;
-				case "Python":
-					world.playSound(player.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
-					break;
-				case "M1216":
-					world.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 1);
-					break;
-				case "Olympia":
-					world.playSound(player.getLocation(), Sound.ENTITY_PLAYER_SMALL_FALL, 1, 1);
-					break;
-				case "R870 MCS":
-					world.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BIG_FALL, 1, 1);
-					break;
-				case "S12":
-					world.playSound(player.getLocation(), Sound.ENTITY_BLAZE_HURT, 1, 1);
-					break;
-				case "AN-94":
-					world.playSound(player.getLocation(), Sound.ENTITY_IRON_GOLEM_HURT, 1, 1);
-					break;
-				case "Colt M16A1":
-					world.playSound(player.getLocation(), Sound.ENTITY_IRON_GOLEM_STEP, 1, 1);
-					break;
-				case "FAL":
-					world.playSound(player.getLocation(), Sound.ITEM_FLINTANDSTEEL_USE, 1, 1);
-					break;
-				case "M8A1":
-					world.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
-					break;
-				case "M14":
-					world.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 1);
-					break;
-				case "M27":
-					world.playSound(player.getLocation(), Sound.ENTITY_MAGMA_CUBE_JUMP, 1, 1);
-					break;
-				case "MTAR":
-					world.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-					break;
-				case "SMR":
-					world.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASEDRUM, 1, 1);
-					break;
-				case "Type 25":
-					world.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1, 1);
-					break;
-				case "HAMR":
-					world.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 1);
-					break;
-				case "LSAT":
-					world.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
-					break;
-				case "RPD":
-					world.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_SNARE, 1, 1);
-					break;
-				case "Chicom CQB":
-					world.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1, 1);
-					break;
-				case "MP5":
-					world.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
-					break;
-				case "PDW-57":
-					world.playSound(player.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1, 1);
-					break;
-				case "Barret M82A1":
-					world.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
-					break;
-				case "DSR 50":
-					world.playSound(player.getLocation(), Sound.BLOCK_STONE_STEP, 1, 1);
-					break;
-				case "SVU-AS":
-					world.playSound(player.getLocation(), Sound.BLOCK_WOOD_STEP, 1, 1);
-					break;
-				case "Ray Gun":
-					world.playSound(player.getLocation(), Sound.ENTITY_BLAZE_DEATH, 1, 1);
-					break;
-				default:
-					world.playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
-					break;
-			}
-		}
+		if(gun instanceof PackAPunchGun)
+			world.playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1, 1);
 		else
-		{
-			if(gun instanceof PackAPunchGun)
-				world.playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1, 1);
-			else
-				world.playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
-		}
+			world.playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
+
 		updateGun();
 		canFire = false;
 

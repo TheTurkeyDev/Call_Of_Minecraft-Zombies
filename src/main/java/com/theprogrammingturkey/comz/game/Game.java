@@ -7,8 +7,9 @@
 
 package com.theprogrammingturkey.comz.game;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.economy.PointManager;
@@ -124,6 +125,8 @@ public class Game
 	 * Contains a player and the gun manager corresponding to that player.
 	 */
 	private Map<Player, PlayerWeaponManager> playersGuns = new HashMap<>();
+
+	private String startingGun = "M1911";
 
 	/**
 	 * Current wave number.
@@ -358,8 +361,9 @@ public class Game
 
 		for(Player pl : players)
 		{
-			Location loc = pl.getLocation();
-			loc.getWorld().playSound(loc, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1L, 1L);
+			World world = pl.getLocation().getWorld();
+			if(world != null)
+				world.playSound(pl.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1L, 1L);
 		}
 	}
 
@@ -383,12 +387,9 @@ public class Game
 
 	public void removePower(Player player)
 	{
-		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
-		conf.set(this.getName() + ".Power", false);
 		powerSetup = false;
 		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Power disabled!");
-		conf.saveConfig();
-		conf.reloadConfig();
+		GameManager.INSTANCE.saveAllGames();
 	}
 
 	public void showSpawnLocations()
@@ -494,9 +495,6 @@ public class Game
 			}
 		}
 		spawnManager.update();
-
-		for(Door door : doorManager.getDoors())
-			door.loadSpawns();
 
 		for(LivingEntity entity : getWorld().getLivingEntities())
 		{
@@ -617,7 +615,7 @@ public class Game
 			PointManager.setPoints(player, 500);
 			assignPlayerInventory(player);
 			player.setGameMode(GameMode.SURVIVAL);
-			String gunName = ConfigManager.getConfig(COMZConfig.GUNS).getString("StartingGun", "M1911");
+
 
 			COMZombies plugin = COMZombies.getPlugin();
 			for(Player pl : players)
@@ -631,9 +629,9 @@ public class Game
 				}
 			}
 
-			BaseGun gun = WeaponManager.getGun(gunName);
+			BaseGun gun = WeaponManager.getGun(startingGun);
 			Game game = GameManager.INSTANCE.getGame(player);
-			if(!(game == null))
+			if(game != null)
 			{
 				PlayerWeaponManager manager = game.getPlayersGun(player);
 				GunInstance gunType = new GunInstance(gun, player, 1);
@@ -741,7 +739,7 @@ public class Game
 	{
 		playerTPLocation = loc;
 		if(arena != null)
-			saveLocationsInConfig();
+			GameManager.INSTANCE.saveAllGames();
 		if(spectateLocation != null && lobbyLocation != null)
 			hasWarps = true;
 	}
@@ -755,7 +753,7 @@ public class Game
 	{
 		spectateLocation = loc;
 		if(arena != null)
-			saveLocationsInConfig();
+			GameManager.INSTANCE.saveAllGames();
 		if(playerTPLocation != null && lobbyLocation != null)
 			hasWarps = true;
 	}
@@ -769,7 +767,7 @@ public class Game
 	{
 		lobbyLocation = loc;
 		if(arena != null)
-			saveLocationsInConfig();
+			GameManager.INSTANCE.saveAllGames();
 		if(playerTPLocation != null && spectateLocation != null)
 			hasWarps = true;
 	}
@@ -783,7 +781,7 @@ public class Game
 	{
 		min = new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 		if(arena != null)
-			saveLocationsInConfig();
+			GameManager.INSTANCE.saveAllGames();
 		world = loc.getWorld();
 	}
 
@@ -800,7 +798,7 @@ public class Game
 
 		max = new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 		if(arena != null)
-			saveLocationsInConfig();
+			GameManager.INSTANCE.saveAllGames();
 		hasPoints = true;
 		return true;
 	}
@@ -899,54 +897,17 @@ public class Game
 	}
 
 	/**
-	 * Saves all locations to the config
-	 */
-	public void saveLocationsInConfig()
-	{
-		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
-
-		if(min.getWorld() != null)
-			conf.set(arenaName + ".Location.world", min.getWorld().getName());
-
-		conf.set(arenaName + ".Location.P1.x", min.getBlockX());
-		conf.set(arenaName + ".Location.P1.y", min.getBlockY());
-		conf.set(arenaName + ".Location.P1.z", min.getBlockZ());
-		conf.set(arenaName + ".Location.P2.x", max.getBlockX());
-		conf.set(arenaName + ".Location.P2.y", max.getBlockY());
-		conf.set(arenaName + ".Location.P2.z", max.getBlockZ());
-		conf.set(arenaName + ".PlayerSpawn.x", playerTPLocation.getBlockX());
-		conf.set(arenaName + ".PlayerSpawn.y", playerTPLocation.getBlockY());
-		conf.set(arenaName + ".PlayerSpawn.z", playerTPLocation.getBlockZ());
-		conf.set(arenaName + ".PlayerSpawn.pitch", playerTPLocation.getPitch());
-		conf.set(arenaName + ".PlayerSpawn.yaw", playerTPLocation.getYaw());
-		conf.set(arenaName + ".SpectatorSpawn.x", spectateLocation.getBlockX());
-		conf.set(arenaName + ".SpectatorSpawn.y", spectateLocation.getBlockY());
-		conf.set(arenaName + ".SpectatorSpawn.z", spectateLocation.getBlockZ());
-		conf.set(arenaName + ".SpectatorSpawn.pitch", spectateLocation.getPitch());
-		conf.set(arenaName + ".SpectatorSpawn.yaw", spectateLocation.getYaw());
-		conf.set(arenaName + ".LobbySpawn.x", lobbyLocation.getBlockX());
-		conf.set(arenaName + ".LobbySpawn.y", lobbyLocation.getBlockY());
-		conf.set(arenaName + ".LobbySpawn.z", lobbyLocation.getBlockZ());
-		conf.set(arenaName + ".LobbySpawn.pitch", lobbyLocation.getPitch());
-		conf.set(arenaName + ".LobbySpawn.yaw", lobbyLocation.getYaw());
-		conf.saveConfig();
-		conf.reloadConfig();
-	}
-
-	/**
 	 * Sets up the arena when the server loads
 	 */
-	public boolean loadGame()
+	public boolean loadGame(JsonElement arenaJsonElem)
 	{
-		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
-		conf.reloadConfig();
-		if(conf.getString(arenaName + ".Location.world") == null)
-		{
-			COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + " The world for arena " + arenaName + " is not set and therefor we could not enable the arena!");
+		if(!arenaJsonElem.isJsonObject())
 			return false;
-		}
+		JsonObject arenaJson = arenaJsonElem.getAsJsonObject();
+		JsonObject arenaSaveJson = arenaJson.get("save_data").getAsJsonObject();
+		JsonObject arenaSettingsJson = arenaJson.get("settings").getAsJsonObject();
 
-		String worldName = conf.getString(arenaName + ".Location.world");
+		String worldName = CustomConfig.getString(arenaSaveJson, "world_name", "Undefined");
 		world = Bukkit.getServer().getWorld(worldName);
 
 		if(world == null)
@@ -955,60 +916,79 @@ public class Game
 			return false;
 		}
 
-		powerSetup = conf.getBoolean(arenaName + ".Power", false);
-		minPlayers = conf.getInt(arenaName + ".minPlayers", 1);
+		powerSetup = CustomConfig.getBoolean(arenaSaveJson, "power_setup", false);
+		minPlayers = CustomConfig.getInt(arenaSettingsJson, "min_players", 1);
+		maxPlayers = CustomConfig.getInt(arenaSettingsJson, "max_players", 8);
+		teddyBearPercent = CustomConfig.getInt(arenaSettingsJson, "teddy_bear_chance", 100);
+		startingGun = CustomConfig.getString(arenaSettingsJson, "StartingGun", "M1911");
 
-		int x1 = conf.getInt(arenaName + ".Location.P1.x");
-		int y1 = conf.getInt(arenaName + ".Location.P1.y");
-		int z1 = conf.getInt(arenaName + ".Location.P1.z");
-		int x2 = conf.getInt(arenaName + ".Location.P2.x");
-		int y2 = conf.getInt(arenaName + ".Location.P2.y");
-		int z2 = conf.getInt(arenaName + ".Location.P2.z");
-		int x3 = conf.getInt(arenaName + ".PlayerSpawn.x");
-		int y3 = conf.getInt(arenaName + ".PlayerSpawn.y");
-		int z3 = conf.getInt(arenaName + ".PlayerSpawn.z");
-		int pitch3 = conf.getInt(arenaName + ".PlayerSpawn.pitch");
-		int yaw3 = conf.getInt(arenaName + ".PlayerSpawn.yaw");
-		int x4 = conf.getInt(arenaName + ".SpectatorSpawn.x");
-		int y4 = conf.getInt(arenaName + ".SpectatorSpawn.y");
-		int z4 = conf.getInt(arenaName + ".SpectatorSpawn.z");
-		int pitch4 = conf.getInt(arenaName + ".SpectatorSpawn.pitch");
-		int yaw4 = conf.getInt(arenaName + ".SpectatorSpawn.yaw");
-		int x5 = conf.getInt(arenaName + ".LobbySpawn.x");
-		int y5 = conf.getInt(arenaName + ".LobbySpawn.y");
-		int z5 = conf.getInt(arenaName + ".LobbySpawn.z");
-		int pitch5 = conf.getInt(arenaName + ".LobbySpawn.pitch");
-		int yaw5 = conf.getInt(arenaName + ".LobbySpawn.yaw");
-		maxPlayers = conf.getInt(arenaName + ".maxPlayers", 8);
-		teddyBearPercent = conf.getInt(arenaName + ".TeddyBearChance", 100);
-		Location minLoc = new Location(world, x1, y1, z1);
-		Location maxLoc = new Location(world, x2, y2, z2);
-		Location pwarp = new Location(world, x3, y3, z3, yaw3, pitch3);
-		Location swarp = new Location(world, x4, y4, z4, yaw4, pitch4);
-		Location lwarp = new Location(world, x5, y5, z5, yaw5, pitch5);
-		min = minLoc;
-		max = maxLoc;
-		playerTPLocation = pwarp.add(0.5, 0, 0.5);
-		spectateLocation = swarp.add(0.5, 0, 0.5);
-		lobbyLocation = lwarp.add(0.5, 0, 0.5);
+		if(CustomConfig.getBoolean(arenaSettingsJson, "force_night", false))
+			forceNight();
+
+		min = CustomConfig.getLocationAddWorld(arenaSaveJson, "p1", world);
+		max = CustomConfig.getLocationAddWorld(arenaSaveJson, "p2", world);
+		playerTPLocation = CustomConfig.getLocationAddWorld(arenaSaveJson, "player_spawn", world);
+		spectateLocation = CustomConfig.getLocationAddWorld(arenaSaveJson, "spectator_spawn", world);
+		lobbyLocation = CustomConfig.getLocationAddWorld(arenaSaveJson, "lobby_spawn", world);
 
 		arena = new Arena(min, max, world);
 		mode = ArenaStatus.WAITING;
 
-		powerUpManager.loadAllPowerUps(arenaName);
-		spawnManager.loadAllSpawnsToGame();
-		boxManager.loadAllBoxesToGame();
-		barrierManager.loadAllBarriersToGame();
-		doorManager.loadAllDoorsToGame();
-		teleporterManager.loadAllTeleportersToGame();
+		if(arenaSettingsJson.has("powerup_settings"))
+			powerUpManager.loadAllPowerUps(arenaSettingsJson.get("powerup_settings").getAsJsonObject());
 
-		if(conf.getBoolean(arenaName + ".IsForceNight", false))
-			forceNight();
+		if(arenaSaveJson.has("zombie_spawns"))
+			spawnManager.loadAllSpawnsToGame(arenaSaveJson.get("zombie_spawns").getAsJsonArray());
+
+		if(arenaSaveJson.has("mystery_boxes"))
+			boxManager.loadAllBoxesToGame(arenaSaveJson.get("mystery_boxes").getAsJsonArray(), arenaSettingsJson);
+
+		if(arenaSaveJson.has("barriers"))
+			barrierManager.loadAllBarriersToGame(arenaSaveJson.get("barriers").getAsJsonArray());
+
+		if(arenaSaveJson.has("doors"))
+			doorManager.loadAllDoorsToGame(arenaSaveJson.get("doors").getAsJsonArray());
+
+		if(arenaSaveJson.has("teleporters"))
+			teleporterManager.loadAllTeleportersToGame(arenaSaveJson.get("teleporters").getAsJsonArray());
 
 		hasWarps = true;
 		hasPoints = true;
 
 		return true;
+	}
+
+	public JsonObject saveGame()
+	{
+		JsonObject gamejson = new JsonObject();
+		JsonObject arenaSaveJson = new JsonObject();
+		gamejson.add("save_data", arenaSaveJson);
+		JsonObject arenaSettingsJson = new JsonObject();
+		gamejson.add("settings", arenaSettingsJson);
+
+		arenaSettingsJson.addProperty("min_players", minPlayers);
+		arenaSettingsJson.addProperty("max_players", maxPlayers);
+		arenaSettingsJson.addProperty("teddy_bear_chance", teddyBearPercent);
+		arenaSettingsJson.addProperty("StartingGun", startingGun);
+
+		arenaSaveJson.addProperty("world_name", world.getName());
+		arenaSaveJson.addProperty("power_setup", powerSetup);
+		arenaSaveJson.add("p1", CustomConfig.locationToJsonNoWorld(min));
+		arenaSaveJson.add("p2", CustomConfig.locationToJsonNoWorld(max));
+		arenaSaveJson.add("player_spawn", CustomConfig.locationToJsonNoWorld(playerTPLocation));
+		arenaSaveJson.add("spectator_spawn", CustomConfig.locationToJsonNoWorld(spectateLocation));
+		arenaSaveJson.add("lobby_spawn", CustomConfig.locationToJsonNoWorld(lobbyLocation));
+
+
+		arenaSettingsJson.add("powerup_settings", powerUpManager.save());
+		arenaSaveJson.add("zombie_spawns", spawnManager.save());
+		arenaSettingsJson.addProperty("multiple_mystery_boxes", boxManager.isMultiBox());
+		arenaSaveJson.add("mystery_boxes", boxManager.save());
+		arenaSaveJson.add("barriers", barrierManager.save());
+		arenaSaveJson.add("doors", doorManager.save());
+		arenaSaveJson.add("teleporters", teleporterManager.save());
+
+		return gamejson;
 	}
 
 	public Location getLoc1()
@@ -1019,116 +999,6 @@ public class Game
 	public Location getLoc2()
 	{
 		return max;
-	}
-
-	/**
-	 * Sets up the arena when the server loads
-	 */
-	public void setupConfig()
-	{
-
-		// Sets up ArenaConfig
-		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
-		// Adding ArenaName
-		String loc = arenaName;
-		conf.set(loc + ".Power", false);
-		// Adds Location
-		String locL = loc + ".Location";
-		conf.set(locL, null);
-		// adds arenas world
-		conf.set(locL + ".World", null);
-		// Adds p1
-		String locP1 = locL + ".P1";
-		conf.set(locP1, null);
-		// Adds p2
-		String locP2 = locL + ".P2";
-		conf.set(locP2, null);
-		// adds point1x
-		conf.set(locP1 + ".x", null);
-		// adds point1y
-		conf.set(locP1 + ".y", null);
-		// adds point1z
-		conf.set(locP1 + ".z", null);
-		// adds point2x
-		conf.set(locP2 + ".x", null);
-		// adds point2y
-		conf.set(locP2 + ".y", null);
-		// adds point2z
-		conf.set(locP2 + ".z", null);
-		// adds arenas dificulty
-		// plugin.files.getArenasFile().addDefault(, "EASY");
-		// adds the playerwarp main
-		String locPS = loc + ".PlayerSpawn";
-		conf.set(locPS, null);
-		// adds the playerwarpsx
-		conf.set(locPS + ".x", null);
-		// adds the playerwarpsy
-		conf.set(locPS + ".y", null);
-		// adds the playerwarpsz
-		conf.set(locPS + ".z", null);
-
-		String locLB = loc + ".LobbySpawn";
-		// adds the lobby LB spawn
-		conf.set(locLB, null);
-		// adds the lobby LB spawn for the X coord
-		conf.set(locLB + ".x", null);
-		// adds the lobby LB spawn for the Y coord
-		conf.set(locLB + ".y", null);
-		// adds the lobby LB spawn for the Z coord
-		conf.set(locLB + ".z", null);
-		// adds specatorMain
-		String locSS = loc + ".SpectatorSpawn";
-		conf.set(locSS, 0);
-		// adds specatorx
-		conf.set(locSS + ".x", 0);
-		// adds specatory
-		conf.set(locSS + ".y", 0);
-		// adds specatorz
-		conf.set(locSS + ".z", 0);
-		// adds ZombieSpawn Main
-		String locZS = loc + ".ZombieSpawns";
-		conf.set(locZS, null);
-		// adds PerkMachine main
-		String locPMS = locL + ".PerkMachines";
-		conf.set(locPMS, null);
-		// adds PerkMachine main
-		String locMBL = locL + ".MysteryBoxLocations";
-		conf.set(locMBL, null);
-		// adds Door Locations main
-		String locD = loc + ".Doors";
-		conf.set(locD, null);
-
-		String isForceNight = loc + ".IsForceNight";
-		conf.set(isForceNight, false);
-
-		String minToStart = loc + ".minPlayers";
-		conf.set(minToStart, 1);
-
-		String spawnDelay = loc + ".ZombieSpawnDelay";
-		conf.set(spawnDelay, 15);
-		// Setup starting items data, default vaules added.
-		List<String> startItems = new ArrayList<>();
-		conf.set(loc + ".StartingItems", startItems);
-		conf.set(loc, null);
-		conf.set(loc + ".maxPlayers", 8);
-		// Saves and reloads Arenaconfig
-		conf.saveConfig();
-	}
-
-	/**
-	 * Takes a spawn point out of the config file.
-	 */
-	public void removeFromConfig()
-	{
-		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
-		try
-		{
-			conf.set(arenaName, null);
-			conf.saveConfig();
-		} catch(Exception e)
-		{
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -1458,10 +1328,10 @@ public class Game
 			return false;
 		}
 
-		saveLocationsInConfig();
 		arena = new Arena(min, max, world);
 		mode = ArenaStatus.DISABLED;
 		maxPlayers = 8;
+		GameManager.INSTANCE.saveAllGames();
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Arena [" + arenaName + "] is setup!");
 		return true;
 	}

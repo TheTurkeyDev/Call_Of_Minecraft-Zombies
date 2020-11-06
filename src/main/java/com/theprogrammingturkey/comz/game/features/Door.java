@@ -1,10 +1,12 @@
 package com.theprogrammingturkey.comz.game.features;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.config.COMZConfig;
-import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import com.theprogrammingturkey.comz.util.BlockUtils;
 import org.bukkit.ChatColor;
@@ -19,13 +21,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.logging.Level;
 
 public class Door
 {
 	public Location p1;
 	public Location p2;
-	public int doorNumber;
+	public String doorID;
 	private boolean areSpawnPointsFinal = false;
 	private boolean arePointsFinal = false;
 	private boolean areSignsFinal = false;
@@ -36,10 +38,10 @@ public class Door
 	private List<SpawnPoint> spawnsInRoomDoorLeadsTo = new ArrayList<>();
 	private boolean isOpened = false;
 
-	public Door(Game game, int number)
+	public Door(Game game, String id)
 	{
 		this.game = game;
-		doorNumber = number;
+		doorID = id;
 	}
 
 	public boolean canOpen(int moneyHas)
@@ -52,11 +54,42 @@ public class Door
 		price = cost;
 	}
 
-	public void loadAll()
+	public void loadAll(JsonObject doorJson)
 	{
-		loadBlocks();
-		loadSigns();
-		loadDoor();
+		if(doorJson.has("blocks"))
+			loadBlocks(doorJson.get("blocks").getAsJsonArray());
+		if(doorJson.has("signs"))
+			loadSigns(doorJson.get("signs").getAsJsonArray());
+		if(doorJson.has("spawns"))
+			loadDoor(doorJson.get("spawns").getAsJsonArray());
+	}
+
+	public JsonObject save()
+	{
+		JsonObject saveJson = new JsonObject();
+		saveJson.addProperty("id", doorID);
+
+		JsonArray blocksJson = new JsonArray();
+		saveJson.add("blocks", blocksJson);
+		for(Map.Entry<Block, Material> block : blocks.entrySet())
+		{
+			JsonObject blockJson = CustomConfig.locationToJsonNoWorld(block.getKey().getLocation());
+			blockJson.addProperty("material", block.getValue().getKey().getKey());
+			blocksJson.add(blockJson);
+		}
+
+		JsonArray signsJson = new JsonArray();
+		saveJson.add("signs", signsJson);
+		for(Sign sign : signs)
+			signsJson.add(CustomConfig.locationToJsonNoWorld(sign.getLocation()));
+
+
+		JsonArray spawnsJson = new JsonArray();
+		saveJson.add("spawns", spawnsJson);
+		for(SpawnPoint spawnPoint : spawnsInRoomDoorLeadsTo)
+			spawnsJson.add(spawnPoint.getID());
+
+		return saveJson;
 	}
 
 	public int getCost()
@@ -64,14 +97,12 @@ public class Door
 		return price;
 	}
 
-	private void loadDoor()
+	private void loadDoor(JsonArray spawnsJson)
 	{
-		String location = game.getName() + ".Doors.door" + doorNumber;
-		List<Integer> spawns = ConfigManager.getConfig(COMZConfig.ARENAS).getStringList(location + ".SpawnPoints").stream().map(Integer::parseInt).collect(Collectors.toList());
-		ArrayList<SpawnPoint> points = new ArrayList<>();
-		for(int spawn : spawns)
+		List<SpawnPoint> points = new ArrayList<>();
+		for(JsonElement spawnElem : spawnsJson)
 		{
-			SpawnPoint point = game.spawnManager.getSpawnPoint(spawn);
+			SpawnPoint point = game.spawnManager.getSpawnPoint(spawnElem.getAsString());
 			if(point == null)
 				continue;
 			points.add(point);
@@ -90,15 +121,16 @@ public class Door
 		world.playSound(p1, Sound.BLOCK_WOODEN_DOOR_OPEN, 1L, 1L);
 	}
 
-	private void loadSigns()
+	private void loadSigns(JsonArray signs)
 	{
-		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
-		String location = game.getName() + ".Doors.door" + doorNumber;
-		try
+		for(JsonElement signElem : signs)
 		{
-			for(String key : config.getConfigurationSection(location + ".Signs").getKeys(false))
+			if(!signElem.isJsonObject())
+				continue;
+			JsonObject signJson = signElem.getAsJsonObject();
+			Location loc = CustomConfig.getLocationAddWorld(signJson, "", game.getWorld());
+			if(loc != null)
 			{
-				Location loc = config.getLocation(location + ".Signs." + key);
 				Block block = loc.getBlock();
 				if(BlockUtils.isSign(block.getType()))
 				{
@@ -110,12 +142,14 @@ public class Door
 					{
 						price = 750;
 					}
-					signs.add(sign);
+					this.signs.add(sign);
 				}
 			}
-		} catch(NullPointerException e)
-		{
-			System.out.println(e.getMessage());
+			else
+			{
+				COMZombies.log.log(Level.WARNING, COMZombies.CONSOLE_PREFIX + "Failed to load in location for door sign! Json: " + signJson.toString());
+			}
+
 		}
 	}
 
@@ -191,32 +225,8 @@ public class Door
 
 	public void addSign(Sign sign)
 	{
-		Location location = sign.getLocation();
-
-		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
-		int num = getCurrentDoorSignNumber(this.doorNumber);
-		conf.set(game.getName() + ".Doors.door" + this.doorNumber + ".Signs.Sign" + num, location);
-
-		conf.saveConfig();
 		signs.add(sign);
-	}
-
-	/**
-	 * gets the current door sign number the game is on
-	 *
-	 * @return the number of the current sign number
-	 */
-	private int getCurrentDoorSignNumber(int doorNumber)
-	{
-		int i = 1;
-		try
-		{
-			i += ConfigManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Signs").getKeys(false).size();
-		} catch(Exception ex)
-		{
-			return 1;
-		}
-		return i;
+		GameManager.INSTANCE.saveAllGames();
 	}
 
 	public List<Sign> getSigns()
@@ -226,21 +236,30 @@ public class Door
 
 	/**
 	 * Loads all the blocks to the block list
+	 *
+	 * @param blocks array to load from
 	 */
 
-	private void loadBlocks()
+	private void loadBlocks(JsonArray blocks)
 	{
-		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
-
-		for(String key : config.getConfigurationSection(game.getName() + ".Doors.door" + doorNumber + ".Blocks").getKeys(false))
+		for(JsonElement blockElem : blocks)
 		{
-			int x = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".x");
-			int y = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".y");
-			int z = config.getInt(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".z");
-			Location loc = new Location(game.getWorld(), x, y, z);
-			Material mat = BlockUtils.getMaterialFromKey(config.getString(game.getName() + ".Doors.door" + doorNumber + ".Blocks." + key + ".mat"));
-			BlockUtils.setBlockTypeHelper(loc.getBlock(), mat);
-			blocks.put(loc.getBlock(), mat);
+			if(!blockElem.isJsonObject())
+				continue;
+			JsonObject blockJson = blockElem.getAsJsonObject();
+
+			Location loc = CustomConfig.getLocationAddWorld(blockJson, "", game.getWorld());
+
+			if(loc != null)
+			{
+				Material mat = BlockUtils.getMaterialFromKey(CustomConfig.getString(blockJson, "material", ""));
+				BlockUtils.setBlockTypeHelper(loc.getBlock(), mat);
+				this.blocks.put(loc.getBlock(), mat);
+			}
+			else
+			{
+				COMZombies.log.log(Level.WARNING, COMZombies.CONSOLE_PREFIX + "Failed to load in location for door block! Json: " + blockJson.toString());
+			}
 		}
 	}
 
@@ -252,7 +271,6 @@ public class Door
 	 */
 	public void saveBlocks(Location p1, Location p2)
 	{
-		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
 		if(p1 != null && p2 != null)
 		{
 			int x1 = Math.min(p1.getBlockX(), p2.getBlockX()); // Eg. 5
@@ -274,18 +292,7 @@ public class Door
 				}
 			}
 		}
-
-		int i = 0;
-		for(Block block : blocks.keySet())
-		{
-			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1), null);
-			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".x", block.getLocation().getBlockX());
-			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".y", block.getLocation().getBlockY());
-			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".z", block.getLocation().getBlockZ());
-			config.set(game.getName() + ".Doors.door" + doorNumber + ".Blocks.block" + (i + 1) + ".mat", blocks.get(block).getKey().getKey());
-			i++;
-		}
-		config.saveConfig();
+		GameManager.INSTANCE.saveAllGames();
 	}
 
 	public List<Block> getBlocks()
@@ -298,15 +305,4 @@ public class Door
 		return p1 != null && p2 != null;
 	}
 
-	public void removeSelfFromConfig()
-	{
-		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
-		config.set(game.getName() + ".Doors.door" + doorNumber, null);
-		config.saveConfig();
-	}
-
-	public void loadSpawns()
-	{
-		loadDoor();
-	}
 }

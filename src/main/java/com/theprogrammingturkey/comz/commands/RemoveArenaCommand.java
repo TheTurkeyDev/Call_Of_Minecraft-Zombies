@@ -19,11 +19,11 @@ public class RemoveArenaCommand implements SubCommand
 					try
 					{
 						Game game = GameManager.INSTANCE.getGame(args[1]);
-						game.removeFromConfig();
 						game.signManager.removeAllSigns();
-						CommandUtil.sendMessageToPlayer(player, "Game " + game.getName() + " has been removed!");
 						game.endGame();
 						GameManager.INSTANCE.removeGame(game);
+						GameManager.INSTANCE.saveAllGames();
+						CommandUtil.sendMessageToPlayer(player, "Game " + game.getName() + " has been removed!");
 						return true;
 					} catch(Exception e)
 					{

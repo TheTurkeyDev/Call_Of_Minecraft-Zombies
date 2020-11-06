@@ -1,5 +1,7 @@
 package com.theprogrammingturkey.comz.game;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
@@ -9,10 +11,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 public class GameManager
@@ -49,15 +53,30 @@ public class GameManager
 	public void loadAllGames()
 	{
 		games.clear();
-		for(String key : ConfigManager.getConfig(COMZConfig.ARENAS).getConfigurationSection("").getKeys(false))
+		JsonElement jsonElement = ConfigManager.getConfig(COMZConfig.ARENAS).getJson();
+		if(jsonElement.isJsonNull())
 		{
-			Game game = new Game(key);
-			if(game.loadGame())
+			COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "Failed to load in the arenas from the arenas config!");
+			return;
+		}
+		JsonObject jsonObject = jsonElement.getAsJsonObject();
+		for(Map.Entry<String, JsonElement> arena : jsonObject.entrySet())
+		{
+			Game game = new Game(arena.getKey());
+			if(game.loadGame(arena.getValue()))
 				games.add(game);
 			else
-				COMZombies.log.log(Level.SEVERE, "Failed to load arena " + key + "!");
+				COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "Failed to load arena " + arena.getKey() + "!");
 		}
 		Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.RED + ChatColor.BOLD + " Done loading arenas!");
+	}
+
+	public void saveAllGames()
+	{
+		JsonObject arenasSave = new JsonObject();
+		for(Game game : games)
+			arenasSave.add(game.getName(), game.saveGame());
+		ConfigManager.getConfig(COMZConfig.ARENAS).saveConfig(arenasSave);
 	}
 
 	public void disableAllArenas()
@@ -131,7 +150,7 @@ public class GameManager
 			return isPlayerInGame((Player) entity);
 
 		for(Game game : games)
-			if(game.spawnManager.isEntitySpawned(entity))
+			if(game.spawnManager.isEntitySpawned((Mob) entity))
 				return true;
 
 		return false;

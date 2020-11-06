@@ -1,11 +1,13 @@
 package com.theprogrammingturkey.comz.game.managers;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
-import com.theprogrammingturkey.comz.game.weapons.BasicGun;
 import com.theprogrammingturkey.comz.game.weapons.BaseGun;
+import com.theprogrammingturkey.comz.game.weapons.BasicGun;
 import com.theprogrammingturkey.comz.game.weapons.PackAPunchGun;
 import com.theprogrammingturkey.comz.game.weapons.Weapon;
 import com.theprogrammingturkey.comz.game.weapons.WeaponType;
@@ -14,9 +16,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class WeaponManager
@@ -94,41 +96,37 @@ public class WeaponManager
 		weapons.add(new Weapon("Grenade", WeaponType.GRENADE));
 		weapons.add(new Weapon("Monkey Bomb", WeaponType.MONKEY_BOMB));
 
-		CustomConfig conf = ConfigManager.getConfig(COMZConfig.GUNS);
-		PlayerWeaponManager.customResources = conf.getString("Resource Sounds", "off").equalsIgnoreCase("on");
-		Map<BasicGun, String> packedGunsToAssign = new HashMap<>();
-		for(String group : conf.getConfigurationSection("Guns").getKeys(false))
+		JsonElement jsonElement = ConfigManager.getConfig(COMZConfig.GUNS).getJson();
+		if(jsonElement.isJsonNull())
 		{
-			for(String gun : conf.getConfigurationSection("Guns." + group).getKeys(false))
-			{
-				int clipAmmo = conf.getInt("Guns." + group + "." + gun + ".ClipAmmo", 1);
-				int totalAmmo = conf.getInt("Guns." + group + "." + gun + ".TotalAmmo", 1);
-				int damage = conf.getInt("Guns." + group + "." + gun + ".Damage");
-				int fireDelay = conf.getInt("Guns." + group + "." + gun + ".FireDelay", 5);
-				double distance = conf.getDouble("Guns." + group + "." + gun + ".MaxDistance", 30);
-				String particleColor = conf.getString("Guns." + group + "." + gun + ".particleColor", "808080");
-				boolean multiHit = conf.getBoolean("Guns." + group + "." + gun + ".multiHit", false);
+			COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "Failed to load in the guns from the guns config!");
+			return;
+		}
+		JsonObject jsonObject = jsonElement.getAsJsonObject();
 
-				if(conf.getBoolean("Guns." + group + "." + gun + ".isPackAPunchGun", false))
+		for(Map.Entry<String, JsonElement> gunGroupEntry : jsonObject.entrySet())
+		{
+			JsonObject gunGroup = gunGroupEntry.getValue().getAsJsonObject();
+			for(JsonElement gunElem : gunGroup.getAsJsonArray("guns"))
+			{
+				if(!gunElem.isJsonObject())
+					continue;
+
+				JsonObject gun = gunElem.getAsJsonObject();
+
+				BasicGun basicGun = new BasicGun(CustomConfig.getString(gun, "name", "Unnamed"), WeaponType.getWeapon(gunGroupEntry.getKey()));
+				basicGun.loadGun(gun);
+				WeaponManager.registerWeapon(basicGun);
+
+				if(gun.has("pack_a_punch_gun"))
 				{
-					WeaponManager.registerWeapon(new PackAPunchGun(WeaponType.getWeapon(group), gun, damage, fireDelay, distance, clipAmmo, totalAmmo, particleColor, multiHit));
-				}
-				else
-				{
-					BasicGun basicGun = new BasicGun(WeaponType.getWeapon(group), gun, damage, fireDelay, distance, clipAmmo, totalAmmo, particleColor, multiHit);
-					WeaponManager.registerWeapon(basicGun);
-					String packedGun = conf.getString("Guns." + group + "." + gun + ".PackAPunchGun");
-					if(packedGun != null)
-						packedGunsToAssign.put(basicGun, packedGun);
+					JsonObject packedGunJson = gunElem.getAsJsonObject();
+					PackAPunchGun packAPunchGun = new PackAPunchGun(CustomConfig.getString(packedGunJson, "name", "Unnamed"), WeaponType.getWeapon(gunGroupEntry.getKey()));
+					packAPunchGun.loadGun(packedGunJson);
+					basicGun.setPackAPunchGun(packAPunchGun);
+					WeaponManager.registerWeapon(packAPunchGun);
 				}
 			}
-		}
-
-		for(BasicGun gun : packedGunsToAssign.keySet())
-		{
-			BaseGun papGun = WeaponManager.getGun(packedGunsToAssign.get(gun));
-			if(papGun instanceof PackAPunchGun)
-				gun.packaPunchGun = (PackAPunchGun) papGun;
 		}
 	}
 }

@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
  */
 public class AutoStart
 {
-
+	private final int[] WARNINGS = {1, 2, 3, 4, 5, 10, 30, 60};
 	/**
 	 * Game in which will be started once timer is activated.
 	 */
@@ -74,13 +74,12 @@ public class AutoStart
 
 		public int remain;
 		private int index;
-		private int[] warnings = {1, 2, 3, 4, 5, 10, 30, 60};
 
 		private Countdown(int seconds)
 		{
 			remain = seconds;
 
-			for(int i = 0; (i < warnings.length) && (seconds > warnings[i]); i++)
+			for(int i = 0; (i < WARNINGS.length) && (seconds > WARNINGS[i]); i++)
 				index = i;
 		}
 
@@ -102,9 +101,9 @@ public class AutoStart
 				if(stopped)
 					return;
 
-				if(remain == warnings[index])
+				if(remain == WARNINGS[index])
 				{
-					game.sendMessageToPlayers(warnings[index] + " seconds!");
+					game.sendMessageToPlayers(WARNINGS[index] + " seconds!");
 					index = index - 1;
 				}
 

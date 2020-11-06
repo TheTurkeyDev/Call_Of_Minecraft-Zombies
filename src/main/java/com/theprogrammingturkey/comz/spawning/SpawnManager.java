@@ -1,17 +1,20 @@
 package com.theprogrammingturkey.comz.spawning;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.util.BlockUtils;
+import com.theprogrammingturkey.comz.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
@@ -20,7 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.logging.Level;
 
 public class SpawnManager
 {
@@ -49,32 +52,40 @@ public class SpawnManager
 		spawnDelayFactor = COMZombies.getPlugin().getConfig().getDouble("config.gameSettings.zombieSpawnDelayFactor");
 	}
 
-	public void loadAllSpawnsToGame()
+	public void loadAllSpawnsToGame(JsonArray spawnsSaveJson)
 	{
-		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
 		points.clear();
 
-		ConfigurationSection sec = config.getConfigurationSection(game.getName() + ".ZombieSpawns");
-
-		if(sec == null)
-			return;
-
-		for(String key : config.getConfigurationSection(game.getName() + ".ZombieSpawns").getKeys(false))
+		for(JsonElement spawnElem : spawnsSaveJson)
 		{
-			double x = config.getDouble(game.getName() + ".ZombieSpawns." + key + ".x");
-			double y = config.getDouble(game.getName() + ".ZombieSpawns." + key + ".y");
-			double z = config.getDouble(game.getName() + ".ZombieSpawns." + key + ".z");
-
-			Location loc = new Location(game.getWorld(), x, y, z);
-			SpawnPoint point = new SpawnPoint(loc, game, loc.getBlock().getType(), Integer.parseInt(key));
-			points.add(point);
+			if(!spawnElem.isJsonObject())
+				continue;
+			Location loc = CustomConfig.getLocationAddWorld(spawnElem.getAsJsonObject(), "", game.getWorld());
+			String id = CustomConfig.getString(spawnElem.getAsJsonObject(), "id", "MISSING");
+			if(loc != null && !id.equals("MISSING"))
+				points.add(new SpawnPoint(loc, game, loc.getBlock().getType(), id));
+			else
+				COMZombies.log.log(Level.WARNING, COMZombies.CONSOLE_PREFIX + "Failed to load zombie spawn! ID: " + id + " w/ Loc: " + loc);
 		}
 	}
 
-	public SpawnPoint getSpawnPoint(int id)
+	public JsonArray save()
+	{
+		JsonArray spawnsSaveJson = new JsonArray();
+		for(SpawnPoint spawn : points)
+		{
+			JsonObject spawnJson = CustomConfig.locationToJson(spawn.getLocation());
+			spawnJson.addProperty("id", spawn.getID());
+			spawnsSaveJson.add(spawnJson);
+		}
+
+		return spawnsSaveJson;
+	}
+
+	public SpawnPoint getSpawnPoint(String id)
 	{
 		for(SpawnPoint p : points)
-			if(id == p.getID())
+			if(id.equalsIgnoreCase(p.getID()))
 				return p;
 		return null;
 	}
@@ -89,15 +100,12 @@ public class SpawnManager
 
 	public void removePoint(SpawnPoint point)
 	{
-		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
 		if(points.contains(point))
 		{
-			config.set(game.getName() + ".ZombieSpawns." + point.getID(), null);
-			config.saveConfig();
-			loadAllSpawnsToGame();
 			BlockUtils.setBlockToAir(point.getLocation());
 			points.remove(point);
 		}
+		GameManager.INSTANCE.saveAllGames();
 	}
 
 	public int getCurrentSpawn()
@@ -430,39 +438,8 @@ public class SpawnManager
 		this.spawnInterval = COMZombies.getPlugin().getConfig().getInt("config.gameSettings.zombieSpawnDelay");
 	}
 
-	public int getNewSpawnPointNum()
+	public String getNewSpawnPointNum()
 	{
-		ConfigurationSection sec = ConfigManager.getConfig(COMZConfig.ARENAS).getConfigurationSection(game.getName() + ".ZombieSpawns");
-		if(sec == null)
-			return 0;
-
-		List<Integer> keys = sec.getKeys(false).stream().map(Integer::parseInt).sorted(Integer::compareTo).collect(Collectors.toList());
-		int next = 0;
-		for(Integer key : keys)
-		{
-			if(key != next)
-				return next;
-			next++;
-		}
-
-		return keys.size();
-	}
-
-	/**
-	 * Adds a spawnPoint to the Arena config file.
-	 */
-	public void addSpawnToConfig(SpawnPoint spawn)
-	{
-		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
-
-		double x = spawn.getLocation().getBlockX();
-		double y = spawn.getLocation().getBlockY();
-		double z = spawn.getLocation().getBlockZ();
-		conf.set(game.getName() + ".ZombieSpawns." + spawn.getID(), null);
-		conf.set(game.getName() + ".ZombieSpawns." + spawn.getID() + ".x", x);
-		conf.set(game.getName() + ".ZombieSpawns." + spawn.getID() + ".y", y);
-		conf.set(game.getName() + ".ZombieSpawns." + spawn.getID() + ".z", z);
-
-		conf.saveConfig();
+		return Util.genRandId();
 	}
 }

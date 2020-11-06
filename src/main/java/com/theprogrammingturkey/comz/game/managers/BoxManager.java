@@ -1,16 +1,20 @@
 package com.theprogrammingturkey.comz.game.managers;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.RandomBox;
 import com.theprogrammingturkey.comz.util.BlockUtils;
+import com.theprogrammingturkey.comz.util.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -19,7 +23,6 @@ public class BoxManager
 {
 	private Game game;
 	private ArrayList<RandomBox> boxes = new ArrayList<>();
-	private ArrayList<Integer> numbers = new ArrayList<>();
 	private RandomBox currentBox;
 	private boolean multiBox;
 
@@ -28,28 +31,36 @@ public class BoxManager
 		this.game = game;
 	}
 
-	public void loadAllBoxesToGame()
+	public void loadAllBoxesToGame(JsonArray mystery_boxes, JsonObject arenaSettingsJson)
 	{
-		CustomConfig config = ConfigManager.getConfig(COMZConfig.ARENAS);
-		multiBox = config.getBoolean(game.getName() + ".MultipleMysteryBoxes", false);
+		multiBox = CustomConfig.getBoolean(arenaSettingsJson, "multiple_mystery_boxes", false);
 		boxes.clear();
-		numbers.clear();
-		ConfigurationSection sec = config.getConfigurationSection(game.getName() + ".MysteryBoxes");
-		if(sec != null)
+		for(JsonElement boxElem : mystery_boxes)
 		{
-			for(String key : sec.getKeys(false))
-			{
-				double x = config.getDouble(game.getName() + ".MysteryBoxes." + key + ".x");
-				double y = config.getDouble(game.getName() + ".MysteryBoxes." + key + ".y");
-				double z = config.getDouble(game.getName() + ".MysteryBoxes." + key + ".z");
-				String facing = config.getString(game.getName() + ".MysteryBoxes." + key + ".Face");
-				int cost = config.getInt(game.getName() + ".MysteryBoxes." + key + ".Cost", 2000);
-				Location loc = new Location(game.getWorld(), x, y, z);
-				RandomBox point = new RandomBox(loc, BlockFace.valueOf(facing), game, key, cost);
-				boxes.add(point);
-				numbers.add(Integer.parseInt(key.substring(3)));
-			}
+			if(!boxElem.isJsonObject())
+				continue;
+			JsonObject boxJson = boxElem.getAsJsonObject();
+			Location loc = CustomConfig.getLocationAddWorld(boxJson, "", game.getWorld());
+			String facing = CustomConfig.getString(boxJson, "facing", "");
+			int cost = CustomConfig.getInt(boxJson, "cost", 2000);
+			String boxId = CustomConfig.getString(boxJson, "id", "MISSING");
+			RandomBox point = new RandomBox(loc, BlockFace.valueOf(facing), game, boxId, cost);
+			boxes.add(point);
 		}
+	}
+
+	public JsonArray save()
+	{
+		JsonArray saveJson = new JsonArray();
+		for(RandomBox box : boxes)
+		{
+			JsonObject boxJson = CustomConfig.locationToJsonNoWorld(box.getLocation());
+			boxJson.addProperty("facing", box.getFacing().name());
+			boxJson.addProperty("cost", box.getCost());
+			boxJson.addProperty("id", box.getId());
+			saveJson.add(boxJson);
+		}
+		return saveJson;
 	}
 
 	public void resetBoxes()
@@ -58,10 +69,10 @@ public class BoxManager
 			box.reset();
 	}
 
-	public RandomBox getBox(String name)
+	public RandomBox getBox(String id)
 	{
 		for(RandomBox b : boxes)
-			if(name.equalsIgnoreCase(b.getName()))
+			if(id.equalsIgnoreCase(b.getId()))
 				return b;
 		return null;
 	}
@@ -93,16 +104,12 @@ public class BoxManager
 
 	public void removeBox(Player player, RandomBox box)
 	{
-		CustomConfig conf = ConfigManager.getConfig(COMZConfig.ARENAS);
 		if(boxes.contains(box))
 		{
-			conf.set(game.getName() + ".MysteryBoxes." + box.getName(), null);
-			conf.saveConfig();
-			loadAllBoxesToGame();
 			player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "MysteryBox removed!");
 			BlockUtils.setBlockToAir(box.getLocation());
 			boxes.remove(box);
-			numbers.remove(Integer.parseInt(box.getName().substring(3)));
+			GameManager.INSTANCE.saveAllGames();
 		}
 	}
 
@@ -122,16 +129,8 @@ public class BoxManager
 			}
 			if(!same)
 			{
-				Location loc = box.getLocation();
-				String name = box.getName();
-				conf.set(game.getName() + ".MysteryBoxes." + name + ".x", loc.getBlockX());
-				conf.set(game.getName() + ".MysteryBoxes." + name + ".y", loc.getBlockY());
-				conf.set(game.getName() + ".MysteryBoxes." + name + ".z", loc.getBlockZ());
-				conf.set(game.getName() + ".MysteryBoxes." + name + ".Cost", box.getCost());
-				conf.set(game.getName() + ".MysteryBoxes." + name + ".Face", box.getFacing().name());
-				conf.saveConfig();
 				boxes.add(box);
-				numbers.add(Integer.parseInt(box.getName().substring(3)));
+				GameManager.INSTANCE.saveAllGames();
 			}
 		}
 	}
@@ -207,10 +206,7 @@ public class BoxManager
 
 	public String getNextBoxName()
 	{
-		int a = 0;
-		while(numbers.contains(a))
-			a++;
-		return "Box" + a;
+		return Util.genRandId();
 	}
 
 	public void teddyBear()

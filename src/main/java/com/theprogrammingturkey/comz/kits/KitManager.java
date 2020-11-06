@@ -1,5 +1,8 @@
 package com.theprogrammingturkey.comz.kits;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
@@ -8,6 +11,8 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 
 public class KitManager
 {
@@ -30,11 +35,21 @@ public class KitManager
 
 	public static void loadKits()
 	{
-		for(String key : ConfigManager.getConfig(COMZConfig.KITS).getConfigurationSection("").getKeys(false))
+		JsonElement jsonElement = ConfigManager.getConfig(COMZConfig.KITS).getJson();
+		if(jsonElement.isJsonNull())
 		{
-			Kit kit = new Kit(key);
-			kit.load();
-			kits.add(kit);
+			COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "Failed to load in the arenas from the arenas config!");
+			return;
+		}
+		JsonObject jsonObject = jsonElement.getAsJsonObject();
+		for(Map.Entry<String, JsonElement> kitJson : jsonObject.entrySet())
+		{
+			if(kitJson.getValue().isJsonObject())
+			{
+				Kit kit = new Kit(kitJson.getKey());
+				kit.load(kitJson.getValue().getAsJsonObject());
+				kits.add(kit);
+			}
 		}
 	}
 

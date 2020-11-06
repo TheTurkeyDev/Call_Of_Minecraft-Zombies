@@ -9,15 +9,11 @@ import com.theprogrammingturkey.comz.util.PacketUtil;
 import net.minecraft.server.v1_16_R2.Particles;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import java.util.ArrayList;
-import java.util.Random;
 
 public class TeleporterSign implements IGameSign
 {
@@ -44,13 +40,7 @@ public class TeleporterSign implements IGameSign
 				int points = Integer.parseInt(sign.getLine(3));
 				if(PointManager.canBuy(player, points))
 				{
-					ArrayList<Location> locList = game.teleporterManager.getTeleporters().get(sign.getLine(2));
-					Random r = new Random();
-					Location loc = locList.get(r.nextInt(locList.size()));
-					while(loc.equals(sign.getLocation()))
-						loc = locList.get(r.nextInt(locList.size()));
-
-					player.teleport(loc);
+					player.teleport(game.teleporterManager.getTeleporters().get(sign.getLine(2)));
 					player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 30));
 
 					for(int i = 0; i < 50; i++)

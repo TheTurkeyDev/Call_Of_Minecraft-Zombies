@@ -11,9 +11,9 @@ public class SpawnPoint
 	private Location loc;
 	private Game game;
 	private Material mat;
-	private int id;
+	private String id;
 
-	public SpawnPoint(Location loc, Game game, Material material, int id)
+	public SpawnPoint(Location loc, Game game, Material material, String id)
 	{
 		this.game = game;
 		this.loc = loc;
@@ -46,7 +46,7 @@ public class SpawnPoint
 		return "<SpawnPoint: " + game.getName() + "> LOC X: " + loc.getBlockX() + ", Y: " + loc.getBlockY() + ", Z: " + loc.getBlockZ() + "| Material: " + mat.toString() + "> ID " + id;
 	}
 
-	public int getID()
+	public String getID()
 	{
 		return id;
 	}

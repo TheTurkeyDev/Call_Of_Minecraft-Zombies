@@ -31,9 +31,9 @@ public class CreateArenaCommand implements SubCommand
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "This arena already exists!");
 					return true;
 				}
-				//TODO: Hold off until the arena is fully made?
+
 				Game newGame = new Game(args[1]);
-				newGame.setupConfig();
+				//TODO: Don't add yet?
 				GameManager.INSTANCE.addArena(newGame);
 				plugin.activeActions.put(player, new ArenaSetupAction(player, newGame));
 			}

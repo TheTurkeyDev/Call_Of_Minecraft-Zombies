@@ -1,20 +1,21 @@
 package com.theprogrammingturkey.comz.game.managers;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.World;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.ConfigurationSection;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
 public class SignManager
 {
@@ -26,30 +27,32 @@ public class SignManager
 	{
 		this.game = game;
 
-		load();
+		JsonElement jsonElement = ConfigManager.getConfig(COMZConfig.SIGNS).getJson();
+		if(jsonElement.isJsonNull())
+		{
+			COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "Failed to load in the signs for the arena: " + game.getName());
+			return;
+		}
+		JsonObject jsonObject = jsonElement.getAsJsonObject();
+		if(jsonObject.has(game.getName()))
+			load(jsonObject.getAsJsonArray(game.getName()));
 	}
 
-	private void load()
+	private void load(JsonArray signsJson)
 	{
-		CustomConfig conf = ConfigManager.getConfig(COMZConfig.SIGNS);
-		ConfigurationSection sec = conf.getConfigurationSection("signs." + game.getName());
-		if(sec == null)
-			return;
-
-		for(String s : sec.getKeys(false))
+		for(JsonElement signElem : signsJson)
 		{
-			int x = conf.getInt("signs." + game.getName() + "." + s + ".x");
-			int y = conf.getInt("signs." + game.getName() + "." + s + ".y");
-			int z = conf.getInt("signs." + game.getName() + "." + s + ".z");
-			World world = Bukkit.getWorld(conf.getString("signs." + game.getName() + "." + s + ".world"));
+			if(!signElem.isJsonObject())
+				continue;
+			JsonObject signJson = signElem.getAsJsonObject();
+			Location loc = CustomConfig.getLocation(signJson, "");
 
-			if(world == null)
+			if(loc == null)
 			{
-				COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "World " + s + " Does not exist!");
-				COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "Thus, could not load the sign at " + x + "," + y + "," + z + "!");
+				COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "Could not load the sign with json: " + signJson.toString());
 				continue;
 			}
-			Block block = world.getBlockAt(x, y, z);
+			Block block = loc.getBlock();
 			if(block.getState() instanceof Sign)
 			{
 				Sign sB = (Sign) block.getState();
@@ -57,6 +60,33 @@ public class SignManager
 			}
 		}
 		enable();
+	}
+
+	private void save()
+	{
+		CustomConfig config = ConfigManager.getConfig(COMZConfig.SIGNS);
+		JsonElement jsonElement = config.getJson();
+		if(jsonElement.isJsonNull())
+		{
+			COMZombies.log.log(Level.SEVERE, "Failed to save in the signs for the arena: " + game.getName());
+			return;
+		}
+		JsonObject jsonObject = jsonElement.getAsJsonObject();
+		JsonArray signsArray;
+		if(jsonObject.has(game.getName()))
+		{
+			signsArray = jsonObject.getAsJsonArray(game.getName());
+		}
+		else
+		{
+			signsArray = new JsonArray();
+			jsonObject.add(game.getName(), signsArray);
+		}
+
+		for(Sign sign : gameSigns)
+			signsArray.add(CustomConfig.locationToJson(sign.getLocation()));
+
+		config.saveConfig(jsonObject);
 	}
 
 	public void updateGame()
@@ -99,40 +129,7 @@ public class SignManager
 	public void addSign(Sign sign)
 	{
 		gameSigns.add(sign);
-
-		CustomConfig conf = ConfigManager.getConfig(COMZConfig.SIGNS);
-
-		String signInfo = "sign(" + sign.getX() + "," + sign.getY() + "," + sign.getZ() + "," + sign.getWorld().getName() + ")";
-
-		conf.set("signs." + game.getName() + "." + signInfo, null);
-		conf.set("signs." + game.getName() + "." + signInfo + ".x", sign.getX());
-		conf.set("signs." + game.getName() + "." + signInfo + ".y", sign.getY());
-		conf.set("signs." + game.getName() + "." + signInfo + ".z", sign.getZ());
-		conf.set("signs." + game.getName() + "." + signInfo + ".world", sign.getWorld().getName());
-
-		conf.saveConfig();
-
-		updateGame();
-	}
-
-	public void removeSign(Sign sign)
-	{
-		gameSigns.remove(sign);
-
-		CustomConfig conf = ConfigManager.getConfig(COMZConfig.SIGNS);
-
-		sign.setLine(0, "");
-		sign.setLine(1, "");
-		sign.setLine(2, "");
-		sign.setLine(3, "");
-
-		String signInfo = "sign(" + sign.getX() + "," + sign.getY() + "," + sign.getZ() + "," + sign.getWorld() + ")";
-
-		conf.set("signs." + game.getName() + "." + signInfo, null);
-
-		conf.saveConfig();
-
-		updateGame();
+		save();
 	}
 
 	public boolean isSign(Sign sign)
@@ -150,5 +147,6 @@ public class SignManager
 			sign.setLine(3, "");
 		}
 		gameSigns.clear();
+		save();
 	}
 }

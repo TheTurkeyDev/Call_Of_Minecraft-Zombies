@@ -5,9 +5,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import javax.annotation.Nonnull;
+
 public class PlayerPerkPurchaseEvent extends Event
 {
-
 	private static final HandlerList handlers = new HandlerList();
 	private final Player player;
 	private final PerkType perk;
@@ -28,6 +29,7 @@ public class PlayerPerkPurchaseEvent extends Event
 		return player;
 	}
 
+	@Nonnull
 	public HandlerList getHandlers()
 	{
 		return handlers;

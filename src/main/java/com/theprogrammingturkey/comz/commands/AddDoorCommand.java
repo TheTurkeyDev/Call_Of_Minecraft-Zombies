@@ -6,6 +6,7 @@ import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.actions.DoorSetupAction;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.util.CommandUtil;
+import com.theprogrammingturkey.comz.util.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -29,7 +30,7 @@ public class AddDoorCommand implements SubCommand
 				if(GameManager.INSTANCE.isValidArena(args[1]))
 				{
 					Game game = GameManager.INSTANCE.getGame(args[1]);
-					Door door = new Door(game, game.doorManager.getCurrentDoorNumber());
+					Door door = new Door(game, Util.genRandId());
 					plugin.activeActions.put(player, new DoorSetupAction(player, game, door));
 
 					game.doorManager.addDoor(door);

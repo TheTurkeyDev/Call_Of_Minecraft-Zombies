@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import javax.annotation.Nonnull;
+
 public class GameStartEvent extends Event
 {
 
@@ -21,7 +23,7 @@ public class GameStartEvent extends Event
 
 	public List<Player> getInGamePlayers()
 	{
-		return (ArrayList<Player>) game.players;
+		return game.players;
 	}
 
 	public Game getGame()
@@ -29,6 +31,7 @@ public class GameStartEvent extends Event
 		return game;
 	}
 
+	@Nonnull
 	public HandlerList getHandlers()
 	{
 		return handlers;

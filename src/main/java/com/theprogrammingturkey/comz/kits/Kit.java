@@ -1,8 +1,7 @@
 package com.theprogrammingturkey.comz.kits;
 
-import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.config.COMZConfig;
-import com.theprogrammingturkey.comz.config.ConfigManager;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
@@ -38,11 +37,14 @@ public class Kit
 		name = "ERROR";
 	}
 
-	public void load()
+	public void load(JsonObject kitJson)
 	{
-		CustomConfig config = ConfigManager.getConfig(COMZConfig.KITS);
-		for(String weaponName : config.getString(name + ".Weapons", "").split(","))
+		for(JsonElement weaponElem : kitJson.getAsJsonArray("weapons"))
 		{
+			if(!weaponElem.isJsonObject())
+				continue;
+			JsonObject weaponJson = weaponElem.getAsJsonObject();
+			String weaponName = weaponJson.get("weapon_name").getAsString();
 			Weapon weapon = WeaponManager.getGun(weaponName);
 			if(weapon == null)
 			{
@@ -52,8 +54,12 @@ public class Kit
 			this.weapons.add(weapon);
 		}
 
-		for(String perkName : config.getString(name + ".Perks", "").split(","))
+		for(JsonElement perkElem : kitJson.getAsJsonArray("perks"))
 		{
+			if(!perkElem.isJsonObject())
+				continue;
+			JsonObject perkJson = perkElem.getAsJsonObject();
+			String perkName = perkJson.get("perk_name").getAsString();
 			PerkType perk = PerkType.getPerkType(perkName);
 			if(perk == null)
 			{
@@ -64,43 +70,49 @@ public class Kit
 				this.perks.add(perk);
 		}
 
-		points = config.getInt(name + ".Points", 0);
+		points = CustomConfig.getInt(kitJson, "points,", 0);
 
-
-		if(config.getConfigurationSection(name + ".Round_Rewards") != null)
+		for(JsonElement roundRewardElem : kitJson.getAsJsonArray("round_rewards"))
 		{
+			if(!roundRewardElem.isJsonObject())
+				continue;
+			JsonObject roundRewardJson = roundRewardElem.getAsJsonObject();
 			List<Weapon> weapons = new ArrayList<>();
-			List<String> weaponStrings = config.getStringList(name + ".Round_Rewards.Weapons", new ArrayList<>());
-			for(String wep : weaponStrings)
+			for(JsonElement weaponElem : roundRewardJson.getAsJsonArray("weapons"))
 			{
-				Weapon weapon = WeaponManager.getWeapon(wep);
+				if(!weaponElem.isJsonObject())
+					continue;
+				JsonObject weaponJson = weaponElem.getAsJsonObject();
+				String weaponName = weaponJson.get("weapon_name").getAsString();
+				Weapon weapon = WeaponManager.getWeapon(weaponName);
 				if(weapon == null)
 				{
-					Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] Kit Round Reward weapon: " + wep + "  is an invalid weapon name!");
+					Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] Kit Round Reward weapon: " + weaponName + "  is an invalid weapon name!");
 					continue;
 				}
 				weapons.add(weapon);
 			}
 
 			List<PerkType> perks = new ArrayList<>();
-			List<String> perksStrings = config.getStringList(name + ".Round_Rewards.Perks", new ArrayList<>());
-			for(String ps : perksStrings)
+			for(JsonElement perkElem : roundRewardJson.getAsJsonArray("perks"))
 			{
-				PerkType perk = PerkType.getPerkType(ps);
+				if(!perkElem.isJsonObject())
+					continue;
+				JsonObject perkJson = perkElem.getAsJsonObject();
+				String perkName = perkJson.get("perk_name").getAsString();
+				PerkType perk = PerkType.getPerkType(perkName);
 				if(perk == null)
 				{
-					Bukkit.broadcastMessage(ChatColor.RED + "[Zombies]  Kit Round Reward Perk: " + ps + "  is an invalid perk name!");
+					Bukkit.broadcastMessage(ChatColor.RED + "[Zombies]  Kit Round Reward Perk: " + perkName + "  is an invalid perk name!");
 					continue;
 				}
 				perks.add(perk);
 			}
 
-			int points = config.getInt(name + ".Round_Rewards.Points", 0);
-			int roundEnd = config.getInt(name + ".Round_Rewards.Round_End", 1);
+			int points = CustomConfig.getInt(roundRewardJson, "points,", 0);
+			int roundEnd = CustomConfig.getInt(roundRewardJson, "after_round,", 0);
 
 			roundRewards.add(new RoundReward(roundEnd, points, weapons, perks));
-
-			config.saveConfig();
 		}
 	}
 

@@ -111,13 +111,13 @@ public class BarrierSetupAction extends BaseAction
 		{
 			if(state == 0)
 			{
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier block for barrier " + barrier.getNum() + " set!");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier block for barrier set!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now select where the repair sign will be located at.");
 				state++;
 			}
 			else if(state == 1)
 			{
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier block repair sign location for barrier " + barrier.getNum() + " set!");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier block repair sign location for barrier set!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now select the spawn points that are located behind the barrier.");
 				state++;
 			}
@@ -127,7 +127,7 @@ public class BarrierSetupAction extends BaseAction
 
 				COMZombies.scheduleTask(1, game::resetSpawnLocationBlocks);
 
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn point for barrier number " + barrier.getNum() + " set!");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn point for barrier set!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now type in the amount the player will receive per repairation level of the barrier.");
 			}
 		}

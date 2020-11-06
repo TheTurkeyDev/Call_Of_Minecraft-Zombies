@@ -1,12 +1,9 @@
 package com.theprogrammingturkey.comz.leaderboards;
 
-import com.theprogrammingturkey.comz.config.COMZConfig;
-import com.theprogrammingturkey.comz.config.ConfigManager;
+import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -24,22 +21,22 @@ public class PlayerStats
 	private int highestRound;
 	private int mostPoints;
 
-	private PlayerStats(String playerUUID, ConfigurationSection config)
+	private PlayerStats(String playerUUID, JsonObject playerStats)
 	{
-		this(playerUUID, Bukkit.getOfflinePlayer(UUID.fromString(playerUUID)).getName(), config);
+		this(playerUUID, Bukkit.getOfflinePlayer(UUID.fromString(playerUUID)).getName(), playerStats);
 	}
 
-	private PlayerStats(String playerUUID, String displayName, ConfigurationSection config)
+	private PlayerStats(String playerUUID, String displayName, JsonObject playerStats)
 	{
 		this.playerUUID = playerUUID;
 		this.displayName = displayName;
-		this.kills = config.getInt("kills");
-		this.revives = config.getInt("revives");
-		this.deaths = config.getInt("deaths");
-		this.downs = config.getInt("downs");
-		this.gamesPlayed = config.getInt("games_played");
-		this.highestRound = config.getInt("highest_round");
-		this.mostPoints = config.getInt("most_points");
+		this.kills = CustomConfig.getInt(playerStats, "kills", 0);
+		this.revives = CustomConfig.getInt(playerStats, "revives", 0);
+		this.deaths = CustomConfig.getInt(playerStats, "deaths", 0);
+		this.downs = CustomConfig.getInt(playerStats, "downs", 0);
+		this.gamesPlayed = CustomConfig.getInt(playerStats, "games_played", 0);
+		this.highestRound = CustomConfig.getInt(playerStats, "highest_round", 0);
+		this.mostPoints = CustomConfig.getInt(playerStats, "most_points", 0);
 	}
 
 	public String getPlayerUUID()
@@ -83,7 +80,7 @@ public class PlayerStats
 	public void incKills()
 	{
 		this.kills++;
-		savePlayerStats();
+		Leaderboard.saveLeaderboard();
 	}
 
 	public int getRevives()
@@ -94,7 +91,7 @@ public class PlayerStats
 	public void setRevives(int revives)
 	{
 		this.revives = revives;
-		savePlayerStats();
+		Leaderboard.saveLeaderboard();
 	}
 
 	public int getDeaths()
@@ -105,7 +102,7 @@ public class PlayerStats
 	public void setDeaths(int deaths)
 	{
 		this.deaths = deaths;
-		savePlayerStats();
+		Leaderboard.saveLeaderboard();
 	}
 
 	public int getDowns()
@@ -116,7 +113,7 @@ public class PlayerStats
 	public void setDowns(int downs)
 	{
 		this.downs = downs;
-		savePlayerStats();
+		Leaderboard.saveLeaderboard();
 	}
 
 	public int getGamesPlayed()
@@ -127,7 +124,7 @@ public class PlayerStats
 	public void incGamesPlayed()
 	{
 		this.gamesPlayed++;
-		savePlayerStats();
+		Leaderboard.saveLeaderboard();
 	}
 
 	public int getHighestRound()
@@ -138,7 +135,7 @@ public class PlayerStats
 	public void setHighestRound(int highestRound)
 	{
 		this.highestRound = highestRound;
-		savePlayerStats();
+		Leaderboard.saveLeaderboard();
 	}
 
 	public int getMostPoints()
@@ -149,62 +146,39 @@ public class PlayerStats
 	public void setMostPoints(int mostPoints)
 	{
 		this.mostPoints = mostPoints;
-		savePlayerStats();
+		Leaderboard.saveLeaderboard();
 	}
 
-	private void savePlayerStats()
+	public JsonObject save()
 	{
-		CustomConfig config = ConfigManager.getConfig(COMZConfig.STATS);
-		ConfigurationSection sec = config.getConfigurationSection("stats." + playerUUID);
-		sec.set("kills", kills);
-		sec.set("revives", revives);
-		sec.set("deaths", deaths);
-		sec.set("downs", downs);
-		sec.set("games_played", gamesPlayed);
-		sec.set("highest_round", highestRound);
-		sec.set("most_points", mostPoints);
-		config.saveConfig();
+		JsonObject playerStatsJson = new JsonObject();
+		playerStatsJson.addProperty("kills", kills);
+		playerStatsJson.addProperty("revives", revives);
+		playerStatsJson.addProperty("deaths", deaths);
+		playerStatsJson.addProperty("downs", downs);
+		playerStatsJson.addProperty("games_played", gamesPlayed);
+		playerStatsJson.addProperty("highest_round", highestRound);
+		playerStatsJson.addProperty("most_points", mostPoints);
+
+		return playerStatsJson;
 	}
 
-	public static PlayerStats loadPlayerStats(String uuid)
+	public static PlayerStats loadPlayerStats(String uuid, JsonObject playerStats)
 	{
-		CustomConfig config = ConfigManager.getConfig(COMZConfig.STATS);
-		ConfigurationSection sec = config.getConfigurationSection("stats." + uuid);
-
-		return new PlayerStats(uuid, sec);
+		return new PlayerStats(uuid, playerStats);
 	}
 
 	public static PlayerStats initPlayerStats(Player player)
 	{
-		CustomConfig config = ConfigManager.getConfig(COMZConfig.STATS);
-		ConfigurationSection sec = new YamlConfiguration();
-		config.set("stats." + player.getUniqueId(), sec);
-		sec.set("kills", 0);
-		sec.set("revives", 0);
-		sec.set("deaths", 0);
-		sec.set("downs", 0);
-		sec.set("games_played", 0);
-		sec.set("highest_round", 0);
-		sec.set("most_points", 0);
-		config.saveConfig();
-
-		return new PlayerStats(player.getUniqueId().toString(), player.getDisplayName(), sec);
+		PlayerStats playerStats = new PlayerStats(player.getUniqueId().toString(), player.getDisplayName(), new JsonObject());
+		Leaderboard.saveLeaderboard();
+		return playerStats;
 	}
 
 	public static PlayerStats initPlayerStats(OfflinePlayer player)
 	{
-		CustomConfig config = ConfigManager.getConfig(COMZConfig.STATS);
-		ConfigurationSection sec = new YamlConfiguration();
-		config.set("stats." + player.getUniqueId(), sec);
-		sec.set("kills", 0);
-		sec.set("revives", 0);
-		sec.set("deaths", 0);
-		sec.set("downs", 0);
-		sec.set("games_played", 0);
-		sec.set("highest_round", 0);
-		sec.set("most_points", 0);
-		config.saveConfig();
-
-		return new PlayerStats(player.getUniqueId().toString(), player.getName(), sec);
+		PlayerStats playerStats = new PlayerStats(player.getUniqueId().toString(), player.getName(), new JsonObject());
+		Leaderboard.saveLeaderboard();
+		return playerStats;
 	}
 }

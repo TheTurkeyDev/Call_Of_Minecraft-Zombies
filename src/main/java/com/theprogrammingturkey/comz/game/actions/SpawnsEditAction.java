@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.game.actions;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
@@ -43,7 +44,7 @@ public class SpawnsEditAction extends BaseAction
 				return;
 			}
 
-			game.spawnManager.addSpawnToConfig(point);
+			GameManager.INSTANCE.saveAllGames();
 			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Spawn point added to arena " + ChatColor.BLUE + game.getName() + ChatColor.GREEN + "!");
 			Block block = point.getLocation().getBlock();
 			point.setMaterial(block.getType());

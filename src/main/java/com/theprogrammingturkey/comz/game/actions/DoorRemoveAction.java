@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.game.actions;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.util.BlockUtils;
 import com.theprogrammingturkey.comz.util.CommandUtil;
@@ -47,7 +48,6 @@ public class DoorRemoveAction extends BaseAction
 		if(door == null)
 			return;
 
-		door.removeSelfFromConfig();
 		event.setCancelled(true);
 		for(Sign sign : door.getSigns())
 			BlockUtils.setBlockToAir(sign.getBlock());
@@ -60,6 +60,7 @@ public class DoorRemoveAction extends BaseAction
 			cancelAction();
 			COMZombies.getPlugin().activeActions.remove(player);
 		}
+		GameManager.INSTANCE.saveAllGames();
 	}
 
 	@Override

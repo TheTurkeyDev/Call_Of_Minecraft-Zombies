@@ -77,42 +77,11 @@ public class COMZombies extends JavaPlugin
 
 		registerEvents();
 
-		boolean say = true;
-		Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.GREEN + "" + ChatColor.BOLD + "This server is running " + ChatColor.GOLD + "" + ChatColor.BOLD + getName() + ChatColor.RED + "" + ChatColor.BOLD + "!");
-		Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.GREEN + "" + ChatColor.BOLD + "Testing plugin...");
-		try
-		{
-			testPlugin();
-		} catch(Exception e)
-		{
-			Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.DARK_RED + "Zombies has run into an error!");
-			Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.DARK_RED + e.toString());
-
-			say = false;
-		}
-		if(say)
-		{
-			Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.GREEN + "" + ChatColor.BOLD + "Zombies is working just fine!");
-			saveConfig();
-		}
-
 		getCommand("zombies").setExecutor(CommandManager.INSTANCE);
 
-		log.info(COMZombies.CONSOLE_PREFIX + " has been enabled!");
+		log.info(COMZombies.CONSOLE_PREFIX + "has been enabled!");
 
 		GameManager.INSTANCE.loadAllGames();
-	}
-
-	/**
-	 * Tests the plugin for any errors, if an exception is caught, the server
-	 * will notify to the console.
-	 */
-	public void testPlugin()
-	{
-		saveDefaultConfig();
-		reloadConfig();
-		ConfigManager.reloadALL();
-		ConfigManager.saveALL();
 	}
 
 	/**
@@ -147,9 +116,8 @@ public class COMZombies extends JavaPlugin
 	public void onDisable()
 	{
 		reloadConfig();
-		ConfigManager.reloadALL();
 		GameManager.INSTANCE.endAll();
-		log.info(COMZombies.CONSOLE_PREFIX + " has been disabled!");
+		log.info(COMZombies.CONSOLE_PREFIX + "has been disabled!");
 	}
 
 

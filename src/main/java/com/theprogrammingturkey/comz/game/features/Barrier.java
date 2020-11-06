@@ -28,7 +28,7 @@ public class Barrier implements Runnable
 	private int stage;
 	private boolean breaking = false;
 
-	private int number;
+	private String id;
 
 	private Game game;
 
@@ -36,10 +36,10 @@ public class Barrier implements Runnable
 
 	private List<Entity> ents = new ArrayList<>();
 
-	public Barrier(int n, Game game)
+	public Barrier(String id, Game game)
 	{
 		stage = 0;
-		number = n;
+		this.id = id;
 		this.game = game;
 	}
 
@@ -162,9 +162,9 @@ public class Barrier implements Runnable
 		return spawns;
 	}
 
-	public int getNum()
+	public String getID()
 	{
-		return number;
+		return id;
 	}
 
 	public int getReward()

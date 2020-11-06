@@ -20,8 +20,13 @@ public enum COMZConfig
 		return name;
 	}
 
-	public String getFileName()
+	public String getLegacyFileName()
 	{
 		return name + ".yml";
+	}
+
+	public String getFileName()
+	{
+		return name + ".json";
 	}
 }

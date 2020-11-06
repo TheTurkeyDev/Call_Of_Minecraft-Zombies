@@ -1,15 +1,12 @@
 package com.theprogrammingturkey.comz.commands;
 
-import com.theprogrammingturkey.comz.config.COMZConfig;
-import com.theprogrammingturkey.comz.config.ConfigManager;
+import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
-import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.game.Game;
 
 public class ReloadCommand implements SubCommand
 {
@@ -24,7 +21,6 @@ public class ReloadCommand implements SubCommand
 			{
 				Bukkit.getServer().getPluginManager().disablePlugin(plugin);
 				Bukkit.getServer().getPluginManager().enablePlugin(plugin);
-				ConfigManager.getConfig(COMZConfig.ARENAS).reloadConfig();
 				plugin.reloadConfig();
 				for(Game game : GameManager.INSTANCE.getGames())
 				{

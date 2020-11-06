@@ -76,7 +76,7 @@ public class InfoCommand implements SubCommand
 							for(int i = 0; i < game.doorManager.getDoors().size(); i++)
 							{
 								Door door = game.doorManager.getDoors().get(i);
-								CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Door " + door.doorNumber);
+								CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Door " + door.doorID);
 								CommandUtil.sendMessageToPlayer(player, "  " + ChatColor.GREEN + "Blocks: " + ChatColor.BLUE + door.getBlocks().size());
 								CommandUtil.sendMessageToPlayer(player, "  " + ChatColor.GREEN + "Signs: " + ChatColor.BLUE + door.getSigns().size());
 								CommandUtil.sendMessageToPlayer(player, "  " + ChatColor.GREEN + "Is Open: " + ChatColor.BLUE + door.isOpened());

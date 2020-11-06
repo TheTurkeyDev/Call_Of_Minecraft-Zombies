@@ -1,14 +1,18 @@
 package com.theprogrammingturkey.comz.leaderboards;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
-import com.theprogrammingturkey.comz.config.CustomConfig;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 
 public class Leaderboard
 {
@@ -84,9 +88,24 @@ public class Leaderboard
 
 	public static void loadLeaderboard()
 	{
-		CustomConfig statsConf = ConfigManager.getConfig(COMZConfig.STATS);
-		if(statsConf.getConfigurationSection("stats") != null)
-			for(String a : statsConf.getConfigurationSection("stats").getKeys(false))
-				Leaderboard.addPlayerStats(PlayerStats.loadPlayerStats(a));
+		JsonElement jsonElement = ConfigManager.getConfig(COMZConfig.STATS).getJson();
+		if(jsonElement.isJsonNull())
+		{
+			COMZombies.log.log(Level.SEVERE, "Failed to load in the stats");
+			return;
+		}
+		JsonObject statsJson = jsonElement.getAsJsonObject();
+		for(Map.Entry<String, JsonElement> entry : statsJson.entrySet())
+			if(entry.getValue().isJsonObject())
+				Leaderboard.addPlayerStats(PlayerStats.loadPlayerStats(entry.getKey(), entry.getValue().getAsJsonObject()));
+	}
+
+	public static void saveLeaderboard()
+	{
+		JsonObject playerStatsJson = new JsonObject();
+		for(PlayerStats playerStats : allPlayers)
+			playerStatsJson.add(playerStats.getPlayerUUID(), playerStats.save());
+
+		ConfigManager.getConfig(COMZConfig.STATS).saveConfig(playerStatsJson);
 	}
 }

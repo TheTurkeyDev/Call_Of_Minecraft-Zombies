@@ -36,7 +36,7 @@ public class RandomBox
 	private BlockFace facing;
 	private Location chestLocation = null;
 	private Game boxGame;
-	private String boxNum;
+	private String boxId;
 	private int boxCost;
 
 	private boolean running;
@@ -47,12 +47,12 @@ public class RandomBox
 	private ArmorStand namePlate;
 
 
-	public RandomBox(Location loc, BlockFace facing, Game game, String key, int cost)
+	public RandomBox(Location loc, BlockFace facing, Game game, String boxId, int cost)
 	{
 		boxLoc = loc;
 		this.facing = facing;
 		boxGame = game;
-		boxNum = key;
+		this.boxId = boxId;
 		boxCost = cost;
 		this.running = false;
 		this.gunSelected = false;
@@ -212,7 +212,7 @@ public class RandomBox
 	{
 		if(boxLoc == null)
 		{
-			Bukkit.getServer().broadcastMessage("Mysterybox " + this.getName() + "Is broken and has no location!! what did you do!!");
+			Bukkit.getServer().broadcastMessage("Mysterybox " + this.getId() + "Is broken and has no location!! what did you do!!");
 			return;
 		}
 
@@ -235,9 +235,9 @@ public class RandomBox
 		return facing;
 	}
 
-	public String getName()
+	public String getId()
 	{
-		return boxNum;
+		return boxId;
 	}
 
 

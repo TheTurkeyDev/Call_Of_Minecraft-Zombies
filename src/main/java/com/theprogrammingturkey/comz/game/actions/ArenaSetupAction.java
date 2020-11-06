@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.game.actions;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -39,7 +40,7 @@ public class ArenaSetupAction extends BaseAction
 		if(runOnce)
 			Bukkit.getScheduler().cancelTask(particleBoxID);
 		if(!setup)
-			game.removeFromConfig();
+			GameManager.INSTANCE.removeGame(game);
 
 		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Arena setup operation canceled!");
 	}
