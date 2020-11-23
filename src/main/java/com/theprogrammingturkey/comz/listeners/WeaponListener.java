@@ -10,7 +10,7 @@ import com.theprogrammingturkey.comz.game.weapons.WeaponType;
 import com.theprogrammingturkey.comz.util.BlockUtils;
 import com.theprogrammingturkey.comz.util.PacketUtil;
 import com.theprogrammingturkey.comz.util.RayTrace;
-import net.minecraft.server.v1_16_R2.Particles;
+import net.minecraft.server.v1_16_R3.Particles;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
