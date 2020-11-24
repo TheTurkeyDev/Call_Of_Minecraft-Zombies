@@ -149,9 +149,10 @@ public class GameManager
 		if(entity instanceof Player)
 			return isPlayerInGame((Player) entity);
 
-		for(Game game : games)
-			if(game.spawnManager.isEntitySpawned((Mob) entity))
-				return true;
+		if(entity instanceof Mob)
+			for(Game game : games)
+				if(game.spawnManager.isEntitySpawned((Mob) entity))
+					return true;
 
 		return false;
 	}
