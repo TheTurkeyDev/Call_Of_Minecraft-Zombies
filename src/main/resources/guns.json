@@ -1,0 +1,610 @@
+{
+  "Pistols": {
+    "guns": [
+      {
+        "name": "B23R",
+        "clip_ammo": 15,
+        "total_ammo": 105,
+        "damage": 3,
+        "fire_delay": 10,
+        "max_distance": 15.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "B34R",
+          "clip_ammo": 20,
+          "total_ammo": 180,
+          "damage": 15,
+          "fire_delay": 10,
+          "max_distance": 15.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "Executioner",
+        "clip_ammo": 5,
+        "total_ammo": 75,
+        "damage": 23,
+        "fire_delay": 10,
+        "max_distance": 15.0,
+        "particle_color": "808080",
+        "multi_hit": true,
+        "pack_a_punch_gun": {
+          "name": "Voice of Justice",
+          "clip_ammo": 5,
+          "total_ammo": 100,
+          "damage": 40,
+          "fire_delay": 10,
+          "max_distance": 15.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "Five-Seven",
+        "clip_ammo": 20,
+        "total_ammo": 120,
+        "damage": 3,
+        "fire_delay": 10,
+        "max_distance": 15.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "Ultra",
+          "clip_ammo": 20,
+          "total_ammo": 200,
+          "damage": 15,
+          "fire_delay": 10,
+          "max_distance": 15.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "Kap-40",
+        "clip_ammo": 12,
+        "total_ammo": 96,
+        "damage": 3,
+        "fire_delay": 10,
+        "max_distance": 15.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "Karmic Atom Perforator-4000",
+          "clip_ammo": 15,
+          "total_ammo": 180,
+          "damage": 12,
+          "fire_delay": 10,
+          "max_distance": 15.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "M1911",
+        "clip_ammo": 8,
+        "total_ammo": 80,
+        "damage": 2,
+        "fire_delay": 10,
+        "max_distance": 15.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "C-3000 b1at-ch35",
+          "clip_ammo": 6,
+          "total_ammo": 50,
+          "damage": 30,
+          "fire_delay": 10,
+          "max_distance": 15.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "Python",
+        "clip_ammo": 6,
+        "total_ammo": 84,
+        "damage": 30,
+        "fire_delay": 10,
+        "max_distance": 15.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "Cobra",
+          "clip_ammo": 12,
+          "total_ammo": 96,
+          "damage": 50,
+          "fire_delay": 10,
+          "max_distance": 15.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      }
+    ]
+  },
+  "Shotguns": {
+    "guns": [
+      {
+        "name": "M1216",
+        "clip_ammo": 16,
+        "total_ammo": 84,
+        "damage": 30,
+        "fire_delay": 15,
+        "max_distance": 7.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "Mesmerizer",
+          "clip_ammo": 24,
+          "total_ammo": 72,
+          "damage": 40,
+          "fire_delay": 15,
+          "max_distance": 7.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "Olympia",
+        "clip_ammo": 2,
+        "total_ammo": 38,
+        "damage": 20,
+        "fire_delay": 15,
+        "max_distance": 7.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "Hades",
+          "clip_ammo": 2,
+          "total_ammo": 60,
+          "damage": 30,
+          "fire_delay": 15,
+          "max_distance": 7.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "R870 MCS",
+        "clip_ammo": 6,
+        "total_ammo": 48,
+        "damage": 22,
+        "fire_delay": 15,
+        "max_distance": 7.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "Refitted-870 Mechanical Cranium Sequencer",
+          "clip_ammo": 10,
+          "total_ammo": 70,
+          "damage": 30,
+          "fire_delay": 15,
+          "max_distance": 7.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "S12",
+        "clip_ammo": 10,
+        "total_ammo": 30,
+        "damage": 24,
+        "fire_delay": 15,
+        "max_distance": 7.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "Synthetic Dozen",
+          "clip_ammo": 10,
+          "total_ammo": 50,
+          "damage": 30,
+          "fire_delay": 15,
+          "max_distance": 7.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      }
+    ]
+  },
+  "Assault_Rifles": {
+    "guns": [
+      {
+        "name": "AN-94",
+        "clip_ammo": 30,
+        "total_ammo": 90,
+        "damage": 5,
+        "fire_delay": 7,
+        "max_distance": 25.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "Actuated Neutralizer 94000",
+          "clip_ammo": 50,
+          "total_ammo": 600,
+          "damage": 10,
+          "fire_delay": 7,
+          "max_distance": 25.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "Colt M16A1",
+        "clip_ammo": 30,
+        "total_ammo": 120,
+        "damage": 4,
+        "fire_delay": 7,
+        "max_distance": 25.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "Skullcrusher",
+          "clip_ammo": 30,
+          "total_ammo": 270,
+          "damage": 13,
+          "fire_delay": 7,
+          "max_distance": 25.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "FAL",
+        "clip_ammo": 20,
+        "total_ammo": 180,
+        "damage": 7,
+        "fire_delay": 7,
+        "max_distance": 25.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "EPC WN",
+          "clip_ammo": 30,
+          "total_ammo": 360,
+          "damage": 15,
+          "fire_delay": 7,
+          "max_distance": 25.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "M8A1",
+        "clip_ammo": 32,
+        "total_ammo": 192,
+        "damage": 3,
+        "fire_delay": 7,
+        "max_distance": 25.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "Micro Aerator",
+          "clip_ammo": 42,
+          "total_ammo": 336,
+          "damage": 7,
+          "fire_delay": 7,
+          "max_distance": 25.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "M14",
+        "clip_ammo": 8,
+        "total_ammo": 96,
+        "damage": 4,
+        "fire_delay": 7,
+        "max_distance": 25.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "Mnesia",
+          "clip_ammo": 16,
+          "total_ammo": 192,
+          "damage": 7,
+          "fire_delay": 7,
+          "max_distance": 25.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "M27",
+        "clip_ammo": 30,
+        "total_ammo": 240,
+        "damage": 5,
+        "fire_delay": 7,
+        "max_distance": 25.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "Mystifier",
+          "clip_ammo": 30,
+          "total_ammo": 360,
+          "damage": 10,
+          "fire_delay": 7,
+          "max_distance": 25.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "MTAR",
+        "clip_ammo": 30,
+        "total_ammo": 240,
+        "damage": 5,
+        "fire_delay": 7,
+        "max_distance": 25.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "Malevolent Taxonomic Anodized Redeemer",
+          "clip_ammo": 30,
+          "total_ammo": 360,
+          "damage": 10,
+          "fire_delay": 7,
+          "max_distance": 25.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "SMR",
+        "clip_ammo": 20,
+        "total_ammo": 140,
+        "damage": 3,
+        "fire_delay": 7,
+        "max_distance": 25.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "SM1L3R",
+          "clip_ammo": 30,
+          "total_ammo": 390,
+          "damage": 8,
+          "fire_delay": 7,
+          "max_distance": 25.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "Type 25",
+        "clip_ammo": 30,
+        "total_ammo": 150,
+        "damage": 4,
+        "fire_delay": 7,
+        "max_distance": 25.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "Strain 25",
+          "clip_ammo": 30,
+          "total_ammo": 270,
+          "damage": 12,
+          "fire_delay": 7,
+          "max_distance": 25.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      }
+    ]
+  },
+  "Light_Machine_Guns": {
+    "guns": [
+      {
+        "name": "HAMR",
+        "clip_ammo": 135,
+        "total_ammo": 1375,
+        "damage": 10,
+        "fire_delay": 5,
+        "max_distance": 35.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "SLDG-HAMR",
+          "clip_ammo": 125,
+          "total_ammo": 625,
+          "damage": 15,
+          "fire_delay": 5,
+          "max_distance": 35.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "LSAT",
+        "clip_ammo": 100,
+        "total_ammo": 400,
+        "damage": 12,
+        "fire_delay": 5,
+        "max_distance": 35.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "FSIRT",
+          "clip_ammo": 100,
+          "total_ammo": 600,
+          "damage": 16,
+          "fire_delay": 5,
+          "max_distance": 35.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "RPD",
+        "clip_ammo": 100,
+        "total_ammo": 400,
+        "damage": 10,
+        "fire_delay": 5,
+        "max_distance": 35.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "Relativistic Punishment Device",
+          "clip_ammo": 125,
+          "total_ammo": 750,
+          "damage": 15,
+          "fire_delay": 5,
+          "max_distance": 35.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      }
+    ]
+  },
+  "Sub_Machine_Guns": {
+    "guns": [
+      {
+        "name": "Chicom CQB",
+        "clip_ammo": 40,
+        "total_ammo": 120,
+        "damage": 2,
+        "fire_delay": 5,
+        "max_distance": 40.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "Chicom Cataclysmic Quadruple Burst",
+          "clip_ammo": 40,
+          "total_ammo": 200,
+          "damage": 7,
+          "fire_delay": 5,
+          "max_distance": 40.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "MP5",
+        "clip_ammo": 30,
+        "total_ammo": 120,
+        "damage": 3,
+        "fire_delay": 5,
+        "max_distance": 40.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "MP115 Kollider",
+          "clip_ammo": 40,
+          "total_ammo": 200,
+          "damage": 7,
+          "fire_delay": 5,
+          "max_distance": 40.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "PDW-57",
+        "clip_ammo": 50,
+        "total_ammo": 200,
+        "damage": 2,
+        "fire_delay": 5,
+        "max_distance": 40.0,
+        "particle_color": "808080",
+        "multi_hit": false,
+        "pack_a_punch_gun": {
+          "name": "Predictive Death Wish 57000",
+          "clip_ammo": 50,
+          "total_ammo": 350,
+          "damage": 6,
+          "fire_delay": 5,
+          "max_distance": 40.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      }
+    ]
+  },
+  "Sniper_Rifles": {
+    "guns": [
+      {
+        "name": "Barret M82A1",
+        "clip_ammo": 5,
+        "total_ammo": 30,
+        "damage": 50,
+        "fire_delay": 20,
+        "max_distance": 100.0,
+        "particle_color": "808080",
+        "multi_hit": true,
+        "pack_a_punch_gun": {
+          "name": "Macro Annihilator",
+          "clip_ammo": 7,
+          "total_ammo": 42,
+          "damage": 70,
+          "fire_delay": 20,
+          "max_distance": 100.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "DSR 50",
+        "clip_ammo": 4,
+        "total_ammo": 48,
+        "damage": 50,
+        "fire_delay": 20,
+        "max_distance": 100.0,
+        "particle_color": "808080",
+        "multi_hit": true,
+        "pack_a_punch_gun": {
+          "name": "Dead Specimen Reactor 5000",
+          "clip_ammo": 8,
+          "total_ammo": 96,
+          "damage": 70,
+          "fire_delay": 20,
+          "max_distance": 100.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      },
+      {
+        "name": "SVU-AS",
+        "clip_ammo": 12,
+        "total_ammo": 48,
+        "damage": 30,
+        "fire_delay": 20,
+        "max_distance": 100.0,
+        "particle_color": "808080",
+        "multi_hit": true,
+        "pack_a_punch_gun": {
+          "name": "Shadowy Veil Utilizer",
+          "clip_ammo": 12,
+          "total_ammo": 192,
+          "damage": 50,
+          "fire_delay": 20,
+          "max_distance": 100.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      }
+    ]
+  },
+  "Special": {
+    "guns": [
+      {
+        "name": "Ray Gun",
+        "clip_ammo": 20,
+        "total_ammo": 160,
+        "damage": 90,
+        "fire_delay": 7,
+        "max_distance": 50.0,
+        "particle_color": "808080",
+        "multi_hit": true,
+        "pack_a_punch_gun": {
+          "name": "Porter\u0027s X2 Ray Gun",
+          "clip_ammo": 40,
+          "total_ammo": 200,
+          "damage": 120,
+          "fire_delay": 20,
+          "max_distance": 100.0,
+          "particle_color": "808080",
+          "multi_hit": true
+        }
+      }
+    ]
+  }
+}

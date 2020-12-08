@@ -70,7 +70,7 @@ public class WeaponManager
 		List<BaseGun> guns = weapons.stream().filter(weapon -> weapon instanceof BaseGun).map(weapon -> (BaseGun) weapon).collect(Collectors.toList());
 		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "---------" + ChatColor.GOLD + "Guns" + ChatColor.RED + "----------");
 		if(guns.size() == 0)
-			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You have no guns! Make sure COM: Z can read from your " + ChatColor.GOLD + "guns.yml");
+			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You have no guns! Make sure COM: Z can read from your " + ChatColor.GOLD + "guns.json");
 
 		WeaponType gunClass = guns.get(0).type;
 		CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + gunClass.toString());
