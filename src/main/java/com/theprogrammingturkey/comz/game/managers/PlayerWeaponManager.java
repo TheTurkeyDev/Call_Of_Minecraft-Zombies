@@ -127,6 +127,7 @@ public class PlayerWeaponManager
 			ItemMeta data = newStack.getItemMeta();
 			if(data != null)
 				data.setDisplayName(ChatColor.DARK_GREEN + "" + weapon.getName());
+			newStack.setItemMeta(data);
 
 			player.getInventory().setItem(slot, newStack);
 		}
