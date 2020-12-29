@@ -87,7 +87,8 @@ public class Door
 		JsonArray spawnsJson = new JsonArray();
 		saveJson.add("spawns", spawnsJson);
 		for(SpawnPoint spawnPoint : spawnsInRoomDoorLeadsTo)
-			spawnsJson.add(spawnPoint.getID());
+			if(spawnPoint != null)
+				spawnsJson.add(spawnPoint.getID());
 
 		return saveJson;
 	}
@@ -160,7 +161,8 @@ public class Door
 
 	public void addSpawnPoint(SpawnPoint point)
 	{
-		spawnsInRoomDoorLeadsTo.add(point);
+		if(point != null)
+			spawnsInRoomDoorLeadsTo.add(point);
 	}
 
 	public void setSpawnPointsFinal(boolean boo)

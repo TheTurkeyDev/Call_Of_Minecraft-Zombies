@@ -3,7 +3,7 @@ main: com.theprogrammingturkey.comz.COMZombies
 description: 'Call of Minecraft: Zombies'
 version: ${project.version}
 authors: [TurkeyDev]
-api-version: '1.14+'
+api-version: '1.14'
 load: POSTWORLD
 softdepend: [Multiverse-Core, Vault, PlaceholderAPI, My_Worlds]
 commands:

@@ -38,7 +38,7 @@ public class ScopeListener implements Listener
 				{
 					if(player.getWalkSpeed() == 0.2F)
 					{
-						if(g.getType().type.equals(WeaponType.SNIPER_RIFLES))
+						if(g != null && g.getType().type.equals(WeaponType.SNIPER_RIFLES))
 						{
 							player.setWalkSpeed(-0.2F);
 							if(plugin.getConfig().getBoolean("config.gameSettings.ZoomTexture"))
