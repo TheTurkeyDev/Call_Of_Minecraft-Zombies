@@ -194,9 +194,7 @@ public class COMZombies extends JavaPlugin
 	{
 		Matcher matcher = Pattern.compile("(\\(MC: )([\\d.]+)(\\))").matcher(Bukkit.getVersion());
 		if(matcher.find())
-		{
 			return matcher.group(2);
-		}
 		return null;
 	}
 }
