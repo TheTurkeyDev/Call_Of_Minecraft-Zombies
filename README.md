@@ -1,4 +1,4 @@
-#Call Of MineCraft: Zombies
+# Call Of MineCraft: Zombies
 COMZ, is a Bukkit plugin that adds the Zombies minigame from the Call Of Duty© Franchise
 
 BukkitDev page: https://www.curseforge.com/minecraft/bukkit-plugins/call-duty-zombies
