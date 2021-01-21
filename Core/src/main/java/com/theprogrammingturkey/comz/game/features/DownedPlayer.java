@@ -59,8 +59,12 @@ public class DownedPlayer implements Listener
 			manager.addGun(new GunInstance(WeaponManager.getGun("M1911"), player, 1));
 			player.setGameMode(GameMode.CREATIVE);
 			player.setAllowFlight(false);
+			scheduleTask();
 		}
-		scheduleTask();
+		else
+		{
+			game.downedPlayerManager.removeDownedPlayer(this);
+		}
 		reviver = null;
 	}
 
@@ -197,6 +201,7 @@ public class DownedPlayer implements Listener
 					player.setWalkSpeed(0.2F);
 					game.removePlayer(player);
 					isPlayerDown = false;
+					game.downedPlayerManager.removeDownedPlayer(this);
 				}
 				else if(!game.downedPlayerManager.isDownedPlayer(DownedPlayer.this))
 				{
@@ -210,6 +215,7 @@ public class DownedPlayer implements Listener
 			player.setHealth(20);
 			player.setWalkSpeed(0.2F);
 			isPlayerDown = false;
+			game.downedPlayerManager.removeDownedPlayer(this);
 		}
 	}
 
@@ -259,8 +265,8 @@ public class DownedPlayer implements Listener
 		return player;
 	}
 
-	public void cancelDowned()
+	public boolean isPlayerDown()
 	{
-		isPlayerDown = false;
+		return isPlayerDown;
 	}
 }

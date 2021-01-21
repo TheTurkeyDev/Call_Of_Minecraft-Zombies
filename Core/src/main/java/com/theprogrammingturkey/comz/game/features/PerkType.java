@@ -81,7 +81,6 @@ public enum PerkType
 				break;
 			default:
 				break;
-
 		}
 		player.getInventory().setItem(slot, setItemMeta(stack, Perktype));
 		player.updateInventory();

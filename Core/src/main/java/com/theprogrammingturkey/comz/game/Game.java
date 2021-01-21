@@ -850,9 +850,6 @@ public class Game
 
 		boxManager.resetBoxes();
 		perkManager.clearPerks();
-		for(DownedPlayer pl : downedPlayerManager.getDownedPlayers())
-			pl.setPlayerDown(false);
-
 		downedPlayerManager.clearDownedPlayers();
 		turnOffPower();
 		boxManager.loadAllBoxes();
@@ -1240,8 +1237,6 @@ public class Game
 
 			if(downedPlayerManager.getDownedPlayers().size() + 1 == players.size())
 			{
-				for(DownedPlayer downedPlayer : downedPlayerManager.getDownedPlayers())
-					downedPlayer.cancelDowned();
 				endGame();
 			}
 			else

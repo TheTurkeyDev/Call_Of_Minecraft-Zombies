@@ -4,12 +4,10 @@ import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PointManager
 {
-	private static ArrayList<Player> allPlayers = new ArrayList<>();
 	private static HashMap<Player, PlayerPoints> playersPoints = new HashMap<>();
 
 	private PointManager()
@@ -19,7 +17,6 @@ public class PointManager
 
 	public static void initalizePlayer(Player player)
 	{
-		allPlayers.add(player);
 		playersPoints.put(player, new PlayerPoints(player, 500));
 	}
 
@@ -30,18 +27,14 @@ public class PointManager
 
 	public static PlayerPoints getPlayerPoints(Player player)
 	{
-		if(!allPlayers.contains(player))
-		{
-			allPlayers.add(player);
-			if(!playersPoints.containsKey(player))
-				initalizePlayer(player);
-		}
+		if(!playersPoints.containsKey(player))
+			initalizePlayer(player);
 		return playersPoints.get(player);
 	}
 
 	public static void addPoints(Player player, int amount)
 	{
-		if(!allPlayers.contains(player) || !playersPoints.containsKey(player))
+		if(!playersPoints.containsKey(player))
 			initalizePlayer(player);
 		playersPoints.get(player).addPoints(amount);
 	}
@@ -59,19 +52,15 @@ public class PointManager
 
 	public static void takePoints(Player player, int amount)
 	{
-		if(!allPlayers.contains(player))
+		if(!playersPoints.containsKey(player))
 			initalizePlayer(player);
-		
+
 		playersPoints.get(player).takePoints(amount);
 	}
 
 	public static void unloadPlayer(Player player)
 	{
-		if(playersPoints.containsKey(player))
-		{
-			playersPoints.remove(player);
-			allPlayers.remove(player);
-		}
+		playersPoints.remove(player);
 	}
 
 	public static void playerLeaveGame(Player player)
@@ -86,10 +75,8 @@ public class PointManager
 
 	public static void saveAll()
 	{
-		for(int i = 0; i < playersPoints.size(); i++)
-		{
-			playersPoints.get(allPlayers.get(i)).storePoints();
-		}
+		for(PlayerPoints playerPoints : playersPoints.values())
+			playerPoints.storePoints();
 	}
 
 	public static void clearGamePoints(Game game)
