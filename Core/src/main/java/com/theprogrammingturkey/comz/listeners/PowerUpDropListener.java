@@ -118,7 +118,7 @@ public class PowerUpDropListener implements Listener
 				for(Player pl : game.players)
 					powerUpDisplayTimer(pl, powerUp, duration);
 		}
-		else
+		else if(GameManager.INSTANCE.isEntityInGame(event.getEntity()))
 		{
 			event.setCancelled(true);
 		}
