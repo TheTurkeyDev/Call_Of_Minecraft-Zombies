@@ -38,7 +38,7 @@ public class ScopeListener implements Listener
 				{
 					if(player.getWalkSpeed() == 0.2F)
 					{
-						if(g != null && g.getType().type.equals(WeaponType.SNIPER_RIFLES))
+						if(g != null && g.getType().getWeaponType().equals(WeaponType.SNIPER_RIFLES))
 						{
 							player.setWalkSpeed(-0.2F);
 							if(plugin.getConfig().getBoolean("config.gameSettings.ZoomTexture"))
@@ -50,11 +50,6 @@ public class ScopeListener implements Listener
 						}
 					}
 				}
-			}
-			else if(player.getWalkSpeed() == 0.2F || player.getWalkSpeed() == 0.15F)
-			{
-				player.setWalkSpeed(-0.2F);
-				player.getInventory().setHelmet(new ItemStack(Material.LEATHER_HELMET, 1));
 			}
 		}
 	}

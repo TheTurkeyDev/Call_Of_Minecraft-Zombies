@@ -16,7 +16,9 @@ public class MysteryBoxSign implements IGameSign
 {
 	public void onBreak(Game game, Player player, Sign sign)
 	{
-		game.boxManager.removeBox(player, game.boxManager.getBox(sign.getLocation()));
+		RandomBox box = game.boxManager.getBox(sign.getLocation());
+		if(box != null)
+			game.boxManager.removeBox(player, box);
 	}
 
 	@Override
@@ -52,7 +54,7 @@ public class MysteryBoxSign implements IGameSign
 	public void onChange(Game game, Player player, SignChangeEvent event)
 	{
 		String thirdLine = ChatColor.stripColor(event.getLine(2));
-		if(thirdLine.equalsIgnoreCase(""))
+		if(thirdLine == null || !thirdLine.matches("[0-9]+"))
 			thirdLine = "950";
 
 		event.setLine(0, ChatColor.RED + "[Zombies]");

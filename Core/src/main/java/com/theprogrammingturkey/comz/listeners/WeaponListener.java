@@ -189,10 +189,11 @@ public class WeaponListener implements Listener
 			if(game.getMode() != ArenaStatus.INGAME)
 				return;
 
-			if(player.getInventory().getItemInMainHand().getType().equals(Material.SLIME_BALL))
+			ItemStack handStack = player.getInventory().getItemInMainHand();
+			if(handStack.getType().equals(Material.SLIME_BALL))
 			{
-				player.getInventory().removeItem(new ItemStack(Material.SLIME_BALL, 1));
-				final Item item = player.getWorld().dropItemNaturally(player.getEyeLocation(), new ItemStack(Material.MAGMA_CREAM));
+				final Item item = player.getWorld().dropItemNaturally(player.getEyeLocation(), new ItemStack(Material.SLIME_BALL));
+				handStack.setAmount(handStack.getAmount() - 1);
 				item.setVelocity(player.getLocation().getDirection().multiply(1));
 				item.setPickupDelay(1000);
 
@@ -216,11 +217,10 @@ public class WeaponListener implements Listener
 					Bukkit.getScheduler().cancelTask(ticker);
 				});
 			}
-
-			if(player.getInventory().getItemInMainHand().getType().equals(Material.MAGMA_CREAM))
+			else if(handStack.getType().equals(Material.MAGMA_CREAM))
 			{
-				player.getInventory().removeItem(new ItemStack(Material.MAGMA_CREAM, 1));
 				final Item item = player.getWorld().dropItemNaturally(player.getEyeLocation(), new ItemStack(Material.MAGMA_CREAM));
+				handStack.setAmount(handStack.getAmount() - 1);
 				item.setVelocity(player.getLocation().getDirection().multiply(1));
 				item.setPickupDelay(1000);
 

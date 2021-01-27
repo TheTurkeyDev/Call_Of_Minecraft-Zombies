@@ -72,11 +72,11 @@ public class WeaponManager
 		if(guns.size() == 0)
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You have no guns! Make sure COM: Z can read from your " + ChatColor.GOLD + "guns.json");
 
-		WeaponType gunClass = guns.get(0).type;
+		WeaponType gunClass = guns.get(0).getWeaponType();
 		CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + gunClass.toString());
 		for(BaseGun gun : guns)
 		{
-			if(gunClass == gun.type)
+			if(gunClass == gun.getWeaponType())
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "  " + gun.getName());
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "     Ammo: " + gun.clipAmmo + "/" + gun.totalAmmo);
@@ -84,8 +84,8 @@ public class WeaponManager
 			}
 			else
 			{
-				CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + gun.type.toString());
-				gunClass = gun.type;
+				CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + gun.getWeaponType().toString());
+				gunClass = gun.getWeaponType();
 			}
 		}
 	}

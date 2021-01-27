@@ -203,7 +203,7 @@ public class RandomBox
 			Bukkit.getScheduler().cancelTask(id);
 		running = false;
 
-		if(!boxGame.isFireSale() && boxGame.boxManager.getCurrentbox() != this)
+		if( !boxGame.boxManager.isMultiBox() && !boxGame.isFireSale() && boxGame.boxManager.getCurrentbox() != this)
 			this.removeBox();
 	}
 

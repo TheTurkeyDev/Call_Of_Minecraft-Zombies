@@ -6,7 +6,6 @@ import org.bukkit.Color;
 
 public abstract class BaseGun extends Weapon
 {
-	public WeaponType type;
 	public int damage;
 	public int fireDelay;
 	public double distance;
