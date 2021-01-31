@@ -289,14 +289,14 @@ public class SpawnManager
 
 	public void update()
 	{
-		if(game.getMode() != ArenaStatus.INGAME)
-			return;
-
 		COMZombies.scheduleTask(100, new Runnable()
 		{
 			@Override
 			public void run()
 			{
+				if(game.getMode() != ArenaStatus.INGAME)
+					return;
+				
 				for(int i = mobs.size() - 1; i >= 0; i--)
 				{
 					Mob mob = mobs.get(i);

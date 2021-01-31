@@ -184,7 +184,7 @@ public class CustomConfig
 		int x = getInt(locationJson, "x", 0);
 		int y = getInt(locationJson, "y", 0);
 		int z = getInt(locationJson, "z", 0);
-		String worldName = getString(locationJson, "z", "Undefined");
+		String worldName = getString(locationJson, "world", "Undefined");
 		World world = Bukkit.getWorld(worldName);
 		if(world == null)
 		{

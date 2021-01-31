@@ -82,16 +82,12 @@ public class PointManager
 	public static void clearGamePoints(Game game)
 	{
 		for(Player pl : game.players)
-		{
 			playerLeaveGame(pl);
-		}
 	}
 
 	public static void setPoints(Player player, int points)
 	{
 		if(playersPoints.containsKey(player))
-		{
 			playersPoints.get(player).setPoints(points);
-		}
 	}
 }

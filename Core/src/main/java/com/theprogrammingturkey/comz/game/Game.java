@@ -690,7 +690,8 @@ public class Game
 		COMZombies.scheduleTask(() -> player.teleport(pInfo.getOldLocation(player)));
 		player.setHealth(20);
 		player.setGameMode(pInfo.getGM(player));
-		player.setFlying(pInfo.getFly(player));
+		if(player.getAllowFlight())
+			player.setFlying(pInfo.getFly(player));
 		player.getInventory().setContents(pInfo.getContents(player));
 		player.getInventory().setArmorContents(pInfo.getArmor(player));
 		player.setExp(pInfo.getExp(player));
