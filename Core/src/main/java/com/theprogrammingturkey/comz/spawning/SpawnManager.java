@@ -296,7 +296,7 @@ public class SpawnManager
 			{
 				if(game.getMode() != ArenaStatus.INGAME)
 					return;
-				
+
 				for(int i = mobs.size() - 1; i >= 0; i--)
 				{
 					Mob mob = mobs.get(i);
@@ -365,8 +365,7 @@ public class SpawnManager
 		canSpawn = false;
 		mobsSpawned = 0;
 
-		//TODO: Configure round number
-		if(wave % 5 == 0)
+		if(game.getDogRoundEveryX() != -1 && game.getDogRoundEveryX() != 0 && wave % game.getDogRoundEveryX() == 0)
 		{
 			mobsToSpawn = 10;
 			roundSpawner = roundSpawnerMap.get(RoundSpawnType.HELL_HOUNDS);

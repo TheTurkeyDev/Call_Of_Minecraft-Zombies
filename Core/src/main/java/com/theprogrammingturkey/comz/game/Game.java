@@ -120,6 +120,8 @@ public class Game
 
 	private int teddyBearPercent;
 
+	private int dogRoundEveryX;
+
 	/**
 	 * Contains a player and the gun manager corresponding to that player.
 	 */
@@ -918,6 +920,7 @@ public class Game
 		maxPlayers = CustomConfig.getInt(arenaSettingsJson, "max_players", 8);
 		teddyBearPercent = CustomConfig.getInt(arenaSettingsJson, "teddy_bear_chance", 100);
 		startingGun = CustomConfig.getString(arenaSettingsJson, "StartingGun", "M1911");
+		dogRoundEveryX = CustomConfig.getInt(arenaSettingsJson, "dog_round_every_x", 5);
 
 		if(CustomConfig.getBoolean(arenaSettingsJson, "force_night", false))
 			forceNight();
@@ -967,6 +970,8 @@ public class Game
 		arenaSettingsJson.addProperty("max_players", maxPlayers);
 		arenaSettingsJson.addProperty("teddy_bear_chance", teddyBearPercent);
 		arenaSettingsJson.addProperty("StartingGun", startingGun);
+		arenaSettingsJson.addProperty("dog_round_every_x", dogRoundEveryX);
+
 
 		arenaSaveJson.addProperty("world_name", world.getName());
 		arenaSaveJson.addProperty("power_setup", powerSetup);
@@ -1279,6 +1284,10 @@ public class Game
 		return teddyBearPercent;
 	}
 
+	public int getDogRoundEveryX()
+	{
+		return dogRoundEveryX;
+	}
 
 	public void zombieKilled(Player player)
 	{
