@@ -47,8 +47,8 @@ public class DownedPlayerManager
 
 	public void clearDownedPlayers()
 	{
-		for(DownedPlayer downedPlayer : downedPlayers)
-			downedPlayer.setPlayerDown(false);
+		for(int i = downedPlayers.size() - 1; i > 0; i--)
+			downedPlayers.get(i).setPlayerDown(false);
 		downedPlayers.clear();
 	}
 }
