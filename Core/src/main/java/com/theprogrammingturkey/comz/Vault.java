@@ -7,6 +7,8 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.util.logging.Level;
+
 public class Vault
 {
 	private Economy economy;
@@ -23,9 +25,9 @@ public class Vault
 		if(economyProvider != null)
 		{
 			this.economy = economyProvider.getProvider();
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	/**
@@ -37,15 +39,18 @@ public class Vault
 		if(permissionProvider != null)
 		{
 			this.permission = permissionProvider.getProvider();
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	public Vault()
 	{
 		if(Bukkit.getPluginManager().isPluginEnabled("Vault") && setupEconomy() && setupPermission())
+		{
+			COMZombies.log.log(Level.INFO, COMZombies.CONSOLE_PREFIX + " Vault hook enabled!");
 			this.enabled = true;
+		}
 	}
 
 	/**
