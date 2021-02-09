@@ -67,7 +67,7 @@ public class ArenaSetupAction extends BaseAction
 		else if(message.equalsIgnoreCase("gw"))
 		{
 			game.setPlayerTPLocation(player.getLocation());
-			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Player location location set for arena : " + game.getName());
+			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Player location set for arena : " + game.getName());
 		}
 		else if(message.equalsIgnoreCase("sw"))
 		{

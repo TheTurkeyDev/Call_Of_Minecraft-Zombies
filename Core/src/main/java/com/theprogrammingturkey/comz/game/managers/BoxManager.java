@@ -167,9 +167,6 @@ public class BoxManager
 		else
 		{
 			unloadAllBoxes();
-			RandomBox b = getRandomBox(null);
-			if(b != null)
-				currentBox = b;
 			currentBox.loadBox();
 		}
 	}
