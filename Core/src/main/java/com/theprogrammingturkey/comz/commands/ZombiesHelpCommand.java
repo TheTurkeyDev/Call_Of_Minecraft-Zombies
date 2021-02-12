@@ -39,8 +39,7 @@ public class ZombiesHelpCommand
 		else if(page == 2)
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "---------" + ChatColor.GOLD + "Zombies Admin Help! Page: " + page + "!" + ChatColor.RED + "--------");
-			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "/zombies addspawn [arena]" + ChatColor.YELLOW + " - Sets a zombies spawn for the given arena.");
-			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "/zombies removespawns [arena]" + ChatColor.YELLOW + " - Puts you in spawn point remove operation mode.");
+			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "/zombies editspawns [arena]" + ChatColor.YELLOW + " - Enables Zombie spawn editing for the given arena.");
 			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "/zombies edit [arena]" + ChatColor.YELLOW + " - Puts you in arena creation mode for an old arena.");
 			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "/zombies enable [arena]" + ChatColor.YELLOW + " - Enables the given arena.");
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "/zombies help admin 3 - Type this for the next page of admin help!");

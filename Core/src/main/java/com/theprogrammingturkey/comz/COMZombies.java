@@ -123,6 +123,7 @@ public class COMZombies extends JavaPlugin
 				nmsUtil = new NMSUtil_1_16_R2();
 				break;
 			case "1.16.4":
+			case "1.16.5":
 				nmsUtil = new NMSUtil_1_16_R3();
 				break;
 			default:
