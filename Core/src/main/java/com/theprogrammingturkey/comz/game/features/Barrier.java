@@ -194,6 +194,8 @@ public class Barrier implements Runnable
 
 	public void setSignFacing(BlockFace signFacing)
 	{
+		if(signFacing == BlockFace.UP || signFacing == BlockFace.DOWN)
+			signFacing = BlockFace.NORTH;
 		this.signFacing = signFacing;
 	}
 

@@ -77,6 +77,12 @@ public class BarrierSetupAction extends BaseAction
 			if(event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
 			{
 				BlockFace face = event.getBlockFace();
+				if(face == BlockFace.UP || face == BlockFace.DOWN)
+				{
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "The sign can't be place on that block face!");
+					event.setCancelled(true);
+					return;
+				}
 				barrier.setRepairLoc(clickedBlock.getLocation().add(face.getModX(), face.getModY(), face.getModZ()));
 				barrier.setSignFacing(face);
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Barrier repair sign location set!");
