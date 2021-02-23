@@ -38,7 +38,7 @@ public class GunSign implements IGameSign
 		PlayerWeaponManager manager = game.getPlayersGun(player);
 		int slot = manager.getCorrectSlot(gunType);
 		GunInstance gun = manager.getGun(player.getInventory().getHeldItemSlot());
-		if(manager.isGun() && gun.getType().getName().equalsIgnoreCase(gunType.getName()))
+		if(manager.isHeldItemGun() && gun.getType().getName().equalsIgnoreCase(gunType.getName()))
 		{
 			if(PointManager.canBuy(player, RefillPoints))
 			{
@@ -57,8 +57,8 @@ public class GunSign implements IGameSign
 			if(PointManager.canBuy(player, BuyPoints))
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You got the " + ChatColor.GOLD + "" + ChatColor.BOLD + gunType.getName() + ChatColor.RED + ChatColor.BOLD + "!");
-				manager.removeGun(manager.getGun(slot));
-				manager.addGun(new GunInstance(gunType, player, slot));
+				manager.removeWeapon(manager.getGun(slot));
+				manager.addWeapon(gunType.getNewInstance(player, slot));
 				player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1, 1);
 				PointManager.takePoints(player, BuyPoints);
 				PointManager.notifyPlayer(player);

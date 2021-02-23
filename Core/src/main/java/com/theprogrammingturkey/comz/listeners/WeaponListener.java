@@ -53,7 +53,7 @@ public class WeaponListener implements Listener
 			if(game.getPlayersGun(player) != null)
 			{
 				PlayerWeaponManager gunManager = game.getPlayersGun(player);
-				if(gunManager.isGun())
+				if(gunManager.isHeldItemGun())
 				{
 					GunInstance gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
 					if(gun.isReloading())
@@ -165,7 +165,7 @@ public class WeaponListener implements Listener
 				if(game.getPlayersGun(player) != null)
 				{
 					PlayerWeaponManager gunManager = game.getPlayersGun(player);
-					if(gunManager.isGun())
+					if(gunManager.isHeldItemGun())
 					{
 						GunInstance gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
 						gun.reload();

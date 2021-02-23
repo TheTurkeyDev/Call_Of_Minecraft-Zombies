@@ -4,7 +4,7 @@ import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
-import com.theprogrammingturkey.comz.game.weapons.GunInstance;
+import com.theprogrammingturkey.comz.game.weapons.WeaponInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,11 +28,10 @@ public class OnInventoryChangeEvent implements Listener
 		if(game.getPlayersGun(player) != null)
 		{
 			PlayerWeaponManager gunManager = game.getPlayersGun(player);
-			if(gunManager.isGun())
+			if(gunManager.isHeldItemWeapon())
 			{
-				GunInstance gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
-				gun.reload();
-				gun.updateWeapon();
+				WeaponInstance weapon = gunManager.getWeapon(player.getInventory().getHeldItemSlot());
+				weapon.updateWeapon();
 			}
 		}
 	}
@@ -50,11 +49,10 @@ public class OnInventoryChangeEvent implements Listener
 		if(game.getPlayersGun(event.getPlayer()) != null)
 		{
 			PlayerWeaponManager gunManager = game.getPlayersGun(event.getPlayer());
-			if(gunManager.isGun())
+			if(gunManager.isHeldItemWeapon())
 			{
-				GunInstance gun = gunManager.getGun(event.getPlayer().getInventory().getHeldItemSlot());
-				gun.reload();
-				gun.updateWeapon();
+				WeaponInstance weapon = gunManager.getWeapon(event.getPlayer().getInventory().getHeldItemSlot());
+				weapon.updateWeapon();
 			}
 		}
 	}

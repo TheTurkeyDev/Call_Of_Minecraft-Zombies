@@ -20,7 +20,6 @@ import com.theprogrammingturkey.comz.game.features.PowerUp;
 import com.theprogrammingturkey.comz.game.features.RandomBox;
 import com.theprogrammingturkey.comz.game.managers.*;
 import com.theprogrammingturkey.comz.game.weapons.BaseGun;
-import com.theprogrammingturkey.comz.game.weapons.GunInstance;
 import com.theprogrammingturkey.comz.kits.KitManager;
 import com.theprogrammingturkey.comz.leaderboards.Leaderboard;
 import com.theprogrammingturkey.comz.leaderboards.PlayerStats;
@@ -628,8 +627,7 @@ public class Game
 			if(game != null)
 			{
 				PlayerWeaponManager manager = game.getPlayersGun(player);
-				GunInstance gunType = new GunInstance(gun, player, 1);
-				manager.addGun(gunType);
+				manager.addWeapon(gun.getNewInstance(player, 1));
 			}
 
 			sendMessageToPlayers(player.getName() + " has joined with " + players.size() + "/" + maxPlayers + "!");

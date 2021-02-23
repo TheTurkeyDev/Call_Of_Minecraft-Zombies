@@ -16,7 +16,6 @@ import java.util.List;
 
 public class PlayerWeaponManager
 {
-	private List<GunInstance> guns = new ArrayList<>();
 	private List<WeaponInstance> weapons = new ArrayList<>();
 	private Player player;
 
@@ -28,22 +27,9 @@ public class PlayerWeaponManager
 	/**
 	 * @return List of guns in the manager
 	 */
-	public List<GunInstance> getGuns()
+	public List<WeaponInstance> getWeapons()
 	{
-		return guns;
-	}
-
-	/**
-	 * Checks to see if a gun is being reloaded, if the gun is contained in the manager.
-	 *
-	 * @param gun : Gun to check if being reloaded
-	 * @return Is the @param reloading?
-	 */
-	public boolean isReloading(GunInstance gun)
-	{
-		if(guns.contains(gun))
-			return gun.isReloading();
-		return false;
+		return weapons;
 	}
 
 	/**
@@ -111,30 +97,8 @@ public class PlayerWeaponManager
 	public void addWeapon(Weapon weapon)
 	{
 		int slot = this.getCorrectSlot(weapon);
-		if(slot >= 1 && slot <= 3 && weapon instanceof BaseGun)
-		{
-			removeGun(getGun(slot));
-			addGun(new GunInstance((BaseGun) weapon, player, slot));
-		}
-		else if(slot == 8)
-		{
-			weapons.remove(getWeapon(slot));
-			addWeapon(new WeaponInstance(weapon, player, slot));
-		}
-
-		player.updateInventory();
-	}
-
-	/**
-	 * Adds a gun to the array list of guns
-	 *
-	 * @param gun : Gun to add
-	 */
-	public void addGun(GunInstance gun)
-	{
-		if(gun == null)
-			return;
-		guns.add(gun);
+		weapons.remove(getWeapon(slot));
+		addWeapon(weapon.getNewInstance(player, slot));
 		player.updateInventory();
 	}
 
@@ -156,10 +120,23 @@ public class PlayerWeaponManager
 	 *
 	 * @return if the item in the players hand is a gun.
 	 */
-	public boolean isGun()
+	public boolean isHeldItemGun()
 	{
-		for(GunInstance gun : guns)
-			if(gun.getSlot() == player.getInventory().getHeldItemSlot())
+		for(WeaponInstance weapon : weapons)
+			if(weapon instanceof GunInstance && weapon.getSlot() == player.getInventory().getHeldItemSlot())
+				return true;
+		return false;
+	}
+
+	/**
+	 * Used to check if the item the player is holding is a weapon
+	 *
+	 * @return if the item in the players hand is a weapon.
+	 */
+	public boolean isHeldItemWeapon()
+	{
+		for(WeaponInstance weapon : weapons)
+			if(weapon.getSlot() == player.getInventory().getHeldItemSlot())
 				return true;
 		return false;
 	}
@@ -172,9 +149,9 @@ public class PlayerWeaponManager
 	 */
 	public GunInstance getGun(int slot)
 	{
-		for(GunInstance gun : guns)
-			if(gun.getSlot() == slot)
-				return gun;
+		for(WeaponInstance weapon : weapons)
+			if(weapon instanceof GunInstance && weapon.getSlot() == slot)
+				return (GunInstance) weapon;
 		return null;
 	}
 
@@ -191,23 +168,23 @@ public class PlayerWeaponManager
 	 *
 	 * @param gun : Gun to remove from the list.
 	 */
-	public void removeGun(GunInstance gun)
+	public void removeWeapon(WeaponInstance gun)
 	{
-		guns.remove(gun);
+		weapons.remove(gun);
 	}
 
-	public GunInstance removeGun(int slot)
+	public WeaponInstance removeWeapon(int slot)
 	{
-		for(int i = guns.size() - 1; i >= 0; i--)
-			if(guns.get(i).getSlot() == slot)
-				return guns.remove(i);
+		for(int i = weapons.size() - 1; i >= 0; i--)
+			if(weapons.get(i).getSlot() == slot)
+				return weapons.remove(i);
 		return null;
 	}
 
 	public boolean hasGun(BaseGun gun)
 	{
-		for(GunInstance g : guns)
-			if(g.getType().equals(gun))
+		for(WeaponInstance weapon : weapons)
+			if(weapon instanceof GunInstance && ((GunInstance) weapon).getType().equals(gun))
 				return true;
 		return false;
 	}
@@ -216,7 +193,5 @@ public class PlayerWeaponManager
 	{
 		for(WeaponInstance weapon : weapons)
 			weapon.maxAmmo();
-		for(GunInstance gun : guns)
-			gun.maxAmmo();
 	}
 }

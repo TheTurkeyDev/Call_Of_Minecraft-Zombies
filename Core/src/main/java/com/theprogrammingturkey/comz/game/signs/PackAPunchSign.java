@@ -34,7 +34,7 @@ public class PackAPunchSign implements IGameSign
 		if(PointManager.canBuy(player, cost))
 		{
 			PlayerWeaponManager manager = game.getPlayersGun(player);
-			if(manager.isGun())
+			if(manager.isHeldItemGun())
 			{
 				GunInstance gun = manager.getGun(player.getInventory().getHeldItemSlot());
 				if(gun.isPackOfPunched())

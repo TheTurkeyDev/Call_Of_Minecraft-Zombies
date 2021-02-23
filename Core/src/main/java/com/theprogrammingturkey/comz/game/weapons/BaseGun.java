@@ -3,10 +3,10 @@ package com.theprogrammingturkey.comz.game.weapons;
 import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import org.bukkit.Color;
+import org.bukkit.entity.Player;
 
 public abstract class BaseGun extends Weapon
 {
-	public int damage;
 	public int fireDelay;
 	public double distance;
 	public int clipAmmo;
@@ -18,11 +18,10 @@ public abstract class BaseGun extends Weapon
 		super(name, type);
 	}
 
-	public void loadGun(JsonObject json)
+	@Override
+	public void loadWeapon(JsonObject json)
 	{
 		this.clipAmmo = CustomConfig.getInt(json, "clip_ammo", 1);
-		this.totalAmmo = CustomConfig.getInt(json, "total_ammo", 1);
-		this.damage = CustomConfig.getInt(json, "damage", 1);
 		this.fireDelay = CustomConfig.getInt(json, "fire_delay", 5);
 		this.distance = CustomConfig.getDouble(json, "max_distance", 30);
 		this.multiHit = CustomConfig.getBoolean(json, "multi_hit", false);
@@ -41,4 +40,10 @@ public abstract class BaseGun extends Weapon
 	public abstract boolean isPackAPunchable();
 
 	public abstract PackAPunchGun getPackAPunchGun();
+
+	@Override
+	public WeaponInstance getNewInstance(Player player, int slot)
+	{
+		return new GunInstance(this, player, slot);
+	}
 }

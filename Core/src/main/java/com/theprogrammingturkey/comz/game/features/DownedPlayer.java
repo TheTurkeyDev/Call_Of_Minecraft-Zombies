@@ -7,7 +7,7 @@ import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.game.managers.WeaponManager;
-import com.theprogrammingturkey.comz.game.weapons.GunInstance;
+import com.theprogrammingturkey.comz.game.weapons.WeaponInstance;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -34,7 +34,7 @@ public class DownedPlayer implements Listener
 	private Location reviverLocation;
 	private int downTime = 0;
 
-	private GunInstance[] guns = new GunInstance[2];
+	private WeaponInstance[] guns = new WeaponInstance[2];
 
 	private int taskID = -1;
 
@@ -53,10 +53,10 @@ public class DownedPlayer implements Listener
 			player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You have went down and need to be revived!");
 			game.perkManager.clearPlayersPerks(player);
 			PlayerWeaponManager manager = game.getPlayersGun(player);
-			guns[0] = manager.removeGun(1);
-			guns[1] = manager.removeGun(2);
-			manager.removeGun(3);
-			manager.addGun(new GunInstance(WeaponManager.getGun(game.getStartingGun()), player, 1));
+			guns[0] = manager.removeWeapon(1);
+			guns[1] = manager.removeWeapon(2);
+			manager.removeWeapon(3);
+			manager.addWeapon(WeaponManager.getGun(game.getStartingGun()).getNewInstance(player, 1));
 			player.setGameMode(GameMode.CREATIVE);
 			player.setAllowFlight(false);
 			scheduleTask();
@@ -123,9 +123,9 @@ public class DownedPlayer implements Listener
 				reviver.sendMessage(ChatColor.GREEN + "You revived " + ChatColor.DARK_GREEN + player.getName());
 			isBeingRevived = false;
 			PlayerWeaponManager manager = game.getPlayersGun(player);
-			manager.removeGun(1);
-			manager.addGun(guns[0]);
-			manager.addGun(guns[1]);
+			manager.removeWeapon(1);
+			manager.addWeapon(guns[0]);
+			manager.addWeapon(guns[1]);
 			player.setWalkSpeed(0.2F);
 			player.setHealth(20);
 			setPlayerDown(false);

@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class WeaponManager
 {
@@ -59,10 +58,13 @@ public class WeaponManager
 
 	public static Weapon getRandomWeapon(boolean includePackaPunch, PlayerWeaponManager playerWeaponManager)
 	{
-		Stream<Weapon> weaponsToChoose = weapons.stream().filter(weapon -> !(weapon instanceof BaseGun) || playerWeaponManager.hasGun((BasicGun) weapon));
-		if(!includePackaPunch)
-			weaponsToChoose = weaponsToChoose.filter(weapon -> !(weapon instanceof PackAPunchGun));
-		return weaponsToChoose.collect(Collectors.toList()).get(COMZombies.rand.nextInt((int) weaponsToChoose.count()));
+		List<Weapon> weaponsToChoose = weapons.stream().filter(weapon ->
+		{
+			if(weapon instanceof BaseGun && playerWeaponManager.hasGun((BaseGun) weapon))
+				return false;
+			return includePackaPunch || !(weapon instanceof PackAPunchGun);
+		}).collect(Collectors.toList());
+		return weaponsToChoose.get(COMZombies.rand.nextInt(weaponsToChoose.size()));
 	}
 
 	public static void listGuns(Player player)
@@ -119,14 +121,14 @@ public class WeaponManager
 				JsonObject gun = gunElem.getAsJsonObject();
 
 				BasicGun basicGun = new BasicGun(CustomConfig.getString(gun, "name", "Unnamed"), WeaponType.getWeapon(gunGroupEntry.getKey()));
-				basicGun.loadGun(gun);
+				basicGun.loadWeapon(gun);
 				WeaponManager.registerWeapon(basicGun);
 
 				if(gun.has("pack_a_punch_gun"))
 				{
 					JsonObject packedGunJson = gunElem.getAsJsonObject();
 					PackAPunchGun packAPunchGun = new PackAPunchGun(CustomConfig.getString(packedGunJson, "name", "Unnamed"), WeaponType.getWeapon(gunGroupEntry.getKey()));
-					packAPunchGun.loadGun(packedGunJson);
+					packAPunchGun.loadWeapon(packedGunJson);
 					basicGun.setPackAPunchGun(packAPunchGun);
 					WeaponManager.registerWeapon(packAPunchGun);
 				}
