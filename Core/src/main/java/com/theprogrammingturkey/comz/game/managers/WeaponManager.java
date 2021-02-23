@@ -3,15 +3,15 @@ package com.theprogrammingturkey.comz.game.managers;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.weapons.BaseGun;
 import com.theprogrammingturkey.comz.game.weapons.BasicGun;
+import com.theprogrammingturkey.comz.game.weapons.PackAPunchGun;
 import com.theprogrammingturkey.comz.game.weapons.Weapon;
 import com.theprogrammingturkey.comz.game.weapons.WeaponType;
 import com.theprogrammingturkey.comz.util.CommandUtil;
-import com.theprogrammingturkey.comz.config.COMZConfig;
-import com.theprogrammingturkey.comz.game.weapons.PackAPunchGun;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class WeaponManager
 {
@@ -53,16 +54,15 @@ public class WeaponManager
 	public static Weapon getWeapon(String name)
 	{
 		//TODO: Default gun
-		//LOL this line length xD
 		return weapons.stream().filter(weapon -> weapon.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
 	}
 
-	public static Weapon getRandomWeapon(boolean includePackaPunch)
+	public static Weapon getRandomWeapon(boolean includePackaPunch, PlayerWeaponManager playerWeaponManager)
 	{
-		List<Weapon> weaponsToChoose = weapons;
+		Stream<Weapon> weaponsToChoose = weapons.stream().filter(weapon -> !(weapon instanceof BaseGun) || playerWeaponManager.hasGun((BasicGun) weapon));
 		if(!includePackaPunch)
-			weaponsToChoose = weaponsToChoose.stream().filter(weapon -> !(weapon instanceof PackAPunchGun)).collect(Collectors.toList());
-		return weaponsToChoose.get(COMZombies.rand.nextInt(weaponsToChoose.size()));
+			weaponsToChoose = weaponsToChoose.filter(weapon -> !(weapon instanceof PackAPunchGun));
+		return weaponsToChoose.collect(Collectors.toList()).get(COMZombies.rand.nextInt((int) weaponsToChoose.count()));
 	}
 
 	public static void listGuns(Player player)
@@ -93,8 +93,12 @@ public class WeaponManager
 	public static void loadGuns()
 	{
 		weapons.clear();
-		weapons.add(new Weapon("Grenade", WeaponType.GRENADE));
-		weapons.add(new Weapon("Monkey Bomb", WeaponType.MONKEY_BOMB));
+		Weapon grenade = new Weapon("Grenade", WeaponType.GRENADE);
+		grenade.totalAmmo = 4;
+		weapons.add(grenade);
+		Weapon monkeyBomb = new Weapon("Monkey Bomb", WeaponType.MONKEY_BOMB);
+		monkeyBomb.totalAmmo = 4;
+		weapons.add(monkeyBomb);
 
 		JsonElement jsonElement = ConfigManager.getConfig(COMZConfig.GUNS).getJson();
 		if(jsonElement.isJsonNull())

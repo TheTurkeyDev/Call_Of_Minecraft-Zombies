@@ -15,7 +15,7 @@ public class JoinSign implements IGameSign
 	@Override
 	public void onBreak(Game game, Player player, Sign sign)
 	{
-
+		game.signManager.removeSign(sign);
 	}
 
 	@Override

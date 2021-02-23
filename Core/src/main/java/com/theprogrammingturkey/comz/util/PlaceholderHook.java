@@ -64,7 +64,7 @@ public class PlaceholderHook extends PlaceholderExpansion
 	@Nonnull
 	public String getIdentifier()
 	{
-		return "com/theprogrammingturkey/comz";
+		return "comz";
 	}
 
 	/**

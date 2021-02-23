@@ -10,7 +10,6 @@ public abstract class BaseGun extends Weapon
 	public int fireDelay;
 	public double distance;
 	public int clipAmmo;
-	public int totalAmmo;
 	public Color particleColor = Color.GRAY;
 	public boolean multiHit;
 

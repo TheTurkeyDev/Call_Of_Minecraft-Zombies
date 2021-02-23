@@ -19,7 +19,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GunInstance
+public class GunInstance extends WeaponInstance
 {
 
 	/**
@@ -30,10 +30,7 @@ public class GunInstance
 	 * Guns total clip capacity.
 	 */
 	public int clipAmmo;
-	/**
-	 * Guns total ammo capacity
-	 */
-	public int totalAmmo;
+
 	/**
 	 * If the reload has been scheduled, reload it true until it the scheduled
 	 * reload has been ran
@@ -43,14 +40,7 @@ public class GunInstance
 	 * If the gun was recently fired then this is false until it can be shot again
 	 */
 	private boolean canFire;
-	/**
-	 * Player who contains this gun
-	 */
-	private Player player;
-	/**
-	 * Slot containing gun
-	 */
-	private int slot;
+
 
 	private boolean ecUsed;
 
@@ -62,13 +52,12 @@ public class GunInstance
 	 */
 	public GunInstance(BaseGun type, Player player, int slot)
 	{
+		super(type, player, slot);
 		this.gun = type;
-		this.player = player;
-		this.slot = slot;
 		clipAmmo = type.clipAmmo;
 		totalAmmo = type.totalAmmo;
 		this.canFire = true;
-		updateGun();
+		updateWeapon();
 	}
 
 	/**
@@ -92,18 +81,8 @@ public class GunInstance
 			clipAmmo = gun.clipAmmo;
 			totalAmmo = gun.totalAmmo;
 			this.canFire = true;
-			updateGun();
+			updateWeapon();
 		}
-	}
-
-	/**
-	 * Used to get the guns slot
-	 *
-	 * @return slot number
-	 */
-	public int getSlot()
-	{
-		return slot;
 	}
 
 	/**
@@ -133,9 +112,12 @@ public class GunInstance
 	 */
 	public void reload()
 	{
+		if(isReloading)
+			return;
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
-			if(gun.clipAmmo == clipAmmo) return;
+			if(gun.clipAmmo == clipAmmo)
+				return;
 			Game game = GameManager.INSTANCE.getGame(player);
 			final int reloadTime;
 			if(game.perkManager.hasPerk(player, PerkType.SPEED_COLA))
@@ -156,7 +138,7 @@ public class GunInstance
 				}
 				isReloading = false;
 				ecUsed = false;
-				updateGun();
+				updateWeapon();
 			});
 			isReloading = true;
 			if(game.perkManager.getPlayersPerks(player).contains(PerkType.ELECTRIC_C))
@@ -222,7 +204,7 @@ public class GunInstance
 		else
 			world.playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
 
-		updateGun();
+		updateWeapon();
 		canFire = false;
 
 		COMZombies.scheduleTask(this.gun.fireDelay, () -> canFire = true);
@@ -245,16 +227,20 @@ public class GunInstance
 		this.gun.updateAmmo(gun.clipAmmo, gun.totalAmmo);
 		clipAmmo = gun.clipAmmo;
 		totalAmmo = gun.totalAmmo;
-		updateGun();
+		updateWeapon();
 	}
 
 	/**
 	 * Called whenever guns ammo was modified, or the gun itself was modified.
 	 * Used to update the guns material, and name.
 	 */
-	public void updateGun()
+	@Override
+	public void updateWeapon()
 	{
-		if(gun == null) return;
+		if(!GameManager.INSTANCE.isPlayerInGame(player))
+			return;
+		if(gun == null)
+			return;
 		ItemStack stack = new ItemStack(gun.getMaterial());
 		ItemMeta data = stack.getItemMeta();
 		if(data == null)
@@ -278,24 +264,5 @@ public class GunInstance
 		}
 		stack.setItemMeta(data);
 		player.getInventory().setItem(slot, stack);
-	}
-
-	/**
-	 * Used to set the guns slot
-	 *
-	 * @param slot : Slot to be set
-	 */
-	public void setSlot(int slot)
-	{
-		this.slot = slot;
-	}
-
-	/**
-	 * Used to refill the players ammo to the top
-	 */
-	public void maxAmmo()
-	{
-		totalAmmo = gun.totalAmmo;
-		updateGun();
 	}
 }

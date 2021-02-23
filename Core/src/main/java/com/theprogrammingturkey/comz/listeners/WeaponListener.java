@@ -40,6 +40,9 @@ public class WeaponListener implements Listener
 		if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && BlockUtils.isSign(event.getClickedBlock().getType()))
 			return;
 
+		if(event.getAction().equals(Action.PHYSICAL))
+			return;
+
 		Player player = event.getPlayer();
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
@@ -72,7 +75,7 @@ public class WeaponListener implements Listener
 
 							RayTrace rayTrace = new RayTrace(event.getPlayer().getEyeLocation().toVector(), dirVec);
 							double distance = gun.getType().distance;
-							List<RayTrace.RayEntityIntersection> hitEnts = rayTrace.getZombieIntersects(event.getPlayer().getWorld(), game.spawnManager.getEntities(), distance);
+							List<RayTrace.RayEntityIntersection> hitEnts = rayTrace.getZombieIntersects(event.getPlayer().getWorld(), game.spawnManager.getEntities(), distance, game);
 
 							if(hitEnts.size() == 0)
 							{
@@ -166,7 +169,7 @@ public class WeaponListener implements Listener
 					{
 						GunInstance gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
 						gun.reload();
-						gun.updateGun();
+						gun.updateWeapon();
 					}
 				}
 			}

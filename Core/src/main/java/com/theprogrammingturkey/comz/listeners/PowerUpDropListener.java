@@ -9,7 +9,6 @@ import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.PowerUp;
 import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.game.managers.PowerUpManager;
-import com.theprogrammingturkey.comz.game.weapons.GunInstance;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -63,8 +62,7 @@ public class PowerUpDropListener implements Listener
 					for(Player pl : game.players)
 					{
 						PlayerWeaponManager manager = game.getPlayersGun(pl);
-						for(GunInstance gun : manager.getGuns())
-							gun.maxAmmo();
+						manager.maxAmmo();
 					}
 					break;
 				case INSTA_KILL:

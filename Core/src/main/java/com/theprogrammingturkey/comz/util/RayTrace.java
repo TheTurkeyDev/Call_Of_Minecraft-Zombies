@@ -1,6 +1,8 @@
 package com.theprogrammingturkey.comz.util;
 
+import com.theprogrammingturkey.comz.game.Game;
 import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -53,13 +55,14 @@ public class RayTrace
 	}
 
 	//intersection detection for current raytrace
-	public List<RayEntityIntersection> getZombieIntersects(World world, List<Mob> ents, double blocksAway)
+	public List<RayEntityIntersection> getZombieIntersects(World world, List<Mob> ents, double blocksAway, Game game)
 	{
 		Map<Entity, RayEntityIntersection> hit = new HashMap<>();
 		List<Vector> positions = traverse(blocksAway, ACCURACY);
 		for(Vector position : positions)
 		{
-			if(!world.getBlockAt(position.getBlockX(), position.getBlockY(), position.getBlockZ()).isPassable())
+			Location loc = new Location(world, position.getBlockX(), position.getBlockY(), position.getBlockZ());
+			if(!world.getBlockAt(loc).isPassable() && game.barrierManager.getBarrier(loc) == null)
 				break;
 
 			for(Entity ent : ents)

@@ -9,7 +9,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -82,7 +81,7 @@ public class Leaderboard
 	private static List<PlayerStats> sort(StatsCategory cat)
 	{
 		List<PlayerStats> sortingList = new ArrayList<>(allPlayers);
-		sortingList.sort(Comparator.comparingInt(a -> a.getStat(cat)));
+		sortingList.sort((a, b) -> b.getStat(cat) - a.getStat(cat));
 		return sortingList;
 	}
 

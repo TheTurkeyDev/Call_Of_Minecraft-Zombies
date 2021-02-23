@@ -132,6 +132,12 @@ public class SignManager
 		save();
 	}
 
+	public void removeSign(Sign sign)
+	{
+		gameSigns.remove(sign);
+		save();
+	}
+
 	public boolean isSign(Sign sign)
 	{
 		return gameSigns.contains(sign);

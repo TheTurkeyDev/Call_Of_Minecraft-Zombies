@@ -56,7 +56,7 @@ public class DownedPlayer implements Listener
 			guns[0] = manager.removeGun(1);
 			guns[1] = manager.removeGun(2);
 			manager.removeGun(3);
-			manager.addGun(new GunInstance(WeaponManager.getGun("M1911"), player, 1));
+			manager.addGun(new GunInstance(WeaponManager.getGun(game.getStartingGun()), player, 1));
 			player.setGameMode(GameMode.CREATIVE);
 			player.setAllowFlight(false);
 			scheduleTask();

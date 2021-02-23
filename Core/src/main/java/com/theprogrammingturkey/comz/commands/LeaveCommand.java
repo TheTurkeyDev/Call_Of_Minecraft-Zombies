@@ -21,7 +21,7 @@ public class LeaveCommand implements SubCommand
 					if(gm.players.get(i).getName().equalsIgnoreCase(player.getName()))
 					{
 						gm.removePlayer(player);
-						CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "You have left the game leaving " + gm.players.size() + " people in the game!");
+						CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "You have left the game!");
 						return true;
 					}
 				}

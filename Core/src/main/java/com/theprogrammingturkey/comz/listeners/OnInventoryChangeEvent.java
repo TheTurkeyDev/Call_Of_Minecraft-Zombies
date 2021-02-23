@@ -32,7 +32,7 @@ public class OnInventoryChangeEvent implements Listener
 			{
 				GunInstance gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
 				gun.reload();
-				gun.updateGun();
+				gun.updateWeapon();
 			}
 		}
 	}
@@ -54,7 +54,7 @@ public class OnInventoryChangeEvent implements Listener
 			{
 				GunInstance gun = gunManager.getGun(event.getPlayer().getInventory().getHeldItemSlot());
 				gun.reload();
-				gun.updateGun();
+				gun.updateWeapon();
 			}
 		}
 	}

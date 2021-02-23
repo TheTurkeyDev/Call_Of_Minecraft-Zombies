@@ -25,7 +25,6 @@ import java.util.Map;
 public class SignListener implements Listener
 {
 	private static final Map<String, IGameSign> GAME_SIGNS = new HashMap<>();
-	public static final GameManager INSTANCE = new GameManager();
 
 	static
 	{
@@ -94,7 +93,7 @@ public class SignListener implements Listener
 			Game game = GameManager.INSTANCE.getGame(sign.getLocation());
 			IGameSign signLogic = GAME_SIGNS.get(lineTwo);
 			if(signLogic != null && (game != null || !signLogic.requiresGame()))
-				signLogic.onBreak(INSTANCE.getGame(sign.getLocation()), event.getPlayer(), sign);
+				signLogic.onBreak(game, event.getPlayer(), sign);
 		}
 		else if(lineOne.equalsIgnoreCase("[BarrierRepair]"))
 		{

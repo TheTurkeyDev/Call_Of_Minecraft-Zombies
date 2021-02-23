@@ -38,6 +38,8 @@ public class RandomBox
 	private String boxId;
 	private int boxCost;
 
+	private Player openedBy;
+
 	private boolean running;
 	private boolean gunSelected;
 	private boolean isTeddyBear;
@@ -82,11 +84,13 @@ public class RandomBox
 			}
 		}
 
+		openedBy = player;
+
 		if(chestLocation != null)
 			COMZombies.nmsUtil.playChestAction(chestLocation, true);
 
 		running = true;
-		weapon = WeaponManager.getRandomWeapon(false);
+		weapon = WeaponManager.getRandomWeapon(false, boxGame.getPlayersGun(player));
 		Location itemLoc;
 
 		if(chestLocation != null)
@@ -118,7 +122,7 @@ public class RandomBox
 				{
 					if(time > 0)
 					{
-						weapon = WeaponManager.getRandomWeapon(false);
+						weapon = WeaponManager.getRandomWeapon(false, boxGame.getPlayersGun(player));
 						item.setItemStack(new ItemStack(weapon.getMaterial()));
 						namePlate.setCustomName(weapon.getName());
 						player.getWorld().playSound(boxLoc, Sound.BLOCK_NOTE_BLOCK_HARP, 1f, 1f);
@@ -176,9 +180,9 @@ public class RandomBox
 		return !this.running;
 	}
 
-	public boolean canPickWeapon()
+	public boolean canPickWeapon(Player player)
 	{
-		return this.gunSelected;
+		return player.equals(openedBy) && this.gunSelected;
 	}
 
 	public void pickUpWeapon(Player player)
@@ -203,7 +207,7 @@ public class RandomBox
 			Bukkit.getScheduler().cancelTask(id);
 		running = false;
 
-		if( !boxGame.boxManager.isMultiBox() && !boxGame.isFireSale() && boxGame.boxManager.getCurrentbox() != this)
+		if(!boxGame.boxManager.isMultiBox() && !boxGame.isFireSale() && boxGame.boxManager.getCurrentbox() != this)
 			this.removeBox();
 	}
 

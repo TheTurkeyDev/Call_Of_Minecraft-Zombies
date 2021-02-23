@@ -6,6 +6,7 @@ public class Weapon
 {
 	private String name;
 	private WeaponType weaponType;
+	public int totalAmmo;
 
 	public Weapon(String name, WeaponType weaponType)
 	{

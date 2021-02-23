@@ -125,10 +125,12 @@ public class PowerUpManager
 				if(game.boxManager.isMultiBox())
 					availableRewards.remove(PowerUp.FIRE_SALE);
 
-			int randomPerk = COMZombies.rand.nextInt(availableRewards.size());
-
-			PowerUp powerUp = availableRewards.get(randomPerk);
-			dropItem(mob, new ItemStack(powerUp.getMaterial(), 1));
+			this.dropPowerUp(mob, availableRewards.get(COMZombies.rand.nextInt(availableRewards.size())));
 		}
+	}
+
+	public void dropPowerUp(Entity mob, PowerUp powerUp)
+	{
+		dropItem(mob, new ItemStack(powerUp.getMaterial(), 1));
 	}
 }

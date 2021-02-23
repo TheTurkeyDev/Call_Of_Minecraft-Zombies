@@ -63,7 +63,7 @@ public class COMZombies extends JavaPlugin
 		activeActions.clear();
 	}
 
-	public static final String CONSOLE_PREFIX = "[CoM: Zombies] ";
+	public static final String CONSOLE_PREFIX = "[COM_Zombies] ";
 	public static final String PREFIX = ChatColor.RED + "[ " + ChatColor.GOLD + ChatColor.ITALIC + "CoM: Zombies" + ChatColor.RED + " ]" + ChatColor.GRAY + " ";
 
 	public static INMSUtil nmsUtil;

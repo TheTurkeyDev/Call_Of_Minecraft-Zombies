@@ -16,6 +16,7 @@ import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.actions.BaseAction;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.game.features.DownedPlayer;
+import com.theprogrammingturkey.comz.game.features.PowerUp;
 import com.theprogrammingturkey.comz.game.features.RandomBox;
 import com.theprogrammingturkey.comz.game.managers.*;
 import com.theprogrammingturkey.comz.game.weapons.BaseGun;
@@ -37,15 +38,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Minecart;
-import org.bukkit.entity.Mob;
-import org.bukkit.entity.Painting;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Zombie;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
@@ -1153,7 +1146,7 @@ public class Game
 
 	public void damageMob(Mob mob, Player player, float damageAmount)
 	{
-		double zombHealth = mob.getHealth() - damageAmount;
+		double mobHealth = mob.getHealth() - damageAmount;
 		mob.playEffect(EntityEffect.HURT);
 
 		if(isInstaKill())
@@ -1172,11 +1165,18 @@ public class Game
 
 			PointManager.notifyPlayer(player);
 			spawnManager.removeEntity(mob);
-			zombieKilled(player);
+
+			if(mob instanceof Zombie)
+				zombieKilled(player);
+
 			if(spawnManager.getEntities().size() <= 0)
+			{
+				if(mob instanceof Wolf)
+					powerUpManager.dropPowerUp(mob, PowerUp.MAX_AMMO);
 				nextWave();
+			}
 		}
-		else if(zombHealth < 1)
+		else if(mobHealth < 1)
 		{
 			if(mob instanceof Zombie)
 				player.getWorld().playSound(mob.getLocation(), Sound.ENTITY_ZOMBIE_DEATH, 1f, 1f);
@@ -1192,13 +1192,20 @@ public class Game
 
 			PointManager.notifyPlayer(player);
 			spawnManager.removeEntity(mob);
-			zombieKilled(player);
+
+			if(mob instanceof Zombie)
+				zombieKilled(player);
+
 			if(spawnManager.getEntities().size() <= 0)
+			{
+				if(mob instanceof Wolf)
+					powerUpManager.dropPowerUp(mob, PowerUp.MAX_AMMO);
 				nextWave();
+			}
 		}
 		else
 		{
-			mob.setHealth(zombHealth);
+			mob.setHealth(mobHealth);
 			if(mob instanceof Zombie)
 				player.getWorld().playSound(mob.getLocation(), Sound.ENTITY_ZOMBIE_HURT, 1f, 1f);
 			else
@@ -1213,7 +1220,7 @@ public class Game
 
 		if(debugMode)
 		{
-			mob.setCustomName(String.valueOf(zombHealth));
+			mob.setCustomName(String.valueOf(mobHealth));
 			mob.setCustomNameVisible(true);
 		}
 		else
@@ -1287,6 +1294,11 @@ public class Game
 	public int getDogRoundEveryX()
 	{
 		return dogRoundEveryX;
+	}
+
+	public String getStartingGun()
+	{
+		return startingGun;
 	}
 
 	public void zombieKilled(Player player)

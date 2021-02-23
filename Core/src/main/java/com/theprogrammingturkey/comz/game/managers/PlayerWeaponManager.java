@@ -1,16 +1,15 @@
 package com.theprogrammingturkey.comz.game.managers;
 
-import com.theprogrammingturkey.comz.game.features.PerkType;
-import com.theprogrammingturkey.comz.game.weapons.BasicGun;
-import com.theprogrammingturkey.comz.game.weapons.GunInstance;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.game.features.PerkType;
+import com.theprogrammingturkey.comz.game.weapons.BaseGun;
+import com.theprogrammingturkey.comz.game.weapons.GunInstance;
 import com.theprogrammingturkey.comz.game.weapons.Weapon;
-import org.bukkit.ChatColor;
+import com.theprogrammingturkey.comz.game.weapons.WeaponInstance;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +17,7 @@ import java.util.List;
 public class PlayerWeaponManager
 {
 	private List<GunInstance> guns = new ArrayList<>();
+	private List<WeaponInstance> weapons = new ArrayList<>();
 	private Player player;
 
 	public PlayerWeaponManager(Player player)
@@ -111,25 +111,15 @@ public class PlayerWeaponManager
 	public void addWeapon(Weapon weapon)
 	{
 		int slot = this.getCorrectSlot(weapon);
-		if(slot >= 1 && slot <= 3 && weapon instanceof BasicGun)
+		if(slot >= 1 && slot <= 3 && weapon instanceof BaseGun)
 		{
 			removeGun(getGun(slot));
-			addGun(new GunInstance((BasicGun) weapon, player, slot));
+			addGun(new GunInstance((BaseGun) weapon, player, slot));
 		}
 		else if(slot == 8)
 		{
-			int amount = 4;
-			ItemStack current = player.getInventory().getItem(slot);
-			if(current != null && current.getType().equals(weapon.getMaterial()))
-				amount += current.getAmount();
-
-			ItemStack newStack = new ItemStack(weapon.getMaterial(), amount);
-			ItemMeta data = newStack.getItemMeta();
-			if(data != null)
-				data.setDisplayName(ChatColor.DARK_GREEN + "" + weapon.getName());
-			newStack.setItemMeta(data);
-
-			player.getInventory().setItem(slot, newStack);
+			weapons.remove(getWeapon(slot));
+			addWeapon(new WeaponInstance(weapon, player, slot));
 		}
 
 		player.updateInventory();
@@ -145,6 +135,19 @@ public class PlayerWeaponManager
 		if(gun == null)
 			return;
 		guns.add(gun);
+		player.updateInventory();
+	}
+
+	/**
+	 * Adds a weapon to the array list of weapons
+	 *
+	 * @param weapon : Weapon to add
+	 */
+	public void addWeapon(WeaponInstance weapon)
+	{
+		if(weapon == null)
+			return;
+		weapons.add(weapon);
 		player.updateInventory();
 	}
 
@@ -175,6 +178,14 @@ public class PlayerWeaponManager
 		return null;
 	}
 
+	public WeaponInstance getWeapon(int slot)
+	{
+		for(WeaponInstance weapon : weapons)
+			if(weapon.getSlot() == slot)
+				return weapon;
+		return null;
+	}
+
 	/**
 	 * Used to remove a gun from the guns list if contained.
 	 *
@@ -193,11 +204,19 @@ public class PlayerWeaponManager
 		return null;
 	}
 
-	public boolean hasGun(BasicGun gun)
+	public boolean hasGun(BaseGun gun)
 	{
 		for(GunInstance g : guns)
 			if(g.getType().equals(gun))
 				return true;
 		return false;
+	}
+
+	public void maxAmmo()
+	{
+		for(WeaponInstance weapon : weapons)
+			weapon.maxAmmo();
+		for(GunInstance gun : guns)
+			gun.maxAmmo();
 	}
 }
