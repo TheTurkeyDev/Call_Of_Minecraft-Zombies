@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.commands;
 
+import com.theprogrammingturkey.comz.util.COMZPermission;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
@@ -11,7 +12,7 @@ public class AddTeleporterCommand implements SubCommand
 {
 	public boolean onCommand(Player player, String[] args)
 	{
-		if(player.hasPermission("zombies.addteleporter") || player.hasPermission("zombies.admin"))
+		if(COMZPermission.ADD_TELEPORTER.hasPerm(player))
 		{
 			Location loc = player.getLocation();
 			Game game = GameManager.INSTANCE.getGame(loc);
@@ -27,12 +28,11 @@ public class AddTeleporterCommand implements SubCommand
 			}
 			game.teleporterManager.saveTeleporterSpot(args[1], loc);
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Teleporter added for arena: " + ChatColor.GOLD + game.getName() + ChatColor.RED + "!");
-			return true;
 		}
 		else
 		{
 			CommandUtil.noPermission(player, "add a teleporter");
-			return true;
 		}
+		return true;
 	}
 }

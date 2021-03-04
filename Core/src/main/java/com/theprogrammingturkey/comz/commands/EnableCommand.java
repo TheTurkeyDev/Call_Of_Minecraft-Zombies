@@ -1,8 +1,9 @@
 package com.theprogrammingturkey.comz.commands;
 
-import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.util.COMZPermission;
+import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -11,7 +12,7 @@ public class EnableCommand implements SubCommand
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
-		if(player.hasPermission("zombies.enable") || player.hasPermission("zombies.admin"))
+		if(COMZPermission.ENABLE_ARENA.hasPerm(player))
 		{
 			if(args.length == 1)
 			{
@@ -37,7 +38,7 @@ public class EnableCommand implements SubCommand
 				}
 				else
 				{
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "That arena does not exist!");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + args[1] + " is not a valid arena!");
 				}
 			}
 		}

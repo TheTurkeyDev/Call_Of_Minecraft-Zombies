@@ -11,6 +11,7 @@ import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.game.managers.PerkManager;
 import com.theprogrammingturkey.comz.game.managers.WeaponManager;
 import com.theprogrammingturkey.comz.game.weapons.Weapon;
+import com.theprogrammingturkey.comz.util.COMZPermission;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -118,7 +119,7 @@ public class Kit
 
 	public void givePlayerStartingItems(Player player)
 	{
-		if(!GameManager.INSTANCE.isPlayerInGame(player) && !player.hasPermission("zombies.kit." + name))
+		if(!GameManager.INSTANCE.isPlayerInGame(player) && !COMZPermission.KIT.hasPerm(player, name))
 			return;
 		Game game = GameManager.INSTANCE.getGame(player);
 		if(game == null)
@@ -147,7 +148,7 @@ public class Kit
 		{
 			if(roundReward.getRoundEnd() == roundEnd)
 			{
-				if(!GameManager.INSTANCE.isPlayerInGame(player) && !player.hasPermission("zombies.kit." + name))
+				if(!GameManager.INSTANCE.isPlayerInGame(player) && !COMZPermission.KIT.hasPerm(player, name))
 					return;
 				Game game = GameManager.INSTANCE.getGame(player);
 				if(game == null)

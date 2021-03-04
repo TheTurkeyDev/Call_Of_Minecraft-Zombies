@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.commands;
 
 import com.theprogrammingturkey.comz.game.features.Door;
+import com.theprogrammingturkey.comz.util.COMZPermission;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
@@ -14,9 +15,9 @@ public class AddDoorCommand implements SubCommand
 {
 	public boolean onCommand(Player player, String[] args)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
-		if(player.hasPermission("zombies.adddoor") || player.hasPermission("zombies.admin"))
+		if(COMZPermission.ADD_DOOR.hasPerm(player))
 		{
+			COMZombies plugin = COMZombies.getPlugin();
 			if(plugin.activeActions.containsKey(player))
 			{
 				CommandUtil.sendMessageToPlayer(player, "You are currently performing another action and cannot add a door right now!");
@@ -38,15 +39,13 @@ public class AddDoorCommand implements SubCommand
 				else
 				{
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "That is not a valid arena!");
-					return true;
 				}
 			}
-			return true;
 		}
 		else
 		{
 			CommandUtil.noPermission(player, "add a door");
-			return true;
 		}
+		return true;
 	}
 }

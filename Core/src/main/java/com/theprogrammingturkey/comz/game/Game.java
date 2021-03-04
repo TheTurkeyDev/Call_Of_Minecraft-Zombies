@@ -624,10 +624,14 @@ public class Game
 
 			BaseGun gun = WeaponManager.getGun(startingGun);
 			Game game = GameManager.INSTANCE.getGame(player);
-			if(game != null)
+			if(game != null && gun != null)
 			{
 				PlayerWeaponManager manager = game.getPlayersGun(player);
 				manager.addWeapon(gun.getNewInstance(player, 1));
+			}
+			else if(gun == null)
+			{
+				COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "The " + startingGun + " is listed as the starting gun, but it could not be found! Did you forget to change this?");
 			}
 
 			sendMessageToPlayers(player.getName() + " has joined with " + players.size() + "/" + maxPlayers + "!");

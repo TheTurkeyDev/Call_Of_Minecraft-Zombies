@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.commands;
 
 import com.theprogrammingturkey.comz.game.features.Barrier;
+import com.theprogrammingturkey.comz.util.COMZPermission;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
@@ -15,7 +16,7 @@ public class AddBarrier implements SubCommand
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
-		if(player.hasPermission("zombies.addbarrier") || player.hasPermission("zombies.admin"))
+		if(COMZPermission.ADD_BARRIER.hasPerm(player))
 		{
 			if(COMZombies.getPlugin().activeActions.containsKey(player))
 			{

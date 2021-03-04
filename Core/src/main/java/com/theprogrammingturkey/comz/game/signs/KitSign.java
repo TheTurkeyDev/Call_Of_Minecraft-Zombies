@@ -3,6 +3,7 @@ package com.theprogrammingturkey.comz.game.signs;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.kits.Kit;
 import com.theprogrammingturkey.comz.kits.KitManager;
+import com.theprogrammingturkey.comz.util.COMZPermission;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
@@ -21,7 +22,7 @@ public class KitSign implements IGameSign
 	public void onInteract(Game game, Player player, Sign sign)
 	{
 		Kit kit = KitManager.getKit(ChatColor.stripColor(sign.getLine(2)));
-		if(player.hasPermission("zombies.admin") || player.hasPermission("zombies.kit." + kit.getName()))
+		if(COMZPermission.KIT.hasPerm(player, kit.getName()))
 		{
 			KitManager.addPlayersSelectedKit(player, kit);
 			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + " You have selected the " + kit.getName() + " Kit!");

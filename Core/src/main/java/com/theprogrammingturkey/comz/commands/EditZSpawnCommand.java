@@ -1,10 +1,11 @@
 package com.theprogrammingturkey.comz.commands;
 
-import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.actions.SpawnsEditAction;
+import com.theprogrammingturkey.comz.util.COMZPermission;
+import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -13,9 +14,9 @@ public class EditZSpawnCommand implements SubCommand
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
-		COMZombies plugin = COMZombies.getPlugin();
-		if(player.hasPermission("zombies.editzspawns") || player.hasPermission("zombies.admin"))
+		if(COMZPermission.EDIT_ZOMBIE_SPAWNS.hasPerm(player))
 		{
+			COMZombies plugin = COMZombies.getPlugin();
 			if(plugin.activeActions.containsKey(player))
 			{
 				CommandUtil.sendMessageToPlayer(player, "You are currently performing another action and cannot edit zombie spawns right now!");

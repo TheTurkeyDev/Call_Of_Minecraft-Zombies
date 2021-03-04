@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.commands;
 
+import com.theprogrammingturkey.comz.util.COMZPermission;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -10,12 +11,16 @@ public class PerksCommand implements SubCommand
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
-		if(player.hasPermission("zombies.perks") || player.hasPermission("zombies.admin"))
+		if(!COMZPermission.PERKS.hasPerm(player))
 		{
-			CommandUtil.sendMessageToPlayer(player, ChatColor.BLUE + "The following perks are available:\n");
-			player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Juggernog & Speed Cola,\nQuick Revive & Double Tap,\nStamin-Up & PhD Flopper,\nDeadshot-Daiq & Mule Kick.\n");
+			CommandUtil.noPermission(player, "view the perks info");
+			return true;
 		}
-		return false;
+
+		//TODO: Make this actually read the perks enum
+		CommandUtil.sendMessageToPlayer(player, ChatColor.BLUE + "The following perks are available:\n");
+		player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Juggernog & Speed Cola,\nQuick Revive & Double Tap,\nStamin-Up & PhD Flopper,\nDeadshot-Daiq & Mule Kick.\n");
+		return true;
 	}
 
 }
