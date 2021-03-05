@@ -1,10 +1,10 @@
 include 'API'
 project(":API").name = "comz-api"
 
-include 'NMS Support/1_16_R3 Support'
-include 'NMS Support/1_16_R2 Support'
-include 'NMS Support/1_16_R1 Support'
-include 'NMS Support/1_15_R1 Support'
-include 'NMS Support/1_14_R1 Support'
+include 'NMS_Support/1_16_R3 Support'
+include 'NMS_Support/1_16_R2 Support'
+include 'NMS_Support/1_16_R1 Support'
+include 'NMS_Support/1_15_R1 Support'
+include 'NMS_Support/1_14_R1 Support'
 include 'Core'
 
