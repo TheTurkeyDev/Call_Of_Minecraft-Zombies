@@ -21,6 +21,7 @@ public abstract class BaseGun extends Weapon
 	@Override
 	public void loadWeapon(JsonObject json)
 	{
+		super.loadWeapon(json);
 		this.clipAmmo = CustomConfig.getInt(json, "clip_ammo", 1);
 		this.fireDelay = CustomConfig.getInt(json, "fire_delay", 5);
 		this.distance = CustomConfig.getDouble(json, "max_distance", 30);
