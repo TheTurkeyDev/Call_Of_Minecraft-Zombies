@@ -68,11 +68,11 @@ public class DownedPlayer implements Listener
 
 	public void revivePlayer()
 	{
-		clearDownedState();
-		game.downedPlayerManager.downedPlayerRevived(this);
 		player.sendMessage(ChatColor.GREEN + "You have been revived!");
 		if(reviver != null)
 			reviver.sendMessage(ChatColor.GREEN + "You revived " + ChatColor.DARK_GREEN + player.getName());
+		clearDownedState();
+		game.downedPlayerManager.downedPlayerRevived(this);
 		PlayerWeaponManager manager = game.getPlayersWeapons(player);
 		manager.removeWeapon(1);
 		manager.addWeapon(guns[0]);
