@@ -99,7 +99,6 @@ public class PlayerWeaponManager
 		int slot = this.getCorrectSlot(weapon);
 		weapons.remove(getWeapon(slot));
 		addWeapon(weapon.getNewInstance(player, slot));
-		player.updateInventory();
 	}
 
 	/**
@@ -112,6 +111,7 @@ public class PlayerWeaponManager
 		if(weapon == null)
 			return;
 		weapons.add(weapon);
+		weapon.updateWeapon();
 		player.updateInventory();
 	}
 

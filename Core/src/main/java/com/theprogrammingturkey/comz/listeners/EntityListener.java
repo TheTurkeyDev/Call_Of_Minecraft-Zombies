@@ -1,13 +1,12 @@
 package com.theprogrammingturkey.comz.listeners;
 
-import com.theprogrammingturkey.comz.game.features.PerkType;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.game.features.PerkType;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -56,7 +55,7 @@ public class EntityListener implements Listener
 						{
 							final Player player = (Player) e.getEntity();
 							Game game = GameManager.INSTANCE.getGame(player);
-							if(game.downedPlayerManager.isPlayerDowned(player))
+							if(game.downedPlayerManager.isDownedPlayer(player))
 							{
 								e.setCancelled(true);
 								return;
@@ -108,12 +107,8 @@ public class EntityListener implements Listener
 
 					}
 				}
-				e.setCancelled(true);
 			}
-			else if(e.getDamager() instanceof LightningStrike)
-			{
-				e.setCancelled(true);
-			}
+			e.setCancelled(true);
 		}
 	}
 
@@ -128,7 +123,7 @@ public class EntityListener implements Listener
 			Player player = (Player) e.getEntity();
 			Game game = GameManager.INSTANCE.getGame(player);
 
-			if(game.downedPlayerManager.isPlayerDowned(player))
+			if(game.downedPlayerManager.isDownedPlayer(player))
 				e.setCancelled(true);
 
 			if(game.getMode() == Game.ArenaStatus.STARTING)

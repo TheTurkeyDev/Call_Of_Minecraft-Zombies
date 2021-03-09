@@ -33,7 +33,7 @@ public class PackAPunchSign implements IGameSign
 		int cost = Integer.parseInt(sign.getLine(2));
 		if(PointManager.canBuy(player, cost))
 		{
-			PlayerWeaponManager manager = game.getPlayersGun(player);
+			PlayerWeaponManager manager = game.getPlayersWeapons(player);
 			if(manager.isHeldItemGun())
 			{
 				GunInstance gun = manager.getGun(player.getInventory().getHeldItemSlot());
@@ -56,7 +56,7 @@ public class PackAPunchSign implements IGameSign
 		}
 		else
 		{
-			PlayerWeaponManager manager = game.getPlayersGun(player);
+			PlayerWeaponManager manager = game.getPlayersWeapons(player);
 			GunInstance gun = manager.getGun(player.getInventory().getHeldItemSlot());
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You do not have enough points to Pack-A-Punch your " + gun.getType().getName() + "!");
 		}

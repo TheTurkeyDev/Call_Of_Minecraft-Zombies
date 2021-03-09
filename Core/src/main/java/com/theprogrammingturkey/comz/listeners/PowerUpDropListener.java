@@ -61,7 +61,7 @@ public class PowerUpDropListener implements Listener
 				case MAX_AMMO:
 					for(Player pl : game.players)
 					{
-						PlayerWeaponManager manager = game.getPlayersGun(pl);
+						PlayerWeaponManager manager = game.getPlayersWeapons(pl);
 						manager.maxAmmo();
 					}
 					break;

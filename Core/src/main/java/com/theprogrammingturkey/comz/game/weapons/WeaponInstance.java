@@ -27,6 +27,8 @@ public class WeaponInstance
 		this.baseWeapon = baseWeapon;
 		this.player = player;
 		this.slot = slot;
+		this.totalAmmo = baseWeapon.totalAmmo;
+		updateWeapon();
 	}
 
 	/**
@@ -60,10 +62,6 @@ public class WeaponInstance
 
 	public void updateWeapon()
 	{
-		ItemStack current = player.getInventory().getItem(slot);
-		if(current != null && current.getType().equals(baseWeapon.getMaterial()))
-			totalAmmo += current.getAmount();
-
 		ItemStack newStack = new ItemStack(baseWeapon.getMaterial(), totalAmmo);
 		ItemMeta data = newStack.getItemMeta();
 		if(data != null)

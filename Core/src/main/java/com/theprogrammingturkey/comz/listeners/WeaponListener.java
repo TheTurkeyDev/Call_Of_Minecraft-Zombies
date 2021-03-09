@@ -50,9 +50,9 @@ public class WeaponListener implements Listener
 			if(game.getMode() != ArenaStatus.INGAME)
 				return;
 
-			if(game.getPlayersGun(player) != null)
+			if(game.getPlayersWeapons(player) != null)
 			{
-				PlayerWeaponManager gunManager = game.getPlayersGun(player);
+				PlayerWeaponManager gunManager = game.getPlayersWeapons(player);
 				if(gunManager.isHeldItemGun())
 				{
 					GunInstance gun = gunManager.getGun(player.getInventory().getHeldItemSlot());
@@ -162,9 +162,9 @@ public class WeaponListener implements Listener
 				if(game.getMode() != ArenaStatus.INGAME)
 					return;
 
-				if(game.getPlayersGun(player) != null)
+				if(game.getPlayersWeapons(player) != null)
 				{
-					PlayerWeaponManager gunManager = game.getPlayersGun(player);
+					PlayerWeaponManager gunManager = game.getPlayersWeapons(player);
 					if(gunManager.isHeldItemGun())
 					{
 						GunInstance gun = gunManager.getGun(player.getInventory().getHeldItemSlot());

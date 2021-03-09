@@ -125,7 +125,7 @@ public class Kit
 		if(game == null)
 			return;
 
-		PlayerWeaponManager manager = game.getPlayersGun(player);
+		PlayerWeaponManager manager = game.getPlayersWeapons(player);
 
 		for(Weapon wep : weapons)
 			manager.addWeapon(wep);
@@ -154,7 +154,7 @@ public class Kit
 				if(game == null)
 					return;
 
-				PlayerWeaponManager manager = game.getPlayersGun(player);
+				PlayerWeaponManager manager = game.getPlayersWeapons(player);
 
 				for(Weapon weapon : roundReward.getWeapons())
 					manager.addWeapon(weapon);

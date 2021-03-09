@@ -23,7 +23,7 @@ public class ScopeListener implements Listener
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
 			Game game = GameManager.INSTANCE.getGame(player);
-			PlayerWeaponManager manager = game.getPlayersGun(player);
+			PlayerWeaponManager manager = game.getPlayersWeapons(player);
 			if(!manager.isHeldItemGun())
 				return;
 			GunInstance g = manager.getGun(player.getInventory().getHeldItemSlot());

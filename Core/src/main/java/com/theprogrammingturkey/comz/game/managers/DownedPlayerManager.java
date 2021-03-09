@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.game.managers;
 
+import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.DownedPlayer;
 import org.bukkit.entity.Player;
 
@@ -10,45 +11,59 @@ public class DownedPlayerManager
 {
 	private List<DownedPlayer> downedPlayers = new ArrayList<>();
 
-	public void addDownedPlayer(DownedPlayer down)
+	public void clearDownedPlayers()
 	{
+		for(DownedPlayer downedPlayer : downedPlayers)
+			downedPlayer.clearDownedState();
+	}
+
+	public int numDownedPlayers()
+	{
+		return downedPlayers.size();
+	}
+
+	public void setPlayerDowned(Player player, Game game)
+	{
+		DownedPlayer down = new DownedPlayer(player, game);
+		down.setPlayerDown();
 		downedPlayers.add(down);
-	}
-
-	public void removeDownedPlayer(DownedPlayer down)
-	{
-		downedPlayers.remove(down);
-	}
-
-	public List<DownedPlayer> getDownedPlayers()
-	{
-		return downedPlayers;
-	}
-
-	public boolean isDownedPlayer(DownedPlayer player)
-	{
-		return downedPlayers.contains(player);
-	}
-
-	public boolean isPlayerDowned(Player player)
-	{
-		for(DownedPlayer pl : downedPlayers)
-			if(pl.getPlayer().equals(player))
-				return pl.isPlayerDown();
-		return false;
+		player.setHealth(1D);
+		game.sendMessageToPlayers(player.getName() + " has gone down! Stand close and right click them to revive");
 	}
 
 	public void removeDownedPlayer(Player player)
 	{
-		for(int i = downedPlayers.size() - 1; i > 0; i--)
+		for(int i = downedPlayers.size() - 1; i >= 0; i--)
 			if(downedPlayers.get(i).getPlayer().equals(player))
-				downedPlayers.remove(i).setPlayerDown(false);
+				downedPlayers.remove(i);
 	}
 
-	public void clearDownedPlayers()
+	public boolean isDownedPlayer(Player player)
 	{
-		for(int i = downedPlayers.size() - 1; i > 0; i--)
-			downedPlayers.get(i).setPlayerDown(false);
-		downedPlayers.clear();
+		for(DownedPlayer dp : downedPlayers)
+			if(dp.getPlayer().equals(player))
+				return true;
+		return false;
+	}
+
+	public DownedPlayer getDownedPlayer(Player player)
+	{
+		for(DownedPlayer dp : downedPlayers)
+			if(dp.getPlayer().equals(player))
+				return dp;
+		return null;
+	}
+
+	public DownedPlayer getDownedPlayerForReviver(Player player)
+	{
+		for(DownedPlayer dp : downedPlayers)
+			if(dp.getReviver().equals(player))
+				return dp;
+		return null;
+	}
+
+	public void downedPlayerRevived(DownedPlayer dp)
+	{
+		downedPlayers.remove(dp);
 	}
 }

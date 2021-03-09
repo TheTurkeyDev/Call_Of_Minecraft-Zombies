@@ -90,7 +90,7 @@ public class RandomBox
 			COMZombies.nmsUtil.playChestAction(chestLocation, true);
 
 		running = true;
-		weapon = WeaponManager.getRandomWeapon(false, boxGame.getPlayersGun(player));
+		weapon = WeaponManager.getRandomWeapon(false, boxGame.getPlayersWeapons(player));
 		Location itemLoc;
 
 		if(chestLocation != null)
@@ -122,7 +122,7 @@ public class RandomBox
 				{
 					if(time > 0)
 					{
-						weapon = WeaponManager.getRandomWeapon(false, boxGame.getPlayersGun(player));
+						weapon = WeaponManager.getRandomWeapon(false, boxGame.getPlayersWeapons(player));
 						item.setItemStack(new ItemStack(weapon.getMaterial()));
 						namePlate.setCustomName(weapon.getName());
 						player.getWorld().playSound(boxLoc, Sound.BLOCK_NOTE_BLOCK_HARP, 1f, 1f);
@@ -187,7 +187,7 @@ public class RandomBox
 
 	public void pickUpWeapon(Player player)
 	{
-		boxGame.getPlayersGun(player).addWeapon(weapon);
+		boxGame.getPlayersWeapons(player).addWeapon(weapon);
 		player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
 		reset();
 	}

@@ -25,9 +25,9 @@ public class OnInventoryChangeEvent implements Listener
 		if(game == null || game.getMode() != ArenaStatus.INGAME)
 			return;
 
-		if(game.getPlayersGun(player) != null)
+		if(game.getPlayersWeapons(player) != null)
 		{
-			PlayerWeaponManager gunManager = game.getPlayersGun(player);
+			PlayerWeaponManager gunManager = game.getPlayersWeapons(player);
 			if(gunManager.isHeldItemWeapon())
 			{
 				WeaponInstance weapon = gunManager.getWeapon(player.getInventory().getHeldItemSlot());
@@ -46,9 +46,9 @@ public class OnInventoryChangeEvent implements Listener
 		if(game == null || game.getMode() != ArenaStatus.INGAME)
 			return;
 
-		if(game.getPlayersGun(event.getPlayer()) != null)
+		if(game.getPlayersWeapons(event.getPlayer()) != null)
 		{
-			PlayerWeaponManager gunManager = game.getPlayersGun(event.getPlayer());
+			PlayerWeaponManager gunManager = game.getPlayersWeapons(event.getPlayer());
 			if(gunManager.isHeldItemWeapon())
 			{
 				WeaponInstance weapon = gunManager.getWeapon(event.getPlayer().getInventory().getHeldItemSlot());

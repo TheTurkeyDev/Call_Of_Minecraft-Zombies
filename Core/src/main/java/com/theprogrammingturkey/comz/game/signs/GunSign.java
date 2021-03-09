@@ -35,7 +35,7 @@ public class GunSign implements IGameSign
 			return;
 		}
 
-		PlayerWeaponManager manager = game.getPlayersGun(player);
+		PlayerWeaponManager manager = game.getPlayersWeapons(player);
 		int slot = manager.getCorrectSlot(gunType);
 		GunInstance gun = manager.getGun(player.getInventory().getHeldItemSlot());
 		if(manager.isHeldItemGun() && gun.getType().getName().equalsIgnoreCase(gunType.getName()))

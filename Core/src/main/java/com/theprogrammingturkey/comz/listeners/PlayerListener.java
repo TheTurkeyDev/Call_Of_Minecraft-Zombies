@@ -2,8 +2,10 @@ package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.api.NMSParticleType;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.game.features.DownedPlayer;
 import com.theprogrammingturkey.comz.game.features.PerkType;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.Bukkit;
@@ -17,6 +19,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -63,24 +66,37 @@ public class PlayerListener implements Listener
 
 	/**
 	 * Checks if the player is leaving the arena and takes care of his action.
-	 *
-	 * @param playerMove - Player move event.
 	 */
 	@EventHandler
-	public void onPlayerMove(PlayerMoveEvent playerMove)
+	public void onPlayerMove(PlayerMoveEvent event)
 	{
-		Player player = playerMove.getPlayer();
-		if(GameManager.INSTANCE.isPlayerInGame(player))
+		Player player = event.getPlayer();
+		Game game = GameManager.INSTANCE.getGame(player);
+		if(game == null)
+			return;
+
+		if(!game.arena.containsBlock(player.getLocation()))
 		{
-			Game game = GameManager.INSTANCE.getGame(player);
-			if(game.arena.containsBlock(player.getLocation()))
-			{
-				return;
-			}
 			if(game.getMode() == Game.ArenaStatus.INGAME)
 			{
 				player.teleport(game.getPlayerSpawn());
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Please do not leave the arena!");
+			}
+		}
+
+
+		// Reviving move check
+		if(game.downedPlayerManager.isDownedPlayer(player) && event.getTo().subtract(event.getFrom()).getY() != 0)
+			event.setCancelled(true);
+
+		DownedPlayer downedPlayer = game.downedPlayerManager.getDownedPlayerForReviver(player);
+		if(downedPlayer != null)
+		{
+			Location change = event.getTo().subtract(event.getFrom());
+			if(downedPlayer.isPlayerDown() && (change.getX() != 0 || change.getY() != 0 || change.getZ() != 0))
+			{
+				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You Moved! You are no longer reviving " + player.getName());
+				downedPlayer.cancelRevive();
 			}
 		}
 	}
@@ -153,5 +169,48 @@ public class PlayerListener implements Listener
 		Player player = event.getPlayer();
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 			player.setExp(0);
+	}
+
+	@EventHandler
+	public void interact(PlayerInteractAtEntityEvent event)
+	{
+		if(!(event.getRightClicked() instanceof Player))
+			return;
+
+		Player reviver = event.getPlayer();
+		Player clickedPlayer = (Player) event.getRightClicked();
+
+		Game game = GameManager.INSTANCE.getGame(reviver);
+
+		if(game == null || !game.isPlayerInGame(clickedPlayer))
+			return;
+
+
+		Location clickedPlayerLoc = clickedPlayer.getLocation();
+		if(clickedPlayerLoc.getWorld() == null || !clickedPlayerLoc.getWorld().equals(reviver.getWorld()))
+			return;
+		if(reviver.getLocation().distance(clickedPlayerLoc) > ConfigManager.getMainConfig().reviveRange)
+			return;
+
+		if(game.downedPlayerManager.isDownedPlayer(reviver))
+			return;
+
+		DownedPlayer downedPlayer = game.downedPlayerManager.getDownedPlayer(clickedPlayer);
+		if(downedPlayer == null)
+			return;
+
+		if(downedPlayer.isBeingRevived())
+			return;
+
+		if(!(game.players.contains(reviver)))
+			return;
+
+		if(GameManager.INSTANCE.isPlayerInGame(reviver))
+		{
+			reviver.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You are reviving " + clickedPlayer.getName());
+			clickedPlayer.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You are being revived by " + reviver.getName() + "!");
+			downedPlayer.startRevive(reviver);
+			event.setCancelled(true);
+		}
 	}
 }

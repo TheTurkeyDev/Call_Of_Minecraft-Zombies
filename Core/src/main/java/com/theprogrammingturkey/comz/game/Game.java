@@ -15,7 +15,6 @@ import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.actions.BaseAction;
 import com.theprogrammingturkey.comz.game.features.Door;
-import com.theprogrammingturkey.comz.game.features.DownedPlayer;
 import com.theprogrammingturkey.comz.game.features.PowerUp;
 import com.theprogrammingturkey.comz.game.features.RandomBox;
 import com.theprogrammingturkey.comz.game.managers.*;
@@ -60,8 +59,6 @@ public class Game
 	 * List of every player contained in game.
 	 */
 	public List<Player> players = new ArrayList<>();
-
-	private ArrayList<Player> beingHealed = new ArrayList<>();
 
 	private boolean debugMode = false;
 
@@ -263,12 +260,12 @@ public class Game
 	}
 
 	/**
-	 * Gets the guns the player currently has
+	 * Gets the weapons the player currently has
 	 *
-	 * @param player to get the guns of
-	 * @return GunManager of the players guns
+	 * @param player to get the weapons of
+	 * @return PlayerWeaponManager of the players weapons
 	 */
-	public PlayerWeaponManager getPlayersGun(Player player)
+	public PlayerWeaponManager getPlayersWeapons(Player player)
 	{
 		return playersGuns.computeIfAbsent(player, PlayerWeaponManager::new);
 	}
@@ -626,7 +623,7 @@ public class Game
 			Game game = GameManager.INSTANCE.getGame(player);
 			if(game != null && gun != null)
 			{
-				PlayerWeaponManager manager = game.getPlayersGun(player);
+				PlayerWeaponManager manager = game.getPlayersWeapons(player);
 				manager.addWeapon(gun.getNewInstance(player, 1));
 			}
 			else if(gun == null)
@@ -663,6 +660,8 @@ public class Game
 		if(stats.getMostPoints() < playerPoints)
 			stats.setMostPoints(playerPoints);
 
+		if(downedPlayerManager.isDownedPlayer(player))
+			downedPlayerManager.removeDownedPlayer(player);
 		players.remove(player);
 		resetPlayer(player);
 
@@ -1246,46 +1245,15 @@ public class Game
 
 	private void playerDowned(Player player)
 	{
-		if(!downedPlayerManager.isPlayerDowned(player))
-		{
-			player.setFireTicks(0);
-
-			if(downedPlayerManager.getDownedPlayers().size() + 1 == players.size())
-			{
-				endGame();
-			}
-			else
-			{
-				sendMessageToPlayers(COMZombies.PREFIX + player.getName() + " Has gone down! Stand close and right click him to revive");
-				DownedPlayer down = new DownedPlayer(player, this);
-				down.setPlayerDown(true);
-				downedPlayerManager.addDownedPlayer(down);
-				player.setHealth(1D);
-			}
-		}
-	}
-
-	public void healPlayer(final Player player)
-	{
-		if(beingHealed.contains(player))
+		if(downedPlayerManager.isDownedPlayer(player))
 			return;
+
+		player.setFireTicks(0);
+
+		if(downedPlayerManager.numDownedPlayers() + 1 == players.size())
+			endGame();
 		else
-			beingHealed.add(player);
-
-		if(!(GameManager.INSTANCE.isPlayerInGame(player)))
-			return;
-		COMZombies.scheduleTask(20, () ->
-		{
-			if(!(player.getHealth() == 20))
-			{
-				player.setHealth(player.getHealth() + 1);
-				healPlayer(player);
-			}
-			else
-			{
-				beingHealed.remove(player);
-			}
-		});
+			downedPlayerManager.setPlayerDowned(player, this);
 	}
 
 	public int getTeddyBearPercent()
@@ -1324,6 +1292,14 @@ public class Game
 		for(Block block : blocks)
 			for(Player player : this.players)
 				COMZombies.nmsUtil.playBlockBreakAction(player, damage, block);
+	}
+
+	public boolean isPlayerInGame(Player player)
+	{
+		for(Player p : players)
+			if(p.equals(player))
+				return true;
+		return false;
 	}
 
 	public void sendMessageToPlayers(String message)

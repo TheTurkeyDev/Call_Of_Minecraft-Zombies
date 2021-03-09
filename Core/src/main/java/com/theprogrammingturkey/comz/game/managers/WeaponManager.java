@@ -97,10 +97,10 @@ public class WeaponManager
 		weapons.clear();
 		Weapon grenade = new Weapon("Grenade", WeaponType.GRENADE);
 		grenade.totalAmmo = 4;
-		weapons.add(grenade);
+		WeaponManager.registerWeapon(grenade);
 		Weapon monkeyBomb = new Weapon("Monkey Bomb", WeaponType.MONKEY_BOMB);
 		monkeyBomb.totalAmmo = 4;
-		weapons.add(monkeyBomb);
+		WeaponManager.registerWeapon(monkeyBomb);
 
 		JsonElement jsonElement = ConfigManager.getConfig(COMZConfig.GUNS).getJson();
 		if(jsonElement.isJsonNull())
@@ -126,7 +126,7 @@ public class WeaponManager
 
 				if(gun.has("pack_a_punch_gun"))
 				{
-					JsonObject packedGunJson = gunElem.getAsJsonObject();
+					JsonObject packedGunJson = gun.get("pack_a_punch_gun").getAsJsonObject();
 					PackAPunchGun packAPunchGun = new PackAPunchGun(CustomConfig.getString(packedGunJson, "name", "Unnamed"), WeaponType.getWeapon(gunGroupEntry.getKey()));
 					packAPunchGun.loadWeapon(packedGunJson);
 					basicGun.setPackAPunchGun(packAPunchGun);

@@ -55,7 +55,6 @@ public class GunInstance extends WeaponInstance
 		super(type, player, slot);
 		this.gun = type;
 		clipAmmo = type.clipAmmo;
-		totalAmmo = type.totalAmmo;
 		this.canFire = true;
 		updateWeapon();
 	}
