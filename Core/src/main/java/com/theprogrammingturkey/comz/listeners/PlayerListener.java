@@ -86,13 +86,13 @@ public class PlayerListener implements Listener
 
 
 		// Reviving move check
-		if(game.downedPlayerManager.isDownedPlayer(player) && event.getTo().subtract(event.getFrom()).getY() != 0)
+		Location change = event.getTo().clone().subtract(event.getFrom().clone());
+		if(game.downedPlayerManager.isDownedPlayer(player) && change.getY() != 0)
 			event.setCancelled(true);
 
 		DownedPlayer downedPlayer = game.downedPlayerManager.getDownedPlayerForReviver(player);
 		if(downedPlayer != null)
 		{
-			Location change = event.getTo().subtract(event.getFrom());
 			if(downedPlayer.isPlayerDown() && (change.getX() != 0 || change.getY() != 0 || change.getZ() != 0))
 			{
 				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You Moved! You are no longer reviving " + player.getName());
