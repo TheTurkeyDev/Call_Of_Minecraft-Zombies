@@ -57,7 +57,7 @@ public class DownedPlayerManager
 	public DownedPlayer getDownedPlayerForReviver(Player player)
 	{
 		for(DownedPlayer dp : downedPlayers)
-			if(dp.getReviver().equals(player))
+			if(player.equals(dp.getReviver()))
 				return dp;
 		return null;
 	}
