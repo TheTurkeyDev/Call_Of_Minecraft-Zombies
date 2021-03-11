@@ -14,7 +14,7 @@ public class KickCommand implements SubCommand
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
-		if(COMZPermission.KICK.hasPerm(player))
+		if(!COMZPermission.KICK.hasPerm(player))
 		{
 			CommandUtil.noPermission(player, "kick a player");
 			return true;

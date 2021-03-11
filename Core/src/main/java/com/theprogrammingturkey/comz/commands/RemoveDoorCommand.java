@@ -14,7 +14,7 @@ public class RemoveDoorCommand implements SubCommand
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
-		if(COMZPermission.REMOVE_DOOR.hasPerm(player))
+		if(!COMZPermission.REMOVE_DOOR.hasPerm(player))
 		{
 			CommandUtil.noPermission(player, "remove this door");
 			return true;

@@ -16,36 +16,34 @@ public class AddBarrier implements SubCommand
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
-		if(COMZPermission.ADD_BARRIER.hasPerm(player))
-		{
-			if(COMZombies.getPlugin().activeActions.containsKey(player))
-			{
-				CommandUtil.sendMessageToPlayer(player, "You are currently performing another action and cannot add a barrier right now!");
-			}
-			if(args.length < 2)
-			{
-				CommandUtil.sendMessageToPlayer(player, "Please specify an arena to add a barrier to!");
-			}
-			else
-			{
-				if(GameManager.INSTANCE.isValidArena(args[1]))
-				{
-					Game game = GameManager.INSTANCE.getGame(args[1]);
-					BarrierSetupAction barrierSetupAction = new BarrierSetupAction(player, game, new Barrier(game.barrierManager.getNextBarrierNumber(), game));
-					COMZombies.getPlugin().activeActions.put(player, barrierSetupAction);
-				}
-				else
-				{
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "That is not a valid arena!");
-					return true;
-				}
-			}
-			return true;
-		}
-		else
+		if(!COMZPermission.ADD_BARRIER.hasPerm(player))
 		{
 			CommandUtil.noPermission(player, "add a door");
 			return true;
 		}
+
+		if(COMZombies.getPlugin().activeActions.containsKey(player))
+		{
+			CommandUtil.sendMessageToPlayer(player, "You are currently performing another action and cannot add a barrier right now!");
+		}
+		if(args.length < 2)
+		{
+			CommandUtil.sendMessageToPlayer(player, "Please specify an arena to add a barrier to!");
+		}
+		else
+		{
+			if(GameManager.INSTANCE.isValidArena(args[1]))
+			{
+				Game game = GameManager.INSTANCE.getGame(args[1]);
+				BarrierSetupAction barrierSetupAction = new BarrierSetupAction(player, game, new Barrier(game.barrierManager.getNextBarrierNumber(), game));
+				COMZombies.getPlugin().activeActions.put(player, barrierSetupAction);
+			}
+			else
+			{
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "That is not a valid arena!");
+				return true;
+			}
+		}
+		return true;
 	}
 }

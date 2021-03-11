@@ -12,7 +12,7 @@ public class LeaderboardsCommand implements SubCommand
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
-		if(COMZPermission.LEADERBOARDS.hasPerm(player))
+		if(!COMZPermission.LEADERBOARDS.hasPerm(player))
 		{
 			CommandUtil.noPermission(player, "view the leaderboards!");
 			return true;

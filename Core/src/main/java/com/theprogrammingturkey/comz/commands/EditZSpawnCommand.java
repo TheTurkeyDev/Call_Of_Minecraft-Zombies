@@ -14,36 +14,35 @@ public class EditZSpawnCommand implements SubCommand
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
-		if(COMZPermission.EDIT_ZOMBIE_SPAWNS.hasPerm(player))
+		if(!COMZPermission.EDIT_ZOMBIE_SPAWNS.hasPerm(player))
 		{
-			COMZombies plugin = COMZombies.getPlugin();
-			if(plugin.activeActions.containsKey(player))
-			{
-				CommandUtil.sendMessageToPlayer(player, "You are currently performing another action and cannot edit zombie spawns right now!");
-			}
-			else if(args.length == 1)
-			{
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Please specify an arena to remove spawns from!");
-			}
-			else
-			{
-				String arena = args[1];
-				Game game = GameManager.INSTANCE.getGame(arena);
-				if(game == null)
-				{
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.RED + arena + " is not a valid arena! Type /z la for a list of arenas!");
-					return true;
-				}
+			CommandUtil.noPermission(player, "remove spawns");
+			return true;
+		}
 
-				game.setDisabled();
-
-				plugin.activeActions.put(player, new SpawnsEditAction(player, game));
-				return true;
-			}
+		COMZombies plugin = COMZombies.getPlugin();
+		if(plugin.activeActions.containsKey(player))
+		{
+			CommandUtil.sendMessageToPlayer(player, "You are currently performing another action and cannot edit zombie spawns right now!");
+		}
+		else if(args.length == 1)
+		{
+			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Please specify an arena to remove spawns from!");
 		}
 		else
 		{
-			CommandUtil.noPermission(player, "remove spawns");
+			String arena = args[1];
+			Game game = GameManager.INSTANCE.getGame(arena);
+			if(game == null)
+			{
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.RED + arena + " is not a valid arena! Type /z la for a list of arenas!");
+				return true;
+			}
+
+			game.setDisabled();
+
+			plugin.activeActions.put(player, new SpawnsEditAction(player, game));
+			return true;
 		}
 		return true;
 	}

@@ -15,36 +15,35 @@ public class AddDoorCommand implements SubCommand
 {
 	public boolean onCommand(Player player, String[] args)
 	{
-		if(COMZPermission.ADD_DOOR.hasPerm(player))
+		if(!COMZPermission.ADD_DOOR.hasPerm(player))
 		{
-			COMZombies plugin = COMZombies.getPlugin();
-			if(plugin.activeActions.containsKey(player))
-			{
-				CommandUtil.sendMessageToPlayer(player, "You are currently performing another action and cannot add a door right now!");
-			}
-			else if(args.length == 1)
-			{
-				CommandUtil.sendMessageToPlayer(player, "Please specify an arena to add a door to!");
-			}
-			else
-			{
-				if(GameManager.INSTANCE.isValidArena(args[1]))
-				{
-					Game game = GameManager.INSTANCE.getGame(args[1]);
-					Door door = new Door(game, Util.genRandId());
-					plugin.activeActions.put(player, new DoorSetupAction(player, game, door));
+			CommandUtil.noPermission(player, "add a door");
+			return true;
+		}
 
-					game.doorManager.addDoor(door);
-				}
-				else
-				{
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "That is not a valid arena!");
-				}
-			}
+		COMZombies plugin = COMZombies.getPlugin();
+		if(plugin.activeActions.containsKey(player))
+		{
+			CommandUtil.sendMessageToPlayer(player, "You are currently performing another action and cannot add a door right now!");
+		}
+		else if(args.length == 1)
+		{
+			CommandUtil.sendMessageToPlayer(player, "Please specify an arena to add a door to!");
 		}
 		else
 		{
-			CommandUtil.noPermission(player, "add a door");
+			if(GameManager.INSTANCE.isValidArena(args[1]))
+			{
+				Game game = GameManager.INSTANCE.getGame(args[1]);
+				Door door = new Door(game, Util.genRandId());
+				plugin.activeActions.put(player, new DoorSetupAction(player, game, door));
+
+				game.doorManager.addDoor(door);
+			}
+			else
+			{
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "That is not a valid arena!");
+			}
 		}
 		return true;
 	}

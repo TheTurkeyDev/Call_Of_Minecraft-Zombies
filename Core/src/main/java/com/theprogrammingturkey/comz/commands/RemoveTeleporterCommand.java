@@ -12,7 +12,7 @@ public class RemoveTeleporterCommand implements SubCommand
 {
 	public boolean onCommand(Player player, String[] args)
 	{
-		if(COMZPermission.REMOVE_TELEPORTER.hasPerm(player))
+		if(!COMZPermission.REMOVE_TELEPORTER.hasPerm(player))
 		{
 			CommandUtil.noPermission(player, "remove a teleporter");
 			return true;
