@@ -44,13 +44,16 @@ public class GameScoreboard
 	public void addPlayer(Player player)
 	{
 		team.addEntry(player.getName());
-		Score s = objective.getScore(player.getName());
-		playerScores.put(player, s);
-		for(Player pl : game.players)
+		if(!game.isPlayerSpectating(player))
 		{
-			if(pl.isValid())
-				pl.setScoreboard(board);
-			playerScores.get(player).setScore(500);
+			Score s = objective.getScore(player.getName());
+			playerScores.put(player, s);
+			for(Player pl : game.players)
+			{
+				if(pl.isValid())
+					pl.setScoreboard(board);
+				playerScores.get(player).setScore(500);
+			}
 		}
 		game.signManager.updateGame();
 	}
@@ -71,8 +74,6 @@ public class GameScoreboard
 
 		for(Player player : playerScores.keySet())
 			playerScores.get(player).setScore(PointManager.getPlayersPoints(player));
-
-
 
 		game.signManager.updateGame();
 	}

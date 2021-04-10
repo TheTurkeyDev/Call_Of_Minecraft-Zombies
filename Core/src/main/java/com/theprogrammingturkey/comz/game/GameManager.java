@@ -107,17 +107,16 @@ public class GameManager
 	public Game getGame(Player player)
 	{
 		for(Game game : games)
-			if(game.players.contains(player))
+			if(game.isPlayerPlaying(player) || game.isPlayerSpectating(player))
 				return game;
 		return null;
 	}
 
 	public boolean isPlayerInGame(Player player)
 	{
-		for(Game gm : games)
-			for(Player pl : gm.players)
-				if(player.getName().equalsIgnoreCase(pl.getName()))
-					return true;
+		for(Game game : games)
+			if(game.isPlayerPlaying(player) || game.isPlayerSpectating(player))
+				return true;
 		return false;
 	}
 

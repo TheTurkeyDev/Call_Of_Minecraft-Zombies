@@ -30,34 +30,32 @@ public class PackAPunchSign implements IGameSign
 			return;
 		}
 
+		PlayerWeaponManager manager = game.getPlayersWeapons(player);
+		if(!manager.isHeldItemGun())
+		{
+			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must hold the gun you want to pack-a-punch!");
+			return;
+		}
+
+		GunInstance gun = manager.getGun(player.getInventory().getHeldItemSlot());
+
 		int cost = Integer.parseInt(sign.getLine(2));
 		if(PointManager.canBuy(player, cost))
 		{
-			PlayerWeaponManager manager = game.getPlayersWeapons(player);
-			if(manager.isHeldItemGun())
+			if(gun.isPackOfPunched())
 			{
-				GunInstance gun = manager.getGun(player.getInventory().getHeldItemSlot());
-				if(gun.isPackOfPunched())
-				{
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Your " + ChatColor.GOLD + gun.getType().getName() + ChatColor.RED + " is already Pack-A-Punched!");
-				}
-				else
-				{
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Your " + ChatColor.GOLD + gun.getType().getName() + ChatColor.RED + " was Pack-A-Punched");
-					player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
-					gun.setPackOfPunch();
-					PointManager.takePoints(player, cost);
-				}
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Your " + ChatColor.GOLD + gun.getType().getName() + ChatColor.RED + " is already Pack-A-Punched!");
 			}
 			else
 			{
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "That is not a gun!");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Your " + ChatColor.GOLD + gun.getType().getName() + ChatColor.RED + " was Pack-A-Punched");
+				player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
+				gun.setPackOfPunch();
+				PointManager.takePoints(player, cost);
 			}
 		}
 		else
 		{
-			PlayerWeaponManager manager = game.getPlayersWeapons(player);
-			GunInstance gun = manager.getGun(player.getInventory().getHeldItemSlot());
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You do not have enough points to Pack-A-Punch your " + gun.getType().getName() + "!");
 		}
 	}

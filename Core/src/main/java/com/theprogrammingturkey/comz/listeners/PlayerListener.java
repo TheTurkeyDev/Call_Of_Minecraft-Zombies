@@ -34,15 +34,10 @@ public class PlayerListener implements Listener
 		for(Player pl : Bukkit.getOnlinePlayers())
 		{
 			if(GameManager.INSTANCE.isPlayerInGame(pl))
-			{
 				pl.hidePlayer(COMZombies.getPlugin(), player);
-				player.showPlayer(COMZombies.getPlugin(), pl);
-			}
 			else
-			{
 				pl.showPlayer(COMZombies.getPlugin(), player);
-				player.showPlayer(COMZombies.getPlugin(), pl);
-			}
+			player.showPlayer(COMZombies.getPlugin(), pl);
 		}
 	}
 
@@ -182,7 +177,7 @@ public class PlayerListener implements Listener
 
 		Game game = GameManager.INSTANCE.getGame(reviver);
 
-		if(game == null || !game.isPlayerInGame(clickedPlayer))
+		if(game == null || !game.isPlayerPlaying(clickedPlayer))
 			return;
 
 

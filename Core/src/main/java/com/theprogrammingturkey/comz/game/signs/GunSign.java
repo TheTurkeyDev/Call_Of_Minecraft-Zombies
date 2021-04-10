@@ -25,8 +25,9 @@ public class GunSign implements IGameSign
 	@Override
 	public void onInteract(Game game, Player player, Sign sign)
 	{
-		int BuyPoints = Integer.parseInt(sign.getLine(3).substring(0, sign.getLine(3).indexOf("/") - 1).trim());
-		int RefillPoints = Integer.parseInt(sign.getLine(3).substring(sign.getLine(3).indexOf("/") + 2).trim());
+		String line3 = sign.getLine(3);
+		int BuyPoints = Integer.parseInt(line3.substring(0, line3.indexOf("/") - 1).trim());
+		int RefillPoints = Integer.parseInt(line3.substring(line3.indexOf("/") + 2).trim());
 		BaseGun gunType = WeaponManager.getGun(sign.getLine(2));
 
 		if(gunType == null)

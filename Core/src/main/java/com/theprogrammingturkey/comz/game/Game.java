@@ -59,6 +59,10 @@ public class Game
 	 * List of every player contained in game.
 	 */
 	public List<Player> players = new ArrayList<>();
+	/**
+	 * List of all the spectating players contained in game.
+	 */
+	public List<Player> spectators = new ArrayList<>();
 
 	private boolean debugMode = false;
 
@@ -214,11 +218,6 @@ public class Game
 	public SignManager signManager;
 
 	/**
-	 * Information containing gamemode, and fly mode the player was in before they joined the game.
-	 */
-	private PreJoinInformation pInfo = new PreJoinInformation();
-
-	/**
 	 * Scoreboard used to manage players points
 	 */
 	public GameScoreboard scoreboard;
@@ -349,7 +348,7 @@ public class Game
 	{
 		powerOn = true;
 
-		for(Player pl : players)
+		for(Player pl : getPlayersAndSpectators())
 		{
 			World world = pl.getLocation().getWorld();
 			if(world != null)
@@ -542,7 +541,7 @@ public class Game
 		if(waveNumber != 1)
 		{
 			KitManager.giveOutKitRoundRewards(this);
-			for(Player pl : players)
+			for(Player pl : getPlayersAndSpectators())
 			{
 				pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, ConfigManager.getMainConfig().roundSoundVolume, 1);
 				pl.sendTitle(ChatColor.RED + "Round " + waveNumber, ChatColor.GRAY + "starting in 10 seconds", 10, 60, 10);
@@ -554,7 +553,7 @@ public class Game
 
 		COMZombies.scheduleTask(delay, () ->
 		{
-			for(Player pl : players)
+			for(Player pl : getPlayersAndSpectators())
 			{
 				pl.sendTitle(ChatColor.RED + "Round " + waveNumber, "", 10, 60, 10);
 				switch(spawnType)
@@ -586,13 +585,7 @@ public class Game
 		if(mode == ArenaStatus.WAITING || mode == ArenaStatus.STARTING)
 		{
 			players.add(player);
-			pInfo.addPlayerFL(player, player.isFlying());
-			pInfo.addPlayerGM(player, player.getGameMode());
-			pInfo.addPlayerLevel(player, player.getLevel());
-			pInfo.addPlayerExp(player, player.getExp());
-			pInfo.addPlayerInventoryContents(player, player.getInventory().getContents());
-			pInfo.addPlayerInventoryArmorContents(player, player.getInventory().getArmorContents());
-			pInfo.addPlayerOldLocation(player, player.getLocation());
+			CachedPlayerInfo.savePlayerInfo(player);
 			scoreboard.addPlayer(player);
 			playersGuns.put(player, new PlayerWeaponManager(player));
 			player.setHealth(20D);
@@ -645,6 +638,15 @@ public class Game
 		signManager.updateGame();
 	}
 
+	public void addSpectator(Player player)
+	{
+		spectators.add(player);
+		CachedPlayerInfo.savePlayerInfo(player);
+		scoreboard.addPlayer(player);
+		player.setGameMode(GameMode.SPECTATOR);
+		player.teleport(getSpectateLocation());
+	}
+
 	/**
 	 * Removes a player from the game
 	 *
@@ -673,25 +675,28 @@ public class Game
 				endGame();
 	}
 
+
+	public void removeSpectator(Player player)
+	{
+		if(spectators.remove(player))
+		{
+			CachedPlayerInfo.restorePlayerInfo(player);
+			scoreboard.removePlayer(player);
+		}
+	}
+
 	private void resetPlayer(Player player)
 	{
 		playersGuns.remove(player);
 		PointManager.playerLeaveGame(player);
+		CachedPlayerInfo.restorePlayerInfo(player);
 
 		for(PotionEffectType t : PotionEffectType.values())
 			player.removePotionEffect(t);
 
 		player.removePotionEffect(PotionEffectType.SPEED);
 		player.getInventory().clear();
-		COMZombies.scheduleTask(() -> player.teleport(pInfo.getOldLocation(player)));
 		player.setHealth(20);
-		player.setGameMode(pInfo.getGM(player));
-		if(player.getAllowFlight())
-			player.setFlying(pInfo.getFly(player));
-		player.getInventory().setContents(pInfo.getContents(player));
-		player.getInventory().setArmorContents(pInfo.getArmor(player));
-		player.setExp(pInfo.getExp(player));
-		player.setLevel(pInfo.getLevel(player));
 		player.setWalkSpeed(0.2F);
 		scoreboard.removePlayer(player);
 		player.updateInventory();
@@ -1290,16 +1295,24 @@ public class Game
 	public void updateBarrierDamage(int damage, Collection<Block> blocks)
 	{
 		for(Block block : blocks)
-			for(Player player : this.players)
+			for(Player player : getPlayersAndSpectators())
 				COMZombies.nmsUtil.playBlockBreakAction(player, damage, block);
 	}
 
-	public boolean isPlayerInGame(Player player)
+	public boolean isPlayerPlaying(Player player)
 	{
-		for(Player p : players)
-			if(p.equals(player))
-				return true;
-		return false;
+		return players.contains(player);
+	}
+
+	public boolean isPlayerSpectating(Player player)
+	{
+		return spectators.contains(player);
+	}
+
+	public List<Player> getPlayersAndSpectators(){
+		ArrayList<Player> combined = new ArrayList<>(players);
+		combined.addAll(spectators);
+		return combined;
 	}
 
 	public void sendMessageToPlayers(String message)
