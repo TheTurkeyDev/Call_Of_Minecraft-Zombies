@@ -6,7 +6,7 @@ else
 
 allprojects {
     group = 'comz'
-    version = "2.2.${buildnumber}"
+    version = "2.3.${buildnumber}"
     logger.lifecycle "${project.version}"
 }
 
