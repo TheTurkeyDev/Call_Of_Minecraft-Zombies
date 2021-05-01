@@ -3,6 +3,7 @@ package com.theprogrammingturkey.comz.game.weapons;
 import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import org.bukkit.Color;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public abstract class BaseGun extends Weapon
@@ -12,6 +13,8 @@ public abstract class BaseGun extends Weapon
 	public int clipAmmo;
 	public Color particleColor = Color.GRAY;
 	public boolean multiHit;
+
+	public Sound sound;
 
 	public BaseGun(String name, WeaponType type)
 	{
@@ -30,12 +33,19 @@ public abstract class BaseGun extends Weapon
 		String particleColor = CustomConfig.getString(json, "particle_color", "808080");
 		if(particleColor.matches("\\A[0-9a-fA-F]{6}$"))
 			this.particleColor = Color.fromRGB(Integer.parseInt(particleColor, 16));
+
+		this.sound = Sound.valueOf(CustomConfig.getString(json, "sound", this.isPackAPunched() ? "ENTITY_GHAST_SHOOT" : "BLOCK_LAVA_POP"));
 	}
 
 	public void updateAmmo(int clip, int total)
 	{
 		clipAmmo = clip;
 		totalAmmo = total;
+	}
+
+	public boolean isPackAPunched()
+	{
+		return false;
 	}
 
 	public abstract boolean isPackAPunchable();

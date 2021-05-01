@@ -6,7 +6,6 @@ import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.game.managers.WeaponManager;
 import com.theprogrammingturkey.comz.game.weapons.BaseGun;
-import com.theprogrammingturkey.comz.game.weapons.GunInstance;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -26,8 +25,8 @@ public class GunSign implements IGameSign
 	public void onInteract(Game game, Player player, Sign sign)
 	{
 		String line3 = sign.getLine(3);
-		int BuyPoints = Integer.parseInt(line3.substring(0, line3.indexOf("/") - 1).trim());
-		int RefillPoints = Integer.parseInt(line3.substring(line3.indexOf("/") + 2).trim());
+		int buyPoints = Integer.parseInt(line3.substring(0, line3.indexOf("/") - 1).trim());
+		int refillPoints = Integer.parseInt(line3.substring(line3.indexOf("/") + 2).trim());
 		BaseGun gunType = WeaponManager.getGun(sign.getLine(2));
 
 		if(gunType == null)
@@ -37,15 +36,13 @@ public class GunSign implements IGameSign
 		}
 
 		PlayerWeaponManager manager = game.getPlayersWeapons(player);
-		int slot = manager.getCorrectSlot(gunType);
-		GunInstance gun = manager.getGun(player.getInventory().getHeldItemSlot());
-		if(manager.isHeldItemGun() && gun.getType().getName().equalsIgnoreCase(gunType.getName()))
+		if(manager.hasGun(gunType))
 		{
-			if(PointManager.canBuy(player, RefillPoints))
+			if(PointManager.canBuy(player, refillPoints))
 			{
-				manager.getGun(slot).maxAmmo();
+				manager.getGun(gunType).maxAmmo();
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Filling ammo!");
-				PointManager.takePoints(player, RefillPoints);
+				PointManager.takePoints(player, refillPoints);
 				PointManager.notifyPlayer(player);
 			}
 			else
@@ -55,13 +52,14 @@ public class GunSign implements IGameSign
 		}
 		else
 		{
-			if(PointManager.canBuy(player, BuyPoints))
+			int slot = manager.getCorrectSlot(gunType);
+			if(PointManager.canBuy(player, buyPoints))
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You got the " + ChatColor.GOLD + "" + ChatColor.BOLD + gunType.getName() + ChatColor.RED + ChatColor.BOLD + "!");
 				manager.removeWeapon(manager.getGun(slot));
 				manager.addWeapon(gunType.getNewInstance(player, slot));
 				player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1, 1);
-				PointManager.takePoints(player, BuyPoints);
+				PointManager.takePoints(player, buyPoints);
 				PointManager.notifyPlayer(player);
 			}
 			else

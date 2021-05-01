@@ -163,6 +163,17 @@ public class GunInstance extends WeaponInstance
 	}
 
 	/**
+	 * Used to refill the players ammo to the top
+	 */
+	@Override
+	public void maxAmmo()
+	{
+		if(GameManager.INSTANCE.getGame(player).doesMaxAmmoReplenishClip())
+			clipAmmo = gun.clipAmmo;
+		super.maxAmmo();
+	}
+
+	/**
 	 * Used to get the guns type.
 	 *
 	 * @return Gun type
@@ -198,10 +209,7 @@ public class GunInstance extends WeaponInstance
 
 		World world = player.getWorld();
 
-		if(gun instanceof PackAPunchGun)
-			world.playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1, 1);
-		else
-			world.playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
+		world.playSound(player.getLocation(), gun.sound, 1, 1);
 
 		updateWeapon();
 		canFire = false;

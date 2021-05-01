@@ -163,6 +163,14 @@ public class PlayerWeaponManager
 		return null;
 	}
 
+	public GunInstance getGun(BaseGun gun)
+	{
+		for(WeaponInstance weapon : weapons)
+			if(weapon instanceof GunInstance && ((GunInstance) weapon).getType().equals(gun))
+				return (GunInstance) weapon;
+		return null;
+	}
+
 	/**
 	 * Used to remove a gun from the guns list if contained.
 	 *

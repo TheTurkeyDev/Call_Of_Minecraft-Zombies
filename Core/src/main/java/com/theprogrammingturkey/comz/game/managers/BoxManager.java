@@ -210,6 +210,5 @@ public class BoxManager
 		if(b != null)
 			currentBox = b;
 		currentBox.loadBox();
-
 	}
 }

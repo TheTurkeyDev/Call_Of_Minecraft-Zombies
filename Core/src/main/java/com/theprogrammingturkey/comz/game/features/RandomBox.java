@@ -60,7 +60,7 @@ public class RandomBox
 		this.isTeddyBear = false;
 	}
 
-	public void Start(final Player player, int PointsNeeded)
+	public void Start(Player player, int pointsNeeded)
 	{
 		if(boxGame == null)
 			return;
@@ -68,7 +68,7 @@ public class RandomBox
 		if(!(GameManager.INSTANCE.isPlayerInGame(player)))
 			return;
 
-		if(!PointManager.canBuy(player, PointsNeeded))
+		if(!PointManager.canBuy(player, pointsNeeded))
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You don't have enough points!");
 			return;
@@ -106,7 +106,7 @@ public class RandomBox
 		namePlate.setCustomName(weapon.getName());
 		namePlate.setCustomNameVisible(true);
 
-		PointManager.takePoints(player, PointsNeeded);
+		PointManager.takePoints(player, pointsNeeded);
 		PointManager.notifyPlayer(player);
 
 		int taskID = COMZombies.scheduleTask(0, 10, new Runnable()
@@ -148,6 +148,7 @@ public class RandomBox
 								{
 									Bukkit.getScheduler().cancelTask(velTask);
 									boxGame.boxManager.teddyBear();
+									PointManager.addPoints(player, pointsNeeded);
 									reset();
 								});
 							});

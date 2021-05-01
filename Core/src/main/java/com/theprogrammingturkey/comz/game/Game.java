@@ -115,6 +115,8 @@ public class Game
 
 	private int dogRoundEveryX;
 
+	private boolean maxAmmoReplishClip;
+
 	/**
 	 * Contains a player and the gun manager corresponding to that player.
 	 */
@@ -920,6 +922,7 @@ public class Game
 		teddyBearPercent = CustomConfig.getInt(arenaSettingsJson, "teddy_bear_chance", 100);
 		startingGun = CustomConfig.getString(arenaSettingsJson, "StartingGun", "M1911");
 		dogRoundEveryX = CustomConfig.getInt(arenaSettingsJson, "dog_round_every_x", 5);
+		maxAmmoReplishClip = CustomConfig.getBoolean(arenaSettingsJson, "max_ammo_replenish_clip", false);
 
 		if(CustomConfig.getBoolean(arenaSettingsJson, "force_night", false))
 			forceNight();
@@ -970,6 +973,7 @@ public class Game
 		arenaSettingsJson.addProperty("teddy_bear_chance", teddyBearPercent);
 		arenaSettingsJson.addProperty("StartingGun", startingGun);
 		arenaSettingsJson.addProperty("dog_round_every_x", dogRoundEveryX);
+		arenaSettingsJson.addProperty("max_ammo_replenish_clip", maxAmmoReplishClip);
 
 
 		arenaSaveJson.addProperty("world_name", world.getName());
@@ -1175,7 +1179,7 @@ public class Game
 			if(mob instanceof Zombie)
 				zombieKilled(player);
 
-			if(spawnManager.getEntities().size() <= 0)
+			if(spawnManager.getMobsSpawned() <= 0 && spawnManager.getMobsSpawned() == spawnManager.getMobsToSpawn())
 			{
 				if(mob instanceof Wolf)
 					powerUpManager.dropPowerUp(mob, PowerUp.MAX_AMMO);
@@ -1202,7 +1206,7 @@ public class Game
 			if(mob instanceof Zombie)
 				zombieKilled(player);
 
-			if(spawnManager.getEntities().size() <= 0)
+			if(spawnManager.getEntities().size() <= 0 && spawnManager.getMobsSpawned() == spawnManager.getMobsToSpawn())
 			{
 				if(mob instanceof Wolf)
 					powerUpManager.dropPowerUp(mob, PowerUp.MAX_AMMO);
@@ -1271,6 +1275,11 @@ public class Game
 		return dogRoundEveryX;
 	}
 
+	public boolean doesMaxAmmoReplenishClip()
+	{
+		return maxAmmoReplishClip;
+	}
+
 	public String getStartingGun()
 	{
 		return startingGun;
@@ -1309,7 +1318,8 @@ public class Game
 		return spectators.contains(player);
 	}
 
-	public List<Player> getPlayersAndSpectators(){
+	public List<Player> getPlayersAndSpectators()
+	{
 		ArrayList<Player> combined = new ArrayList<>(players);
 		combined.addAll(spectators);
 		return combined;

@@ -29,53 +29,45 @@ public class SignListener implements Listener
 	static
 	{
 		MysteryBoxSign sign = new MysteryBoxSign();
-		GAME_SIGNS.put("Mystery Box", sign);
+		GAME_SIGNS.put("mystery box", sign);
 		GAME_SIGNS.put("mysterybox", sign);
 		GAME_SIGNS.put("box", sign);
 		GAME_SIGNS.put("randombox", sign);
 
 		JoinSign join = new JoinSign();
-		GAME_SIGNS.put("Join", join);
 		GAME_SIGNS.put("join", join);
 
 		SpectateSign spectateSign = new SpectateSign();
-		GAME_SIGNS.put("Spectate", spectateSign);
 		GAME_SIGNS.put("spectate", spectateSign);
-		GAME_SIGNS.put("Spec", spectateSign);
 		GAME_SIGNS.put("spec", spectateSign);
 
 		KitSign kit = new KitSign();
-		GAME_SIGNS.put("Kit", kit);
 		GAME_SIGNS.put("kit", kit);
 
 		PerkMachineSign perk = new PerkMachineSign();
-		GAME_SIGNS.put("Perk Machine", perk);
 		GAME_SIGNS.put("perk", perk);
 		GAME_SIGNS.put("perk machine", perk);
-		GAME_SIGNS.put("Perk machine", perk);
 
 		PackAPunchSign packAPunch = new PackAPunchSign();
-		GAME_SIGNS.put("Pack-a-Punch", packAPunch);
-		GAME_SIGNS.put("pack", packAPunch);
 		GAME_SIGNS.put("pack-a-punch", packAPunch);
+		GAME_SIGNS.put("pack", packAPunch);
 		GAME_SIGNS.put("pack a punch", packAPunch);
-		GAME_SIGNS.put("Pack a Punch", packAPunch);
 
 		DoorSign door = new DoorSign();
-		GAME_SIGNS.put("Door", door);
 		GAME_SIGNS.put("door", door);
 
 		GunSign gun = new GunSign();
-		GAME_SIGNS.put("Gun", gun);
 		GAME_SIGNS.put("gun", gun);
 
 		PowerSign power = new PowerSign();
-		GAME_SIGNS.put("Power", power);
 		GAME_SIGNS.put("power", power);
 
 		TeleporterSign teleporter = new TeleporterSign();
-		GAME_SIGNS.put("Teleporter", teleporter);
 		GAME_SIGNS.put("teleporter", teleporter);
+
+		AmmoCrateSign ammoCrate = new AmmoCrateSign();
+		GAME_SIGNS.put("ammo crate", ammoCrate);
+		GAME_SIGNS.put("ammo", ammoCrate);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -91,7 +83,7 @@ public class SignListener implements Listener
 		if(lineOne.equalsIgnoreCase("[Zombies]"))
 		{
 			Game game = GameManager.INSTANCE.getGame(sign.getLocation());
-			IGameSign signLogic = GAME_SIGNS.get(lineTwo);
+			IGameSign signLogic = GAME_SIGNS.get(lineTwo.toLowerCase());
 			if(signLogic != null && (game != null || !signLogic.requiresGame()))
 				signLogic.onBreak(game, event.getPlayer(), sign);
 		}
@@ -147,7 +139,7 @@ public class SignListener implements Listener
 			if(lineOne.equalsIgnoreCase("[Zombies]"))
 			{
 				Game game = GameManager.INSTANCE.getGame(sign.getLocation());
-				IGameSign signLogic = GAME_SIGNS.get(lineTwo);
+				IGameSign signLogic = GAME_SIGNS.get(lineTwo.toLowerCase());
 				if(signLogic != null && (game != null || !signLogic.requiresGame()))
 				{
 					if(game != null && signLogic.requiresGame() && game.getMode() != Game.ArenaStatus.INGAME)
@@ -166,10 +158,10 @@ public class SignListener implements Listener
 			return;
 		String lineOne = ChatColor.stripColor(event.getLine(0));
 		String lineTwo = ChatColor.stripColor(event.getLine(1));
-		if(lineOne != null && lineOne.equalsIgnoreCase("[Zombies]"))
+		if(lineOne != null && lineOne.equalsIgnoreCase("[Zombies]") && lineTwo != null)
 		{
 			Game game = GameManager.INSTANCE.getGame(event.getBlock().getLocation());
-			IGameSign signLogic = GAME_SIGNS.get(lineTwo);
+			IGameSign signLogic = GAME_SIGNS.get(lineTwo.toLowerCase());
 			if(signLogic != null && (game != null || !signLogic.requiresGame()))
 			{
 				signLogic.onChange(game, event.getPlayer(), event);

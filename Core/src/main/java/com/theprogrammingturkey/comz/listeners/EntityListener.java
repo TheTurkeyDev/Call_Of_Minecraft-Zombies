@@ -6,6 +6,7 @@ import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
 import org.bukkit.Effect;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
@@ -103,8 +104,7 @@ public class EntityListener implements Listener
 						Mob mob = (Mob) entity;
 						double dist = mob.getLocation().distance(player.getLocation());
 						if(dist <= ConfigManager.getMainConfig().meleeRange)
-							game.damageMob(mob, player, 5);
-
+							game.damageMob(mob, player, (float) (mob.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() / game.getWave()));
 					}
 				}
 			}
