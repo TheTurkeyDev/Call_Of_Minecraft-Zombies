@@ -3,6 +3,8 @@
     "guns": [
       {
         "name": "B23R",
+        "material": "DIAMOND_HOE",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 15,
         "total_ammo": 105,
         "damage": 3,
@@ -12,17 +14,21 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "B34R",
+          "material": "DIAMOND_HOE",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 20,
           "total_ammo": 180,
           "damage": 15,
           "fire_delay": 10,
           "max_distance": 15.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "Executioner",
+        "material": "STONE_HOE",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 5,
         "total_ammo": 75,
         "damage": 23,
@@ -32,17 +38,21 @@
         "multi_hit": true,
         "pack_a_punch_gun": {
           "name": "Voice of Justice",
+          "material": "STONE_HOE",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 5,
           "total_ammo": 100,
           "damage": 40,
           "fire_delay": 10,
           "max_distance": 15.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "Five-Seven",
+        "material": "IRON_HOE",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 20,
         "total_ammo": 120,
         "damage": 3,
@@ -52,17 +62,21 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "Ultra",
+          "material": "IRON_HOE",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 20,
           "total_ammo": 200,
           "damage": 15,
           "fire_delay": 10,
           "max_distance": 15.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "Kap-40",
+        "material": "GOLDEN_HOE",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 12,
         "total_ammo": 96,
         "damage": 3,
@@ -72,17 +86,21 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "Karmic Atom Perforator-4000",
+          "material": "GOLDEN_HOE",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 15,
           "total_ammo": 180,
           "damage": 12,
           "fire_delay": 10,
           "max_distance": 15.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "M1911",
+        "material": "WOODEN_HOE",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 8,
         "total_ammo": 80,
         "damage": 2,
@@ -92,17 +110,21 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "C-3000 b1at-ch35",
+          "material": "WOODEN_HOE",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 6,
           "total_ammo": 50,
           "damage": 30,
           "fire_delay": 10,
           "max_distance": 15.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "Python",
+        "material": "NETHERITE_HOE",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 6,
         "total_ammo": 84,
         "damage": 30,
@@ -112,12 +134,14 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "Cobra",
+          "material": "NETHERITE_HOE",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 12,
           "total_ammo": 96,
           "damage": 50,
           "fire_delay": 10,
           "max_distance": 15.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       }
@@ -127,6 +151,8 @@
     "guns": [
       {
         "name": "M1216",
+        "material": "WOODEN_SWORD",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 16,
         "total_ammo": 84,
         "damage": 30,
@@ -136,17 +162,21 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "Mesmerizer",
+          "material": "WOODEN_SWORD",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 24,
           "total_ammo": 72,
           "damage": 40,
           "fire_delay": 15,
           "max_distance": 7.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "Olympia",
+        "material": "STONE_SWORD",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 2,
         "total_ammo": 38,
         "damage": 20,
@@ -156,17 +186,21 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "Hades",
+          "material": "STONE_SWORD",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 2,
           "total_ammo": 60,
           "damage": 30,
           "fire_delay": 15,
           "max_distance": 7.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "R870 MCS",
+        "material": "IRON_SWORD",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 6,
         "total_ammo": 48,
         "damage": 22,
@@ -176,17 +210,21 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "Refitted-870 Mechanical Cranium Sequencer",
+          "material": "IRON_SWORD",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 10,
           "total_ammo": 70,
           "damage": 30,
           "fire_delay": 15,
           "max_distance": 7.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "S12",
+        "material": "GOLDEN_SWORD",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 10,
         "total_ammo": 30,
         "damage": 24,
@@ -196,12 +234,14 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "Synthetic Dozen",
+          "material": "GOLDEN_SWORD",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 10,
           "total_ammo": 50,
           "damage": 30,
           "fire_delay": 15,
           "max_distance": 7.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       }
@@ -211,6 +251,8 @@
     "guns": [
       {
         "name": "AN-94",
+        "material": "WOODEN_PICKAXE",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 30,
         "total_ammo": 90,
         "damage": 5,
@@ -220,17 +262,21 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "Actuated Neutralizer 94000",
+          "material": "WOODEN_PICKAXE",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 50,
           "total_ammo": 600,
           "damage": 10,
           "fire_delay": 7,
           "max_distance": 25.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "Colt M16A1",
+        "material": "STONE_PICKAXE",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 30,
         "total_ammo": 120,
         "damage": 4,
@@ -240,17 +286,21 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "Skullcrusher",
+          "material": "STONE_PICKAXE",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 30,
           "total_ammo": 270,
           "damage": 13,
           "fire_delay": 7,
           "max_distance": 25.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "FAL",
+        "material": "IRON_PICKAXE",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 20,
         "total_ammo": 180,
         "damage": 7,
@@ -260,17 +310,21 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "EPC WN",
+          "material": "IRON_PICKAXE",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 30,
           "total_ammo": 360,
           "damage": 15,
           "fire_delay": 7,
           "max_distance": 25.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "M8A1",
+        "material": "GOLDEN_PICKAXE",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 32,
         "total_ammo": 192,
         "damage": 3,
@@ -280,17 +334,21 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "Micro Aerator",
+          "material": "GOLDEN_PICKAXE",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 42,
           "total_ammo": 336,
           "damage": 7,
           "fire_delay": 7,
           "max_distance": 25.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "M14",
+        "material": "DIAMOND_PICKAXE",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 8,
         "total_ammo": 96,
         "damage": 4,
@@ -300,17 +358,21 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "Mnesia",
+          "material": "DIAMOND_PICKAXE",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 16,
           "total_ammo": 192,
           "damage": 7,
           "fire_delay": 7,
           "max_distance": 25.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "M27",
+        "material": "NETHERITE_PICKAXE",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 30,
         "total_ammo": 240,
         "damage": 5,
@@ -320,17 +382,21 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "Mystifier",
+          "material": "NETHERITE_PICKAXE",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 30,
           "total_ammo": 360,
           "damage": 10,
           "fire_delay": 7,
           "max_distance": 25.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "MTAR",
+        "material": "LEATHER_HORSE_ARMOR",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 30,
         "total_ammo": 240,
         "damage": 5,
@@ -340,17 +406,21 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "Malevolent Taxonomic Anodized Redeemer",
+          "material": "LEATHER_HORSE_ARMOR",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 30,
           "total_ammo": 360,
           "damage": 10,
           "fire_delay": 7,
           "max_distance": 25.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "SMR",
+        "material": "IRON_HORSE_ARMOR",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 20,
         "total_ammo": 140,
         "damage": 3,
@@ -360,17 +430,21 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "SM1L3R",
+          "material": "IRON_HORSE_ARMOR",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 30,
           "total_ammo": 390,
           "damage": 8,
           "fire_delay": 7,
           "max_distance": 25.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "Type 25",
+        "material": "GOLDEN_HORSE_ARMOR",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 30,
         "total_ammo": 150,
         "damage": 4,
@@ -380,12 +454,14 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "Strain 25",
+          "material": "GOLDEN_HORSE_ARMOR",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 30,
           "total_ammo": 270,
           "damage": 12,
           "fire_delay": 7,
           "max_distance": 25.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       }
@@ -395,6 +471,8 @@
     "guns": [
       {
         "name": "HAMR",
+        "material": "WOODEN_SHOVEL",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 135,
         "total_ammo": 1375,
         "damage": 10,
@@ -404,17 +482,21 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "SLDG-HAMR",
+          "material": "WOODEN_SHOVEL",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 125,
           "total_ammo": 625,
           "damage": 15,
           "fire_delay": 5,
           "max_distance": 35.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "LSAT",
+        "material": "STONE_SHOVEL",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 100,
         "total_ammo": 400,
         "damage": 12,
@@ -424,17 +506,21 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "FSIRT",
+          "material": "STONE_SHOVEL",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 100,
           "total_ammo": 600,
           "damage": 16,
           "fire_delay": 5,
           "max_distance": 35.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "RPD",
+        "material": "GOLDEN_SHOVEL",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 100,
         "total_ammo": 400,
         "damage": 10,
@@ -444,12 +530,14 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "Relativistic Punishment Device",
+          "material": "GOLDEN_SHOVEL",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 125,
           "total_ammo": 750,
           "damage": 15,
           "fire_delay": 5,
           "max_distance": 35.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       }
@@ -459,6 +547,8 @@
     "guns": [
       {
         "name": "Chicom CQB",
+        "material": "WOODEN_AXE",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 40,
         "total_ammo": 120,
         "damage": 2,
@@ -468,17 +558,21 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "Chicom Cataclysmic Quadruple Burst",
+          "material": "WOODEN_AXE",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 40,
           "total_ammo": 200,
           "damage": 7,
           "fire_delay": 5,
           "max_distance": 40.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "MP5",
+        "material": "STONE_AXE",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 30,
         "total_ammo": 120,
         "damage": 3,
@@ -488,17 +582,21 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "MP115 Kollider",
+          "material": "STONE_AXE",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 40,
           "total_ammo": 200,
           "damage": 7,
           "fire_delay": 5,
           "max_distance": 40.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "PDW-57",
+        "material": "IRON_AXE",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 50,
         "total_ammo": 200,
         "damage": 2,
@@ -508,12 +606,14 @@
         "multi_hit": false,
         "pack_a_punch_gun": {
           "name": "Predictive Death Wish 57000",
+          "material": "IRON_AXE",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 50,
           "total_ammo": 350,
           "damage": 6,
           "fire_delay": 5,
           "max_distance": 40.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       }
@@ -522,7 +622,9 @@
   "Sniper_Rifles": {
     "guns": [
       {
-        "name": "Barret M82A1",
+        "name": "Barret 50KCAL",
+        "sound": "BLOCK_LAVA_POP",
+        "material": "BLAZE_ROD",
         "clip_ammo": 5,
         "total_ammo": 30,
         "damage": 50,
@@ -532,17 +634,21 @@
         "multi_hit": true,
         "pack_a_punch_gun": {
           "name": "Macro Annihilator",
+          "material": "BLAZE_ROD",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 7,
           "total_ammo": 42,
           "damage": 70,
           "fire_delay": 20,
           "max_distance": 100.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "DSR 50",
+        "sound": "BLOCK_LAVA_POP",
+        "material": "STICK",
         "clip_ammo": 4,
         "total_ammo": 48,
         "damage": 50,
@@ -552,17 +658,21 @@
         "multi_hit": true,
         "pack_a_punch_gun": {
           "name": "Dead Specimen Reactor 5000",
+          "material": "STICK",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 8,
           "total_ammo": 96,
           "damage": 70,
           "fire_delay": 20,
           "max_distance": 100.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       },
       {
         "name": "SVU-AS",
+        "sound": "BLOCK_LAVA_POP",
+        "material": "BONE",
         "clip_ammo": 12,
         "total_ammo": 48,
         "damage": 30,
@@ -572,12 +682,14 @@
         "multi_hit": true,
         "pack_a_punch_gun": {
           "name": "Shadowy Veil Utilizer",
+          "material": "BONE",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 12,
           "total_ammo": 192,
           "damage": 50,
           "fire_delay": 20,
           "max_distance": 100.0,
-          "particle_color": "808080",
+          "particle_color": "AA00AA",
           "multi_hit": true
         }
       }
@@ -587,21 +699,25 @@
     "guns": [
       {
         "name": "Ray Gun",
+        "material": "DIAMOND_SHOVEL",
+        "sound": "BLOCK_LAVA_POP",
         "clip_ammo": 20,
         "total_ammo": 160,
         "damage": 90,
         "fire_delay": 7,
         "max_distance": 50.0,
-        "particle_color": "808080",
+        "particle_color": "168,229,73",
         "multi_hit": true,
         "pack_a_punch_gun": {
-          "name": "Porter\u0027s X2 Ray Gun",
+          "name": "Porter's X2 Ray Gun",
+          "material": "DIAMOND_SHOVEL",
+          "sound": "ENTITY_GHAST_SHOOT",
           "clip_ammo": 40,
           "total_ammo": 200,
           "damage": 120,
           "fire_delay": 20,
           "max_distance": 100.0,
-          "particle_color": "808080",
+          "particle_color": "FF1919",
           "multi_hit": true
         }
       }
