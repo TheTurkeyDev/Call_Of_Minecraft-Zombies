@@ -173,7 +173,7 @@ public class GameManager
 	public Game getGame(Location loc)
 	{
 		for(Game gl : games)
-			if(gl.arena.containsBlock(loc))
+			if(gl.arena != null && gl.arena.containsBlock(loc))
 				return gl;
 		return null;
 	}
