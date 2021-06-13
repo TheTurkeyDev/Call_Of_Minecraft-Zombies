@@ -20,7 +20,7 @@ public class PlayerChatListener implements Listener
 	{
 		COMZombies plugin = COMZombies.getPlugin();
 		Player player = playerChat.getPlayer();
-		String message = playerChat.getMessage().replaceFirst(" ", "");
+		String message = playerChat.getMessage().replaceFirst(" ", "").trim();
 
 		if(plugin.activeActions.containsKey(player))
 		{

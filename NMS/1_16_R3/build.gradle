@@ -2,5 +2,5 @@ archivesBaseName = "comz-1.16.r3-support"
 
 dependencies {
     implementation project(':API')
-    compile group: 'org.spigotmc', name: 'spigot', version: '1.16.4-R0.1-SNAPSHOT'
+    implementation group: 'org.spigotmc', name: 'spigot', version: '1.16.4-R0.1-SNAPSHOT'
 }
