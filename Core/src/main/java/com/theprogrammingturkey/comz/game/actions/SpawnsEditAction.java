@@ -37,6 +37,13 @@ public class SpawnsEditAction extends BaseAction
 			}
 
 			Block b = player.getLocation().getBlock();
+
+			if(!game.arena.containsBlock(b.getLocation()))
+			{
+				CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "The spawn point must be inside the arena!");
+				return;
+			}
+
 			SpawnPoint point = new SpawnPoint(b.getLocation(), game, b.getType(), game.spawnManager.getNewSpawnPointNum());
 			if(!game.spawnManager.addPoint(point))
 			{

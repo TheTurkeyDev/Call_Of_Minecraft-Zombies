@@ -94,12 +94,18 @@ public class BarrierSetupAction extends BaseAction
 			if(clickedBlock.getType().equals(Material.END_PORTAL_FRAME))
 			{
 				Game game = GameManager.INSTANCE.getGame(clickedBlock.getLocation());
+				if(game == null)
+				{
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "The spawn point you just selected is not inside an arena...");
+					return;
+				}
+
 				SpawnPoint point = game.spawnManager.getSpawnPoint(clickedBlock.getLocation());
 				if(point == null || barrier.hasSpawnPoint(point))
 					return;
 
 				barrier.addSpawnPoint(point);
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn point selected!");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Spawn point selected!");
 				event.setCancelled(true);
 			}
 		}
