@@ -135,9 +135,8 @@ public class BarrierSetupAction extends BaseAction
 			}
 			else
 			{
-				final Game game = barrier.getGame();
-
-				COMZombies.scheduleTask(1, game::resetSpawnLocationBlocks);
+				for(SpawnPoint point : game.spawnManager.getPoints())
+				BlockUtils.setBlockToAir(point.getLocation());
 
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn point for barrier set!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now type in the amount the player will receive per repairation level of the barrier.");
