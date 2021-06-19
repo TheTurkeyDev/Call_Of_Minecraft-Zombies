@@ -2,7 +2,6 @@ package com.theprogrammingturkey.comz.game.actions;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import com.theprogrammingturkey.comz.util.BlockUtils;
@@ -93,13 +92,6 @@ public class BarrierSetupAction extends BaseAction
 		{
 			if(clickedBlock.getType().equals(Material.END_PORTAL_FRAME))
 			{
-				Game game = GameManager.INSTANCE.getGame(clickedBlock.getLocation());
-				if(game == null)
-				{
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "The spawn point you just selected is not inside an arena...");
-					return;
-				}
-
 				SpawnPoint point = game.spawnManager.getSpawnPoint(clickedBlock.getLocation());
 				if(point == null || barrier.hasSpawnPoint(point))
 					return;
@@ -135,8 +127,6 @@ public class BarrierSetupAction extends BaseAction
 			}
 			else
 			{
-				final Game game = barrier.getGame();
-
 				COMZombies.scheduleTask(1, game::resetSpawnLocationBlocks);
 
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn point for barrier set!");

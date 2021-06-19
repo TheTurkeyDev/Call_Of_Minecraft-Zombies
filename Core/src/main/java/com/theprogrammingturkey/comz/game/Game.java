@@ -13,7 +13,6 @@ import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.economy.PointManager;
-import com.theprogrammingturkey.comz.game.actions.BaseAction;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.game.features.PowerUp;
 import com.theprogrammingturkey.comz.game.features.RandomBox;
@@ -398,10 +397,6 @@ public class Game
 	 */
 	public void resetSpawnLocationBlocks()
 	{
-		for(BaseAction action : COMZombies.getPlugin().activeActions.values())
-			if(action.getGame().equals(this))
-				return;
-
 		for(SpawnPoint point : spawnManager.getPoints())
 			BlockUtils.setBlockToAir(point.getLocation());
 	}

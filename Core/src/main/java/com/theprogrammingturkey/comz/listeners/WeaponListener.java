@@ -83,7 +83,6 @@ public class WeaponListener implements Listener
 								continue;
 							}
 
-							//TODO: Multiple hits
 							List<RayTrace.RayEntityIntersection> toDamage = new ArrayList<>();
 							double dist = distance;
 

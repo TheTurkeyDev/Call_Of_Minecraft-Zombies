@@ -101,22 +101,23 @@ public class PlaceholderHook extends PlaceholderExpansion
 		{
 			if(parts.length == 2)
 			{
+				PlayerStats stats = Leaderboard.getPlayerStatFromPlayer(player);
 				switch(parts[1])
 				{
 					case "kills":
-						return String.valueOf(Leaderboard.getPlayerStatFromPlayer(player).getKills());
+						return String.valueOf(stats.getKills());
 					case "revives":
-						return String.valueOf(Leaderboard.getPlayerStatFromPlayer(player).getRevives());
+						return String.valueOf(stats.getRevives());
 					case "deaths":
-						return String.valueOf(Leaderboard.getPlayerStatFromPlayer(player).getDeaths());
+						return String.valueOf(stats.getDeaths());
 					case "downs":
-						return String.valueOf(Leaderboard.getPlayerStatFromPlayer(player).getDowns());
+						return String.valueOf(stats.getDowns());
 					case "gamesPlayed":
-						return String.valueOf(Leaderboard.getPlayerStatFromPlayer(player).getGamesPlayed());
+						return String.valueOf(stats.getGamesPlayed());
 					case "highestRound":
-						return String.valueOf(Leaderboard.getPlayerStatFromPlayer(player).getHighestRound());
+						return String.valueOf(stats.getHighestRound());
 					case "mostPoints":
-						return String.valueOf(Leaderboard.getPlayerStatFromPlayer(player).getMostPoints());
+						return String.valueOf(stats.getMostPoints());
 				}
 			}
 			else if(parts.length == 3)

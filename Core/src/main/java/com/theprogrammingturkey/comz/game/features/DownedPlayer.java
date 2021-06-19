@@ -7,6 +7,8 @@ import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.game.managers.WeaponManager;
 import com.theprogrammingturkey.comz.game.weapons.WeaponInstance;
+import com.theprogrammingturkey.comz.leaderboards.Leaderboard;
+import com.theprogrammingturkey.comz.leaderboards.PlayerStats;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -42,6 +44,8 @@ public class DownedPlayer implements Listener
 	public void setPlayerDown()
 	{
 		isPlayerDown = true;
+		PlayerStats stats = Leaderboard.getPlayerStatFromPlayer(player);
+		stats.setDowns(stats.getDowns() + 1);
 		player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You have gone down and need to be revived!");
 		game.perkManager.clearPlayersPerks(player);
 		PlayerWeaponManager manager = game.getPlayersWeapons(player);
@@ -70,7 +74,11 @@ public class DownedPlayer implements Listener
 	{
 		player.sendMessage(ChatColor.GREEN + "You have been revived!");
 		if(reviver != null)
+		{
 			reviver.sendMessage(ChatColor.GREEN + "You revived " + ChatColor.DARK_GREEN + player.getName());
+			PlayerStats stats = Leaderboard.getPlayerStatFromPlayer(reviver);
+			stats.setRevives(stats.getRevives() + 1);
+		}
 		clearDownedState();
 		game.downedPlayerManager.downedPlayerRevived(this);
 		PlayerWeaponManager manager = game.getPlayersWeapons(player);
@@ -105,6 +113,8 @@ public class DownedPlayer implements Listener
 			if(downTime >= COMZombies.getPlugin().getConfig().getInt("config.ReviveSettings.MaxDownTime"))
 			{
 				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You have died!");
+				PlayerStats stats = Leaderboard.getPlayerStatFromPlayer(reviver);
+				stats.setDeaths(stats.getDeaths() + 1);
 				game.removePlayer(player);
 			}
 		});

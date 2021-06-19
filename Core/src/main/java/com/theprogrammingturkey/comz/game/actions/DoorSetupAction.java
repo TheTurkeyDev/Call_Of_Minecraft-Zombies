@@ -54,7 +54,6 @@ public class DoorSetupAction extends BaseAction
 			if(!door.arePointsFinal() && door.areSpawnPointsFinal())
 				return;
 
-			Game game = GameManager.INSTANCE.getGame(door);
 			SpawnPoint point = game.spawnManager.getSpawnPoint(clickedBlock.getLocation());
 
 			if(point == null)
@@ -114,10 +113,7 @@ public class DoorSetupAction extends BaseAction
 			{
 				door.setSpawnPointsFinal(true);
 				if(door.getSpawnsInRoomDoorLeadsTo().size() == 0)
-				{
 					door.addSpawnPoint(null);
-				}
-				Game game = GameManager.INSTANCE.getGame(door);
 
 				COMZombies.scheduleTask(1, game::resetSpawnLocationBlocks);
 
