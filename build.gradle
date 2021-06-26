@@ -1,9 +1,10 @@
 ext.buildnumber = 0
-if (System.getenv('BUILD_NUMBER') != null)
+if (System.getenv('BUILD_NUMBER') != null) {
     project.buildnumber = Integer.parseInt(System.getenv('BUILD_NUMBER'))
-else
+} else {
     project.buildnumber = 'DEV'
     logger.lifecycle "No build number detected, setting to 0"
+}
 
 allprojects {
     group = 'comz'

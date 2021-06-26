@@ -28,7 +28,8 @@ public class TeleporterSign implements IGameSign
 	{
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
-			if(game.teleporterManager.getTeleporters().containsKey(sign.getLine(2)))
+			String teleporterName = sign.getLine(2).toLowerCase();
+			if(game.teleporterManager.getTeleporters().containsKey(teleporterName))
 			{
 				if(game.hasPower() && !game.isPowered())
 				{
@@ -40,7 +41,7 @@ public class TeleporterSign implements IGameSign
 				int points = Integer.parseInt(sign.getLine(3));
 				if(PointManager.canBuy(player, points))
 				{
-					player.teleport(game.teleporterManager.getTeleporters().get(sign.getLine(2)));
+					player.teleport(game.teleporterManager.getTeleporters().get(teleporterName));
 					player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 30));
 
 					for(int i = 0; i < 50; i++)
@@ -57,7 +58,7 @@ public class TeleporterSign implements IGameSign
 			}
 			else
 			{
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "ERROR!");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "ERROR teleporter does not exist!");
 			}
 		}
 	}
@@ -68,7 +69,8 @@ public class TeleporterSign implements IGameSign
 		String thirdLine = ChatColor.stripColor(sign.getLine(2));
 		if(game.teleporterManager.getTeleporters().containsKey(thirdLine))
 		{
-			if(sign.getLine(3).equals(""))
+			String line3 = sign.getLine(3);
+			if(line3 == null || line3.equals(""))
 			{
 				sign.setLine(0, ChatColor.RED + "[Zombies]");
 				sign.setLine(1, ChatColor.AQUA + "Teleporter");
