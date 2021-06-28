@@ -44,5 +44,6 @@ processResources {
         filter ReplaceTokens, tokens: [
                 "version": project.version.toString()
         ]
+        duplicatesStrategy = 'INCLUDE'
     }
 }
