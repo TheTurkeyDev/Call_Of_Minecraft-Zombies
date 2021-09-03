@@ -31,10 +31,10 @@ public class Door
 	private boolean areSpawnPointsFinal = false;
 	private boolean arePointsFinal = false;
 	private boolean areSignsFinal = false;
-	private Game game;
+	private final Game game;
 	private int price = 0;
-	private Map<Block, Material> blocks = new HashMap<>();
-	private List<Sign> signs = new ArrayList<>();
+	private final Map<Block, Material> blocks = new HashMap<>();
+	private final List<Sign> signs = new ArrayList<>();
 	private List<SpawnPoint> spawnsInRoomDoorLeadsTo = new ArrayList<>();
 	private boolean isOpened = false;
 

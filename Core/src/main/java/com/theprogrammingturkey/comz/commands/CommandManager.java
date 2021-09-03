@@ -16,8 +16,8 @@ import java.util.HashMap;
 public class CommandManager implements CommandExecutor
 {
 	public static final CommandManager INSTANCE = new CommandManager();
-	private HashMap<String, SubCommand> commandList = new HashMap<>();
-	private HashMap<Player, ZombiesHelpCommand> helpCommand = new HashMap<>();
+	private final HashMap<String, SubCommand> commandList = new HashMap<>();
+	private final HashMap<Player, ZombiesHelpCommand> helpCommand = new HashMap<>();
 
 	public CommandManager()
 	{

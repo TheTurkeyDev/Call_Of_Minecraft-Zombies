@@ -16,11 +16,12 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BoxManager
 {
-	private Game game;
-	private ArrayList<RandomBox> boxes = new ArrayList<>();
+	private final Game game;
+	private final List<RandomBox> boxes = new ArrayList<>();
 	private RandomBox currentBox;
 	private boolean multiBox;
 

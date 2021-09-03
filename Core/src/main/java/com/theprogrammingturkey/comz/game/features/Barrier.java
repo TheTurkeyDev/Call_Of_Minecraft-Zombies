@@ -20,21 +20,21 @@ import java.util.Map;
 
 public class Barrier implements Runnable
 {
-	private Map<Block, Material> blocks = new HashMap<>();
+	private final Map<Block, Material> blocks = new HashMap<>();
 	private Location repairLoc;
 	private BlockFace signFacing;
-	private List<SpawnPoint> spawns = new ArrayList<>();
+	private final List<SpawnPoint> spawns = new ArrayList<>();
 
 	private int stage;
 	private boolean breaking = false;
 
-	private String id;
+	private final String id;
 
-	private Game game;
+	private final Game game;
 
 	private int reward;
 
-	private List<Entity> ents = new ArrayList<>();
+	private final List<Entity> ents = new ArrayList<>();
 
 	public Barrier(String id, Game game)
 	{

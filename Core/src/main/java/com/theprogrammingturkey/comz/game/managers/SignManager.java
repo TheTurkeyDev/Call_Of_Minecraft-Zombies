@@ -21,7 +21,7 @@ public class SignManager
 {
 	public List<Sign> gameSigns = new ArrayList<>();
 
-	private Game game;
+	private final Game game;
 
 	public SignManager(Game game)
 	{

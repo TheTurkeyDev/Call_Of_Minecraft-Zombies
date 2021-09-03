@@ -39,7 +39,7 @@ public class PerkMachineSign implements IGameSign
 		}
 		else
 		{
-			int playerPoints = PointManager.getPlayersPoints(player);
+			int playerPoints = PointManager.INSTANCE.getPlayersPoints(player);
 			String costStr = sign.getLine(3);
 			int cost;
 			if(costStr.matches("[0-9]{1,5}"))
@@ -76,8 +76,8 @@ public class PerkMachineSign implements IGameSign
 				if(perk.equals(PerkType.STAMIN_UP))
 					player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
 
-				PointManager.takePoints(player, cost);
-				PointManager.notifyPlayer(player);
+				PointManager.INSTANCE.takePoints(player, cost);
+				PointManager.INSTANCE.notifyPlayer(player);
 			}
 			else
 			{
@@ -103,7 +103,7 @@ public class PerkMachineSign implements IGameSign
 		else
 		{
 			int cost;
-			if(fourthLine.matches("[0-9]{1,5}"))
+			if(fourthLine != null && fourthLine.matches("[0-9]{1,5}"))
 			{
 				cost = Integer.parseInt(fourthLine);
 			}

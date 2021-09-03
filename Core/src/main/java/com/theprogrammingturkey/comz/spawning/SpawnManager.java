@@ -35,13 +35,13 @@ public class SpawnManager
 		roundSpawnerMap.put(RoundSpawnType.HELL_HOUNDS, new HellHoundSpawner());
 	}
 
-	private Game game;
-	private List<SpawnPoint> points = new ArrayList<>();
-	private List<Mob> mobs = new ArrayList<>();
+	private final Game game;
+	private final List<SpawnPoint> points = new ArrayList<>();
+	private final List<Mob> mobs = new ArrayList<>();
 	private RoundSpawner roundSpawner = new ZombieSpawner();
 	private boolean canSpawn = false;
 	private double spawnInterval;
-	private double spawnDelayFactor;
+	private final double spawnDelayFactor;
 	private int mobsSpawned = 0;
 	private int mobsToSpawn = 0;
 
@@ -231,7 +231,7 @@ public class SpawnManager
 
 		if(mobs.size() >= ConfigManager.getMainConfig().maxZombies)
 		{
-			COMZombies.scheduleTask((int) spawnInterval * 20, () -> smartSpawn(wave, players));
+			COMZombies.scheduleTask((int) spawnInterval * 20L, () -> smartSpawn(wave, players));
 			return;
 		}
 

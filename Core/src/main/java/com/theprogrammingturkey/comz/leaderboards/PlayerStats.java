@@ -10,8 +10,8 @@ import java.util.UUID;
 
 public class PlayerStats
 {
-	private String playerUUID;
-	private String displayName;
+	private final String playerUUID;
+	private final String displayName;
 
 	private int kills;
 	private int revives;

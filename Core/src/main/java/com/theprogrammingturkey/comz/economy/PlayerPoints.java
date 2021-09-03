@@ -6,7 +6,6 @@ import com.theprogrammingturkey.comz.COMZombies;
 
 public class PlayerPoints
 {
-
 	private int points;
 	private final Player player;
 

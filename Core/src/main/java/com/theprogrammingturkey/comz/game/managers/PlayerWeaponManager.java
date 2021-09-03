@@ -16,8 +16,8 @@ import java.util.List;
 
 public class PlayerWeaponManager
 {
-	private List<WeaponInstance> weapons = new ArrayList<>();
-	private Player player;
+	private final List<WeaponInstance> weapons = new ArrayList<>();
+	private final Player player;
 
 	public PlayerWeaponManager(Player player)
 	{

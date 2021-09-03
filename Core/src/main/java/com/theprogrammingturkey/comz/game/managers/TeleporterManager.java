@@ -14,9 +14,9 @@ import java.util.Map;
 
 public class TeleporterManager
 {
-	private Game game;
+	private final Game game;
 
-	private HashMap<String, Location> teleporters = new HashMap<>();
+	private final Map<String, Location> teleporters = new HashMap<>();
 
 	public TeleporterManager(Game game)
 	{
@@ -71,7 +71,7 @@ public class TeleporterManager
 		}
 	}
 
-	public HashMap<String, Location> getTeleporters()
+	public Map<String, Location> getTeleporters()
 	{
 		return teleporters;
 	}

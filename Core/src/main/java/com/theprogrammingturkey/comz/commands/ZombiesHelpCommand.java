@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 public class ZombiesHelpCommand
 {
 
-	private Player player;
+	private final Player player;
 	private int page;
 
 	public ZombiesHelpCommand(CommandManager command, Player player)

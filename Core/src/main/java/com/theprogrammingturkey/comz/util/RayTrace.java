@@ -23,7 +23,8 @@ public class RayTrace
 	private static final float ACCURACY = 0.1f;
 	//origin = start position
 	//direction = direction in which the raytrace will go
-	private Vector origin, direction;
+	private final Vector origin;
+	private final Vector direction;
 
 	public RayTrace(Vector origin, Vector direction)
 	{

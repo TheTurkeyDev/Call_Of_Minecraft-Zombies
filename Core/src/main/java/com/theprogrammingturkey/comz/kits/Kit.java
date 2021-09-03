@@ -21,11 +21,11 @@ import java.util.List;
 
 public class Kit
 {
-	private String name;
+	private final String name;
 
-	private List<Weapon> weapons = new ArrayList<>();
-	private List<PerkType> perks = new ArrayList<>();
-	private List<RoundReward> roundRewards = new ArrayList<>();
+	private final List<Weapon> weapons = new ArrayList<>();
+	private final List<PerkType> perks = new ArrayList<>();
+	private final List<RoundReward> roundRewards = new ArrayList<>();
 	private int points = 500;
 
 	public Kit(String perkName)
@@ -137,7 +137,7 @@ public class Kit
 
 			PerkManager.givePerk(game, player, perk);
 		}
-		PointManager.addPoints(player, points - 500);
+		PointManager.INSTANCE.addPoints(player, points - 500);
 		game.scoreboard.update();
 		player.updateInventory();
 	}
@@ -162,7 +162,7 @@ public class Kit
 				for(PerkType perk : roundReward.getPerks())
 					PerkManager.givePerk(game, player, perk);
 
-				PointManager.addPoints(player, roundReward.getPoints() - 500);
+				PointManager.INSTANCE.addPoints(player, roundReward.getPoints() - 500);
 				game.scoreboard.update();
 				player.updateInventory();
 			}

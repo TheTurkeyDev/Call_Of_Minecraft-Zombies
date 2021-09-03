@@ -119,7 +119,7 @@ public class Game
 	/**
 	 * Contains a player and the gun manager corresponding to that player.
 	 */
-	private Map<Player, PlayerWeaponManager> playersGuns = new HashMap<>();
+	private final Map<Player, PlayerWeaponManager> playersGuns = new HashMap<>();
 
 	private String startingGun = "M1911";
 
@@ -460,7 +460,7 @@ public class Game
 			player.setHealth(20D);
 			player.setFoodLevel(20);
 			player.setLevel(0);
-			PointManager.setPoints(player, 500);
+			PointManager.INSTANCE.setPoints(player, 500);
 			Leaderboard.getPlayerStatFromPlayer(player).incGamesPlayed();
 		}
 
@@ -592,7 +592,7 @@ public class Game
 			player.setLevel(0);
 			player.setExp(0);
 			player.teleport(lobbyLocation);
-			PointManager.setPoints(player, 500);
+			PointManager.INSTANCE.setPoints(player, 500);
 			assignPlayerInventory(player);
 			player.setGameMode(GameMode.SURVIVAL);
 
@@ -655,7 +655,7 @@ public class Game
 		if(stats.getHighestRound() < this.waveNumber)
 			stats.setHighestRound(this.waveNumber);
 
-		int playerPoints = PointManager.getPlayersPoints(player);
+		int playerPoints = PointManager.INSTANCE.getPlayersPoints(player);
 		if(stats.getMostPoints() < playerPoints)
 			stats.setMostPoints(playerPoints);
 
@@ -685,7 +685,7 @@ public class Game
 	private void resetPlayer(Player player)
 	{
 		playersGuns.remove(player);
-		PointManager.playerLeaveGame(player);
+		PointManager.INSTANCE.playerLeaveGame(player);
 		CachedPlayerInfo.restorePlayerInfo(player);
 
 		for(PotionEffectType t : PotionEffectType.values())
@@ -861,7 +861,7 @@ public class Game
 		changingRound = false;
 		clearArena();
 		clearArenaItems();
-		PointManager.clearGamePoints(this);
+		PointManager.INSTANCE.clearGamePoints(this);
 
 		COMZombies plugin = COMZombies.getPlugin();
 		for(Player pl : Bukkit.getOnlinePlayers())
@@ -1164,11 +1164,11 @@ public class Game
 			powerUpManager.powerUpDrop(mob, player);
 			mob.remove();
 			if(isDoublePoints())
-				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
+				PointManager.INSTANCE.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
 			else
-				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
+				PointManager.INSTANCE.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
 
-			PointManager.notifyPlayer(player);
+			PointManager.INSTANCE.notifyPlayer(player);
 			spawnManager.removeEntity(mob);
 
 			if(mob instanceof Zombie)
@@ -1191,11 +1191,11 @@ public class Game
 			powerUpManager.powerUpDrop(mob, player);
 			mob.remove();
 			if(isDoublePoints())
-				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
+				PointManager.INSTANCE.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
 			else
-				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
+				PointManager.INSTANCE.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
 
-			PointManager.notifyPlayer(player);
+			PointManager.INSTANCE.notifyPlayer(player);
 			spawnManager.removeEntity(mob);
 
 			if(mob instanceof Zombie)
@@ -1217,10 +1217,10 @@ public class Game
 				player.getWorld().playSound(mob.getLocation(), Sound.ENTITY_GENERIC_HURT, 1f, 1f);
 
 			if(isDoublePoints())
-				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit * 2);
+				PointManager.INSTANCE.addPoints(player, ConfigManager.getMainConfig().pointsOnHit * 2);
 			else
-				PointManager.addPoints(player, ConfigManager.getMainConfig().pointsOnHit);
-			PointManager.notifyPlayer(player);
+				PointManager.INSTANCE.addPoints(player, ConfigManager.getMainConfig().pointsOnHit);
+			PointManager.INSTANCE.notifyPlayer(player);
 		}
 
 		if(debugMode)

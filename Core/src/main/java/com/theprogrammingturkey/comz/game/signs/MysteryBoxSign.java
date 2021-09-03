@@ -34,7 +34,7 @@ public class MysteryBoxSign implements IGameSign
 			if(game.isFireSale())
 				points = 10;
 
-			if(PointManager.canBuy(player, points))
+			if(PointManager.INSTANCE.canBuy(player, points))
 			{
 				box.Start(player, points);
 				player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);

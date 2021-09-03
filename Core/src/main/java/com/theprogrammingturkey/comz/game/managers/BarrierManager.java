@@ -19,14 +19,15 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class BarrierManager
 {
-	private Game game;
-	private ArrayList<Barrier> barriers = new ArrayList<>();
+	private final Game game;
+	private final List<Barrier> barriers = new ArrayList<>();
 
 	public BarrierManager(Game game)
 	{
@@ -64,7 +65,7 @@ public class BarrierManager
 				}
 				else
 				{
-					COMZombies.log.log(Level.WARNING, COMZombies.CONSOLE_PREFIX + "Failed to load a block location for Barrier: " + barrierID + ", Json: " + barrierJson.toString());
+					COMZombies.log.log(Level.WARNING, COMZombies.CONSOLE_PREFIX + "Failed to load a block location for Barrier: " + barrierID + ", Json: " + barrierJson);
 				}
 			}
 
@@ -175,7 +176,7 @@ public class BarrierManager
 		}
 	}
 
-	public ArrayList<Barrier> getBrriers()
+	public List<Barrier> getBrriers()
 	{
 		return barriers;
 	}

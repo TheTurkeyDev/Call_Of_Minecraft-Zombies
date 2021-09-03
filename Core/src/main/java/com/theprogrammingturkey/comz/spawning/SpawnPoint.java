@@ -8,10 +8,10 @@ import com.theprogrammingturkey.comz.game.Game;
 public class SpawnPoint
 {
 
-	private Location loc;
-	private Game game;
+	private final Location loc;
+	private final Game game;
 	private Material mat;
-	private String id;
+	private final String id;
 
 	public SpawnPoint(Location loc, Game game, Material material, String id)
 	{

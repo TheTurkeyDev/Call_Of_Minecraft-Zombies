@@ -9,7 +9,7 @@ import java.util.List;
 
 public class DownedPlayerManager
 {
-	private List<DownedPlayer> downedPlayers = new ArrayList<>();
+	private final List<DownedPlayer> downedPlayers = new ArrayList<>();
 
 	public void clearDownedPlayers()
 	{

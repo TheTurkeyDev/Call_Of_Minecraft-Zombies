@@ -7,7 +7,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class WeaponInstance
 {
-	private Weapon baseWeapon;
+	private final Weapon baseWeapon;
 
 	/**
 	 * Total ammo capacity

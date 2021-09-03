@@ -122,7 +122,7 @@ public class GunInstance extends WeaponInstance
 			if(game.perkManager.hasPerk(player, PerkType.SPEED_COLA))
 				reloadTime = (ConfigManager.getMainConfig().reloadTime) / 2;
 			else reloadTime = ConfigManager.getMainConfig().reloadTime;
-			COMZombies.scheduleTask(reloadTime * 20, () ->
+			COMZombies.scheduleTask(reloadTime * 20L, () ->
 			{
 
 				if(!(totalAmmo - (gun.clipAmmo - clipAmmo) < 0))

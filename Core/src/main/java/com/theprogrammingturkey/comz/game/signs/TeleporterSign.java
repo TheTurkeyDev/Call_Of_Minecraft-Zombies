@@ -39,7 +39,7 @@ public class TeleporterSign implements IGameSign
 				}
 
 				int points = Integer.parseInt(sign.getLine(3));
-				if(PointManager.canBuy(player, points))
+				if(PointManager.INSTANCE.canBuy(player, points))
 				{
 					player.teleport(game.teleporterManager.getTeleporters().get(teleporterName));
 					player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 30));
@@ -48,8 +48,8 @@ public class TeleporterSign implements IGameSign
 						for(Player pl : Bukkit.getOnlinePlayers())
 							COMZombies.nmsUtil.sendParticleToPlayer(NMSParticleType.WITCH, pl, player.getLocation(), (float) (Math.random()), (float) (Math.random()), (float) (Math.random()), 1, 1);
 
-					PointManager.takePoints(player, points);
-					PointManager.notifyPlayer(player);
+					PointManager.INSTANCE.takePoints(player, points);
+					PointManager.INSTANCE.notifyPlayer(player);
 				}
 				else
 				{

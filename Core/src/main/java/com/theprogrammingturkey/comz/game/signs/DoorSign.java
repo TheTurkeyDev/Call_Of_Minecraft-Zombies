@@ -28,7 +28,7 @@ public class DoorSign implements IGameSign
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "This door is already open!");
 		}
-		else if(PointManager.getPlayerPoints(player).getPoints() < door.getCost())
+		else if(PointManager.INSTANCE.getPlayerPoints(player).getPoints() < door.getCost())
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You don't have enough points!");
 		}
@@ -36,8 +36,8 @@ public class DoorSign implements IGameSign
 		{
 			door.openDoor();
 			door.playerDoorOpenSound();
-			PointManager.takePoints(player, door.getCost());
-			PointManager.notifyPlayer(player);
+			PointManager.INSTANCE.takePoints(player, door.getCost());
+			PointManager.INSTANCE.notifyPlayer(player);
 			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Door opened!");
 		}
 	}

@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 
 public class Weapon
 {
-	private String name;
-	private WeaponType weaponType;
+	private final String name;
+	private final WeaponType weaponType;
 
 	public int damage;
 	public int totalAmmo;

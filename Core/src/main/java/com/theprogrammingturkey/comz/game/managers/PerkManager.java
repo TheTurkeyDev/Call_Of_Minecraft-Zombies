@@ -12,10 +12,11 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PerkManager
 {
-	private HashMap<Player, List<PerkType>> playersPerks = new HashMap<>();
+	private final Map<Player, List<PerkType>> playersPerks = new HashMap<>();
 
 	public void removePerkEffect(Player player, PerkType effect)
 	{

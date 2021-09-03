@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class DoorSetupAction extends BaseAction
 {
-	private Door door;
+	private final Door door;
 
 	public DoorSetupAction(Player player, Game game, Door door)
 	{

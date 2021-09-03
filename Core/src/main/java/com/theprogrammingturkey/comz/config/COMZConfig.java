@@ -8,7 +8,7 @@ public enum COMZConfig
 	STATS("stats"),
 	SIGNS("signs");
 
-	private String name;
+	private final String name;
 
 	COMZConfig(String name)
 	{

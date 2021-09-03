@@ -40,7 +40,7 @@ public class PackAPunchSign implements IGameSign
 		GunInstance gun = manager.getGun(player.getInventory().getHeldItemSlot());
 
 		int cost = Integer.parseInt(sign.getLine(2));
-		if(PointManager.canBuy(player, cost))
+		if(PointManager.INSTANCE.canBuy(player, cost))
 		{
 			if(gun.isPackOfPunched())
 			{
@@ -51,7 +51,7 @@ public class PackAPunchSign implements IGameSign
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Your " + ChatColor.GOLD + gun.getType().getName() + ChatColor.RED + " was Pack-A-Punched");
 				player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
 				gun.setPackOfPunch();
-				PointManager.takePoints(player, cost);
+				PointManager.INSTANCE.takePoints(player, cost);
 			}
 		}
 		else
@@ -66,7 +66,7 @@ public class PackAPunchSign implements IGameSign
 		String thirdLine = ChatColor.stripColor(event.getLine(2));
 
 		int cost;
-		if(thirdLine.equalsIgnoreCase(""))
+		if(thirdLine == null || thirdLine.equalsIgnoreCase(""))
 		{
 			cost = 5000;
 		}

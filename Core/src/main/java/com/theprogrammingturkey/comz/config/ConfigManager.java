@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class ConfigManager
 {
-	private static Map<COMZConfig, CustomConfig> configs = new HashMap<>();
+	private static final Map<COMZConfig, CustomConfig> CONFIGS = new HashMap<>();
 	private static ConfigSetup mainConfig;
 
 	public static void loadFiles()
@@ -17,11 +17,11 @@ public class ConfigManager
 		plugin.saveDefaultConfig();
 
 		mainConfig = new ConfigSetup();
-		configs.put(COMZConfig.GUNS, new CustomConfig(COMZConfig.GUNS));
-		configs.put(COMZConfig.ARENAS, new CustomConfig(COMZConfig.ARENAS));
-		configs.put(COMZConfig.SIGNS, new CustomConfig(COMZConfig.SIGNS));
-		configs.put(COMZConfig.KITS, new CustomConfig(COMZConfig.KITS));
-		configs.put(COMZConfig.STATS, new CustomConfig(COMZConfig.STATS));
+		CONFIGS.put(COMZConfig.GUNS, new CustomConfig(COMZConfig.GUNS));
+		CONFIGS.put(COMZConfig.ARENAS, new CustomConfig(COMZConfig.ARENAS));
+		CONFIGS.put(COMZConfig.SIGNS, new CustomConfig(COMZConfig.SIGNS));
+		CONFIGS.put(COMZConfig.KITS, new CustomConfig(COMZConfig.KITS));
+		CONFIGS.put(COMZConfig.STATS, new CustomConfig(COMZConfig.STATS));
 
 		mainConfig.setup();
 	}
@@ -29,7 +29,7 @@ public class ConfigManager
 	public static CustomConfig getConfig(COMZConfig comzConfig)
 	{
 		//The default is just here so we don't get warnings in code about possible nulls really
-		return configs.getOrDefault(comzConfig, configs.get(COMZConfig.ARENAS));
+		return CONFIGS.getOrDefault(comzConfig, CONFIGS.get(COMZConfig.ARENAS));
 	}
 
 	public static ConfigSetup getMainConfig()

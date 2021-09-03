@@ -25,7 +25,7 @@ public class LeaderboardsCommand implements SubCommand
 			for(StatsCategory cat : StatsCategory.values())
 				cats.append(cat.name().toLowerCase()).append(", ");
 			cats.delete(cats.length() - 2, cats.length());
-			CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "Categories: " + cats.toString());
+			CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "Categories: " + cats);
 		}
 		else if(args.length == 2)
 		{
@@ -44,7 +44,7 @@ public class LeaderboardsCommand implements SubCommand
 			for(StatsCategory cat : StatsCategory.values())
 				cats.append(cat.name().toLowerCase()).append(", ");
 			cats.delete(cats.length() - 2, cats.length());
-			CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "Categories: " + cats.toString());
+			CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "Categories: " + cats);
 		}
 		else
 		{

@@ -23,14 +23,14 @@ import org.bukkit.inventory.meta.FireworkMeta;
 
 public class DownedPlayer implements Listener
 {
-	private Player player;
+	private final Player player;
 	private Player reviver;
-	private Game game;
+	private final Game game;
 	private boolean isPlayerDown;
 	private boolean isBeingRevived = false;
 	private int downTime = 0;
 
-	private WeaponInstance[] guns = new WeaponInstance[2];
+	private final WeaponInstance[] guns = new WeaponInstance[2];
 
 	private int fireWorksTask = -1;
 	private int reviveTask = -1;
@@ -85,7 +85,7 @@ public class DownedPlayer implements Listener
 		manager.removeWeapon(1);
 		manager.addWeapon(guns[0]);
 		manager.addWeapon(guns[1]);
-		PointManager.addPoints(reviver, 10);
+		PointManager.INSTANCE.addPoints(reviver, 10);
 	}
 
 	public void cancelRevive()
@@ -113,9 +113,9 @@ public class DownedPlayer implements Listener
 			if(downTime >= COMZombies.getPlugin().getConfig().getInt("config.ReviveSettings.MaxDownTime"))
 			{
 				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You have died!");
-				PlayerStats stats = Leaderboard.getPlayerStatFromPlayer(reviver);
-				stats.setDeaths(stats.getDeaths() + 1);
 				game.removePlayer(player);
+				PlayerStats stats = Leaderboard.getPlayerStatFromPlayer(player);
+				stats.setDeaths(stats.getDeaths() + 1);
 			}
 		});
 	}
@@ -131,15 +131,9 @@ public class DownedPlayer implements Listener
 
 	private FireworkEffect getRandomFireworkEffect()
 	{
-		int trailn = (int) (Math.random() * 100);
-		boolean trail = false;
-		if(trailn > 50)
-			trail = true;
+		boolean trail = Math.random() * 100 > 50;
 
-		int flickern = (int) (Math.random() * 100);
-		boolean flickr = false;
-		if(flickern > 50)
-			flickr = true;
+		boolean flickr = Math.random() * 100 > 50;
 
 		int r = (int) (Math.random() * 255);
 		int g = (int) (Math.random() * 255);

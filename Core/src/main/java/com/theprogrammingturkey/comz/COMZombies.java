@@ -20,7 +20,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -78,7 +77,7 @@ public class COMZombies extends JavaPlugin
 		ConfigManager.loadFiles();
 		WeaponManager.loadGuns();
 		KitManager.loadKits();
-		PointManager.saveAll();
+		PointManager.INSTANCE.saveAll();
 
 		vault = new Vault();
 
@@ -128,6 +127,7 @@ public class COMZombies extends JavaPlugin
 				nmsUtil = new NMSUtil_1_16_R3();
 				break;
 			case "1.17":
+			case "1.17.1":
 				nmsUtil = new NMSUtil_1_17_R1();
 				break;
 			default:
@@ -154,11 +154,6 @@ public class COMZombies extends JavaPlugin
 		m.registerEvents(new PlayerListener(), this);
 		m.registerEvents(new OnInventoryChangeEvent(), this);
 		m.registerEvents(new ScopeListener(), this);
-	}
-
-	public void registerSpecificClass(Listener c)
-	{
-		getServer().getPluginManager().registerEvents(c, this);
 	}
 
 	/**

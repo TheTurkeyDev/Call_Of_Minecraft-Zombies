@@ -80,10 +80,10 @@ public class PowerUpDropListener implements Listener
 					for(Player pl : game.players)
 					{
 						if(game.isDoublePoints())
-							PointManager.addPoints(player, 800);
+							PointManager.INSTANCE.addPoints(player, 800);
 						else
-							PointManager.addPoints(player, 400);
-						PointManager.notifyPlayer(pl);
+							PointManager.INSTANCE.addPoints(player, 400);
+						PointManager.INSTANCE.notifyPlayer(pl);
 					}
 					game.spawnManager.nuke();
 					break;

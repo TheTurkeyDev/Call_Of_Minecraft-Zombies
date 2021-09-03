@@ -23,7 +23,7 @@ public class GameManager
 {
 	public static final GameManager INSTANCE = new GameManager();
 
-	private List<Game> games = new ArrayList<>();
+	private final List<Game> games = new ArrayList<>();
 
 	public List<Game> getGames()
 	{

@@ -14,7 +14,7 @@ public enum WeaponType
 	SHOTGUNS(Material.STONE_HOE),
 	SPECIAL(Material.DIAMOND_HOE);
 
-	private Material material;
+	private final Material material;
 
 	WeaponType(Material material)
 	{

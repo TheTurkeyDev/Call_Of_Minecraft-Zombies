@@ -14,9 +14,9 @@ public enum PowerUp
 	DOUBLE_POINTS("Double points", Material.EXPERIENCE_BOTTLE, Sound.BLOCK_GLASS_BREAK),
 	FIRE_SALE("Fire sale", Material.GOLD_INGOT, Sound.ITEM_FLINTANDSTEEL_USE);
 
-	private String display;
-	private Material material;
-	private Sound sound;
+	private final String display;
+	private final Material material;
+	private final Sound sound;
 
 	PowerUp(String display, Material material, Sound sound)
 	{

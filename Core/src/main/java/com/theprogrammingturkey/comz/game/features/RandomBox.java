@@ -31,12 +31,12 @@ import java.util.Map;
 public class RandomBox
 {
 	public static Map<RandomBox, Integer> boxes = new HashMap<>();
-	private Location boxLoc;
-	private BlockFace facing;
+	private final Location boxLoc;
+	private final BlockFace facing;
 	private Location chestLocation = null;
-	private Game boxGame;
-	private String boxId;
-	private int boxCost;
+	private final Game boxGame;
+	private final String boxId;
+	private final int boxCost;
 
 	private Player openedBy;
 
@@ -68,7 +68,7 @@ public class RandomBox
 		if(!(GameManager.INSTANCE.isPlayerInGame(player)))
 			return;
 
-		if(!PointManager.canBuy(player, pointsNeeded))
+		if(!PointManager.INSTANCE.canBuy(player, pointsNeeded))
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You don't have enough points!");
 			return;
@@ -106,8 +106,8 @@ public class RandomBox
 		namePlate.setCustomName(weapon.getName());
 		namePlate.setCustomNameVisible(true);
 
-		PointManager.takePoints(player, pointsNeeded);
-		PointManager.notifyPlayer(player);
+		PointManager.INSTANCE.takePoints(player, pointsNeeded);
+		PointManager.INSTANCE.notifyPlayer(player);
 
 		int taskID = COMZombies.scheduleTask(0, 10, new Runnable()
 		{
@@ -148,7 +148,7 @@ public class RandomBox
 								{
 									Bukkit.getScheduler().cancelTask(velTask);
 									boxGame.boxManager.teddyBear();
-									PointManager.addPoints(player, pointsNeeded);
+									PointManager.INSTANCE.addPoints(player, pointsNeeded);
 									reset();
 								});
 							});

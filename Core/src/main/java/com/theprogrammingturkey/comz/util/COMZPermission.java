@@ -34,8 +34,8 @@ public enum COMZPermission
 	REMOVE_TELEPORTER(false, "zombies.removeteleporter"),
 	DISABLE_POWER(false, "zombies.disablepower");
 
-	private boolean isUserPerm;
-	private String[] perms;
+	private final boolean isUserPerm;
+	private final String[] perms;
 
 	COMZPermission(boolean isUserPerm, String... permissions)
 	{

@@ -38,12 +38,12 @@ public class GunSign implements IGameSign
 		PlayerWeaponManager manager = game.getPlayersWeapons(player);
 		if(manager.hasGun(gunType))
 		{
-			if(PointManager.canBuy(player, refillPoints))
+			if(PointManager.INSTANCE.canBuy(player, refillPoints))
 			{
 				manager.getGun(gunType).maxAmmo();
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Filling ammo!");
-				PointManager.takePoints(player, refillPoints);
-				PointManager.notifyPlayer(player);
+				PointManager.INSTANCE.takePoints(player, refillPoints);
+				PointManager.INSTANCE.notifyPlayer(player);
 			}
 			else
 			{
@@ -53,14 +53,14 @@ public class GunSign implements IGameSign
 		else
 		{
 			int slot = manager.getCorrectSlot(gunType);
-			if(PointManager.canBuy(player, buyPoints))
+			if(PointManager.INSTANCE.canBuy(player, buyPoints))
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You got the " + ChatColor.GOLD + "" + ChatColor.BOLD + gunType.getName() + ChatColor.RED + ChatColor.BOLD + "!");
 				manager.removeWeapon(manager.getGun(slot));
 				manager.addWeapon(gunType.getNewInstance(player, slot));
 				player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1, 1);
-				PointManager.takePoints(player, buyPoints);
-				PointManager.notifyPlayer(player);
+				PointManager.INSTANCE.takePoints(player, buyPoints);
+				PointManager.INSTANCE.notifyPlayer(player);
 			}
 			else
 			{
@@ -75,7 +75,7 @@ public class GunSign implements IGameSign
 		String thirdLine = ChatColor.stripColor(event.getLine(2));
 		String fourthLine = ChatColor.stripColor(event.getLine(3));
 
-		if(thirdLine.equalsIgnoreCase(""))
+		if(thirdLine == null || thirdLine.equalsIgnoreCase(""))
 		{
 			event.setLine(0, ChatColor.RED + "" + ChatColor.BOLD + "No gun?");
 			return;

@@ -97,8 +97,8 @@ public class SignListener implements Listener
 				if(b != null)
 				{
 					b.repair();
-					PointManager.addPoints(player, b.getReward());
-					PointManager.notifyPlayer(player);
+					PointManager.INSTANCE.addPoints(player, b.getReward());
+					PointManager.INSTANCE.notifyPlayer(player);
 					event.setCancelled(true);
 				}
 				else

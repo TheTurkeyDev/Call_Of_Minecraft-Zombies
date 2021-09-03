@@ -7,10 +7,10 @@ import java.util.List;
 
 public class RoundReward
 {
-	private int roundEnd;
-	private int points;
-	private List<Weapon> weapons;
-	private List<PerkType> perks;
+	private final int roundEnd;
+	private final int points;
+	private final List<Weapon> weapons;
+	private final List<PerkType> perks;
 
 	public RoundReward(int roundEnd, int points, List<Weapon> weapons, List<PerkType> perks)
 	{

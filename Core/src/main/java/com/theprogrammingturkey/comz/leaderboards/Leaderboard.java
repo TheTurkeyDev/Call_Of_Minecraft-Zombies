@@ -15,7 +15,7 @@ import java.util.logging.Level;
 
 public class Leaderboard
 {
-	private static List<PlayerStats> allPlayers = new ArrayList<>();
+	private static final List<PlayerStats> ALL_PLAYERS = new ArrayList<>();
 
 	public static void getTopX(StatsCategory cat, int size, Player player)
 	{
@@ -53,34 +53,34 @@ public class Leaderboard
 
 	public static void addPlayerStats(PlayerStats stat)
 	{
-		allPlayers.add(stat);
+		ALL_PLAYERS.add(stat);
 	}
 
 	public static PlayerStats getPlayerStatFromPlayer(Player p)
 	{
-		for(PlayerStats ps : allPlayers)
+		for(PlayerStats ps : ALL_PLAYERS)
 			if(ps.getPlayerUUID().equals(p.getUniqueId().toString()))
 				return ps;
 
 		PlayerStats stat = PlayerStats.initPlayerStats(p);
-		allPlayers.add(stat);
+		ALL_PLAYERS.add(stat);
 		return stat;
 	}
 
 	public static PlayerStats getPlayerStatFromPlayer(OfflinePlayer p)
 	{
-		for(PlayerStats ps : allPlayers)
+		for(PlayerStats ps : ALL_PLAYERS)
 			if(ps.getPlayerUUID().equals(p.getUniqueId().toString()))
 				return ps;
 
 		PlayerStats stat = PlayerStats.initPlayerStats(p);
-		allPlayers.add(stat);
+		ALL_PLAYERS.add(stat);
 		return stat;
 	}
 
 	private static List<PlayerStats> sort(StatsCategory cat)
 	{
-		List<PlayerStats> sortingList = new ArrayList<>(allPlayers);
+		List<PlayerStats> sortingList = new ArrayList<>(ALL_PLAYERS);
 		sortingList.sort((a, b) -> b.getStat(cat) - a.getStat(cat));
 		return sortingList;
 	}
@@ -102,7 +102,7 @@ public class Leaderboard
 	public static void saveLeaderboard()
 	{
 		JsonObject playerStatsJson = new JsonObject();
-		for(PlayerStats playerStats : allPlayers)
+		for(PlayerStats playerStats : ALL_PLAYERS)
 			playerStatsJson.add(playerStats.getPlayerUUID(), playerStats.save());
 
 		ConfigManager.getConfig(COMZConfig.STATS).saveConfig(playerStatsJson);

@@ -36,7 +36,7 @@ public class DebugCommand implements SubCommand
 			else
 			{
 				if(!game.getDebugMode())
-					PointManager.addPoints(player, 100000);
+					PointManager.INSTANCE.addPoints(player, 100000);
 				game.setDebugMode(!game.getDebugMode());
 			}
 		}

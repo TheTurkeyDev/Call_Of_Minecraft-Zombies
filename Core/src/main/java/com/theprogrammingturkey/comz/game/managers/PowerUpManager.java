@@ -26,8 +26,8 @@ public class PowerUpManager
 	public static List<Entity> currentPowerUps = new ArrayList<>();
 
 	private int dropChance = 0;
-	private Map<PowerUp, Boolean> powerups = new HashMap<>();
-	private Map<Entity, Integer> powerupTasks = new HashMap<>();
+	private final Map<PowerUp, Boolean> powerups = new HashMap<>();
+	private final Map<Entity, Integer> powerupTasks = new HashMap<>();
 
 
 	public void loadAllPowerUps(JsonObject powerUpSettings)
@@ -117,7 +117,7 @@ public class PowerUpManager
 		int chance = (int) (Math.random() * 100);
 		if(chance <= dropChance)
 		{
-			List<PowerUp> availableRewards = powerups.keySet().stream().filter(k -> powerups.get(k)).collect(Collectors.toList());
+			List<PowerUp> availableRewards = powerups.keySet().stream().filter(powerups::get).collect(Collectors.toList());
 			if(availableRewards.size() == 0)
 				return;
 

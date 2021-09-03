@@ -26,10 +26,10 @@ public class AmmoCrateSign implements IGameSign
 		PlayerWeaponManager manager = game.getPlayersWeapons(player);
 		if(manager.isHeldItemWeapon())
 		{
-			if(PointManager.canBuy(player, buyPoints))
+			if(PointManager.INSTANCE.canBuy(player, buyPoints))
 			{
-				PointManager.takePoints(player, buyPoints);
-				PointManager.notifyPlayer(player);
+				PointManager.INSTANCE.takePoints(player, buyPoints);
+				PointManager.INSTANCE.notifyPlayer(player);
 				GunInstance gun = manager.getGun(player.getInventory().getHeldItemSlot());
 				gun.clipAmmo = gun.getType().clipAmmo;
 				gun.maxAmmo();

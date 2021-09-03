@@ -32,7 +32,7 @@ public class CustomConfig
 
 	private File file;
 
-	private COMZConfig config;
+	private final COMZConfig config;
 
 	public CustomConfig(COMZConfig config)
 	{

@@ -16,14 +16,14 @@ import java.util.HashMap;
 public class GameScoreboard
 {
 
-	private Game game;
-	private ScoreboardManager manager = Bukkit.getScoreboardManager();
-	private Scoreboard board;
-	private Team team;
-	private Objective objective;
-	private Score round;
-	private Score zombiesLeft;
-	private HashMap<Player, Score> playerScores = new HashMap<>();
+	private final Game game;
+	private final ScoreboardManager manager = Bukkit.getScoreboardManager();
+	private final Scoreboard board;
+	private final Team team;
+	private final Objective objective;
+	private final Score round;
+	private final Score zombiesLeft;
+	private final HashMap<Player, Score> playerScores = new HashMap<>();
 
 	public GameScoreboard(Game game)
 	{
@@ -73,7 +73,7 @@ public class GameScoreboard
 		zombiesLeft.setScore((game.spawnManager.getMobsToSpawn() - game.spawnManager.getMobsSpawned()) + game.spawnManager.getZombiesAlive());
 
 		for(Player player : playerScores.keySet())
-			playerScores.get(player).setScore(PointManager.getPlayersPoints(player));
+			playerScores.get(player).setScore(PointManager.INSTANCE.getPlayersPoints(player));
 
 		game.signManager.updateGame();
 	}

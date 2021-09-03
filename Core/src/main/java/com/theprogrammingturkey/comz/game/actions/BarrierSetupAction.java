@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class BarrierSetupAction extends BaseAction
 {
-	private Barrier barrier;
+	private final Barrier barrier;
 
 	private int state = 0;
 

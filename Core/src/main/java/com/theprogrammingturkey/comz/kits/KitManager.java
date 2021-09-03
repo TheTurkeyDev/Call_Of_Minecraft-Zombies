@@ -17,8 +17,8 @@ import java.util.logging.Level;
 public class KitManager
 {
 	private static final Kit ERROR_KIT = new Kit();
-	private static List<Kit> kits = new ArrayList<>();
-	private static HashMap<Player, Kit> selectedKits = new HashMap<>();
+	private static final List<Kit> kits = new ArrayList<>();
+	private static final Map<Player, Kit> selectedKits = new HashMap<>();
 
 	private KitManager()
 	{

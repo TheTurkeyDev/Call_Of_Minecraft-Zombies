@@ -15,8 +15,8 @@ import java.util.List;
 
 public class DoorManager
 {
-	private Game game;
-	private List<Door> doors = new ArrayList<>();
+	private final Game game;
+	private final List<Door> doors = new ArrayList<>();
 
 	public DoorManager(Game game)
 	{
