@@ -130,9 +130,6 @@ public class COMZombies extends JavaPlugin
 			case "1.17.1":
 				nmsUtil = new NMSUtil_1_17_R1();
 				break;
-			case "1.17.1":
-				nmsUtil = new NMSUtil_1_17_R1();
-				break;
 			default:
 				throw new IllegalStateException("Sorry, COM:Z Does not current support server version" + version);
 		}
