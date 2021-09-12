@@ -651,6 +651,22 @@ public class Game
 	 */
 	public void removePlayer(Player player)
 	{
+		removePlayerActions(player);
+
+		if(!isDisabled)
+			sendMessageToPlayers(player.getName() + " has left the game! Only " + players.size() + "/" + this.maxPlayers + " player(s) left!");
+
+		if(players.size() == 0 && mode != ArenaStatus.WAITING)
+			if(!isDisabled)
+				endGame();
+	}
+
+	private void removePlayerActions(Player player)
+	{
+		double points = waveNumber;
+		COMZombies.getPlugin().vault.addMoney(player, points);
+		CommandUtil.sendMessageToPlayer(player, "You got " + points + " for getting to round " + waveNumber + "!");
+
 		PlayerStats stats = Leaderboard.getPlayerStatFromPlayer(player);
 		if(stats.getHighestRound() < this.waveNumber)
 			stats.setHighestRound(this.waveNumber);
@@ -663,15 +679,7 @@ public class Game
 			downedPlayerManager.removeDownedPlayer(player);
 		players.remove(player);
 		resetPlayer(player);
-
-		if(!isDisabled)
-			sendMessageToPlayers(player.getName() + " has left the game! Only " + players.size() + "/" + this.maxPlayers + " player(s) left!");
-
-		if(players.size() == 0 && mode != ArenaStatus.WAITING)
-			if(!isDisabled)
-				endGame();
 	}
-
 
 	public void removeSpectator(Player player)
 	{
@@ -835,13 +843,8 @@ public class Game
 
 		this.mode = ArenaStatus.WAITING;
 		for(Player p : players)
-		{
-			double points = waveNumber;
-			COMZombies.getPlugin().vault.addMoney(p, points);
-			CommandUtil.sendMessageToPlayer(p, "You got " + points + " for getting to round " + waveNumber + "!");
-			scoreboard.removePlayer(p);
-			resetPlayer(p);
-		}
+			removePlayerActions(p);
+
 		spawnManager.killAll(false);
 		spawnManager.reset();
 		for(Door door : doorManager.getDoors())

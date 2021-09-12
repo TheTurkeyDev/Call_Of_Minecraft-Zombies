@@ -34,8 +34,14 @@ public class DownedPlayerManager
 	public void removeDownedPlayer(Player player)
 	{
 		for(int i = downedPlayers.size() - 1; i >= 0; i--)
-			if(downedPlayers.get(i).getPlayer().equals(player))
+		{
+			DownedPlayer downedPlayer = downedPlayers.get(i);
+			if(downedPlayer.getPlayer().equals(player))
+			{
+				downedPlayer.clearDownedState();
 				downedPlayers.remove(i);
+			}
+		}
 	}
 
 	public boolean isDownedPlayer(Player player)
