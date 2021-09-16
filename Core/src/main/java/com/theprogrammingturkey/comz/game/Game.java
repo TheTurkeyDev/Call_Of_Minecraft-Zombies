@@ -842,8 +842,9 @@ public class Game
 			return;
 
 		this.mode = ArenaStatus.WAITING;
-		for(Player p : players)
-			removePlayerActions(p);
+		
+		while(players.size() > 0)
+			removePlayerActions(players.remove(0));
 
 		spawnManager.killAll(false);
 		spawnManager.reset();
