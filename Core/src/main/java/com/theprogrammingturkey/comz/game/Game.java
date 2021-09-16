@@ -694,13 +694,13 @@ public class Game
 	{
 		playersGuns.remove(player);
 		PointManager.INSTANCE.playerLeaveGame(player);
-		CachedPlayerInfo.restorePlayerInfo(player);
 
 		for(PotionEffectType t : PotionEffectType.values())
 			player.removePotionEffect(t);
 
 		player.removePotionEffect(PotionEffectType.SPEED);
 		player.getInventory().clear();
+		CachedPlayerInfo.restorePlayerInfo(player);
 		player.setHealth(20);
 		player.setWalkSpeed(0.2F);
 		scoreboard.removePlayer(player);
