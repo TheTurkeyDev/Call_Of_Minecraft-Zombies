@@ -10,7 +10,7 @@ import java.util.List;
 
 public abstract class RoundSpawner
 {
-	public abstract Mob spawnEntity(Game game, SpawnPoint loc, int wave, List<Player> players);
+	public abstract Mob spawnEntity(Game game, SpawnPoint loc, int wave);
 
 	public void setFollowDistance(Mob mob, int dist)
 	{

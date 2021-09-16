@@ -220,7 +220,7 @@ public class SpawnManager
 		return results;
 	}
 
-	private void smartSpawn(final int wave, final List<Player> players)
+	private void smartSpawn(final int wave)
 	{
 		if(!this.canSpawn || wave != game.getWave())
 			return;
@@ -231,15 +231,15 @@ public class SpawnManager
 
 		if(mobs.size() >= ConfigManager.getMainConfig().maxZombies)
 		{
-			COMZombies.scheduleTask((int) spawnInterval * 20L, () -> smartSpawn(wave, players));
+			COMZombies.scheduleTask((int) spawnInterval * 20L, () -> smartSpawn(wave));
 			return;
 		}
 
-		int playersSize = players.size();
+		int playersSize = game.players.size();
 
-		int selectPlayer = COMZombies.rand.nextInt(playersSize);
 		SpawnPoint selectPoint = null;
-		Player player = players.get(selectPlayer);
+		Player player = game.players.get(COMZombies.rand.nextInt(playersSize));
+
 		List<SpawnPoint> points = getNearestPoints(player.getLocation(), mobsToSpawn);
 		int totalRetries = 0;
 		int curr = 0;
@@ -247,7 +247,7 @@ public class SpawnManager
 		{
 			if(curr == points.size())
 			{
-				player = players.get(COMZombies.rand.nextInt(playersSize));
+				player = game.players.get(COMZombies.rand.nextInt(playersSize));
 				points = getNearestPoints(player.getLocation(), mobsToSpawn / playersSize);
 				curr = 0;
 				continue;
@@ -267,11 +267,11 @@ public class SpawnManager
 			if(!this.canSpawn || wave != game.getWave())
 				return;
 
-			Mob ent = roundSpawner.spawnEntity(game, finalPoint, wave, players);
+			Mob ent = roundSpawner.spawnEntity(game, finalPoint, wave);
 			mobs.add(ent);
-			Player closestPlayer = players.get(0);
+			Player closestPlayer = game.players.get(0);
 			double dist = closestPlayer.getLocation().distance(ent.getLocation());
-			for(Player pl : players)
+			for(Player pl : game.players)
 			{
 				double dist2 = pl.getLocation().distance(ent.getLocation());
 				if(dist > dist2)
@@ -283,7 +283,7 @@ public class SpawnManager
 			ent.setTarget(closestPlayer);
 
 			mobsSpawned++;
-			smartSpawn(wave, players);
+			smartSpawn(wave);
 		});
 	}
 
@@ -385,11 +385,11 @@ public class SpawnManager
 		}
 	}
 
-	public void startWave(int wave, final List<Player> players)
+	public void startWave(int wave)
 	{
 		canSpawn = true;
 
-		if(players.size() == 0 && game.getMode() == ArenaStatus.INGAME)
+		if(game.players.size() == 0 && game.getMode() == ArenaStatus.INGAME)
 		{
 			this.game.endGame();
 			Bukkit.broadcastMessage(COMZombies.PREFIX + "SmartSpawn was sent a players list with no players in it! Game was ended");
@@ -400,7 +400,7 @@ public class SpawnManager
 			return;
 		}
 
-		this.smartSpawn(wave, players);
+		this.smartSpawn(wave);
 	}
 
 	public int getMobsToSpawn()

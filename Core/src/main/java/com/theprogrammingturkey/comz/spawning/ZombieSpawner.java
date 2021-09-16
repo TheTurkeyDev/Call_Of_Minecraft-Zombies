@@ -1,20 +1,17 @@
 package com.theprogrammingturkey.comz.spawning;
 
-import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.features.Barrier;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Mob;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
-
-import java.util.List;
 
 public class ZombieSpawner extends RoundSpawner
 {
 	@Override
-	public Mob spawnEntity(Game game, SpawnPoint loc, int wave, List<Player> players)
+	public Mob spawnEntity(Game game, SpawnPoint loc, int wave)
 	{
 		Location location = new Location(loc.getLocation().getWorld(), loc.getLocation().getBlockX(), loc.getLocation().getBlockY(), loc.getLocation().getBlockZ());
 		location.add(0.5, 0, 0.5);

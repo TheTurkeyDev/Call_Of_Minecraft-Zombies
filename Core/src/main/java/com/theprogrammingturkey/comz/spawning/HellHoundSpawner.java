@@ -19,14 +19,14 @@ import java.util.List;
 public class HellHoundSpawner extends RoundSpawner
 {
 	@Override
-	public Mob spawnEntity(Game game, SpawnPoint loc, int wave, List<Player> players)
+	public Mob spawnEntity(Game game, SpawnPoint loc, int wave)
 	{
 		World world = loc.getLocation().getWorld();
 
 		if(world == null)
 			return null;
 
-		Player spawnPlayer = players.get(COMZombies.rand.nextInt(players.size()));
+		Player spawnPlayer = game.players.get(COMZombies.rand.nextInt(game.players.size()));
 
 		List<Location> possibleSpawns = new ArrayList<>();
 		Location backupLocation = null;

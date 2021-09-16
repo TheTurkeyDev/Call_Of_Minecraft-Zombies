@@ -564,7 +564,7 @@ public class Game
 				}
 			}
 
-			spawnManager.startWave(waveNumber, players);
+			spawnManager.startWave(waveNumber);
 			signManager.updateGame();
 			changingRound = false;
 			scoreboard.update();
