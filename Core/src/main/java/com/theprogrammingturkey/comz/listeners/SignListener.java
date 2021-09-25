@@ -83,6 +83,12 @@ public class SignListener implements Listener
 		if(lineOne.equalsIgnoreCase("[Zombies]"))
 		{
 			Game game = GameManager.INSTANCE.getGame(sign.getLocation());
+			if(game != null && game.getMode() != Game.ArenaStatus.DISABLED)
+			{
+				event.setCancelled(true);
+				return;
+			}
+
 			IGameSign signLogic = GAME_SIGNS.get(lineTwo.toLowerCase());
 			if(signLogic != null && (game != null || !signLogic.requiresGame()))
 				signLogic.onBreak(game, event.getPlayer(), sign);

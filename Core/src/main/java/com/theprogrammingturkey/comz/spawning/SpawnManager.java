@@ -3,13 +3,13 @@ package com.theprogrammingturkey.comz.spawning;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.util.BlockUtils;
 import com.theprogrammingturkey.comz.util.Util;
 import org.bukkit.Bukkit;
@@ -106,11 +106,6 @@ public class SpawnManager
 			points.remove(point);
 		}
 		GameManager.INSTANCE.saveAllGames();
-	}
-
-	public int getCurrentSpawn()
-	{
-		return points.size();
 	}
 
 	public List<SpawnPoint> getPoints()
@@ -269,18 +264,8 @@ public class SpawnManager
 
 			Mob ent = roundSpawner.spawnEntity(game, finalPoint, wave);
 			mobs.add(ent);
-			Player closestPlayer = game.players.get(0);
-			double dist = closestPlayer.getLocation().distance(ent.getLocation());
-			for(Player pl : game.players)
-			{
-				double dist2 = pl.getLocation().distance(ent.getLocation());
-				if(dist > dist2)
-				{
-					closestPlayer = pl;
-					dist = dist2;
-				}
-			}
-			ent.setTarget(closestPlayer);
+
+			ent.setTarget(getNearestPlayer(ent));
 
 			mobsSpawned++;
 			smartSpawn(wave);
@@ -289,35 +274,41 @@ public class SpawnManager
 
 	public void update()
 	{
-		COMZombies.scheduleTask(100, new Runnable()
+		COMZombies.scheduleTask(100, () ->
 		{
-			@Override
-			public void run()
+			if(game.getMode() != ArenaStatus.INGAME)
+				return;
+
+			for(int i = mobs.size() - 1; i >= 0; i--)
 			{
-				if(game.getMode() != ArenaStatus.INGAME)
-					return;
-
-				for(int i = mobs.size() - 1; i >= 0; i--)
-				{
-					Mob mob = mobs.get(i);
-					if(mob.isDead())
-						removeEntity(mob);
-					else
-						mob.setTarget(getNearestPlayer(mob));
-				}
-
-				update();
+				Mob mob = mobs.get(i);
+				if(mob.isDead())
+					removeEntity(mob);
+				else
+					mob.setTarget(getNearestPlayer(mob));
 			}
 
-			private Player getNearestPlayer(Entity e)
-			{
-				Player closest = null;
-				for(Player player : SpawnManager.this.game.players)
-					if(closest == null || player.getLocation().distance(e.getLocation()) < closest.getLocation().distance(e.getLocation()))
-						closest = player;
-				return closest;
-			}
+			update();
 		});
+	}
+
+	private Player getNearestPlayer(Entity e)
+	{
+		Player closestPlayer = null;
+		double dist = Integer.MAX_VALUE;
+		for(Player pl : game.players)
+		{
+			if(game.downedPlayerManager.isDownedPlayer(pl))
+				continue;
+
+			double dist2 = pl.getLocation().distance(e.getLocation());
+			if(dist > dist2)
+			{
+				closestPlayer = pl;
+				dist = dist2;
+			}
+		}
+		return closestPlayer;
 	}
 
 	public void setSpawnInterval(double interval)
