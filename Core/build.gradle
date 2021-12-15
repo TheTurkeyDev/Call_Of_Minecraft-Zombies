@@ -16,6 +16,7 @@ repositories {
 
 dependencies {
     implementation project(':API')
+    implementation project(':NMS:1_18_R1')
     implementation project(':NMS:1_17_R1')
     implementation project(':NMS:1_16_R3')
     implementation project(':NMS:1_16_R2')
@@ -31,6 +32,7 @@ dependencies {
 
 jar {
     from project(":API").sourceSets.main.output.classesDirs
+    from project(":NMS:1_18_R1").sourceSets.main.output.classesDirs
     from project(":NMS:1_17_R1").sourceSets.main.output.classesDirs
     from project(":NMS:1_16_R3").sourceSets.main.output.classesDirs
     from project(":NMS:1_16_R2").sourceSets.main.output.classesDirs

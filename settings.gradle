@@ -1,4 +1,5 @@
 include 'API'
+include 'NMS:1_18_R1'
 include 'NMS:1_17_R1'
 include 'NMS:1_16_R3'
 include 'NMS:1_16_R2'

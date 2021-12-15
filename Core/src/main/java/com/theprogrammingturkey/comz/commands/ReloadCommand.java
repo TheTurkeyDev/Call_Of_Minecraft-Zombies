@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 
 public class ReloadCommand implements SubCommand
 {
-
 	public boolean onCommand(Player player, String[] args)
 	{
 		if(!COMZPermission.RELOAD.hasPerm(player))

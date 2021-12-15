@@ -3,8 +3,10 @@ package com.theprogrammingturkey.comz.util;
 import com.theprogrammingturkey.comz.game.Game;
 import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Mob;
 import org.bukkit.util.Vector;
@@ -33,7 +35,7 @@ public class RayTrace
 	}
 
 	//get a point on the raytrace at X blocks away
-	public Vector getPostion(double blocksAway)
+	public Vector getPosition(double blocksAway)
 	{
 		return origin.clone().add(direction.clone().multiply(blocksAway));
 	}
@@ -45,12 +47,12 @@ public class RayTrace
 		return position.getBlockY() == origin.getY() + (t * direction.getY()) && position.getBlockZ() == origin.getZ() + (t * direction.getZ());
 	}
 
-	//get all postions on a raytrace
+	//get all positions on a raytrace
 	public List<Vector> traverse(double blocksAway, float accuracy)
 	{
 		List<Vector> positions = new ArrayList<>();
 		for(double d = 0; d <= blocksAway; d += accuracy)
-			positions.add(getPostion(d));
+			positions.add(getPosition(d));
 
 		return positions;
 	}
@@ -63,7 +65,8 @@ public class RayTrace
 		for(Vector position : positions)
 		{
 			Location loc = new Location(world, position.getBlockX(), position.getBlockY(), position.getBlockZ());
-			if(!world.getBlockAt(loc).isPassable() && game.barrierManager.getBarrier(loc) == null)
+			Block block = world.getBlockAt(loc);
+			if(!block.isPassable() && game.barrierManager.getBarrier(loc) == null && block.getState().getType() != Material.BARRIER)
 				break;
 
 			for(Entity ent : ents)
