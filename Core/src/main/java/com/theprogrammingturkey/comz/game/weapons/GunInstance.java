@@ -41,9 +41,6 @@ public class GunInstance extends WeaponInstance
 	 */
 	private boolean canFire;
 
-
-	private boolean ecUsed;
-
 	/**
 	 * Constructing a new gun with params.
 	 *
@@ -117,6 +114,8 @@ public class GunInstance extends WeaponInstance
 		{
 			if(gun.clipAmmo == clipAmmo)
 				return;
+
+			isReloading = true;
 			Game game = GameManager.INSTANCE.getGame(player);
 			final int reloadTime;
 			if(game.perkManager.hasPerk(player, PerkType.SPEED_COLA))
@@ -136,16 +135,16 @@ public class GunInstance extends WeaponInstance
 					totalAmmo = 0;
 				}
 				isReloading = false;
-				ecUsed = false;
 				updateWeapon();
 			});
-			isReloading = true;
 			if(game.perkManager.getPlayersPerks(player).contains(PerkType.ELECTRIC_C))
 			{
-				if(totalAmmo == 0 && !ecUsed)
+				if(totalAmmo == 0)
 					return;
-				ecUsed = true;
-				List<Entity> near = player.getNearbyEntities(6, 6, 6);
+
+				double range = 12 * (1 - ((double)clipAmmo / gun.clipAmmo));
+
+				List<Entity> near = player.getNearbyEntities(range, range, range);
 				for(Entity ent : near)
 				{
 					if(ent instanceof Mob)

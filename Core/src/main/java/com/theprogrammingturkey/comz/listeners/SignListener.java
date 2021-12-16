@@ -1,7 +1,6 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Barrier;
@@ -102,9 +101,7 @@ public class SignListener implements Listener
 				Barrier b = game.barrierManager.getBarrierFromRepair(sign.getLocation());
 				if(b != null)
 				{
-					b.repair();
-					PointManager.INSTANCE.addPoints(player, b.getReward());
-					PointManager.INSTANCE.notifyPlayer(player);
+					b.repair(player);
 					event.setCancelled(true);
 				}
 				else

@@ -13,6 +13,7 @@ import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.economy.PointManager;
+import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.game.features.PowerUp;
 import com.theprogrammingturkey.comz.game.features.RandomBox;
@@ -568,6 +569,8 @@ public class Game
 			signManager.updateGame();
 			changingRound = false;
 			scoreboard.update();
+			for(Barrier b: barrierManager.getBrriers())
+				b.resetEarnedPoints();
 		});
 
 	}

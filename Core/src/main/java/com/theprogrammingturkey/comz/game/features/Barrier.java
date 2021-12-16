@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.game.features;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import com.theprogrammingturkey.comz.util.BlockUtils;
@@ -12,6 +13,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +37,7 @@ public class Barrier implements Runnable
 	private int reward;
 
 	private final List<Entity> ents = new ArrayList<>();
+	private final HashMap<Player, Integer> earnedPoints = new HashMap<>();
 
 	public Barrier(String id, Game game)
 	{
@@ -78,7 +81,7 @@ public class Barrier implements Runnable
 		}
 	}
 
-	public boolean repair()
+	public boolean repair(Player player)
 	{
 		stage--;
 
@@ -86,6 +89,14 @@ public class Barrier implements Runnable
 			stage = -1;
 
 		game.updateBarrierDamage(stage, blocks.keySet());
+		int pointsEarned = earnedPoints.getOrDefault(player, 0);
+		//TODO: Make configurable
+		if(pointsEarned < reward * 6)
+		{
+			earnedPoints.put(player, pointsEarned + reward);
+			PointManager.INSTANCE.addPoints(player, reward);
+			PointManager.INSTANCE.notifyPlayer(player);
+		}
 
 		if(stage == -1)
 			BlockUtils.setBlockToAir(repairLoc);
@@ -109,6 +120,11 @@ public class Barrier implements Runnable
 		BlockUtils.setBlockToAir(repairLoc);
 
 		this.breaking = false;
+	}
+
+	public void resetEarnedPoints()
+	{
+		earnedPoints.replaceAll((p, v) -> 0);
 	}
 
 	public void addBarrierBlock(Location loc)
