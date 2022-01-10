@@ -42,7 +42,7 @@ public class ScopeListener implements Listener
 						{
 							player.setWalkSpeed(-0.2F);
 							if(plugin.getConfig().getBoolean("config.gameSettings.ZoomTexture"))
-								player.getInventory().setHelmet(new ItemStack(Material.PUMPKIN, 1));
+								player.getInventory().setHelmet(new ItemStack(Material.JACK_O_LANTERN, 1));
 						}
 						else
 						{
