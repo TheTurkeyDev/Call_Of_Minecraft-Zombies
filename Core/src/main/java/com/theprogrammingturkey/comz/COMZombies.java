@@ -132,6 +132,7 @@ public class COMZombies extends JavaPlugin
 				nmsUtil = new NMSUtil_1_17_R1();
 				break;
 			case "1.18":
+			case "1.18.1":
 				nmsUtil = new NMSUtil_1_18_R1();
 				break;
 			default:
