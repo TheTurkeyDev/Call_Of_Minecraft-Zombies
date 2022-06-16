@@ -329,9 +329,7 @@ public class SpawnManager
 				if(p.getLocation().equals(point.getLocation()))
 				{
 					if(door.isOpened())
-					{
 						maySpawn = true;
-					}
 					isContained = true;
 				}
 			}

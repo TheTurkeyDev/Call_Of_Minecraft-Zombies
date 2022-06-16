@@ -20,7 +20,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -208,13 +207,5 @@ public class PlayerListener implements Listener
 			downedPlayer.startRevive(reviver);
 			event.setCancelled(true);
 		}
-	}
-
-	@EventHandler
-	public void onArmorDamageEvent(PlayerItemDamageEvent e)
-	{
-		if(!GameManager.INSTANCE.isPlayerInGame(e.getPlayer()))
-			return;
-		e.setDamage(0);
 	}
 }

@@ -1,0 +1,6 @@
+archivesBaseName = "comz-1.18.r1-support"
+
+dependencies {
+    implementation project(':API')
+    implementation group: 'org.spigotmc', name: 'spigot', version: '1.19-R0.1-SNAPSHOT'
+}

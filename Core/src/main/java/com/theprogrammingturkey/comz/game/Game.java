@@ -569,7 +569,7 @@ public class Game
 			signManager.updateGame();
 			changingRound = false;
 			scoreboard.update();
-			for(Barrier b: barrierManager.getBrriers())
+			for(Barrier b : barrierManager.getBrriers())
 				b.resetEarnedPoints();
 		});
 
@@ -845,7 +845,7 @@ public class Game
 			return;
 
 		this.mode = ArenaStatus.WAITING;
-		
+
 		while(players.size() > 0)
 			removePlayerActions(players.remove(0));
 
@@ -1017,6 +1017,23 @@ public class Game
 	}
 
 	/**
+	 * Creates an unbreakable ItemStack from the passed parameters
+	 *
+	 * @param material of the ItemStack to make
+	 * @return the created stack
+	 */
+	private ItemStack getUnbreakableItem(Material material)
+	{
+		ItemStack stack = new ItemStack(material, 1);
+		ItemMeta itemMeta = stack.getItemMeta();
+		if(itemMeta == null)
+			return stack;
+		itemMeta.setUnbreakable(true);
+		stack.setItemMeta(itemMeta);
+		return stack;
+	}
+
+	/**
 	 * Sets up the players inventory in game
 	 *
 	 * @param slot of the item
@@ -1079,20 +1096,16 @@ public class Game
 	public void assignPlayerInventory(Player player)
 	{
 		player.getInventory().clear();
-		ItemStack helmet = new ItemStack(Material.LEATHER_HELMET, 1);
-		ItemStack chestPlate = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
-		ItemStack pants = new ItemStack(Material.LEATHER_LEGGINGS, 1);
-		ItemStack boots = new ItemStack(Material.LEATHER_BOOTS, 1);
-		ItemStack knife = new ItemStack(Material.IRON_SWORD, 1);
+		ItemStack knife = getUnbreakableItem(Material.IRON_SWORD);
 		ItemMeta kMeta = knife.getItemMeta();
 		if(kMeta != null)
 			kMeta.setDisplayName(ChatColor.RED + "Knife");
 		knife.setItemMeta(kMeta);
 		ItemStack ib = new ItemStack(Material.GREEN_STAINED_GLASS_PANE, 1);
-		player.getInventory().setHelmet(helmet);
-		player.getInventory().setChestplate(chestPlate);
-		player.getInventory().setLeggings(pants);
-		player.getInventory().setBoots(boots);
+		player.getInventory().setHelmet(getUnbreakableItem(Material.LEATHER_HELMET));
+		player.getInventory().setChestplate(getUnbreakableItem(Material.LEATHER_CHESTPLATE));
+		player.getInventory().setLeggings(getUnbreakableItem(Material.LEATHER_LEGGINGS));
+		player.getInventory().setBoots(getUnbreakableItem(Material.LEATHER_BOOTS));
 		player.getInventory().setItem(0, knife);
 		//player.getInventory().setItem(8, new ItemStack(Material.MAGMA_CREAM, 4));
 		player.getInventory().setItem(27, setItemMeta(27, ib));
@@ -1106,6 +1119,7 @@ public class Game
 		player.getInventory().setItem(35, setItemMeta(35, ib));
 		player.updateInventory();
 	}
+
 
 	public static final List<Class<? extends Entity>> BLACKLISTED_ENTITIES = Arrays.asList(Player.class, Minecart.class, Painting.class, ItemFrame.class);
 

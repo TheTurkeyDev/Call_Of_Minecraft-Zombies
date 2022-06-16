@@ -1,4 +1,4 @@
-package com.theprogrammingturkey.comz.support.support_1_18_R2;
+package com.theprogrammingturkey.comz.support.support_1_19_R1;
 
 import com.theprogrammingturkey.comz.api.INMSUtil;
 import com.theprogrammingturkey.comz.api.NMSParticleType;
