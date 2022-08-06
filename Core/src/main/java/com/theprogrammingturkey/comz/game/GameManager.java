@@ -123,6 +123,10 @@ public class GameManager
 	public Game getGame(String name)
 	{
 		for(Game gl : games)
+			if(name.equalsIgnoreCase(gl.getName()))
+				return gl;
+		
+		for(Game gl : games)
 		{
 			String gameName = gl.getName();
 			for(int i = 1; i <= gameName.length(); i++)

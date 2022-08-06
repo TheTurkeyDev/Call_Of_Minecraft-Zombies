@@ -16,7 +16,7 @@ import com.theprogrammingturkey.comz.support.support_1_16_R2.NMSUtil_1_16_R2;
 import com.theprogrammingturkey.comz.support.support_1_16_R3.NMSUtil_1_16_R3;
 import com.theprogrammingturkey.comz.support.support_1_16_R3.NMSUtil_1_17_R1;
 import com.theprogrammingturkey.comz.support.support_1_18_R1.NMSUtil_1_18_R1;
-import com.theprogrammingturkey.comz.support.support_1_19_R1.NMSUtil_1_18_R2;
+import com.theprogrammingturkey.comz.support.support_1_18_R2.NMSUtil_1_18_R2;
 import com.theprogrammingturkey.comz.support.support_1_19_R1.NMSUtil_1_19_R1;
 import com.theprogrammingturkey.comz.util.PlaceholderHook;
 import org.bukkit.Bukkit;
@@ -141,6 +141,8 @@ public class COMZombies extends JavaPlugin
 				nmsUtil = new NMSUtil_1_18_R2();
 				break;
 			case "1.19":
+			case "1.19.1":
+			case "1.19.2":
 				nmsUtil = new NMSUtil_1_19_R1();
 				break;
 			default:

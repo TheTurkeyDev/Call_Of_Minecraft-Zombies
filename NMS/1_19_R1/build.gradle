@@ -1,4 +1,4 @@
-archivesBaseName = "comz-1.18.r1-support"
+archivesBaseName = "comz-1.19.r1-support"
 
 dependencies {
     implementation project(':API')
