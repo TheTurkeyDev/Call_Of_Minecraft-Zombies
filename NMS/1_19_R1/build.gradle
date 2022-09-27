@@ -4,3 +4,7 @@ dependencies {
     implementation project(':API')
     implementation group: 'org.spigotmc', name: 'spigot', version: '1.19-R0.1-SNAPSHOT'
 }
+
+repositories {
+    mavenCentral()
+}
