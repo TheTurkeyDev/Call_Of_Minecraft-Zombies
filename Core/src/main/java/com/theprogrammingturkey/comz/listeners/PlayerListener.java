@@ -5,6 +5,7 @@ import com.theprogrammingturkey.comz.api.NMSParticleType;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.DownedPlayer;
 import com.theprogrammingturkey.comz.game.features.PerkType;
 import com.theprogrammingturkey.comz.util.CommandUtil;
@@ -12,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
@@ -70,7 +72,9 @@ public class PlayerListener implements Listener
 		if(game == null)
 			return;
 
-		if(!game.arena.containsBlock(player.getLocation()))
+		Location playerLoc = player.getLocation();
+
+		if(!game.arena.containsBlock(playerLoc))
 		{
 			if(game.getMode() == Game.ArenaStatus.INGAME)
 			{
@@ -92,6 +96,19 @@ public class PlayerListener implements Listener
 			{
 				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You Moved! You are no longer reviving " + player.getName());
 				downedPlayer.cancelRevive();
+			}
+		}
+
+		//Barriers move check
+		for(Barrier barrier : game.barrierManager.getBrriers())
+		{
+			for(Block b : barrier.getBlocks())
+			{
+				if((int) playerLoc.getX() == b.getX() && (int) playerLoc.getY() == b.getY() && (int) playerLoc.getZ() == b.getZ())
+				{
+					event.setCancelled(true);
+					return;
+				}
 			}
 		}
 	}
