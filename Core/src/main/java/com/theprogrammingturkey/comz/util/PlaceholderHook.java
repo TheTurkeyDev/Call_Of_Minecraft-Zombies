@@ -7,6 +7,7 @@ import com.theprogrammingturkey.comz.leaderboards.Leaderboard;
 import com.theprogrammingturkey.comz.leaderboards.PlayerStats;
 import com.theprogrammingturkey.comz.leaderboards.StatsCategory;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import javax.annotation.Nonnull;
@@ -121,7 +122,7 @@ public class PlaceholderHook extends PlaceholderExpansion
 				}
 			}
 			else if(parts.length == 3)
-			{
+			try {
 				//TODO: safe parse?
 				int pos = Integer.parseInt(parts[2]);
 				PlayerStats stat;
@@ -147,6 +148,26 @@ public class PlaceholderHook extends PlaceholderExpansion
 						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.HIGHEST_ROUND);
 					case "mostPoints":
 						stat = Leaderboard.getPosX(StatsCategory.MOST_POINTS, pos);
+						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.MOST_POINTS);
+				}
+			}
+			catch (final NumberFormatException e){
+				PlayerStats stat = Leaderboard.getPlayerStatFromPlayer(Bukkit.getServer().getOfflinePlayer(parts[2]));
+				switch(parts[1])
+				{
+					case "kills":
+						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.KILLS);
+					case "revives":
+						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.REVIVES);
+					case "deaths":
+						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.DEATHS);
+					case "downs":
+						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.DOWNS);
+					case "gamesPlayed":
+						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.GAMES_PLAYED);
+					case "highestRound":
+						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.HIGHEST_ROUND);
+					case "mostPoints":
 						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.MOST_POINTS);
 				}
 			}
