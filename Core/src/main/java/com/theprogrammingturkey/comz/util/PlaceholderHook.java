@@ -103,73 +103,16 @@ public class PlaceholderHook extends PlaceholderExpansion
 			if(parts.length == 2)
 			{
 				PlayerStats stats = Leaderboard.getPlayerStatFromPlayer(player);
-				switch(parts[1])
-				{
-					case "kills":
-						return String.valueOf(stats.getKills());
-					case "revives":
-						return String.valueOf(stats.getRevives());
-					case "deaths":
-						return String.valueOf(stats.getDeaths());
-					case "downs":
-						return String.valueOf(stats.getDowns());
-					case "gamesPlayed":
-						return String.valueOf(stats.getGamesPlayed());
-					case "highestRound":
-						return String.valueOf(stats.getHighestRound());
-					case "mostPoints":
-						return String.valueOf(stats.getMostPoints());
-				}
+				return getStatFromString(parts[1], stats);
 			}
 			else if(parts.length == 3)
-			try {
-				//TODO: safe parse?
-				int pos = Integer.parseInt(parts[2]);
+			{
 				PlayerStats stat;
-				switch(parts[1])
-				{
-					case "kills":
-						stat = Leaderboard.getPosX(StatsCategory.KILLS, pos);
-						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.KILLS);
-					case "revives":
-						stat = Leaderboard.getPosX(StatsCategory.REVIVES, pos);
-						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.REVIVES);
-					case "deaths":
-						stat = Leaderboard.getPosX(StatsCategory.DEATHS, pos);
-						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.DEATHS);
-					case "downs":
-						stat = Leaderboard.getPosX(StatsCategory.DOWNS, pos);
-						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.DOWNS);
-					case "gamesPlayed":
-						stat = Leaderboard.getPosX(StatsCategory.GAMES_PLAYED, pos);
-						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.GAMES_PLAYED);
-					case "highestRound":
-						stat = Leaderboard.getPosX(StatsCategory.HIGHEST_ROUND, pos);
-						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.HIGHEST_ROUND);
-					case "mostPoints":
-						stat = Leaderboard.getPosX(StatsCategory.MOST_POINTS, pos);
-						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.MOST_POINTS);
-				}
-			}
-			catch (final NumberFormatException e){
-				PlayerStats stat = Leaderboard.getPlayerStatFromPlayer(Bukkit.getServer().getOfflinePlayer(parts[2]));
-				switch(parts[1])
-				{
-					case "kills":
-						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.KILLS);
-					case "revives":
-						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.REVIVES);
-					case "deaths":
-						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.DEATHS);
-					case "downs":
-						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.DOWNS);
-					case "gamesPlayed":
-						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.GAMES_PLAYED);
-					case "highestRound":
-						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.HIGHEST_ROUND);
-					case "mostPoints":
-						return stat == null ? "" : stat.getPlayerDisplay() + " - " + stat.getStat(StatsCategory.MOST_POINTS);
-				}
+				if(parts[2].matches("\\d+"))
+					stat = Leaderboard.getPosX(getStatEnumFromString(parts[1]), Integer.parseInt(parts[2]));
+				else
+					stat = Leaderboard.getPlayerStatFromPlayer(Bukkit.getServer().getOfflinePlayer(parts[2]));
+				return stat == null ? "" : stat.getPlayerDisplay() + " - " + getStatFromString(parts[1], stat);
 			}
 		}
 		else if(parts[0].equals("arena"))
@@ -189,6 +132,50 @@ public class PlaceholderHook extends PlaceholderExpansion
 			}
 		}
 
+		return null;
+	}
+
+	private String getStatFromString(String toGet, PlayerStats stats)
+	{
+		switch(toGet)
+		{
+			case "kills":
+				return String.valueOf(stats.getKills());
+			case "revives":
+				return String.valueOf(stats.getRevives());
+			case "deaths":
+				return String.valueOf(stats.getDeaths());
+			case "downs":
+				return String.valueOf(stats.getDowns());
+			case "gamesPlayed":
+				return String.valueOf(stats.getGamesPlayed());
+			case "highestRound":
+				return String.valueOf(stats.getHighestRound());
+			case "mostPoints":
+				return String.valueOf(stats.getMostPoints());
+		}
+		return "";
+	}
+
+	private StatsCategory getStatEnumFromString(String toGet)
+	{
+		switch(toGet)
+		{
+			case "kills":
+				return StatsCategory.KILLS;
+			case "revives":
+				return StatsCategory.REVIVES;
+			case "deaths":
+				return StatsCategory.DEATHS;
+			case "downs":
+				return StatsCategory.DOWNS;
+			case "gamesPlayed":
+				return StatsCategory.GAMES_PLAYED;
+			case "highestRound":
+				return StatsCategory.HIGHEST_ROUND;
+			case "mostPoints":
+				return StatsCategory.MOST_POINTS;
+		}
 		return null;
 	}
 }
