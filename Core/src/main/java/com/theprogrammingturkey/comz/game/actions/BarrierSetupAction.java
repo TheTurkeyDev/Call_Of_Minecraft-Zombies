@@ -40,7 +40,7 @@ public class BarrierSetupAction extends BaseAction
 	public void cancelAction()
 	{
 		game.resetSpawnLocationBlocks();
-		for(Barrier barrier : game.barrierManager.getBrriers())
+		for(Barrier barrier : game.barrierManager.getBarriers())
 		{
 			barrier.repairFull();
 			BlockUtils.setBlockToAir(barrier.getRepairLoc());

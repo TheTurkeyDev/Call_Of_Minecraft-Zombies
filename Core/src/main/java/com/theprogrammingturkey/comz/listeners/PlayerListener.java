@@ -69,12 +69,11 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		Game game = GameManager.INSTANCE.getGame(player);
-		if(game == null)
+		Location toLoc = event.getTo();
+		if(game == null || toLoc == null)
 			return;
 
-		Location playerLoc = player.getLocation();
-
-		if(!game.arena.containsBlock(playerLoc))
+		if(!game.arena.containsBlock(toLoc))
 		{
 			if(game.getMode() == Game.ArenaStatus.INGAME)
 			{
@@ -85,7 +84,7 @@ public class PlayerListener implements Listener
 
 
 		// Reviving move check
-		Location change = event.getTo().clone().subtract(event.getFrom().clone());
+		Location change = toLoc.clone().subtract(event.getFrom().clone());
 		if(game.downedPlayerManager.isDownedPlayer(player) && change.getY() != 0)
 			event.setCancelled(true);
 
@@ -99,12 +98,13 @@ public class PlayerListener implements Listener
 			}
 		}
 
+
 		//Barriers move check
-		for(Barrier barrier : game.barrierManager.getBrriers())
+		for(Barrier barrier : game.barrierManager.getBarriers())
 		{
 			for(Block b : barrier.getBlocks())
 			{
-				if((int) playerLoc.getX() == b.getX() && (int) playerLoc.getY() == b.getY() && (int) playerLoc.getZ() == b.getZ())
+				if((int) toLoc.getX() == b.getX() && (int) toLoc.getY() == b.getY() && (int) toLoc.getZ() == b.getZ())
 				{
 					event.setCancelled(true);
 					return;
@@ -114,7 +114,7 @@ public class PlayerListener implements Listener
 	}
 
 	@EventHandler
-	public void OnPlyerVelocityEvent(PlayerMoveEvent event)
+	public void OnPlayerVelocityEvent(PlayerMoveEvent event)
 	{
 		Player player = event.getPlayer();
 		if(GameManager.INSTANCE.isPlayerInGame(player))
