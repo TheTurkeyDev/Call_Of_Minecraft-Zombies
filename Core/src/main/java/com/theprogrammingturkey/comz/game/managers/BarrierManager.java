@@ -177,7 +177,7 @@ public class BarrierManager
 		}
 	}
 
-	public List<Barrier> getBrriers()
+	public List<Barrier> getBarriers()
 	{
 		return barriers;
 	}

@@ -73,7 +73,7 @@ public class PowerUpDropListener implements Listener
 					COMZombies.scheduleTask(duration, () -> game.setInstaKill(false));
 					break;
 				case CARPENTER:
-					for(Barrier barrier : game.barrierManager.getBrriers())
+					for(Barrier barrier : game.barrierManager.getBarriers())
 						barrier.repairFull();
 					break;
 				case NUKE:

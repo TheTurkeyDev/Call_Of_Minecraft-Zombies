@@ -569,7 +569,7 @@ public class Game
 			signManager.updateGame();
 			changingRound = false;
 			scoreboard.update();
-			for(Barrier b : barrierManager.getBrriers())
+			for(Barrier b : barrierManager.getBarriers())
 				b.resetEarnedPoints();
 		});
 

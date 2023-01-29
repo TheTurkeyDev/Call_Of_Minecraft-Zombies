@@ -20,7 +20,7 @@ public class BarrierRemoveAction extends BaseAction
 	{
 		super(player, game);
 
-		for(Barrier barrier : game.barrierManager.getBrriers())
+		for(Barrier barrier : game.barrierManager.getBarriers())
 		{
 			Block block = barrier.getRepairLoc().getBlock();
 			block.setType(Material.OAK_WALL_SIGN);
