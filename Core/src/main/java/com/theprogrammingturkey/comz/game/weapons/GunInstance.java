@@ -247,7 +247,7 @@ public class GunInstance extends WeaponInstance
 			return;
 		if(gun == null)
 			return;
-		ItemStack stack = new ItemStack(gun.getMaterial());
+		ItemStack stack = gun.getStack();
 		ItemMeta data = stack.getItemMeta();
 		if(data == null)
 			return;
