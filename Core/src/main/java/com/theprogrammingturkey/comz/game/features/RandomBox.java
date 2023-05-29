@@ -98,7 +98,7 @@ public class RandomBox
 		else
 			itemLoc = boxLoc.clone().add(.5, .2, .5);
 
-		item = player.getWorld().dropItem(itemLoc, new ItemStack(weapon.getMaterial()));
+		item = player.getWorld().dropItem(itemLoc, weapon.getStack());
 		namePlate = (ArmorStand) player.getWorld().spawnEntity(itemLoc.clone().add(0, -1.7, 0), EntityType.ARMOR_STAND);
 		namePlate.setVisible(false);
 		namePlate.setGravity(false);
@@ -123,7 +123,7 @@ public class RandomBox
 					if(time > 0)
 					{
 						weapon = WeaponManager.getRandomWeapon(false, boxGame.getPlayersWeapons(player));
-						item.setItemStack(new ItemStack(weapon.getMaterial()));
+						item.setItemStack(weapon.getStack());
 						namePlate.setCustomName(weapon.getName());
 						player.getWorld().playSound(boxLoc, Sound.BLOCK_NOTE_BLOCK_HARP, 1f, 1f);
 					}

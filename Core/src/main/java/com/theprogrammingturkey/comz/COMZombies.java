@@ -20,6 +20,7 @@ import com.theprogrammingturkey.comz.support.support_1_18_R2.NMSUtil_1_18_R2;
 import com.theprogrammingturkey.comz.support.support_1_19_2_R2.NMSUtil_1_19_2_R1;
 import com.theprogrammingturkey.comz.support.support_1_19_2_R2.NMSUtil_1_19_2_R2;
 import com.theprogrammingturkey.comz.support.support_1_19_R1.NMSUtil_1_19_R1;
+import com.theprogrammingturkey.comz.support.support_1_19_R3.NMSUtil_1_19_R3;
 import com.theprogrammingturkey.comz.util.PlaceholderHook;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -105,6 +106,9 @@ public class COMZombies extends JavaPlugin
 		String version = getMinecraftVersion();
 		if(version == null)
 			throw new IllegalStateException("Sorry, COM:Z Does not current support server version" + Bukkit.getVersion());
+
+		log.info(COMZombies.CONSOLE_PREFIX + "Version info | MC: " + version + " | Bukkit: " + Bukkit.getVersion() + " & " + Bukkit.getBukkitVersion() + " | CB: " + Bukkit.getServer().getClass().getPackage().getName());
+
 		switch(version)
 		{
 			case "1.14":
@@ -151,6 +155,9 @@ public class COMZombies extends JavaPlugin
 				break;
 			case "1.19.3":
 				nmsUtil = new NMSUtil_1_19_2_R2();
+				break;
+			case "1.19.4":
+				nmsUtil = new NMSUtil_1_19_R3();
 				break;
 			default:
 				throw new IllegalStateException("Sorry, COM:Z Does not current support server version" + version);

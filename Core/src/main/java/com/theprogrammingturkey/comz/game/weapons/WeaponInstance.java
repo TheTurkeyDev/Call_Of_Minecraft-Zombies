@@ -62,7 +62,8 @@ public class WeaponInstance
 
 	public void updateWeapon()
 	{
-		ItemStack newStack = new ItemStack(baseWeapon.getMaterial(), totalAmmo);
+		ItemStack newStack = baseWeapon.getStack();
+		newStack.setAmount(totalAmmo);
 		ItemMeta data = newStack.getItemMeta();
 		if(data != null)
 			data.setDisplayName(ChatColor.DARK_GREEN + "" + baseWeapon.getName());

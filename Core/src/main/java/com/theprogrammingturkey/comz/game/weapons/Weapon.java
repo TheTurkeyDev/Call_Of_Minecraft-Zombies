@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class Weapon
 {
@@ -14,6 +16,7 @@ public class Weapon
 	public int totalAmmo;
 
 	public Material material;
+	public int modelData;
 
 	public Weapon(String name, WeaponType weaponType)
 	{
@@ -26,6 +29,7 @@ public class Weapon
 		this.totalAmmo = CustomConfig.getInt(json, "total_ammo", 1);
 		this.damage = CustomConfig.getInt(json, "damage", 1);
 		this.material = Material.getMaterial(CustomConfig.getString(json, "material", ""));
+		this.modelData = CustomConfig.getInt(json, "model_data", -1);
 	}
 
 	public WeaponType getWeaponType()
@@ -38,9 +42,16 @@ public class Weapon
 		return name;
 	}
 
-	public Material getMaterial()
+	public ItemStack getStack()
 	{
-		return material == null ? weaponType.getMaterial() : material;
+		ItemStack stack = new ItemStack(material == null ? weaponType.getMaterial() : material);
+		if(modelData != -1)
+		{
+			ItemMeta itemMeta = stack.getItemMeta();
+			itemMeta.setCustomModelData(this.modelData);
+			stack.setItemMeta(itemMeta);
+		}
+		return stack;
 	}
 
 	public WeaponInstance getNewInstance(Player player, int slot)
