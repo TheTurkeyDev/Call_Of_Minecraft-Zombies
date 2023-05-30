@@ -131,7 +131,7 @@ public class PlayerListener implements Listener
 					loc.getWorld().playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
 					for(int i = 0; i < 30; i++)
 					{
-						for(Player pl : game.players)
+						for(Player pl : game.getPlayers())
 						{
 							float x = (float) (Math.random() * 2);
 							float y = (float) (Math.random() * 2);
@@ -214,7 +214,7 @@ public class PlayerListener implements Listener
 		if(downedPlayer.isBeingRevived())
 			return;
 
-		if(!(game.players.contains(reviver)))
+		if(!(game.getPlayers().contains(reviver)))
 			return;
 
 		if(GameManager.INSTANCE.isPlayerInGame(reviver))

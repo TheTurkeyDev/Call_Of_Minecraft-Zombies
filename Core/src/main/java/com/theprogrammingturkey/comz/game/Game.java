@@ -41,12 +41,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -58,11 +53,7 @@ public class Game
 	/**
 	 * List of every player contained in game.
 	 */
-	public List<Player> players = new ArrayList<>();
-	/**
-	 * List of all the spectating players contained in game.
-	 */
-	public List<Player> spectators = new ArrayList<>();
+	public Map<Player,GamePlayer> gamePlayers = new LinkedHashMap<>();
 
 	private boolean debugMode = false;
 
@@ -116,11 +107,6 @@ public class Game
 	private int dogRoundEveryX;
 
 	private boolean maxAmmoReplishClip;
-
-	/**
-	 * Contains a player and the gun manager corresponding to that player.
-	 */
-	private final Map<Player, PlayerWeaponManager> playersGuns = new HashMap<>();
 
 	private String startingGun = "M1911";
 
@@ -268,7 +254,20 @@ public class Game
 	 */
 	public PlayerWeaponManager getPlayersWeapons(Player player)
 	{
-		return playersGuns.computeIfAbsent(player, PlayerWeaponManager::new);
+		for (Player pl : getPlayers()) {
+			if (pl.equals(player)) {
+				return gamePlayers.get(player).getWeaponManager();
+			}
+		}
+		return null;
+	}
+
+	public List<Player> getPlayers() {
+		List<Player> players = new ArrayList<>();
+		for (GamePlayer value : gamePlayers.values()) {
+			if (value.getState().equals(GamePlayer.PlayerState.IN_GAME)) players.add(value.getPlayer());
+		}
+		return players;
 	}
 
 	/**
@@ -453,7 +452,7 @@ public class Game
 		waveNumber = 0;
 		changingRound = false;
 		mode = ArenaStatus.INGAME;
-		for(Player player : players)
+		for(Player player : gamePlayers.keySet())
 		{
 			player.teleport(playerTPLocation);
 			player.setAllowFlight(false);
@@ -510,7 +509,7 @@ public class Game
 	 */
 	public void nextWave()
 	{
-		if(players.size() == 0)
+		if(getPlayers().size() == 0)
 		{
 			this.endGame();
 			return;
@@ -524,9 +523,11 @@ public class Game
 		changingRound = true;
 
 		COMZombies plugin = COMZombies.getPlugin();
-		for(Player pl : players)
-			for(Player p : players)
+		for(Player pl : getPlayers()) {
+			for (Player p : getPlayers()) {
 				pl.showPlayer(plugin, p);
+			}
+		}
 
 		if(mode != ArenaStatus.INGAME)
 		{
@@ -546,7 +547,7 @@ public class Game
 			}
 			delay = 200;
 		}
-
+		List<Player> players = getPlayers();
 		RoundSpawnType spawnType = spawnManager.nextWave(waveNumber, players);
 
 		COMZombies.scheduleTask(delay, () ->
@@ -575,6 +576,24 @@ public class Game
 
 	}
 
+
+	private void internalAddPlayer(Player player) {
+		gamePlayers.get(player).setState(GamePlayer.PlayerState.IN_GAME);
+		CachedPlayerInfo.savePlayerInfo(player);
+		scoreboard.addPlayer(player);
+		gamePlayers.get(player);
+		player.setHealth(20D);
+		player.setFoodLevel(20);
+		player.getInventory().clear();
+		player.getInventory().setArmorContents(null);
+		player.setLevel(0);
+		player.setExp(0);
+		player.teleport(lobbyLocation);
+		PointManager.INSTANCE.setPoints(player, 500);
+		assignPlayerInventory(player);
+		player.setGameMode(GameMode.SURVIVAL);
+	}
+
 	/**
 	 * Adds a player to the game
 	 *
@@ -584,28 +603,16 @@ public class Game
 	{
 		if(mode == ArenaStatus.WAITING || mode == ArenaStatus.STARTING)
 		{
-			players.add(player);
-			CachedPlayerInfo.savePlayerInfo(player);
-			scoreboard.addPlayer(player);
-			playersGuns.put(player, new PlayerWeaponManager(player));
-			player.setHealth(20D);
-			player.setFoodLevel(20);
-			player.getInventory().clear();
-			player.getInventory().setArmorContents(null);
-			player.setLevel(0);
-			player.setExp(0);
-			player.teleport(lobbyLocation);
-			PointManager.INSTANCE.setPoints(player, 500);
-			assignPlayerInventory(player);
-			player.setGameMode(GameMode.SURVIVAL);
+			gamePlayers.put(player, new GamePlayer(player));
+			internalAddPlayer(player);
 
 
 			COMZombies plugin = COMZombies.getPlugin();
-			for(Player pl : players)
+			for(Player pl : getPlayers())
 			{
 				for(Player p : Bukkit.getOnlinePlayers())
 				{
-					if(!(players.contains(p)))
+					if(!(getPlayers().contains(p)))
 						pl.hidePlayer(plugin, p);
 					else
 						pl.showPlayer(plugin, p);
@@ -624,11 +631,50 @@ public class Game
 				COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "The " + startingGun + " is listed as the starting gun, but it could not be found! Did you forget to change this?");
 			}
 
-			sendMessageToPlayers(player.getName() + " has joined with " + players.size() + "/" + maxPlayers + "!");
-			if(players.size() >= minPlayers)
+			sendMessageToPlayers(player.getName() + " has joined with " + getPlayers().size() + "/" + maxPlayers + "!");
+			if(getPlayers().size() >= minPlayers)
 			{
 				setStarting(false);
 				signManager.updateGame();
+			}
+		}
+		else if (mode == ArenaStatus.INGAME) {
+			if (gamePlayers.containsKey(player) && gamePlayers.get(player).getState().equals(GamePlayer.PlayerState.LEFT_GAME)) {
+				gamePlayers.get(player).setState(GamePlayer.PlayerState.IN_GAME);
+				CachedPlayerInfo.savePlayerInfo(player);
+				scoreboard.addPlayer(player);
+				gamePlayers.get(player);
+				player.setHealth(20D);
+				player.setFoodLevel(20);
+				player.getInventory().clear();
+				player.getInventory().setArmorContents(null);
+				player.setLevel(0);
+				player.setExp(0);
+				player.teleport(lobbyLocation);
+				assignPlayerInventory(player);
+				player.setGameMode(GameMode.SURVIVAL);
+				COMZombies plugin = COMZombies.getPlugin();
+				for(Player pl : getPlayers())
+				{
+					for(Player p : Bukkit.getOnlinePlayers())
+					{
+						if(!(getPlayers().contains(p)))
+							pl.hidePlayer(plugin, p);
+						else
+							pl.showPlayer(plugin, p);
+					}
+				}
+
+				sendMessageToPlayers(player.getName() + " rejoined!");
+
+			}
+
+//			else if (getWave() <= 5) {
+//				gamePlayers.put(player, new GamePlayer(player));
+//			}
+			else {
+				gamePlayers.put(player, new GamePlayer(player));
+				addSpectator(player);
 			}
 		}
 		else
@@ -640,7 +686,14 @@ public class Game
 
 	public void addSpectator(Player player)
 	{
-		spectators.add(player);
+		if (!gamePlayers.containsKey(player)) {
+			GamePlayer gp = new GamePlayer(player);
+			gp.setState(GamePlayer.PlayerState.SPECTATING);
+			gamePlayers.put(player, gp);
+		}
+		else {
+			gamePlayers.get(player).setState(GamePlayer.PlayerState.SPECTATING);
+		}
 		CachedPlayerInfo.savePlayerInfo(player);
 		scoreboard.addPlayer(player);
 		player.setGameMode(GameMode.SPECTATOR);
@@ -654,12 +707,18 @@ public class Game
 	 */
 	public void removePlayer(Player player)
 	{
-		removePlayerActions(player);
+		if(downedPlayerManager.isDownedPlayer(player)) {
+			removePlayerActions(player);
+		}
+		else {
+			if (gamePlayers.containsKey(player)) gamePlayers.get(player).setState(GamePlayer.PlayerState.LEFT_GAME);
+			resetPlayer(player);
+		}
 
 		if(!isDisabled)
-			sendMessageToPlayers(player.getName() + " has left the game! Only " + players.size() + "/" + this.maxPlayers + " player(s) left!");
+			sendMessageToPlayers(player.getName() + " has left the game! Only " + getPlayers().size() + "/" + this.maxPlayers + " player(s) left!");
 
-		if(players.size() == 0 && mode != ArenaStatus.WAITING)
+		if(getPlayers().size() == 0 && mode != ArenaStatus.WAITING)
 			if(!isDisabled)
 				endGame();
 	}
@@ -680,24 +739,27 @@ public class Game
 
 		if(downedPlayerManager.isDownedPlayer(player))
 			downedPlayerManager.removeDownedPlayer(player);
-		players.remove(player);
-		resetPlayer(player);
+		if (getPlayers().contains(player))
+			resetPlayer(player);
+		gamePlayers.remove(player);
+
+
 	}
 
 	public void removeSpectator(Player player)
 	{
-		if(spectators.remove(player))
+		if(gamePlayers.containsKey(player))
 		{
-			CachedPlayerInfo.restorePlayerInfo(player);
-			scoreboard.removePlayer(player);
+			if (gamePlayers.get(player).getState().equals(GamePlayer.PlayerState.SPECTATING)) {
+				gamePlayers.remove(player);
+				CachedPlayerInfo.restorePlayerInfo(player);
+				scoreboard.removePlayer(player);
+			}
 		}
 	}
 
 	private void resetPlayer(Player player)
 	{
-		playersGuns.remove(player);
-		PointManager.INSTANCE.playerLeaveGame(player);
-
 		for(PotionEffectType t : PotionEffectType.values())
 			player.removePotionEffect(t);
 
@@ -708,11 +770,10 @@ public class Game
 		player.setWalkSpeed(0.2F);
 		scoreboard.removePlayer(player);
 		player.updateInventory();
-
 		COMZombies plugin = COMZombies.getPlugin();
 		for(Player pl : Bukkit.getOnlinePlayers())
 		{
-			if(!players.contains(pl))
+			if(!getPlayers().contains(pl))
 				player.showPlayer(plugin, pl);
 			else
 				pl.hidePlayer(plugin, player);
@@ -846,9 +907,12 @@ public class Game
 
 		this.mode = ArenaStatus.WAITING;
 
-		while(players.size() > 0)
-			removePlayerActions(players.remove(0));
+		for (GamePlayer value : gamePlayers.values()) {
+			if (value.getState().equals(GamePlayer.PlayerState.IN_GAME) || value.getState().equals(GamePlayer.PlayerState.LEFT_GAME))
+				PointManager.INSTANCE.playerLeaveGame(value.getPlayer());
+				removePlayerActions(value.getPlayer());
 
+		}
 		spawnManager.killAll(false);
 		spawnManager.reset();
 		for(Door door : doorManager.getDoors())
@@ -860,7 +924,7 @@ public class Game
 		turnOffPower();
 		boxManager.loadAllBoxes();
 		barrierManager.unloadAllBarriers();
-		players.clear();
+		gamePlayers.clear();
 		scoreboard = new GameScoreboard(this);
 		instaKill = false;
 		doublePoints = false;
@@ -1275,7 +1339,7 @@ public class Game
 
 		player.setFireTicks(0);
 
-		if(downedPlayerManager.numDownedPlayers() + 1 == players.size())
+		if(downedPlayerManager.numDownedPlayers() + 1 == getPlayers().size())
 			endGame();
 		else
 			downedPlayerManager.setPlayerDowned(player, this);
@@ -1326,24 +1390,32 @@ public class Game
 
 	public boolean isPlayerPlaying(Player player)
 	{
-		return players.contains(player);
+		return getPlayers().contains(player);
+	}
+
+	public boolean isPlayerExited(Player player) {
+		return (gamePlayers.containsKey(player) && gamePlayers.get(player).getState().equals(GamePlayer.PlayerState.LEFT_GAME));
 	}
 
 	public boolean isPlayerSpectating(Player player)
 	{
-		return spectators.contains(player);
+		return (gamePlayers.containsKey(player) && gamePlayers.get(player).getState().equals(GamePlayer.PlayerState.SPECTATING));
 	}
 
 	public List<Player> getPlayersAndSpectators()
 	{
-		ArrayList<Player> combined = new ArrayList<>(players);
-		combined.addAll(spectators);
-		return combined;
+		List<Player> out = new ArrayList<>();
+		for (GamePlayer value : gamePlayers.values()) {
+			if (value.getState().equals(GamePlayer.PlayerState.IN_GAME) || value.getState().equals(GamePlayer.PlayerState.SPECTATING)) {
+				out.add(value.getPlayer());
+			}
+		}
+		return out;
 	}
 
 	public void sendMessageToPlayers(String message)
 	{
-		for(Player player : players)
+		for(Player player : getPlayers())
 			player.sendRawMessage(COMZombies.PREFIX + message);
 	}
 

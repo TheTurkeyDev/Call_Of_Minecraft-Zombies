@@ -99,7 +99,7 @@ public class EntityListener implements Listener
 				Player player = (Player) e.getDamager();
 				if(player.getInventory().getItemInMainHand().getType().equals(Material.IRON_SWORD))
 				{
-					if(game.players.contains(player))
+					if(game.getPlayers().contains(player))
 					{
 						Mob mob = (Mob) entity;
 						double dist = mob.getLocation().distance(player.getLocation());

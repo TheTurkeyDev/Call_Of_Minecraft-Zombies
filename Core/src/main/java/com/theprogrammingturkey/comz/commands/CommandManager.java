@@ -96,6 +96,8 @@ public class CommandManager implements CommandExecutor
 		commandList.put("leave", new LeaveCommand());
 		commandList.put("l", commandList.get("leave"));
 
+		commandList.put("rejoin", new RejoinCommand());
+
 		// Cancel an operation:
 		// Perm -
 		// zombies.cancel
@@ -224,7 +226,6 @@ public class CommandManager implements CommandExecutor
 			}
 			if(args.length <= 0)
 			{
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Call of Minecraft: Zombies, By : " + ChatColor.GOLD + "IModZombies4Fun, turkey2349 and smeths!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Call of Minecraft: Zombies, By : " + ChatColor.GOLD + "Turkey2349, IModZombies4Fun and Smeths!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + " Type /zombies help for a list of commands!");
 				return true;

@@ -127,7 +127,7 @@ public class PlaceholderHook extends PlaceholderExpansion
 					case "wave":
 						return game.getName() + " - " + game.getWave();
 					case "players":
-						return game.getName() + " - " + game.players.size() + "/" + game.maxPlayers;
+						return game.getName() + " - " + game.getPlayers().size() + "/" + game.maxPlayers;
 				}
 			}
 		}
