@@ -16,6 +16,7 @@ repositories {
 
 dependencies {
     implementation project(':API')
+    implementation project(':NMS:1_20_R1')
     implementation project(':NMS:1_19_R3')
     implementation project(':NMS:1_19_2_R2')
     implementation project(':NMS:1_19_2_R1')
@@ -31,12 +32,13 @@ dependencies {
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
     implementation group: 'org.spigotmc', name: 'spigot-api', version: '1.16.4-R0.1-SNAPSHOT'
     implementation group: 'org.spigotmc', name: 'spigot', version: '1.16.4-R0.1-SNAPSHOT'
-    implementation 'me.clip:placeholderapi:2.10.8'
+    implementation 'me.clip:placeholderapi:2.11.1'
 
 }
 
 jar {
     from project(":API").sourceSets.main.output.classesDirs
+    from project(":NMS:1_20_R1").sourceSets.main.output.classesDirs
     from project(":NMS:1_19_R3").sourceSets.main.output.classesDirs
     from project(":NMS:1_19_2_R2").sourceSets.main.output.classesDirs
     from project(":NMS:1_19_2_R1").sourceSets.main.output.classesDirs
