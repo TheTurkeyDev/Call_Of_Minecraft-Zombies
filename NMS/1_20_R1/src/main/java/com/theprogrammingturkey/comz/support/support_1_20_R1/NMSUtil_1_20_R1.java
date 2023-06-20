@@ -10,6 +10,7 @@ import net.minecraft.core.IRegistry;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.Particles;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.PacketPlayOutBlockBreakAnimation;
 import net.minecraft.network.protocol.game.PacketPlayOutNamedSoundEffect;
 import net.minecraft.network.protocol.game.PacketPlayOutWorldParticles;
@@ -46,14 +47,14 @@ public class NMSUtil_1_20_R1 implements INMSUtil
 			double d5 = block.getY() - entityplayer.dp();
 			double d6 = block.getZ() - entityplayer.dt();
 			if(d4 * d4 + d5 * d5 + d6 * d6 < 64 * 64)
-				entityplayer.c.a(packet);
+				sendPacket(entityplayer, packet);
 		}
 	}
 
 	public void playSound(Player player, String sound)
 	{
 		PacketPlayOutNamedSoundEffect packet = new PacketPlayOutNamedSoundEffect(getSoundEffect(new MinecraftKey(sound)), SoundCategory.i, player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ(), 1.0F, 1.0F, 1);
-		((CraftPlayer) player).getHandle().c.a(packet);
+		sendPacket(player, packet);
 	}
 
 	private static Holder.c<SoundEffect> getSoundEffect(MinecraftKey var0) {
@@ -88,6 +89,14 @@ public class NMSUtil_1_20_R1 implements INMSUtil
 				break;
 		}
 		PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(particle, true, location.getX(), location.getY(), location.getZ(), offsetX, offsetY, offsetZ, speed, count);
-		((CraftPlayer) player).getHandle().c.a(packet);
+		sendPacket(player, packet);
+	}
+
+	private void sendPacket(Player player, Packet<?> p){
+		this.sendPacket(((CraftPlayer) player).getHandle(), p);
+	}
+
+	private void sendPacket(EntityPlayer player, Packet<?> p){
+		player.c.a(p);
 	}
 }

@@ -149,6 +149,7 @@ public class SignListener implements Listener
 						return;
 
 					signLogic.onInteract(game, player, sign);
+					event.setCancelled(true);
 				}
 			}
 		}
@@ -171,17 +172,17 @@ public class SignListener implements Listener
 			}
 			else if(signLogic == null)
 			{
-				event.setLine(0, ChatColor.RED + "" + ChatColor.BOLD + lineTwo);
-				event.setLine(1, ChatColor.RED + "" + ChatColor.BOLD + "is not a");
-				event.setLine(2, ChatColor.RED + "" + ChatColor.BOLD + "valid sign");
+				event.setLine(0, ChatColor.RED + String.valueOf(ChatColor.BOLD) + lineTwo);
+				event.setLine(1, ChatColor.RED + String.valueOf(ChatColor.BOLD) + "is not a");
+				event.setLine(2, ChatColor.RED + String.valueOf(ChatColor.BOLD) + "valid sign");
 				event.setLine(3, "");
 
 			}
 			else
 			{
-				event.setLine(0, ChatColor.RED + "" + ChatColor.BOLD + "Sign is");
-				event.setLine(1, ChatColor.RED + "" + ChatColor.BOLD + "not in");
-				event.setLine(2, ChatColor.RED + "" + ChatColor.BOLD + "an arena!");
+				event.setLine(0, ChatColor.RED + String.valueOf(ChatColor.BOLD) + "Sign is");
+				event.setLine(1, ChatColor.RED + String.valueOf(ChatColor.BOLD) + "not in");
+				event.setLine(2, ChatColor.RED + String.valueOf(ChatColor.BOLD) + "an arena!");
 				event.setLine(3, "");
 			}
 		}
