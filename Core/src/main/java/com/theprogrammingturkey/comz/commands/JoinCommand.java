@@ -3,10 +3,13 @@ package com.theprogrammingturkey.comz.commands;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.game.GamePlayer;
 import com.theprogrammingturkey.comz.util.COMZPermission;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+
+import java.util.Map;
 
 public class JoinCommand implements SubCommand
 {
@@ -15,6 +18,11 @@ public class JoinCommand implements SubCommand
 	{
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
+			Map<Player, GamePlayer> gamePlayers = GameManager.INSTANCE.getGame(player).gamePlayers;
+			if (gamePlayers.get(player).getState().equals(GamePlayer.PlayerState.LEFT_GAME)) {
+				gamePlayers.remove(player);
+			}
+			else
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You must leave your current game first!");
 			return true;
 		}
@@ -32,7 +40,7 @@ public class JoinCommand implements SubCommand
 				{
 					if(game.spawnManager.getPoints().size() == 0)
 						continue;
-					if(game.maxPlayers <= game.players.size())
+					if(game.maxPlayers <= game.getPlayers().size())
 						continue;
 					if(COMZPermission.JOIN_ARENA.hasPerm(player, game.getName()))
 					{
@@ -55,7 +63,7 @@ public class JoinCommand implements SubCommand
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Arena has no spawn points!");
 						return true;
 					}
-					if(game.maxPlayers <= game.players.size())
+					if(game.maxPlayers <= game.getPlayers().size())
 					{
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Game is full!");
 						return true;

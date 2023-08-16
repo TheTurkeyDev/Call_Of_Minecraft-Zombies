@@ -114,6 +114,7 @@ public class DownedPlayer implements Listener
 			{
 				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You have died!");
 				game.removePlayer(player);
+				//game.gamePlayers.remove(player);
 				PlayerStats stats = Leaderboard.getPlayerStatFromPlayer(player);
 				stats.setDeaths(stats.getDeaths() + 1);
 			}

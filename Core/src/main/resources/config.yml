@@ -32,6 +32,10 @@ config:
     ZoomTexture: false
     #Change the volume of the round sound
     roundSoundVolume: 0.2
+    #The amount of damage zombies do, 9 is the equivalent 3 hits down, juggernog after the 5th hit down
+    zombieDamage: 9
+    #Juggernog health multiplier (2.5 -> 250 equivalent of COD)
+    juggernogHealth: 2.5
   ReviveSettings:
     ReviveTimer: 4
     ReviveRange: 2
