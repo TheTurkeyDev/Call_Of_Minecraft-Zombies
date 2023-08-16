@@ -4,6 +4,15 @@ import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -17,9 +26,20 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
 
 public class EntityListener implements Listener
 {
+	private Map<Player, Integer> healTimers = new HashMap<>();
+	private final JavaPlugin plugin;
+
+	public EntityListener(JavaPlugin plugin) {
+        this.plugin = plugin;
+    }
+
 	@EventHandler(priority = EventPriority.HIGH)
 	public void entityCombustEvent(EntityCombustEvent event)
 	{
@@ -62,15 +82,20 @@ public class EntityListener implements Listener
 								return;
 							}
 
-							float damage = 6;
+							float damage = (float) ConfigManager.getMainConfig().zombieDamage;
 
 							if(game.perkManager.getPlayersPerks(player).contains(PerkType.JUGGERNOG))
-								damage = damage / 2;
+								damage = damage / (float) ConfigManager.getMainConfig().juggernogHealth;
 
 							damage = game.damagePlayer(player, damage);
 							e.setDamage(damage);
+
+							//heal system
+							resetHealingTimer(player);
+
 							if(damage == 0)
 								e.setCancelled(true);
+
 						}
 						else
 						{
@@ -148,4 +173,45 @@ public class EntityListener implements Listener
 			e.setCancelled(true);
 		}
 	}
+
+	@EventHandler
+    public void onHealthRegen(EntityRegainHealthEvent e) {
+        if(e.getEntity() instanceof Player)
+		{
+			if(GameManager.INSTANCE.isPlayerInGame((Player) e.getEntity())) {
+				e.setCancelled(true);
+			}
+		}
+    }
+
+	private void startHealingTimer(Player player) {
+        if (!healTimers.containsKey(player)) {
+            BukkitRunnable healingTask = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    int currentHealth = (int) player.getHealth();
+                    if (currentHealth < 20) {
+                        player.setHealth(Math.min(currentHealth + 1, 20));
+                    } else {
+                        stopHealingTimer(player);
+                    }
+                }
+            };
+			//every tick
+            int taskId = healingTask.runTaskTimer(plugin, Math.round(20 * ConfigManager.getMainConfig().healTime), 1).getTaskId();
+            healTimers.put(player, taskId);
+        }
+    }
+
+    private void stopHealingTimer(Player player) {
+        if (healTimers.containsKey(player)) {
+            Bukkit.getScheduler().cancelTask(healTimers.get(player));
+            healTimers.remove(player);
+        }
+    }
+
+    private void resetHealingTimer(Player player) {
+        stopHealingTimer(player);
+        startHealingTimer(player);
+    }
 }

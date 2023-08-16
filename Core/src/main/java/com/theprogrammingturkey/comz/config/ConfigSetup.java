@@ -70,9 +70,11 @@ public class ConfigSetup
 
 	public float roundSoundVolume;
 
-	public int zombieDamage;
+	public double zombieDamage;
 
-	public int juggernogHealth;
+	public double juggernogHealth;
+
+	public double healTime;
 
 	/**
 	 * Main method to assign values to every field.
@@ -99,8 +101,9 @@ public class ConfigSetup
 		maxPerks = plugin.getConfig().getInt("config.perks.maxPerks", 4);
 		KillMoney = plugin.getConfig().getInt("config.Economy.MoneyPerKill");
 		//PistolMaterial = plugin.getConfig().getInt("config.Guns.PistolMaterial");
-		zombieDamage = plugin.getConfig().getInt("config.gameSettings.zombieDamage");
-		juggernogHealth = plugin.getConfig().getInt("config.perks.juggernogHealth");
+		zombieDamage = plugin.getConfig().getDouble("config.gameSettings.zombieDamage");
+		juggernogHealth = plugin.getConfig().getDouble("config.perks.juggernogHealth");
+		healTime = plugin.getConfig().getDouble("config.gameSettings.healTime");
 
 		Leaderboard.loadLeaderboard();
 	}

@@ -21,7 +21,7 @@ public class RejoinCommand implements SubCommand
 			return true;
 		}
 		if (COMZPermission.REJOIN_ARENA.hasPerm(player, game.getName())) {
-			if (game.gamePlayers.get(player).getState().equals(GamePlayer.PlayerState.LEFT_GAME)) {
+			if (game.wasDisconnected(player.getName())) {
 				game.addPlayer(player);
 			} else {
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You are already in the game!");

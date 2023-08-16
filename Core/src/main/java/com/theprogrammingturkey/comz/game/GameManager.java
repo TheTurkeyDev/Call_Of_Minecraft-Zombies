@@ -107,7 +107,7 @@ public class GameManager
 	public Game getGame(Player player)
 	{
 		for(Game game : games)
-			if(game.isPlayerPlaying(player) || game.isPlayerSpectating(player) || game.isPlayerExited(player))
+			if(game.isPlayerPlaying(player) || game.isPlayerSpectating(player) || game.wasDisconnected(player.getName()))
 				return game;
 		return null;
 	}

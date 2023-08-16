@@ -272,6 +272,15 @@ public class Game
 		return players;
 	}
 
+	public boolean wasDisconnected(String username) {
+		for (GamePlayer player : gamePlayers.values()) {
+			if (player.getState().equals(GamePlayer.PlayerState.LEFT_GAME) && player.getPlayer().getName().equals(username) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * @return the players spawn location on the map
 	 */
@@ -579,7 +588,7 @@ public class Game
 	}
 
 
-	private void internalAddPlayer(Player player) {
+	private void internalAddPlayer(Player player, int points) {
 		gamePlayers.get(player).setState(GamePlayer.PlayerState.IN_GAME);
 		CachedPlayerInfo.savePlayerInfo(player);
 		scoreboard.addPlayer(player);
@@ -591,9 +600,33 @@ public class Game
 		player.setLevel(0);
 		player.setExp(0);
 		player.teleport(lobbyLocation);
-		PointManager.INSTANCE.setPoints(player, 500);
+		PointManager.INSTANCE.setPoints(player, points);
 		assignPlayerInventory(player);
 		player.setGameMode(GameMode.SURVIVAL);
+
+		COMZombies plugin = COMZombies.getPlugin();
+		for(Player pl : getPlayers())
+		{
+			for(Player p : Bukkit.getOnlinePlayers())
+			{
+				if(!(getPlayers().contains(p)))
+					pl.hidePlayer(plugin, p);
+				else
+					pl.showPlayer(plugin, p);
+			}
+		}
+
+		BaseGun gun = WeaponManager.getGun(startingGun);
+		Game game = GameManager.INSTANCE.getGame(player);
+		if(game != null && gun != null)
+		{
+			PlayerWeaponManager manager = game.getPlayersWeapons(player);
+			manager.addWeapon(gun.getNewInstance(player, 1));
+		}
+		else if(gun == null)
+		{
+			COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "The " + startingGun + " is listed as the starting gun, but it could not be found! Did you forget to change this?");
+		}
 	}
 
 	/**
@@ -606,33 +639,8 @@ public class Game
 		if(mode == ArenaStatus.WAITING || mode == ArenaStatus.STARTING)
 		{
 			gamePlayers.put(player, new GamePlayer(player));
-			internalAddPlayer(player);
-
-
-			COMZombies plugin = COMZombies.getPlugin();
-			for(Player pl : getPlayers())
-			{
-				for(Player p : Bukkit.getOnlinePlayers())
-				{
-					if(!(getPlayers().contains(p)))
-						pl.hidePlayer(plugin, p);
-					else
-						pl.showPlayer(plugin, p);
-				}
-			}
-
-			BaseGun gun = WeaponManager.getGun(startingGun);
-			Game game = GameManager.INSTANCE.getGame(player);
-			if(game != null && gun != null)
-			{
-				PlayerWeaponManager manager = game.getPlayersWeapons(player);
-				manager.addWeapon(gun.getNewInstance(player, 1));
-			}
-			else if(gun == null)
-			{
-				COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "The " + startingGun + " is listed as the starting gun, but it could not be found! Did you forget to change this?");
-			}
-
+			internalAddPlayer(player, 500);
+			
 			sendMessageToPlayers(player.getName() + " has joined with " + getPlayers().size() + "/" + maxPlayers + "!");
 			if(getPlayers().size() >= minPlayers)
 			{
@@ -641,33 +649,13 @@ public class Game
 			}
 		}
 		else if (mode == ArenaStatus.INGAME) {
-			if (gamePlayers.containsKey(player) && gamePlayers.get(player).getState().equals(GamePlayer.PlayerState.LEFT_GAME)) {
-				gamePlayers.get(player).setState(GamePlayer.PlayerState.IN_GAME);
-				CachedPlayerInfo.savePlayerInfo(player);
-				scoreboard.addPlayer(player);
-				gamePlayers.get(player);
-				player.setHealth(20D);
-				player.setFoodLevel(20);
-				player.getInventory().clear();
-				player.getInventory().setArmorContents(null);
-				player.setLevel(0);
-				player.setExp(0);
-				player.teleport(lobbyLocation);
-				assignPlayerInventory(player);
-				player.setGameMode(GameMode.SURVIVAL);
-				gamePlayers.get(player).getWeaponManager().updateWeapons();
-				COMZombies plugin = COMZombies.getPlugin();
-				for(Player pl : getPlayers())
-				{
-					for(Player p : Bukkit.getOnlinePlayers())
-					{
-						if(!(getPlayers().contains(p)))
-							pl.hidePlayer(plugin, p);
-						else
-							pl.showPlayer(plugin, p);
-					}
-				}
 
+			if (wasDisconnected(player.getName())) {
+				removePlayerByName(player.getName());
+
+				gamePlayers.put(player, new GamePlayer(player));
+				internalAddPlayer(player, 500);
+				
 				sendMessageToPlayers(player.getName() + " rejoined!");
 
 			}
@@ -678,6 +666,7 @@ public class Game
 			else {
 				gamePlayers.put(player, new GamePlayer(player));
 				addSpectator(player);
+				sendMessageToPlayers(player.getName() + " has joined as a spectator!");
 			}
 		}
 		else
@@ -725,6 +714,15 @@ public class Game
 		if(getPlayers().size() == 0 && mode != ArenaStatus.WAITING)
 			if(!isDisabled)
 				endGame();
+	}
+
+	public void removePlayerByName(String Name) {
+		for (GamePlayer gp : gamePlayers.values()) {
+			if (gp.getPlayer().getName().equals(Name)) {
+				removePlayer(gp.getPlayer());
+				break;
+			}
+		}
 	}
 
 	private void removePlayerActions(Player player)
