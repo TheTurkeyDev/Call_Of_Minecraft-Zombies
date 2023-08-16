@@ -93,7 +93,7 @@ public class PlayerListener implements Listener
 		{
 			if(downedPlayer.isPlayerDown() && (change.getX() != 0 || change.getY() != 0 || change.getZ() != 0))
 			{
-				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You Moved! You are no longer reviving " + player.getName());
+				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You Moved! You are no longer reviving " + downedPlayer.getPlayer().getName());
 				downedPlayer.cancelRevive();
 			}
 		}
