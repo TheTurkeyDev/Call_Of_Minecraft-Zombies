@@ -4,6 +4,7 @@ import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.PerkType;
 import com.theprogrammingturkey.comz.util.CommandUtil;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -58,6 +59,12 @@ public class PerkManager
 		playerPerks.add(type);
 		playersPerks.put(player, playerPerks);
 		return true;
+	}
+
+	public PerkType getRandomPerk(Player player)
+	{
+		List<PerkType> current = getPlayersPerks(player);
+		return PerkType.getRandomPerk(current);
 	}
 
 	public int getAvailablePerkSlot(Player player)

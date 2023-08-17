@@ -107,14 +107,14 @@ public class SignManager
 					s.setLine(0, ChatColor.RED + "[Zombies]");
 					s.setLine(1, ChatColor.AQUA + "Join");
 					s.setLine(2, game.getName());
-					s.setLine(3, ChatColor.GREEN + "Players: " + game.players.size() + "/" + game.maxPlayers);
+					s.setLine(3, ChatColor.GREEN + "Players: " + game.getPlayers().size() + "/" + game.maxPlayers);
 				}
 				else if(game.getMode().equals(Game.ArenaStatus.INGAME))
 				{
 					s.setLine(0, ChatColor.GREEN + game.getName());
 					s.setLine(1, ChatColor.RED + "InProgress");
 					s.setLine(2, ChatColor.RED + "Wave: " + game.getWave());
-					s.setLine(3, ChatColor.DARK_RED + "Alive: " + game.players.size());
+					s.setLine(3, ChatColor.DARK_RED + "Alive: " + game.getPlayers().size());
 				}
 				s.update();
 			}

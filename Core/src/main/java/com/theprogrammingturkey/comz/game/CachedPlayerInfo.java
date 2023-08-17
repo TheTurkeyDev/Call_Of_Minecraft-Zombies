@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class CachedPlayerInfo
 {
@@ -29,7 +30,9 @@ public class CachedPlayerInfo
 		info.totalExp = player.getTotalExperience();
 		info.invContents = player.getInventory().getContents().clone();
 		info.armorContents = player.getInventory().getArmorContents().clone();
-		savedPlayerInfo.put(player, info);
+		//don't overwrite existing info
+		if(!savedPlayerInfo.containsKey(player))
+			savedPlayerInfo.put(player, info);
 	}
 
 	public static void restorePlayerInfo(Player player)

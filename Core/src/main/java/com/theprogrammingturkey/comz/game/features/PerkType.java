@@ -10,6 +10,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public enum PerkType
 {
 	JUGGERNOG,
@@ -20,7 +24,8 @@ public enum PerkType
 	PHD_FLOPPER,
 	DEADSHOT_DAIQ,
 	MULE_KICK,
-	ELECTRIC_C;
+	ELECTRIC_C,
+	RANDOM;
 
 	public static PerkType getPerkType(String name)
 	{
@@ -136,5 +141,16 @@ public enum PerkType
 				break;
 		}
 		return stack;
+	}
+
+	public static PerkType getRandomPerk(List<PerkType> exclude)
+	{
+		List<PerkType> availablePerks = Arrays.stream(PerkType.values()).filter(pt -> !exclude.contains(pt)).collect(Collectors.toList());
+
+		if(availablePerks.isEmpty())
+			return null;
+		//get random perk from list of available perks
+		int rand = (int) (Math.random() * availablePerks.size());
+		return availablePerks.get(rand);
 	}
 }

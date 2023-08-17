@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.commands;
 
+import com.theprogrammingturkey.comz.game.GamePlayer;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.util.COMZPermission;
 import com.theprogrammingturkey.comz.util.CommandUtil;
@@ -7,6 +8,8 @@ import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class InfoCommand implements SubCommand
 {
@@ -45,9 +48,9 @@ public class InfoCommand implements SubCommand
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Lobby Spawn: x:" + ChatColor.BLUE + game.getLobbyLocation().getBlockX() + ChatColor.GREEN + ", y:" + ChatColor.BLUE + game.getLobbyLocation().getBlockY() + ChatColor.GREEN + ", z:" + ChatColor.BLUE + game.getLobbyLocation().getBlockZ());
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Spectator Spawn: x:" + ChatColor.BLUE + game.getSpectateLocation().getBlockX() + ChatColor.GREEN + ", y:" + ChatColor.BLUE + game.getSpectateLocation().getBlockY() + ChatColor.GREEN + ", z:" + ChatColor.BLUE + game.getSpectateLocation().getBlockZ());
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Players: ");
-
-					for(int i = 0; i < game.players.size(); i++)
-						CommandUtil.sendMessageToPlayer(player, ChatColor.BLUE + "  " + game.players.get(i).getName());
+					List<Player> players = game.getPlayers();
+					for(int i = 0; i < players.size(); i++)
+						CommandUtil.sendMessageToPlayer(player, ChatColor.BLUE + "  " + players.get(i).getName());
 
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Mode: " + ChatColor.BLUE + game.getMode().toString());
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Wave Number: " + ChatColor.BLUE + game.getWave());

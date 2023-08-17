@@ -115,6 +115,13 @@ public class PlayerWeaponManager
 		player.updateInventory();
 	}
 
+	public void updateWeapons() {
+		for (WeaponInstance weapon : weapons) {
+			weapon.updateWeapon();
+			player.updateInventory();
+		}
+	}
+
 	/**
 	 * Used to check if the item the player is holding is a gun
 	 *
