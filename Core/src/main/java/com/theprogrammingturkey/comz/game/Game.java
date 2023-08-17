@@ -15,6 +15,7 @@ import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.Door;
+import com.theprogrammingturkey.comz.game.features.DownedPlayer;
 import com.theprogrammingturkey.comz.game.features.PowerUp;
 import com.theprogrammingturkey.comz.game.features.RandomBox;
 import com.theprogrammingturkey.comz.game.managers.*;
@@ -547,6 +548,16 @@ public class Game
 		}
 
 		waveNumber++;
+
+		//get death and downed players and let them respawn or revive
+		for(Player player : getDeathPlayers()) {
+			addPlayer(player);
+		}
+
+		for(DownedPlayer player : downedPlayerManager.getDownedPlayers()) {
+			player.revivePlayer();
+		}
+		
 		int delay = 0;
 		if(waveNumber != 1)
 		{
@@ -654,12 +665,20 @@ public class Game
 				removePlayerByName(player.getName());
 
 				gamePlayers.put(player, new GamePlayer(player));
-				internalAddPlayer(player, 500);
+				setDead(player);
 				
-				sendMessageToPlayers(player.getName() + " rejoined!");
+				sendMessageToPlayers(player.getName() + " rejoined and can play in the next wave!");
+				player.sendRawMessage(COMZombies.PREFIX + "You will be able to play in the next wave!");
 
+			} else if(isPlayerDeath(player)) {
+
+				// removePlayer(player);
+				gamePlayers.put(player, new GamePlayer(player));
+				//resetPlayer(player);
+				internalAddPlayer(player, 500 * waveNumber);
+
+				sendMessageToPlayers(player.getName() + " can play again!");
 			}
-
 //			else if (getWave() <= 5) {
 //				gamePlayers.put(player, new GamePlayer(player));
 //			}
@@ -692,6 +711,22 @@ public class Game
 		player.teleport(getSpectateLocation());
 	}
 
+	public void setDead(Player player)
+	{
+		if (!gamePlayers.containsKey(player)) {
+			GamePlayer gp = new GamePlayer(player);
+			gp.setState(GamePlayer.PlayerState.DEAD);
+			gamePlayers.put(player, gp);
+		}
+		else {
+			gamePlayers.get(player).setState(GamePlayer.PlayerState.DEAD);
+		}
+		CachedPlayerInfo.savePlayerInfo(player);
+		scoreboard.addPlayer(player);
+		player.setGameMode(GameMode.SPECTATOR);
+		player.teleport(getPlayerSpawn());
+	}
+
 	/**
 	 * Removes a player from the game
 	 *
@@ -700,8 +735,10 @@ public class Game
 	public void removePlayer(Player player)
 	{
 		if(downedPlayerManager.isDownedPlayer(player)) {
-			removePlayerActions(player);
-			gamePlayers.remove(player);
+			//removePlayerActions(player);
+			// gamePlayers.remove(player);
+			setDead(player);
+			resetPlayer(player);
 		}
 		else {
 			if (gamePlayers.containsKey(player)) gamePlayers.get(player).setState(GamePlayer.PlayerState.LEFT_GAME);
@@ -719,7 +756,7 @@ public class Game
 	public void removePlayerByName(String Name) {
 		for (GamePlayer gp : gamePlayers.values()) {
 			if (gp.getPlayer().getName().equals(Name)) {
-				removePlayer(gp.getPlayer());
+				gamePlayers.remove(gp.getPlayer());
 				break;
 			}
 		}
@@ -1405,6 +1442,11 @@ public class Game
 		return (gamePlayers.containsKey(player) && gamePlayers.get(player).getState().equals(GamePlayer.PlayerState.LEFT_GAME));
 	}
 
+	public boolean isPlayerDeath(Player player)
+	{
+		return (gamePlayers.containsKey(player) && gamePlayers.get(player).getState().equals(GamePlayer.PlayerState.DEAD));
+	}
+
 	public boolean isPlayerSpectating(Player player)
 	{
 		return (gamePlayers.containsKey(player) && gamePlayers.get(player).getState().equals(GamePlayer.PlayerState.SPECTATING));
@@ -1415,6 +1457,15 @@ public class Game
 		List<Player> out = new ArrayList<>();
 		gamePlayers.values().stream()
 				.filter(v -> (v.getState().equals(GamePlayer.PlayerState.IN_GAME) || v.getState().equals(GamePlayer.PlayerState.SPECTATING)))
+				.forEach(v -> out.add(v.getPlayer()));
+		return out;
+	}
+
+	public List<Player> getDeathPlayers()
+	{
+		List<Player> out = new ArrayList<>();
+		gamePlayers.values().stream()
+				.filter(v -> v.getState().equals(GamePlayer.PlayerState.DEAD))
 				.forEach(v -> out.add(v.getPlayer()));
 		return out;
 	}

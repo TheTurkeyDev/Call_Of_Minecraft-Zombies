@@ -72,4 +72,12 @@ public class DownedPlayerManager
 	{
 		downedPlayers.remove(dp);
 	}
+
+	public List<DownedPlayer> getDownedPlayers()
+	{
+		List<DownedPlayer> players = new ArrayList<>();
+		for(DownedPlayer dp : downedPlayers)
+			players.add(dp);
+		return players;
+	}
 }

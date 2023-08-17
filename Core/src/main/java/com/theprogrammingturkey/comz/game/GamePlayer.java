@@ -35,6 +35,7 @@ public class GamePlayer {
         IN_GAME,
         SPECTATING,
         LEFT_GAME,
+        DEAD,
         IN_QUEUE
     }
 }
