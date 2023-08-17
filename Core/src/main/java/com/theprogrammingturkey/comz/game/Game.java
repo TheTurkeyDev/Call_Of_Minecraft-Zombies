@@ -946,7 +946,7 @@ public class Game
 		this.mode = ArenaStatus.WAITING;
 		try {
 			for (GamePlayer v : gamePlayers.values()) {
-				if (v.getState().equals(GamePlayer.PlayerState.IN_GAME) || v.getState().equals(GamePlayer.PlayerState.LEFT_GAME)) {
+				if (v.getState().equals(GamePlayer.PlayerState.IN_GAME) || v.getState().equals(GamePlayer.PlayerState.LEFT_GAME ) || v.getState().equals(GamePlayer.PlayerState.DEAD)) {
 					PointManager.INSTANCE.playerLeaveGame(v.getPlayer());
 					removePlayerActions(v.getPlayer());
 				}

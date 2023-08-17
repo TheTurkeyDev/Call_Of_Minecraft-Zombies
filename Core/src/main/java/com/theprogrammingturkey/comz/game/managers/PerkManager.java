@@ -3,6 +3,8 @@ package com.theprogrammingturkey.comz.game.managers;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.PerkType;
+import com.theprogrammingturkey.comz.util.CommandUtil;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -43,12 +45,18 @@ public class PerkManager
 
 	public boolean addPerk(Player player, PerkType type)
 	{
+		System.out.println("Add perk: " + type.name());
 		if(playersPerks.containsKey(player))
 		{
 			List<PerkType> current = playersPerks.get(player);
 			if(current.size() >= ConfigManager.getMainConfig().maxPerks)
 			{
 				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You can only have " + ConfigManager.getMainConfig().maxPerks + " perks!");
+				return false;
+			}
+			if(getPlayersPerks(player).contains(type))
+			{
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You already have " + type + "!");
 				return false;
 			}
 			current.add(type);
@@ -62,6 +70,23 @@ public class PerkManager
 			playersPerks.put(player, newEffects);
 		}
 		return true;
+	}
+
+	public PerkType addRandomPerk(Player player) {
+		System.out.println("Add random perk");
+		List<PerkType> current = playersPerks.get(player);
+		PerkType perk = PerkType.getRandomPerk(current);
+		System.out.println("Random perk " + perk);
+		if(perk != null) {
+			if(addPerk(player, perk)) {
+				return perk;
+			} else {
+				return null;
+			}
+		} else {
+			player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You already have all the perks!");
+			return null;
+		}
 	}
 
 	public int getAvaliblePerkSlot(Player player)

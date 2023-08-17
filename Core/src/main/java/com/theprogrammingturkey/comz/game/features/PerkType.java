@@ -1,6 +1,12 @@
 package com.theprogrammingturkey.comz.game.features;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.util.CommandUtil;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -20,7 +26,8 @@ public enum PerkType
 	PHD_FLOPPER,
 	DEADSHOT_DAIQ,
 	MULE_KICK,
-	ELECTRIC_C;
+	ELECTRIC_C,
+	RANDOM;
 
 	public static PerkType getPerkType(String name)
 	{
@@ -136,5 +143,21 @@ public enum PerkType
 				break;
 		}
 		return stack;
+	}
+
+	public static PerkType getRandomPerk(List<PerkType> exclude)
+    {
+        List<PerkType> availablePerks = Arrays.stream(PerkType.values()).filter(pt -> !exclude.contains(pt)).collect(Collectors.toList());
+        
+        if(availablePerks.isEmpty())
+            return null;
+        //get random perk from list of available perks
+        int rand = (int) (Math.random() * availablePerks.size());
+        return availablePerks.get(rand);
+    }
+
+	public static List<PerkType> getAllPerks()
+	{
+		return List.of(JUGGERNOG, SPEED_COLA, QUICK_REVIVE, DOUBLE_TAP, STAMIN_UP, PHD_FLOPPER, DEADSHOT_DAIQ, MULE_KICK, ELECTRIC_C);
 	}
 }
