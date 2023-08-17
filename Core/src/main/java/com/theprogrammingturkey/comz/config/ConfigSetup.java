@@ -92,7 +92,8 @@ public class ConfigSetup
 		roundSoundVolume = (float) plugin.getConfig().getDouble("config.gameSettings.roundSoundVolume");
 
 		arenaStartTime = plugin.getConfig().getInt("config.gameSettings.arenaStartTime");
-		maxPerks = plugin.getConfig().getInt("config.perks.maxPerks", 4);
+		// We only have a max of 4 inventory slots for perks
+		maxPerks = Math.min(plugin.getConfig().getInt("config.perks.maxPerks", 4), 4);
 		KillMoney = plugin.getConfig().getInt("config.Economy.MoneyPerKill");
 		//PistolMaterial = plugin.getConfig().getInt("config.Guns.PistolMaterial");
 

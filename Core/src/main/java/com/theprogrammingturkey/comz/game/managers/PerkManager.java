@@ -3,6 +3,7 @@ package com.theprogrammingturkey.comz.game.managers;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.PerkType;
+import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -36,35 +37,30 @@ public class PerkManager
 
 	public boolean hasPerk(Player player, PerkType type)
 	{
-		if(playersPerks.containsKey(player))
-			return playersPerks.get(player).contains(type);
-		return false;
+		return playersPerks.getOrDefault(player, new ArrayList<>()).contains(type);
 	}
 
 	public boolean addPerk(Player player, PerkType type)
 	{
-		if(playersPerks.containsKey(player))
+		List<PerkType> playerPerks = getPlayersPerks(player);
+
+		if(playerPerks.contains(type))
 		{
-			List<PerkType> current = playersPerks.get(player);
-			if(current.size() >= ConfigManager.getMainConfig().maxPerks)
-			{
-				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You can only have " + ConfigManager.getMainConfig().maxPerks + " perks!");
-				return false;
-			}
-			current.add(type);
-			playersPerks.remove(player);
-			playersPerks.put(player, current);
+			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You already have " + type + "!");
+			return false;
 		}
-		else
+
+		if(playerPerks.size() >= ConfigManager.getMainConfig().maxPerks)
 		{
-			List<PerkType> newEffects = new ArrayList<>();
-			newEffects.add(type);
-			playersPerks.put(player, newEffects);
+			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You can only have " + ConfigManager.getMainConfig().maxPerks + " perks!");
+			return false;
 		}
+		playerPerks.add(type);
+		playersPerks.put(player, playerPerks);
 		return true;
 	}
 
-	public int getAvaliblePerkSlot(Player player)
+	public int getAvailablePerkSlot(Player player)
 	{
 		for(int i = 4; i <= 7; i++)
 			if(player.getInventory().getItem(i) == null)
@@ -80,8 +76,6 @@ public class PerkManager
 	public void clearPlayersPerks(Player player)
 	{
 		playersPerks.remove(player);
-		List<PerkType> empty = new ArrayList<>();
-		playersPerks.put(player, empty);
 		for(int i = 4; i <= 7; i++)
 			player.getInventory().clear(i);
 	}
@@ -90,7 +84,7 @@ public class PerkManager
 	{
 		if(!game.perkManager.addPerk(player, perk))
 			return;
-		int slot = game.perkManager.getAvaliblePerkSlot(player);
+		int slot = game.perkManager.getAvailablePerkSlot(player);
 		perk.initialEffect(player, perk, slot);
 		if(perk.equals(PerkType.STAMIN_UP))
 			player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));

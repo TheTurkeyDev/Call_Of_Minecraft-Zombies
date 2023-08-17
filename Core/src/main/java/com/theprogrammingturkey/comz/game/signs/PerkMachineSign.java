@@ -54,24 +54,12 @@ public class PerkMachineSign implements IGameSign
 
 			if(playerPoints >= cost)
 			{
-				if(game.perkManager.getPlayersPerks(player).size() > 4)
-				{
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You already have four perks!");
-					return;
-				}
-
-				if(game.perkManager.getPlayersPerks(player).contains(perk))
-				{
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You already have " + perk + "!");
-					return;
-				}
-
 				if(!game.perkManager.addPerk(player, perk))
 					return;
 
 				Bukkit.getPluginManager().callEvent(new PlayerPerkPurchaseEvent(player, perk));
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You now have " + perk.toString().toLowerCase() + "!");
-				int slot = game.perkManager.getAvaliblePerkSlot(player);
+				int slot = game.perkManager.getAvailablePerkSlot(player);
 				perk.initialEffect(player, perk, slot);
 				if(perk.equals(PerkType.STAMIN_UP))
 					player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
