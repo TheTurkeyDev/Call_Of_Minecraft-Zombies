@@ -13,3 +13,4 @@
 .idea/
 build/
 Core/bin/*
+.project
