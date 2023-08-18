@@ -49,6 +49,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 /**
  * Main game class.
@@ -260,26 +261,19 @@ public class Game
 	 */
 	public PlayerWeaponManager getPlayersWeapons(Player player)
 	{
-		if (getPlayers().contains(player))
-		{
+		if(gamePlayers.containsKey(player))
 			return gamePlayers.get(player).getWeaponManager();
-		}
 		return null;
 	}
 
-	public List<Player> getPlayers() {
-		List<Player> players = new ArrayList<>();
-		gamePlayers.values().stream().filter(v -> v.getState().equals(GamePlayer.PlayerState.IN_GAME)).forEach(v -> players.add(v.getPlayer()));
-		return players;
+	public List<Player> getPlayers()
+	{
+		return gamePlayers.values().stream().filter(GamePlayer::isInGame).map(GamePlayer::getPlayer).collect(Collectors.toList());
 	}
 
-	public boolean wasDisconnected(String username) {
-		for (GamePlayer player : gamePlayers.values()) {
-			if (player.getState().equals(GamePlayer.PlayerState.LEFT_GAME) && player.getPlayer().getName().equals(username) ) {
-				return true;
-			}
-		}
-		return false;
+	public boolean wasDisconnected(Player player)
+	{
+		return gamePlayers.containsKey(player);
 	}
 
 	/**
@@ -521,7 +515,7 @@ public class Game
 	 */
 	public void nextWave()
 	{
-		if(getPlayers().size() == 0)
+		if(getPlayers().isEmpty())
 		{
 			this.endGame();
 			return;
@@ -535,11 +529,9 @@ public class Game
 		changingRound = true;
 
 		COMZombies plugin = COMZombies.getPlugin();
-		for(Player pl : getPlayers()) {
-			for (Player p : getPlayers()) {
+		for(Player pl : getPlayers())
+			for(Player p : getPlayers())
 				pl.showPlayer(plugin, p);
-			}
-		}
 
 		if(mode != ArenaStatus.INGAME)
 		{
@@ -550,14 +542,12 @@ public class Game
 		waveNumber++;
 
 		//get death and downed players and let them respawn or revive
-		for(Player player : getDeathPlayers()) {
+		for(Player player : getDeathPlayers())
 			addPlayer(player);
-		}
 
-		for(DownedPlayer player : downedPlayerManager.getDownedPlayers()) {
+		for(DownedPlayer player : downedPlayerManager.getDownedPlayers())
 			player.revivePlayer();
-		}
-		
+
 		int delay = 0;
 		if(waveNumber != 1)
 		{
@@ -569,8 +559,8 @@ public class Game
 			}
 			delay = 200;
 		}
-		List<Player> players = getPlayers();
-		RoundSpawnType spawnType = spawnManager.nextWave(waveNumber, players);
+
+		RoundSpawnType spawnType = spawnManager.nextWave(waveNumber, getPlayers());
 
 		COMZombies.scheduleTask(delay, () ->
 		{
@@ -598,9 +588,9 @@ public class Game
 
 	}
 
-
-	private void internalAddPlayer(Player player, int points) {
-		gamePlayers.get(player).setState(GamePlayer.PlayerState.IN_GAME);
+	private void internalAddPlayer(Player player, int points)
+	{
+		gamePlayers.get(player).setState(PlayerState.IN_GAME);
 		CachedPlayerInfo.savePlayerInfo(player);
 		scoreboard.addPlayer(player);
 		gamePlayers.get(player);
@@ -651,7 +641,7 @@ public class Game
 		{
 			gamePlayers.put(player, new GamePlayer(player));
 			internalAddPlayer(player, 500);
-			
+
 			sendMessageToPlayers(player.getName() + " has joined with " + getPlayers().size() + "/" + maxPlayers + "!");
 			if(getPlayers().size() >= minPlayers)
 			{
@@ -659,19 +649,20 @@ public class Game
 				signManager.updateGame();
 			}
 		}
-		else if (mode == ArenaStatus.INGAME) {
-
-			if (wasDisconnected(player.getName())) {
-				removePlayerByName(player.getName());
+		else if(mode == ArenaStatus.INGAME)
+		{
+			if(wasDisconnected(player))
+			{
+				removePlayer(player);
 
 				gamePlayers.put(player, new GamePlayer(player));
 				setDead(player);
-				
+
 				sendMessageToPlayers(player.getName() + " rejoined and can play in the next wave!");
 				player.sendRawMessage(COMZombies.PREFIX + "You will be able to play in the next wave!");
-
-			} else if(isPlayerDeath(player)) {
-
+			}
+			else if(isPlayerDeath(player))
+			{
 				// removePlayer(player);
 				gamePlayers.put(player, new GamePlayer(player));
 				//resetPlayer(player);
@@ -682,7 +673,8 @@ public class Game
 //			else if (getWave() <= 5) {
 //				gamePlayers.put(player, new GamePlayer(player));
 //			}
-			else {
+			else
+			{
 				gamePlayers.put(player, new GamePlayer(player));
 				addSpectator(player);
 				sendMessageToPlayers(player.getName() + " has joined as a spectator!");
@@ -697,30 +689,18 @@ public class Game
 
 	public void addSpectator(Player player)
 	{
-		if (!gamePlayers.containsKey(player)) {
-			GamePlayer gp = new GamePlayer(player);
-			gp.setState(GamePlayer.PlayerState.SPECTATING);
-			gamePlayers.put(player, gp);
-		}
-		else {
-			gamePlayers.get(player).setState(GamePlayer.PlayerState.SPECTATING);
-		}
-		CachedPlayerInfo.savePlayerInfo(player);
-		scoreboard.addPlayer(player);
-		player.setGameMode(GameMode.SPECTATOR);
-		player.teleport(getSpectateLocation());
+		gamePlayers.computeIfAbsent(player, GamePlayer::new).setState(PlayerState.SPECTATING);
+		setPlayerSpectatorMode(player);
 	}
 
 	public void setDead(Player player)
 	{
-		if (!gamePlayers.containsKey(player)) {
-			GamePlayer gp = new GamePlayer(player);
-			gp.setState(GamePlayer.PlayerState.DEAD);
-			gamePlayers.put(player, gp);
-		}
-		else {
-			gamePlayers.get(player).setState(GamePlayer.PlayerState.DEAD);
-		}
+		gamePlayers.computeIfAbsent(player, GamePlayer::new).setState(PlayerState.DEAD);
+		setPlayerSpectatorMode(player);
+	}
+
+	public void setPlayerSpectatorMode(Player player)
+	{
 		CachedPlayerInfo.savePlayerInfo(player);
 		scoreboard.addPlayer(player);
 		player.setGameMode(GameMode.SPECTATOR);
@@ -734,32 +714,23 @@ public class Game
 	 */
 	public void removePlayer(Player player)
 	{
-		if(downedPlayerManager.isDownedPlayer(player)) {
+		if(downedPlayerManager.isDownedPlayer(player))
+		{
 			//removePlayerActions(player);
 			// gamePlayers.remove(player);
 			setDead(player);
-			resetPlayer(player);
 		}
-		else {
-			if (gamePlayers.containsKey(player)) gamePlayers.get(player).setState(GamePlayer.PlayerState.LEFT_GAME);
-			resetPlayer(player);
+		else if(gamePlayers.containsKey(player))
+		{
+			gamePlayers.get(player).setState(PlayerState.LEFT_GAME);
 		}
+		resetPlayer(player);
 
 		if(!isDisabled)
 			sendMessageToPlayers(player.getName() + " has left the game! Only " + getPlayers().size() + "/" + this.maxPlayers + " player(s) left!");
 
-		if(getPlayers().size() == 0 && mode != ArenaStatus.WAITING)
-			if(!isDisabled)
-				endGame();
-	}
-
-	public void removePlayerByName(String Name) {
-		for (GamePlayer gp : gamePlayers.values()) {
-			if (gp.getPlayer().getName().equals(Name)) {
-				gamePlayers.remove(gp.getPlayer());
-				break;
-			}
-		}
+		if(getPlayers().isEmpty() && mode != ArenaStatus.WAITING && !isDisabled)
+			endGame();
 	}
 
 	private void removePlayerActions(Player player)
@@ -778,7 +749,7 @@ public class Game
 
 		if(downedPlayerManager.isDownedPlayer(player))
 			downedPlayerManager.removeDownedPlayer(player);
-		if (getPlayers().contains(player))
+		if(getPlayers().contains(player))
 			resetPlayer(player);
 
 
@@ -786,13 +757,11 @@ public class Game
 
 	public void removeSpectator(Player player)
 	{
-		if(gamePlayers.containsKey(player))
+		if(gamePlayers.containsKey(player) && gamePlayers.get(player).isSpectating())
 		{
-			if (gamePlayers.get(player).getState().equals(GamePlayer.PlayerState.SPECTATING)) {
-				gamePlayers.remove(player);
-				CachedPlayerInfo.restorePlayerInfo(player);
-				scoreboard.removePlayer(player);
-			}
+			gamePlayers.remove(player);
+			CachedPlayerInfo.restorePlayerInfo(player);
+			scoreboard.removePlayer(player);
 		}
 	}
 
@@ -811,7 +780,7 @@ public class Game
 		COMZombies plugin = COMZombies.getPlugin();
 		for(Player pl : Bukkit.getOnlinePlayers())
 		{
-			if(!getPlayers().contains(pl))
+			if(!gamePlayers.containsKey(pl))
 				player.showPlayer(plugin, pl);
 			else
 				pl.hidePlayer(plugin, player);
@@ -944,20 +913,20 @@ public class Game
 			return;
 
 		this.mode = ArenaStatus.WAITING;
-		try {
-			for (GamePlayer v : gamePlayers.values()) {
-				if (v.getState().equals(GamePlayer.PlayerState.IN_GAME) || v.getState().equals(GamePlayer.PlayerState.LEFT_GAME ) || v.getState().equals(GamePlayer.PlayerState.DEAD)) {
-					PointManager.INSTANCE.playerLeaveGame(v.getPlayer());
-					removePlayerActions(v.getPlayer());
-				}
-				else {
-					resetPlayer(v.getPlayer());
-				}
+
+		for(GamePlayer v : gamePlayers.values())
+		{
+			if(v.isInGame() || v.hasLeftGame() || v.isDead())
+			{
+				PointManager.INSTANCE.playerLeaveGame(v.getPlayer());
+				removePlayerActions(v.getPlayer());
+			}
+			else
+			{
+				resetPlayer(v.getPlayer());
 			}
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+
 		spawnManager.killAll(false);
 		spawnManager.reset();
 		for(Door door : doorManager.getDoors())
@@ -1438,36 +1407,35 @@ public class Game
 		return getPlayers().contains(player);
 	}
 
-	public boolean isPlayerExited(Player player) {
-		return (gamePlayers.containsKey(player) && gamePlayers.get(player).getState().equals(GamePlayer.PlayerState.LEFT_GAME));
+	public boolean isPlayerExited(Player player)
+	{
+		return gamePlayers.containsKey(player) && gamePlayers.get(player).hasLeftGame();
 	}
 
 	public boolean isPlayerDeath(Player player)
 	{
-		return (gamePlayers.containsKey(player) && gamePlayers.get(player).getState().equals(GamePlayer.PlayerState.DEAD));
+		return gamePlayers.containsKey(player) && gamePlayers.get(player).isDead();
 	}
 
 	public boolean isPlayerSpectating(Player player)
 	{
-		return (gamePlayers.containsKey(player) && gamePlayers.get(player).getState().equals(GamePlayer.PlayerState.SPECTATING));
+		return gamePlayers.containsKey(player) && gamePlayers.get(player).isSpectating();
 	}
 
 	public List<Player> getPlayersAndSpectators()
 	{
-		List<Player> out = new ArrayList<>();
-		gamePlayers.values().stream()
-				.filter(v -> (v.getState().equals(GamePlayer.PlayerState.IN_GAME) || v.getState().equals(GamePlayer.PlayerState.SPECTATING)))
-				.forEach(v -> out.add(v.getPlayer()));
-		return out;
+		return gamePlayers.values().stream()
+				.filter(v -> v.isInGame() || v.isSpectating())
+				.map(GamePlayer::getPlayer)
+				.collect(Collectors.toList());
 	}
 
 	public List<Player> getDeathPlayers()
 	{
-		List<Player> out = new ArrayList<>();
-		gamePlayers.values().stream()
-				.filter(v -> v.getState().equals(GamePlayer.PlayerState.DEAD))
-				.forEach(v -> out.add(v.getPlayer()));
-		return out;
+		return gamePlayers.values().stream()
+				.filter(GamePlayer::isDead)
+				.map(GamePlayer::getPlayer)
+				.collect(Collectors.toList());
 	}
 
 	public void sendMessageToPlayers(String message)

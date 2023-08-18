@@ -43,11 +43,10 @@ public class PlayerListener implements Listener
 		}
 
 		Game game = GameManager.INSTANCE.getGame(player);
-		if(game == null) return;
-		if(game.wasDisconnected(player.getName())); {
+		if(game == null)
+			return;
+		if(game.wasDisconnected(player))
 			CommandUtil.sendClickableMessageToPlayer(player, ChatColor.RED + "You can reconnect to your last game with /z rejoin or ", "CLICK HERE", "/z rejoin");
-			
-		}
 	}
 
 	@EventHandler

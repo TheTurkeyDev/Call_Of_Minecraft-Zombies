@@ -2,7 +2,6 @@ package com.theprogrammingturkey.comz.commands;
 
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
-import com.theprogrammingturkey.comz.game.GamePlayer;
 import com.theprogrammingturkey.comz.util.COMZPermission;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
@@ -20,16 +19,17 @@ public class RejoinCommand implements SubCommand
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "There is no game to rejoin!");
 			return true;
 		}
-		if (COMZPermission.REJOIN_ARENA.hasPerm(player, game.getName())) {
-			if (game.wasDisconnected(player.getName())) {
-				game.addPlayer(player);
-			} else {
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You are already in the game!");
-			}
+		if(!COMZPermission.REJOIN_ARENA.hasPerm(player, game.getName()))
+		{
+			CommandUtil.noPermission(player, "rejoin the game");
+			return true;
 		}
-		else CommandUtil.noPermission(player, "rejoin the game");
+		if(game.wasDisconnected(player))
+			game.addPlayer(player);
+		else
+			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You are already in the game!");
 
-		return true;
+		return false;
 	}
 
 }

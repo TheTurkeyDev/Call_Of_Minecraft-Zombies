@@ -75,9 +75,6 @@ public class DownedPlayerManager
 
 	public List<DownedPlayer> getDownedPlayers()
 	{
-		List<DownedPlayer> players = new ArrayList<>();
-		for(DownedPlayer dp : downedPlayers)
-			players.add(dp);
-		return players;
+		return downedPlayers;
 	}
 }

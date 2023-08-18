@@ -3,39 +3,56 @@ package com.theprogrammingturkey.comz.game;
 import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import org.bukkit.entity.Player;
 
-public class GamePlayer {
-    Player player;
-    PlayerWeaponManager weaponManager;
-    PlayerState state;
+public class GamePlayer
+{
+	private final Player player;
+	private final PlayerWeaponManager weaponManager;
+	private PlayerState state;
 
-    public GamePlayer(Player player) {
-        this.player = player;
-        weaponManager = new PlayerWeaponManager(player);
-        state = PlayerState.IN_GAME;
-    }
+	public GamePlayer(Player player)
+	{
+		this.player = player;
+		this.weaponManager = new PlayerWeaponManager(player);
+		this.state = PlayerState.IN_GAME;
+	}
 
-    public void setState(PlayerState state) {
-        this.state = state;
-    }
+	public void setState(PlayerState state)
+	{
+		this.state = state;
+	}
 
-    public PlayerState getState() {
-        return state;
-    }
+	public PlayerState getState()
+	{
+		return state;
+	}
 
-    public PlayerWeaponManager getWeaponManager() {
-        return weaponManager;
-    }
+	public boolean isSpectating()
+	{
+		return state == PlayerState.SPECTATING;
+	}
 
-    public Player getPlayer() {
-        return player;
-    }
+	public boolean isInGame()
+	{
+		return state == PlayerState.IN_GAME;
+	}
 
+	public boolean hasLeftGame()
+	{
+		return state == PlayerState.LEFT_GAME;
+	}
 
-    public enum PlayerState {
-        IN_GAME,
-        SPECTATING,
-        LEFT_GAME,
-        DEAD,
-        IN_QUEUE
-    }
+	public boolean isDead()
+	{
+		return state == PlayerState.DEAD;
+	}
+
+	public PlayerWeaponManager getWeaponManager()
+	{
+		return weaponManager;
+	}
+
+	public Player getPlayer()
+	{
+		return player;
+	}
 }

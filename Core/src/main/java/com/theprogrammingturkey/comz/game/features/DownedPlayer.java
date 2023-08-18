@@ -85,7 +85,8 @@ public class DownedPlayer implements Listener
 		manager.removeWeapon(1);
 		manager.addWeapon(guns[0]);
 		manager.addWeapon(guns[1]);
-		if(reviver != null) PointManager.INSTANCE.addPoints(reviver, 10);
+		if(reviver != null)
+			PointManager.INSTANCE.addPoints(reviver, 10);
 	}
 
 	public void cancelRevive()

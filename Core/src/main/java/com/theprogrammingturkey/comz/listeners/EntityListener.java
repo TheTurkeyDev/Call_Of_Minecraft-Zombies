@@ -1,17 +1,10 @@
 package com.theprogrammingturkey.comz.listeners;
 
+import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -27,18 +20,14 @@ import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EntityListener implements Listener
 {
-	private Map<Player, Integer> healTimers = new HashMap<>();
-	private final JavaPlugin plugin;
-
-	public EntityListener(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
+	private final Map<Player, Integer> healTimers = new HashMap<>();
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void entityCombustEvent(EntityCombustEvent event)
@@ -65,43 +54,34 @@ public class EntityListener implements Listener
 			{
 				if(e.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK)
 				{
-					if(e.getDamager() instanceof Player)
+					Entity damager = e.getDamager();
+					if(damager instanceof Player || !GameManager.INSTANCE.isEntityInGame(damager))
 					{
 						e.setCancelled(true);
+						return;
 					}
-					else
+
+					final Player player = (Player) e.getEntity();
+					Game game = GameManager.INSTANCE.getGame(player);
+					if(game.downedPlayerManager.isDownedPlayer(player))
 					{
-						Entity entity = e.getDamager();
-						if(GameManager.INSTANCE.isEntityInGame(entity))
-						{
-							final Player player = (Player) e.getEntity();
-							Game game = GameManager.INSTANCE.getGame(player);
-							if(game.downedPlayerManager.isDownedPlayer(player))
-							{
-								e.setCancelled(true);
-								return;
-							}
-
-							float damage = (float) ConfigManager.getMainConfig().zombieDamage;
-
-							if(game.perkManager.getPlayersPerks(player).contains(PerkType.JUGGERNOG))
-								damage = damage / (float) ConfigManager.getMainConfig().juggernogHealth;
-
-							damage = game.damagePlayer(player, damage);
-							e.setDamage(damage);
-
-							//heal system
-							resetHealingTimer(player);
-
-							if(damage == 0)
-								e.setCancelled(true);
-
-						}
-						else
-						{
-							e.setCancelled(true);
-						}
+						e.setCancelled(true);
+						return;
 					}
+
+					float damage = (float) ConfigManager.getMainConfig().zombieDamage;
+
+					if(game.perkManager.getPlayersPerks(player).contains(PerkType.JUGGERNOG))
+						damage = damage / (float) ConfigManager.getMainConfig().juggernogHealth;
+
+					damage = game.damagePlayer(player, damage);
+					e.setDamage(damage);
+
+					//heal system
+					resetHealingTimer(player);
+
+					if(damage == 0)
+						e.setCancelled(true);
 				}
 			}
 		}
@@ -175,43 +155,47 @@ public class EntityListener implements Listener
 	}
 
 	@EventHandler
-    public void onHealthRegen(EntityRegainHealthEvent e) {
-        if(e.getEntity() instanceof Player)
+	public void onHealthRegen(EntityRegainHealthEvent e)
+	{
+		Entity ent = e.getEntity();
+		if(ent instanceof Player && GameManager.INSTANCE.isPlayerInGame((Player) ent))
+			e.setCancelled(true);
+	}
+
+	private void startHealingTimer(Player player)
+	{
+		if(!healTimers.containsKey(player))
 		{
-			if(GameManager.INSTANCE.isPlayerInGame((Player) e.getEntity())) {
-				e.setCancelled(true);
-			}
-		}
-    }
-
-	private void startHealingTimer(Player player) {
-        if (!healTimers.containsKey(player)) {
-            BukkitRunnable healingTask = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    int currentHealth = (int) player.getHealth();
-                    if (currentHealth < 20) {
-                        player.setHealth(Math.min(currentHealth + 1, 20));
-                    } else {
-                        stopHealingTimer(player);
-                    }
-                }
-            };
+			BukkitRunnable healingTask = new BukkitRunnable()
+			{
+				@Override
+				public void run()
+				{
+					int currentHealth = (int) player.getHealth();
+					if(currentHealth < 20)
+						player.setHealth(Math.min(currentHealth + 1, 20));
+					else
+						stopHealingTimer(player);
+				}
+			};
 			//every tick
-            int taskId = healingTask.runTaskTimer(plugin, Math.round(20 * ConfigManager.getMainConfig().healTime), 1).getTaskId();
-            healTimers.put(player, taskId);
-        }
-    }
+			int taskId = healingTask.runTaskTimer(COMZombies.getPlugin(), Math.round(20 * ConfigManager.getMainConfig().healTime), 1).getTaskId();
+			healTimers.put(player, taskId);
+		}
+	}
 
-    private void stopHealingTimer(Player player) {
-        if (healTimers.containsKey(player)) {
-            Bukkit.getScheduler().cancelTask(healTimers.get(player));
-            healTimers.remove(player);
-        }
-    }
+	private void stopHealingTimer(Player player)
+	{
+		if(healTimers.containsKey(player))
+		{
+			Bukkit.getScheduler().cancelTask(healTimers.get(player));
+			healTimers.remove(player);
+		}
+	}
 
-    private void resetHealingTimer(Player player) {
-        stopHealingTimer(player);
-        startHealingTimer(player);
-    }
+	private void resetHealingTimer(Player player)
+	{
+		stopHealingTimer(player);
+		startHealingTimer(player);
+	}
 }

@@ -19,14 +19,13 @@ public class JoinCommand implements SubCommand
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
 			Map<Player, GamePlayer> gamePlayers = GameManager.INSTANCE.getGame(player).gamePlayers;
-			if (gamePlayers.get(player).getState().equals(GamePlayer.PlayerState.LEFT_GAME)) {
+			if(gamePlayers.get(player).hasLeftGame())
 				gamePlayers.remove(player);
-			}
 			else
-			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You must leave your current game first!");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You must leave your current game first!");
 			return true;
 		}
-		if(GameManager.INSTANCE.getGames().size() == 0)
+		if(GameManager.INSTANCE.getGames().isEmpty())
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "There are no arenas!");
 			return true;
@@ -38,7 +37,7 @@ public class JoinCommand implements SubCommand
 			{
 				if(game.getMode() != ArenaStatus.DISABLED && game.getMode() != ArenaStatus.INGAME)
 				{
-					if(game.spawnManager.getPoints().size() == 0)
+					if(game.spawnManager.getPoints().isEmpty())
 						continue;
 					if(game.maxPlayers <= game.getPlayers().size())
 						continue;
@@ -58,7 +57,7 @@ public class JoinCommand implements SubCommand
 				Game game = GameManager.INSTANCE.getGame(args[1]);
 				if(game.getMode() != ArenaStatus.DISABLED && game.getMode() != ArenaStatus.INGAME)
 				{
-					if(game.spawnManager.getPoints().size() == 0)
+					if(game.spawnManager.getPoints().isEmpty())
 					{
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Arena has no spawn points!");
 						return true;

@@ -177,7 +177,7 @@ public class COMZombies extends JavaPlugin
 		PluginManager m = getServer().getPluginManager();
 		m.registerEvents(new WeaponListener(), this);
 		m.registerEvents(new ArenaListener(), this);
-		m.registerEvents(new EntityListener(this), this);
+		m.registerEvents(new EntityListener(), this);
 		m.registerEvents(new PlayerChatListener(), this);
 		m.registerEvents(new SignListener(), this);
 		m.registerEvents(new OnPreCommandEvent(), this);
