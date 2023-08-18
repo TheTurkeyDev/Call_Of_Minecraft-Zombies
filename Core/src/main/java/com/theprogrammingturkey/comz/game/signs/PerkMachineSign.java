@@ -59,7 +59,7 @@ public class PerkMachineSign implements IGameSign
 			return;
 		}
 
-		if(perk == PerkType.RANDOM)
+		if(perk == PerkType.DER_WUNDERFIZZ)
 		{
 			perk = game.perkManager.getRandomPerk(player);
 			if(perk == null)

@@ -230,10 +230,10 @@ public class SpawnManager
 			return;
 		}
 
-		int playersSize = game.getPlayers().size();
+		int playersSize = game.getPlayersInGame().size();
 
 		SpawnPoint selectPoint = null;
-		Player player = game.getPlayers().get(COMZombies.rand.nextInt(playersSize));
+		Player player = game.getPlayersInGame().get(COMZombies.rand.nextInt(playersSize));
 
 		List<SpawnPoint> points = getNearestPoints(player.getLocation(), mobsToSpawn);
 		int totalRetries = 0;
@@ -242,7 +242,7 @@ public class SpawnManager
 		{
 			if(curr == points.size())
 			{
-				player = game.getPlayers().get(COMZombies.rand.nextInt(playersSize));
+				player = game.getPlayersInGame().get(COMZombies.rand.nextInt(playersSize));
 				points = getNearestPoints(player.getLocation(), mobsToSpawn / playersSize);
 				curr = 0;
 				continue;
@@ -296,7 +296,7 @@ public class SpawnManager
 	{
 		Player closestPlayer = null;
 		double dist = Integer.MAX_VALUE;
-		for(Player pl : game.getPlayers())
+		for(Player pl : game.getPlayersInGame())
 		{
 			if(game.downedPlayerManager.isDownedPlayer(pl))
 				continue;
@@ -344,7 +344,7 @@ public class SpawnManager
 		if(game.getMode() != ArenaStatus.INGAME)
 			return;
 
-		for(Player pl : game.getPlayers())
+		for(Player pl : game.getPlayersInGame())
 			pl.sendMessage(ChatColor.RED + "Well..  I guess we had an error trying to pick a spawn point out of the many we had! We'll have to end your game because of our lack of skillez.");
 		game.endGame();
 	}
@@ -378,7 +378,7 @@ public class SpawnManager
 	{
 		canSpawn = true;
 
-		if(game.getPlayers().size() == 0 && game.getMode() == ArenaStatus.INGAME)
+		if(game.getPlayersInGame().size() == 0 && game.getMode() == ArenaStatus.INGAME)
 		{
 			this.game.endGame();
 			Bukkit.broadcastMessage(COMZombies.PREFIX + "SmartSpawn was sent a players list with no players in it! Game was ended");

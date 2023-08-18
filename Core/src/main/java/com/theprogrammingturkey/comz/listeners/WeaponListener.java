@@ -127,7 +127,7 @@ public class WeaponListener implements Listener
 											COMZombies.nmsUtil.sendParticleToPlayer(NMSParticleType.HEART, player, mob.getLocation(), x, y, z, 1, 1);
 										}
 									}
-									for(Player pl : game.getPlayers())
+									for(Player pl : game.getPlayersInGame())
 										pl.playSound(pl.getLocation(), Sound.BLOCK_LAVA_POP, 1.0F, 0.0F);
 
 									double zombieHitLocY = toDamageIntesect.intersection.getY() - entToDamage.getLocation().getY();

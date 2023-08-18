@@ -20,7 +20,7 @@ public class ArenaListCommand implements SubCommand
 
 		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "---------------" + ChatColor.DARK_RED + "Arenas" + ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "---------------");
 		for(Game game : GameManager.INSTANCE.getGames())
-			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + game.getName() + ": " + ChatColor.GREEN + "Players: " + game.getPlayers().size() + ", Status: " + game.getMode().toString().toLowerCase());
+			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + game.getName() + ": " + ChatColor.GREEN + "Players: " + game.getPlayersInGame().size() + ", Status: " + game.getMode().toString().toLowerCase());
 
 		return true;
 	}

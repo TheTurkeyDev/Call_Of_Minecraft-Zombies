@@ -39,7 +39,7 @@ public class JoinCommand implements SubCommand
 				{
 					if(game.spawnManager.getPoints().isEmpty())
 						continue;
-					if(game.maxPlayers <= game.getPlayers().size())
+					if(game.maxPlayers <= game.getPlayersInGame().size())
 						continue;
 					if(COMZPermission.JOIN_ARENA.hasPerm(player, game.getName()))
 					{
@@ -62,7 +62,7 @@ public class JoinCommand implements SubCommand
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Arena has no spawn points!");
 						return true;
 					}
-					if(game.maxPlayers <= game.getPlayers().size())
+					if(game.maxPlayers <= game.getPlayersInGame().size())
 					{
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Game is full!");
 						return true;
