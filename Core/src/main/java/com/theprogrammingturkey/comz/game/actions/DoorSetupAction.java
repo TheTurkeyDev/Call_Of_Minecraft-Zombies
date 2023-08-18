@@ -83,19 +83,6 @@ public class DoorSetupAction extends BaseAction
 		if(door.arePointsFinal())
 			return;
 
-		// if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK))
-		// {
-		// 	door.p1 = event.getClickedBlock().getLocation();
-		// 	CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Point one set!");
-		// 	event.setCancelled(true);
-		// }
-		// else if(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
-		// {
-		// 	door.p2 = event.getClickedBlock().getLocation();
-		// 	CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Point two set!");
-		// 	event.setCancelled(true);
-		// }
-
 		if(!door.hasDoorLoc(clickedBlock))
 		{
 			if(event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))

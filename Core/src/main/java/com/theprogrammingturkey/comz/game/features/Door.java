@@ -187,7 +187,7 @@ public class Door
 
 	public boolean hasDoorBlocks()
 	{
-		return !blocks.isEmpty() && blocks.size() >= 2;
+		return blocks.size() >= 2;
 	}
 
 	public void openDoor()
