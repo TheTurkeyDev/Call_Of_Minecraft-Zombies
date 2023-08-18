@@ -45,7 +45,7 @@ public class InfoCommand implements SubCommand
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Lobby Spawn: x:" + ChatColor.BLUE + game.getLobbyLocation().getBlockX() + ChatColor.GREEN + ", y:" + ChatColor.BLUE + game.getLobbyLocation().getBlockY() + ChatColor.GREEN + ", z:" + ChatColor.BLUE + game.getLobbyLocation().getBlockZ());
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Spectator Spawn: x:" + ChatColor.BLUE + game.getSpectateLocation().getBlockX() + ChatColor.GREEN + ", y:" + ChatColor.BLUE + game.getSpectateLocation().getBlockY() + ChatColor.GREEN + ", z:" + ChatColor.BLUE + game.getSpectateLocation().getBlockZ());
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Players: ");
-					for(Player p : game.getPlayers())
+					for(Player p : game.getPlayersAlive())
 						CommandUtil.sendMessageToPlayer(player, ChatColor.BLUE + "  " + p.getName());
 
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Mode: " + ChatColor.BLUE + game.getMode().toString());

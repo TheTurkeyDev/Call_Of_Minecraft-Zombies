@@ -26,7 +26,7 @@ public class HellHoundSpawner extends RoundSpawner
 		if(world == null)
 			return null;
 
-		Player spawnPlayer = game.getPlayers().get(COMZombies.rand.nextInt(game.getPlayers().size()));
+		Player spawnPlayer = game.getPlayersAlive().get(COMZombies.rand.nextInt(game.getPlayersAlive().size()));
 
 		List<Location> possibleSpawns = new ArrayList<>();
 		Location backupLocation = null;

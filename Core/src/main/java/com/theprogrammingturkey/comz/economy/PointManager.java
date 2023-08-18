@@ -82,7 +82,7 @@ public class PointManager
 
 	public void clearGamePoints(Game game)
 	{
-		for(Player pl : game.getPlayers())
+		for(Player pl : game.getPlayersAlive())
 			playerLeaveGame(pl);
 	}
 

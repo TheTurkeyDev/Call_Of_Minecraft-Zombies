@@ -48,7 +48,7 @@ public class GameScoreboard
 		{
 			Score s = objective.getScore(player.getName());
 			playerScores.put(player, s);
-			for(Player pl : game.getPlayers())
+			for(Player pl : game.getPlayersAlive())
 			{
 				if(pl.isValid())
 					pl.setScoreboard(board);
