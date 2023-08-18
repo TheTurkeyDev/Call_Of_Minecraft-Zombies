@@ -111,7 +111,7 @@ public class RandomBox
 
 		int taskID = COMZombies.scheduleTask(0, 10, new Runnable()
 		{
-			int time = 15;
+			int time = 10;
 
 			public void run()
 			{
@@ -159,14 +159,13 @@ public class RandomBox
 							gunSelected = true;
 						}
 					}
-					else if(time == -15)
+					else if(time == -20)
 					{
 						reset();
 					}
-					else
+					else if(!isTeddyBear)
 					{
-						if(!isTeddyBear)
-							namePlate.setCustomName(weapon.getName() + " (" + (15 + time) + ")");
+							namePlate.setCustomName(weapon.getName() + " (" + (20 + time) + ")");
 					}
 					time--;
 				}
