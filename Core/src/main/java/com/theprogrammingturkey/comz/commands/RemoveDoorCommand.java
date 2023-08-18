@@ -32,7 +32,7 @@ public class RemoveDoorCommand implements SubCommand
 		else if(GameManager.INSTANCE.isValidArena(args[1]))
 		{
 			Game game = GameManager.INSTANCE.getGame(args[1]);
-			if(game.doorManager.getDoors().size() == 0)
+			if(game.doorManager.getDoors().isEmpty())
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "This arena has no doors!");
 				return true;

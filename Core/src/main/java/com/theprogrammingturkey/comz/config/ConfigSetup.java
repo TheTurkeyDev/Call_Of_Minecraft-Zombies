@@ -102,9 +102,9 @@ public class ConfigSetup
 		maxPerks = Math.min(plugin.getConfig().getInt("config.perks.maxPerks", 4), 4);
 		KillMoney = plugin.getConfig().getInt("config.Economy.MoneyPerKill");
 		//PistolMaterial = plugin.getConfig().getInt("config.Guns.PistolMaterial");
-		zombieDamage = plugin.getConfig().getDouble("config.gameSettings.zombieDamage");
-		juggernogHealth = plugin.getConfig().getDouble("config.perks.juggernogHealth");
-		healTime = plugin.getConfig().getDouble("config.gameSettings.healTime");
+		zombieDamage = plugin.getConfig().getDouble("config.gameSettings.zombieDamage", 9);
+		juggernogHealth = plugin.getConfig().getDouble("config.perks.juggernogHealth", 2.5);
+		healTime = plugin.getConfig().getDouble("config.gameSettings.healTime", 5);
 
 		Leaderboard.loadLeaderboard();
 	}
