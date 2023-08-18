@@ -20,6 +20,8 @@ public class DoorSetupAction extends BaseAction
 {
 	private final Door door;
 
+	private int state = 0;
+
 	public DoorSetupAction(Player player, Game game, Door door)
 	{
 		super(player, game);
@@ -51,7 +53,7 @@ public class DoorSetupAction extends BaseAction
 		Block clickedBlock = event.getClickedBlock();
 		if(clickedBlock != null && clickedBlock.getType().equals(Material.END_PORTAL_FRAME))
 		{
-			if(!door.arePointsFinal() && door.areSpawnPointsFinal())
+			if(state != 1)
 				return;
 
 			SpawnPoint point = game.spawnManager.getSpawnPoint(clickedBlock.getLocation());
@@ -61,44 +63,35 @@ public class DoorSetupAction extends BaseAction
 
 			door.addSpawnPoint(point);
 			GameManager.INSTANCE.saveAllGames();
-			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn point selected!");
+			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Spawn point selected!");
 			event.setCancelled(true);
 		}
 
-		if(door.arePointsFinal() && door.areSpawnPointsFinal())
+		if(state == 2 && (event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)))
 		{
-			if(event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+			Block block = event.getClickedBlock();
+			if(BlockUtils.isSign(block.getType()))
 			{
-				Block block = event.getClickedBlock();
-				if(BlockUtils.isSign(block.getType()))
-				{
-					Sign sign = (Sign) event.getClickedBlock().getState();
-					door.addSign(sign);
-					event.setCancelled(true);
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Sign selected!");
-				}
+				Sign sign = (Sign) event.getClickedBlock().getState();
+				door.addSign(sign);
+				event.setCancelled(true);
+				CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Sign selected!");
 			}
 		}
 
-		if(door.arePointsFinal())
-			return;
-
-		if(!door.hasDoorLoc(clickedBlock))
+		if(clickedBlock != null && (event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)))
 		{
-			if(event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+			if(!door.hasDoorLoc(clickedBlock))
 			{
 				door.addDoorBlock(clickedBlock.getLocation());
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Block added!");
-				event.setCancelled(true);
+				CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Block added!");
 			}
-		}
-		else
-		{
-			if(event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+			else
+			{
 				door.removeDoorBlock(clickedBlock.getLocation());
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Block removed!");
-				event.setCancelled(true);
 			}
+			event.setCancelled(true);
 		}
 	}
 
@@ -107,32 +100,34 @@ public class DoorSetupAction extends BaseAction
 	{
 		if(message.equalsIgnoreCase("done"))
 		{
-			if(door.hasDoorBlocks() && !door.areSpawnPointsFinal() && !door.arePointsFinal())
+			if(state == 0)
 			{
-				door.setPointsFinal(true);
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Door points for door set!");
-				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now select any spawn points in the room the door leads to.");
-				door.saveBlocks(door.p1, door.p2);
+				if(door.hasDoorBlocks())
+				{
+					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Door points for door set!");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now select any spawn points in the room the door leads to.");
+					state++;
+				}
 			}
-			else if(door.arePointsFinal() && !door.areSpawnPointsFinal() && !door.areSignsFinal())
+			else if(state == 1)
 			{
-				door.setSpawnPointsFinal(true);
-				if(door.getSpawnsInRoomDoorLeadsTo().size() == 0)
+				if(door.getSpawnsInRoomDoorLeadsTo().isEmpty())
 					door.addSpawnPoint(null);
 
 				COMZombies.scheduleTask(1, game::resetSpawnLocationBlocks);
 
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Spawn points for door set!");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Spawn points for door set!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now select any signs that can open this door.");
+				state++;
 			}
-			else if(door.arePointsFinal() && door.areSpawnPointsFinal() && !door.areSignsFinal())
+			else if(state == 2)
 			{
-				door.setSignsFinal(true);
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Signs for door set!");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Signs for door set!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now type in a price for the doors.");
+				state++;
 			}
 		}
-		else if(door.arePointsFinal() && door.areSpawnPointsFinal() && door.areSignsFinal())
+		else if(state == 3)
 		{
 			if(!message.matches("[0-9]{1,5}"))
 			{
@@ -143,7 +138,7 @@ public class DoorSetupAction extends BaseAction
 			int price = Integer.parseInt(message);
 
 			door.setPrice(price);
-			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Door setup complete!");
+			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Door setup complete!");
 			door.closeDoor();
 			COMZombies.scheduleTask(1, () -> COMZombies.getPlugin().activeActions.remove(player));
 		}

@@ -25,12 +25,7 @@ import java.util.logging.Level;
 
 public class Door
 {
-	public Location p1;
-	public Location p2;
 	public String doorID;
-	private boolean areSpawnPointsFinal = false;
-	private boolean arePointsFinal = false;
-	private boolean areSignsFinal = false;
 	private final Game game;
 	private int price = 0;
 	private final Map<Block, Material> blocks = new HashMap<>();
@@ -111,15 +106,14 @@ public class Door
 		spawnsInRoomDoorLeadsTo = points;
 	}
 
-	public void setSignsFinal(boolean boo)
-	{
-		areSignsFinal = boo;
-	}
-
 	public void playerDoorOpenSound()
 	{
 		World world = game.getWorld();
-		world.playSound(p1, Sound.BLOCK_WOODEN_DOOR_OPEN, 1L, 1L);
+		if(!blocks.isEmpty())
+		{
+			Block b = blocks.keySet().toArray(new Block[0])[0];
+			world.playSound(b.getLocation(), Sound.BLOCK_WOODEN_DOOR_OPEN, 1L, 1L);
+		}
 	}
 
 	private void loadSigns(JsonArray signs)
@@ -136,13 +130,8 @@ public class Door
 				if(BlockUtils.isSign(block.getType()))
 				{
 					Sign sign = (Sign) block.getState();
-					try
-					{
-						price = Integer.parseInt(sign.getLine(3));
-					} catch(NumberFormatException e)
-					{
-						price = 750;
-					}
+					String costLine = sign.getLine(3);
+					price = costLine.matches("[0-9]{1,9}") ? Integer.parseInt(costLine) : 750;
 					this.signs.add(sign);
 				}
 			}
@@ -154,35 +143,11 @@ public class Door
 		}
 	}
 
-	public boolean areSignsFinal()
-	{
-		return areSignsFinal;
-	}
 
 	public void addSpawnPoint(SpawnPoint point)
 	{
 		if(point != null)
 			spawnsInRoomDoorLeadsTo.add(point);
-	}
-
-	public void setSpawnPointsFinal(boolean boo)
-	{
-		areSpawnPointsFinal = boo;
-	}
-
-	public boolean areSpawnPointsFinal()
-	{
-		return areSpawnPointsFinal;
-	}
-
-	public void setPointsFinal(boolean boo)
-	{
-		arePointsFinal = boo;
-	}
-
-	public boolean arePointsFinal()
-	{
-		return arePointsFinal;
 	}
 
 	public boolean hasDoorBlocks()
@@ -302,7 +267,7 @@ public class Door
 		GameManager.INSTANCE.saveAllGames();
 	}
 
-	public void addDoorBlock(Location loc) 
+	public void addDoorBlock(Location loc)
 	{
 		Block block = loc.getBlock();
 		this.addDoorBlock(block, block.getType());
@@ -322,11 +287,6 @@ public class Door
 	public List<Block> getBlocks()
 	{
 		return new ArrayList<>(blocks.keySet());
-	}
-
-	public boolean hasBothLocations()
-	{
-		return p1 != null && p2 != null;
 	}
 
 	public boolean hasDoorLoc(Block b)
