@@ -37,8 +37,6 @@ public class AddDoorCommand implements SubCommand
 				Game game = GameManager.INSTANCE.getGame(args[1]);
 				Door door = new Door(game, Util.genRandId());
 				plugin.activeActions.put(player, new DoorSetupAction(player, game, door));
-
-				game.doorManager.addDoor(door);
 			}
 			else
 			{

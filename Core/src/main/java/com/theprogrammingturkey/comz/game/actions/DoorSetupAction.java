@@ -62,7 +62,6 @@ public class DoorSetupAction extends BaseAction
 				return;
 
 			door.addSpawnPoint(point);
-			GameManager.INSTANCE.saveAllGames();
 			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Spawn point selected!");
 			event.setCancelled(true);
 		}
@@ -140,6 +139,8 @@ public class DoorSetupAction extends BaseAction
 			door.setPrice(price);
 			CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Door setup complete!");
 			door.closeDoor();
+			game.doorManager.addDoor(door);
+			GameManager.INSTANCE.saveAllGames();
 			COMZombies.scheduleTask(1, () -> COMZombies.getPlugin().activeActions.remove(player));
 		}
 	}
