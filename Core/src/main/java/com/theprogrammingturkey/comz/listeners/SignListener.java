@@ -8,6 +8,8 @@ import com.theprogrammingturkey.comz.game.signs.*;
 import com.theprogrammingturkey.comz.util.BlockUtils;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -126,6 +128,12 @@ public class SignListener implements Listener
 			Sign sign = (Sign) event.getClickedBlock().getState();
 			Player player = event.getPlayer();
 
+			if (!event.getPlayer().isSneaking() && GameManager.INSTANCE.isPlayerInGame(player)) {
+				sign.setEditable(false);
+				sign.update();
+				event.setCancelled(true);
+			}
+
 			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && player.isSneaking() && player.isOp())
 			{
 				String Line1 = ChatColor.stripColor(sign.getLine(0));
@@ -187,4 +195,8 @@ public class SignListener implements Listener
 			}
 		}
 	}
+
+	private boolean isSignBlock(final Material material) {
+        return material.name().endsWith("_SIGN");
+    }
 }
