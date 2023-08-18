@@ -31,8 +31,8 @@ public class DoorSetupAction extends BaseAction
 			player.getInventory().addItem(new ItemStack(Material.WOODEN_SWORD));
 
 		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "-------" + ChatColor.DARK_RED + "Door Setup" + ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "-------");
-		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Select a door region using the wooden sword.");
-		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "When both ends are selected, type done, go into the room the door opens to and click on any ender portal frame (spawn point) that is in there with the sword.");
+		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Select each block individually to be the door using the wooden sword.");
+		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Once you have this complete, type done, go into the room the door opens to and click on any ender portal frame (spawn point) that is in there with the sword.");
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Once you have this complete, type done, find any signs that open this door and click them with the sword.");
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "After clicking on the signs, type done");
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Lastly! In chat, type a price for the door in chat.");
@@ -83,17 +83,35 @@ public class DoorSetupAction extends BaseAction
 		if(door.arePointsFinal())
 			return;
 
-		if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK))
+		// if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK))
+		// {
+		// 	door.p1 = event.getClickedBlock().getLocation();
+		// 	CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Point one set!");
+		// 	event.setCancelled(true);
+		// }
+		// else if(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+		// {
+		// 	door.p2 = event.getClickedBlock().getLocation();
+		// 	CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Point two set!");
+		// 	event.setCancelled(true);
+		// }
+
+		if(!door.hasDoorLoc(clickedBlock))
 		{
-			door.p1 = event.getClickedBlock().getLocation();
-			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Point one set!");
-			event.setCancelled(true);
+			if(event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+			{
+				door.addDoorBlock(clickedBlock.getLocation());
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Block added!");
+				event.setCancelled(true);
+			}
 		}
-		else if(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+		else
 		{
-			door.p2 = event.getClickedBlock().getLocation();
-			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Point two set!");
-			event.setCancelled(true);
+			if(event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+				door.removeDoorBlock(clickedBlock.getLocation());
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Block removed!");
+				event.setCancelled(true);
+			}
 		}
 	}
 
@@ -102,7 +120,7 @@ public class DoorSetupAction extends BaseAction
 	{
 		if(message.equalsIgnoreCase("done"))
 		{
-			if(door.hasBothLocations() && !door.areSpawnPointsFinal() && !door.arePointsFinal())
+			if(door.hasDoorBlocks() && !door.areSpawnPointsFinal() && !door.arePointsFinal())
 			{
 				door.setPointsFinal(true);
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Door points for door set!");

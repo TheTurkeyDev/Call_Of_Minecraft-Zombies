@@ -185,6 +185,11 @@ public class Door
 		return arePointsFinal;
 	}
 
+	public boolean hasDoorBlocks()
+	{
+		return !blocks.isEmpty() && blocks.size() >= 2;
+	}
+
 	public void openDoor()
 	{
 		int interval = 1;
@@ -297,6 +302,23 @@ public class Door
 		GameManager.INSTANCE.saveAllGames();
 	}
 
+	public void addDoorBlock(Location loc) 
+	{
+		Block block = loc.getBlock();
+		this.addDoorBlock(block, block.getType());
+	}
+
+	public void addDoorBlock(Block block, Material mat)
+	{
+		blocks.put(block, mat);
+	}
+
+	public void removeDoorBlock(Location loc)
+	{
+		Block block = loc.getBlock();
+		blocks.remove(block);
+	}
+
 	public List<Block> getBlocks()
 	{
 		return new ArrayList<>(blocks.keySet());
@@ -305,6 +327,11 @@ public class Door
 	public boolean hasBothLocations()
 	{
 		return p1 != null && p2 != null;
+	}
+
+	public boolean hasDoorLoc(Block b)
+	{
+		return blocks.containsKey(b);
 	}
 
 }
