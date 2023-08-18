@@ -25,13 +25,15 @@ public enum PerkType
 	DEADSHOT_DAIQ,
 	MULE_KICK,
 	ELECTRIC_C,
-	RANDOM;
+	DER_WUNDERFIZZ;
 
 	public static PerkType getPerkType(String name)
 	{
 		for(PerkType pt : values())
 			if((ChatColor.GOLD + pt.toString()).equalsIgnoreCase(name) || (pt.toString().toLowerCase().equalsIgnoreCase(name)))
 				return pt;
+		if(name.equalsIgnoreCase("der wunderfizz") || name.equalsIgnoreCase("wunderfizz") || name.equalsIgnoreCase("random"))
+			return DER_WUNDERFIZZ;
 		return null;
 	}
 
