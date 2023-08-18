@@ -147,7 +147,7 @@ public enum PerkType
 
 	public static PerkType getRandomPerk(List<PerkType> exclude)
 	{
-		List<PerkType> availablePerks = Arrays.stream(PerkType.values()).filter(pt -> !exclude.contains(pt)).collect(Collectors.toList());
+		List<PerkType> availablePerks = Arrays.stream(PerkType.values()).filter(pt -> !exclude.contains(pt) && pt != PerkType.DER_WUNDERFIZZ).collect(Collectors.toList());
 
 		if(availablePerks.isEmpty())
 			return null;
