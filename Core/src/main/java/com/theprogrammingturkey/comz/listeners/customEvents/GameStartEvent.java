@@ -22,7 +22,7 @@ public class GameStartEvent extends Event
 
 	public List<Player> getInGamePlayers()
 	{
-		return game.getPlayersAlive();
+		return game.getPlayersInGame();
 	}
 
 	public Game getGame()

@@ -59,7 +59,7 @@ public class PowerUpDropListener implements Listener
 			switch(powerUp)
 			{
 				case MAX_AMMO:
-					for(Player pl : game.getPlayersAlive())
+					for(Player pl : game.getPlayersInGame())
 					{
 						PlayerWeaponManager manager = game.getPlayersWeapons(pl);
 						manager.maxAmmo();
@@ -77,7 +77,7 @@ public class PowerUpDropListener implements Listener
 						barrier.repairFull();
 					break;
 				case NUKE:
-					for(Player pl : game.getPlayersAlive())
+					for(Player pl : game.getPlayersInGame())
 					{
 						if(game.isDoublePoints())
 							PointManager.INSTANCE.addPoints(player, 800);
@@ -113,7 +113,7 @@ public class PowerUpDropListener implements Listener
 			}
 
 			if(duration != -1)
-				for(Player pl : game.getPlayersAlive())
+				for(Player pl : game.getPlayersInGame())
 					powerUpDisplayTimer(pl, powerUp, duration);
 		}
 		else if(GameManager.INSTANCE.isEntityInGame(event.getEntity()))
@@ -137,7 +137,7 @@ public class PowerUpDropListener implements Listener
 
 	public void notifyAll(Game game, PowerUp powerUp)
 	{
-		for(Player pl : game.getPlayersAlive())
+		for(Player pl : game.getPlayersInGame())
 		{
 			pl.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + powerUp.getDisplay() + "!");
 			pl.playSound(pl.getLocation(), powerUp.getSound(), 1, 1);

@@ -266,9 +266,9 @@ public class Game
 		return null;
 	}
 
-	public List<Player> getPlayersAlive()
+	public List<Player> getPlayersInGame()
 	{
-		return gamePlayers.values().stream().filter(GamePlayer::isInGame).map(GamePlayer::getPlayer).collect(Collectors.toList());
+		return gamePlayers.values().stream().filter(gp -> gp.isInGame() || gp.isDead()).map(GamePlayer::getPlayer).collect(Collectors.toList());
 	}
 
 	public boolean wasDisconnected(Player player)
@@ -458,7 +458,7 @@ public class Game
 		waveNumber = 0;
 		changingRound = false;
 		mode = ArenaStatus.INGAME;
-		for(Player player : gamePlayers.keySet())
+		for(Player player : getPlayersInGame())
 		{
 			player.teleport(playerTPLocation);
 			player.setAllowFlight(false);
@@ -515,7 +515,7 @@ public class Game
 	 */
 	public void nextWave()
 	{
-		if(getPlayersAlive().isEmpty())
+		if(getPlayersInGame().isEmpty())
 		{
 			this.endGame();
 			return;
@@ -529,8 +529,8 @@ public class Game
 		changingRound = true;
 
 		COMZombies plugin = COMZombies.getPlugin();
-		for(Player pl : getPlayersAlive())
-			for(Player p : getPlayersAlive())
+		for(Player pl : getPlayersInGame())
+			for(Player p : getPlayersInGame())
 				pl.showPlayer(plugin, p);
 
 		if(mode != ArenaStatus.INGAME)
@@ -560,7 +560,7 @@ public class Game
 			delay = 200;
 		}
 
-		RoundSpawnType spawnType = spawnManager.nextWave(waveNumber, getPlayersAlive());
+		RoundSpawnType spawnType = spawnManager.nextWave(waveNumber, getPlayersInGame());
 
 		COMZombies.scheduleTask(delay, () ->
 		{
@@ -593,7 +593,6 @@ public class Game
 		gamePlayers.get(player).setState(PlayerState.IN_GAME);
 		CachedPlayerInfo.savePlayerInfo(player);
 		scoreboard.addPlayer(player);
-		gamePlayers.get(player);
 		player.setHealth(20D);
 		player.setFoodLevel(20);
 		player.getInventory().clear();
@@ -606,11 +605,11 @@ public class Game
 		player.setGameMode(GameMode.SURVIVAL);
 
 		COMZombies plugin = COMZombies.getPlugin();
-		for(Player pl : getPlayersAlive())
+		for(Player pl : getPlayersInGame())
 		{
 			for(Player p : Bukkit.getOnlinePlayers())
 			{
-				if(!(getPlayersAlive().contains(p)))
+				if(!(getPlayersInGame().contains(p)))
 					pl.hidePlayer(plugin, p);
 				else
 					pl.showPlayer(plugin, p);
@@ -642,8 +641,8 @@ public class Game
 			gamePlayers.put(player, new GamePlayer(player));
 			internalAddPlayer(player, 500);
 
-			sendMessageToPlayers(player.getName() + " has joined with " + getPlayersAlive().size() + "/" + maxPlayers + "!");
-			if(getPlayersAlive().size() >= minPlayers)
+			sendMessageToPlayers(player.getName() + " has joined with " + getPlayersInGame().size() + "/" + maxPlayers + "!");
+			if(getPlayersInGame().size() >= minPlayers)
 			{
 				setStarting(false);
 				signManager.updateGame();
@@ -727,9 +726,9 @@ public class Game
 		resetPlayer(player);
 
 		if(!isDisabled)
-			sendMessageToPlayers(player.getName() + " has left the game! Only " + getPlayersAlive().size() + "/" + this.maxPlayers + " player(s) left!");
+			sendMessageToPlayers(player.getName() + " has left the game! Only " + getPlayersInGame().size() + "/" + this.maxPlayers + " player(s) left!");
 
-		if(getPlayersAlive().isEmpty() && mode != ArenaStatus.WAITING && !isDisabled)
+		if(getPlayersInGame().isEmpty() && mode != ArenaStatus.WAITING && !isDisabled)
 			endGame();
 	}
 
@@ -749,7 +748,7 @@ public class Game
 
 		if(downedPlayerManager.isDownedPlayer(player))
 			downedPlayerManager.removeDownedPlayer(player);
-		if(getPlayersAlive().contains(player))
+		if(getPlayersInGame().contains(player))
 			resetPlayer(player);
 
 
@@ -1353,7 +1352,7 @@ public class Game
 
 		player.setFireTicks(0);
 
-		if(downedPlayerManager.numDownedPlayers() + 1 == getPlayersAlive().size())
+		if(downedPlayerManager.numDownedPlayers() + 1 == getPlayersInGame().size())
 			endGame();
 		else
 			downedPlayerManager.setPlayerDowned(player, this);
@@ -1404,7 +1403,7 @@ public class Game
 
 	public boolean isPlayerPlaying(Player player)
 	{
-		return getPlayersAlive().contains(player);
+		return getPlayersInGame().contains(player);
 	}
 
 	public boolean isPlayerExited(Player player)
@@ -1440,7 +1439,7 @@ public class Game
 
 	public void sendMessageToPlayers(String message)
 	{
-		for(Player player : getPlayersAlive())
+		for(Player player : getPlayersInGame())
 			player.sendRawMessage(COMZombies.PREFIX + message);
 	}
 
