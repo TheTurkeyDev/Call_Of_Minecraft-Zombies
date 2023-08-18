@@ -85,7 +85,7 @@ public class AutoStart
 		@Override
 		public void run()
 		{
-			if(game.getMode() == Game.ArenaStatus.INGAME || game.players.isEmpty())
+			if(game.getMode() == Game.ArenaStatus.INGAME || game.getPlayersAlive().isEmpty())
 				return;
 
 			remain = remain - 1;
@@ -106,7 +106,7 @@ public class AutoStart
 					index = index - 1;
 				}
 
-				for(Player player : game.players)
+				for(Player player : game.getPlayersAlive())
 					COMZombies.nmsUtil.sendActionBarMessage(player, ChatColor.RED + "Starting In: " + remain);
 
 				game.signManager.updateGame();

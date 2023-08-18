@@ -1,6 +1,10 @@
 package com.theprogrammingturkey.comz.util;
 
 import com.theprogrammingturkey.comz.COMZombies;
+
+import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.hover.content.Text;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -14,6 +18,22 @@ public class CommandUtil
 	public static void sendMessageToPlayer(Player player, String message)
 	{
 		player.sendMessage(COMZombies.PREFIX + message);
+	}
+
+	/**
+	 * @param player  to send the message to
+	 * @param message to be sent to the player
+	 */
+	public static void sendClickableMessageToPlayer(Player player, String message, String clickMessage, String command)
+	{
+		TextComponent first = new TextComponent(COMZombies.PREFIX + message);
+		//bold red
+		TextComponent component = new TextComponent(clickMessage);
+		component.setBold(true);
+		component.setColor(net.md_5.bungee.api.ChatColor.GOLD);
+		component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to run command")));
+		component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
+		player.spigot().sendMessage(first, component);
 	}
 
 	/**

@@ -96,6 +96,11 @@ public class CommandManager implements CommandExecutor
 		commandList.put("leave", new LeaveCommand());
 		commandList.put("l", commandList.get("leave"));
 
+		// Rejoin a game in your previous arena:
+		// Perm
+		// - zombies.rejoin
+		commandList.put("rejoin", new RejoinCommand());
+
 		// Cancel an operation:
 		// Perm -
 		// zombies.cancel

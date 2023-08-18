@@ -36,42 +36,51 @@ public class PerkMachineSign implements IGameSign
 		if(perk == null)
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "An error occured when trying to buy this perk! Leave the game and contact an admin please.");
+			return;
+		}
+
+
+		int playerPoints = PointManager.INSTANCE.getPlayersPoints(player);
+		String costStr = sign.getLine(3);
+		int cost;
+		if(costStr.matches("[0-9]{1,5}"))
+		{
+			cost = Integer.parseInt(costStr);
 		}
 		else
 		{
-			int playerPoints = PointManager.INSTANCE.getPlayersPoints(player);
-			String costStr = sign.getLine(3);
-			int cost;
-			if(costStr.matches("[0-9]{1,5}"))
-			{
-				cost = Integer.parseInt(costStr);
-			}
-			else
-			{
-				cost = 2000;
-				CommandUtil.sendMessageToPlayer(player, costStr + " is not a valid amount!");
-			}
+			cost = 2000;
+			CommandUtil.sendMessageToPlayer(player, costStr + " is not a valid amount!");
+		}
 
-			if(playerPoints >= cost)
-			{
-				if(!game.perkManager.addPerk(player, perk))
-					return;
+		if(playerPoints < cost)
+		{
+			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You do not have enough points to buy this!");
+			return;
+		}
 
-				Bukkit.getPluginManager().callEvent(new PlayerPerkPurchaseEvent(player, perk));
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You now have " + perk.toString().toLowerCase() + "!");
-				int slot = game.perkManager.getAvailablePerkSlot(player);
-				perk.initialEffect(player, perk, slot);
-				if(perk.equals(PerkType.STAMIN_UP))
-					player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
-
-				PointManager.INSTANCE.takePoints(player, cost);
-				PointManager.INSTANCE.notifyPlayer(player);
-			}
-			else
+		if(perk == PerkType.DER_WUNDERFIZZ)
+		{
+			perk = game.perkManager.getRandomPerk(player);
+			if(perk == null)
 			{
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You do not have enough points to buy this!");
+				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You already have all the perks!");
+				return;
 			}
 		}
+
+		if(!game.perkManager.addPerk(player, perk))
+			return;
+
+		Bukkit.getPluginManager().callEvent(new PlayerPerkPurchaseEvent(player, perk));
+		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You now have " + perk.toString().toLowerCase() + "!");
+		int slot = game.perkManager.getAvailablePerkSlot(player);
+		perk.initialEffect(player, perk, slot);
+		if(perk.equals(PerkType.STAMIN_UP))
+			player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
+
+		PointManager.INSTANCE.takePoints(player, cost);
+		PointManager.INSTANCE.notifyPlayer(player);
 	}
 
 	@Override

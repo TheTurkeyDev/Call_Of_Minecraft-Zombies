@@ -72,4 +72,9 @@ public class DownedPlayerManager
 	{
 		downedPlayers.remove(dp);
 	}
+
+	public List<DownedPlayer> getDownedPlayers()
+	{
+		return downedPlayers;
+	}
 }

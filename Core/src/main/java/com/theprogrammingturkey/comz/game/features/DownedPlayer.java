@@ -85,7 +85,8 @@ public class DownedPlayer implements Listener
 		manager.removeWeapon(1);
 		manager.addWeapon(guns[0]);
 		manager.addWeapon(guns[1]);
-		PointManager.INSTANCE.addPoints(reviver, 10);
+		if(reviver != null)
+			PointManager.INSTANCE.addPoints(reviver, 10);
 	}
 
 	public void cancelRevive()
@@ -113,7 +114,10 @@ public class DownedPlayer implements Listener
 			if(downTime >= COMZombies.getPlugin().getConfig().getInt("config.ReviveSettings.MaxDownTime"))
 			{
 				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You have died!");
-				game.removePlayer(player);
+				//game.removePlayer(player);
+				clearDownedState();
+				game.setDead(player);
+				//game.gamePlayers.remove(player);
 				PlayerStats stats = Leaderboard.getPlayerStatFromPlayer(player);
 				stats.setDeaths(stats.getDeaths() + 1);
 			}

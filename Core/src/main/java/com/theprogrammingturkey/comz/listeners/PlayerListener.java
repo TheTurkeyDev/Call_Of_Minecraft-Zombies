@@ -41,6 +41,12 @@ public class PlayerListener implements Listener
 				pl.showPlayer(COMZombies.getPlugin(), player);
 			player.showPlayer(COMZombies.getPlugin(), pl);
 		}
+
+		Game game = GameManager.INSTANCE.getGame(player);
+		if(game == null)
+			return;
+		if(game.wasDisconnected(player))
+			CommandUtil.sendClickableMessageToPlayer(player, ChatColor.RED + "You can reconnect to your last game with /z rejoin or ", "CLICK HERE", "/z rejoin");
 	}
 
 	@EventHandler
@@ -93,7 +99,7 @@ public class PlayerListener implements Listener
 		{
 			if(downedPlayer.isPlayerDown() && (change.getX() != 0 || change.getY() != 0 || change.getZ() != 0))
 			{
-				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You Moved! You are no longer reviving " + player.getName());
+				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You Moved! You are no longer reviving " + downedPlayer.getPlayer().getName());
 				downedPlayer.cancelRevive();
 			}
 		}
@@ -131,7 +137,7 @@ public class PlayerListener implements Listener
 					loc.getWorld().playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
 					for(int i = 0; i < 30; i++)
 					{
-						for(Player pl : game.players)
+						for(Player pl : game.getPlayersAlive())
 						{
 							float x = (float) (Math.random() * 2);
 							float y = (float) (Math.random() * 2);
@@ -214,7 +220,7 @@ public class PlayerListener implements Listener
 		if(downedPlayer.isBeingRevived())
 			return;
 
-		if(!(game.players.contains(reviver)))
+		if(!(game.getPlayersAlive().contains(reviver)))
 			return;
 
 		if(GameManager.INSTANCE.isPlayerInGame(reviver))
