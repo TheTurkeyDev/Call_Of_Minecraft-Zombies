@@ -126,6 +126,12 @@ public class SignListener implements Listener
 			Sign sign = (Sign) event.getClickedBlock().getState();
 			Player player = event.getPlayer();
 
+			if (GameManager.INSTANCE.isPlayerInGame(player)) {
+				sign.setEditable(false);
+				sign.update();
+				event.setCancelled(true);
+			}
+
 			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && player.isSneaking() && player.isOp())
 			{
 				String Line1 = ChatColor.stripColor(sign.getLine(0));
