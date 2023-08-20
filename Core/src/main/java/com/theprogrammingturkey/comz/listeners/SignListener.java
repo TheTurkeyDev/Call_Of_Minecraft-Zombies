@@ -126,7 +126,7 @@ public class SignListener implements Listener
 			Sign sign = (Sign) event.getClickedBlock().getState();
 			Player player = event.getPlayer();
 
-			if (!event.getPlayer().isSneaking() && GameManager.INSTANCE.isPlayerInGame(player)) {
+			if (GameManager.INSTANCE.isPlayerInGame(player)) {
 				sign.setEditable(false);
 				sign.update();
 				event.setCancelled(true);
