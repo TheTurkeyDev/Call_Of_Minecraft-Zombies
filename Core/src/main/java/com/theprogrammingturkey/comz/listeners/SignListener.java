@@ -67,6 +67,9 @@ public class SignListener implements Listener
 		AmmoCrateSign ammoCrate = new AmmoCrateSign();
 		GAME_SIGNS.put("ammo crate", ammoCrate);
 		GAME_SIGNS.put("ammo", ammoCrate);
+
+		GrenadeSign grenade = new GrenadeSign();
+		GAME_SIGNS.put("grenade", grenade);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
