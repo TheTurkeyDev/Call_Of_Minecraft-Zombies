@@ -9,8 +9,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class ReloadCommand implements SubCommand
+public class ReloadCommand extends SubCommand
 {
+	public ReloadCommand(COMZPermission permission)
+	{
+		super(permission);
+	}
+	
 	public boolean onCommand(Player player, String[] args)
 	{
 		if(!COMZPermission.RELOAD.hasPerm(player))

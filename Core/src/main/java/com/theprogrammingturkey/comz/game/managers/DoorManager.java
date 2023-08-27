@@ -57,7 +57,7 @@ public class DoorManager
 				continue;
 			JsonObject doorJson = doorElem.getAsJsonObject();
 
-			Door door = new Door(game, CustomConfig.getString(doorJson, "id", "MISSING"));
+			Door door = new Door(game, CustomConfig.getString(doorJson, "id", "MISSING"), CustomConfig.getBoolean(doorJson, "powerRequired", false));
 			door.loadAll(doorJson);
 			this.doors.add(door);
 		}

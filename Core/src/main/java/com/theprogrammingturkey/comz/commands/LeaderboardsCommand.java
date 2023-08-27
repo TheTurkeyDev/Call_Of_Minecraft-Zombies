@@ -7,8 +7,13 @@ import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class LeaderboardsCommand implements SubCommand
+public class LeaderboardsCommand extends SubCommand
 {
+	public LeaderboardsCommand(COMZPermission permission)
+	{
+		super(permission);
+	}
+	
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{

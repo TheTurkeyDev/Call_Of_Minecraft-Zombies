@@ -11,8 +11,13 @@ import com.theprogrammingturkey.comz.util.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class AddDoorCommand implements SubCommand
+public class AddDoorCommand extends SubCommand
 {
+	public AddDoorCommand(COMZPermission permission)
+	{
+		super(permission);
+	}
+
 	public boolean onCommand(Player player, String[] args)
 	{
 		if(!COMZPermission.ADD_DOOR.hasPerm(player))
@@ -35,7 +40,7 @@ public class AddDoorCommand implements SubCommand
 			if(GameManager.INSTANCE.isValidArena(args[1]))
 			{
 				Game game = GameManager.INSTANCE.getGame(args[1]);
-				Door door = new Door(game, Util.genRandId());
+				Door door = new Door(game, Util.genRandId(), false);
 				plugin.activeActions.put(player, new DoorSetupAction(player, game, door));
 			}
 			else
@@ -45,4 +50,5 @@ public class AddDoorCommand implements SubCommand
 		}
 		return true;
 	}
+
 }

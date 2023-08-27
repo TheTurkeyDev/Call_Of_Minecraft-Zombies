@@ -8,8 +8,12 @@ import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class DisablePowerCommand implements SubCommand
+public class DisablePowerCommand extends SubCommand
 {
+	public DisablePowerCommand(COMZPermission permission)
+	{
+		super(permission);
+	}
 
 	@Override
 	public boolean onCommand(Player player, String[] args)

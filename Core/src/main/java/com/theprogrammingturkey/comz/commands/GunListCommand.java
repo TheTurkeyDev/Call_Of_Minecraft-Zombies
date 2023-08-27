@@ -5,8 +5,12 @@ import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.game.managers.WeaponManager;
 import org.bukkit.entity.Player;
 
-public class GunListCommand implements SubCommand
+public class GunListCommand extends SubCommand
 {
+	public GunListCommand(COMZPermission permission)
+	{
+		super(permission);
+	}
 
 	@Override
 	public boolean onCommand(Player player, String[] args)

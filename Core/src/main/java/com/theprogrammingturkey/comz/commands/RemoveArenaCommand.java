@@ -6,8 +6,13 @@ import com.theprogrammingturkey.comz.util.COMZPermission;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.entity.Player;
 
-public class RemoveArenaCommand implements SubCommand
+public class RemoveArenaCommand extends SubCommand
 {
+	public RemoveArenaCommand(COMZPermission permission)
+	{
+		super(permission);
+	}
+	
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{

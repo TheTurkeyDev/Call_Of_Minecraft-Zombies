@@ -7,8 +7,13 @@ import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class ArenaListCommand implements SubCommand
+public class ArenaListCommand extends SubCommand
 {
+	public ArenaListCommand(COMZPermission permission)
+	{
+		super(permission);
+	}
+
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
