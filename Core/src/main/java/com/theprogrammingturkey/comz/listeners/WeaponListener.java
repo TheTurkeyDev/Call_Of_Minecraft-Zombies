@@ -199,7 +199,7 @@ public class WeaponListener implements Listener
 				item.setVelocity(player.getLocation().getDirection().multiply(1));
 				item.setPickupDelay(1000);
 
-				COMZombies.scheduleTask(140, () ->
+				COMZombies.scheduleTask(100, () ->
 				{
 					Location loc = item.getLocation();
 					player.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 0.0F, false, false);

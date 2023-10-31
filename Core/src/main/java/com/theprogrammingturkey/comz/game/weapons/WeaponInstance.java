@@ -71,4 +71,9 @@ public class WeaponInstance
 
 		player.getInventory().setItem(slot, newStack);
 	}
+
+	public Weapon getBaseWeapon()
+	{
+		return baseWeapon;
+	}
 }

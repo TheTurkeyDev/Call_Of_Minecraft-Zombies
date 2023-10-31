@@ -7,6 +7,8 @@ import com.theprogrammingturkey.comz.game.weapons.BaseGun;
 import com.theprogrammingturkey.comz.game.weapons.GunInstance;
 import com.theprogrammingturkey.comz.game.weapons.Weapon;
 import com.theprogrammingturkey.comz.game.weapons.WeaponInstance;
+import com.theprogrammingturkey.comz.game.weapons.WeaponType;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -201,6 +203,14 @@ public class PlayerWeaponManager
 		for(WeaponInstance weapon : weapons)
 			if(weapon instanceof GunInstance && ((GunInstance) weapon).getType().equals(gun))
 				return true;
+		return false;
+	}
+
+	public boolean hasFullGrenades()
+	{
+		for(WeaponInstance weapon : weapons)
+			if(weapon.getBaseWeapon().getWeaponType().equals(WeaponType.GRENADE))
+				return player.getInventory().contains(Material.SLIME_BALL, 4);
 		return false;
 	}
 
