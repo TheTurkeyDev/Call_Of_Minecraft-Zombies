@@ -106,19 +106,15 @@ public class PowerUpManager
 		if(!(entPlayer instanceof Player) || !GameManager.INSTANCE.isEntityInGame(mob) || !GameManager.INSTANCE.isEntityInGame(entPlayer))
 			return;
 
-		Player player = (Player) entPlayer;
-
 		Game game = GameManager.INSTANCE.getGame(mob.getLocation());
 		if(game.getMode() != Game.ArenaStatus.INGAME)
-			return;
-		if(!GameManager.INSTANCE.isPlayerInGame(player))
 			return;
 
 		int chance = (int) (Math.random() * 100);
 		if(chance <= dropChance)
 		{
 			List<PowerUp> availableRewards = powerups.keySet().stream().filter(powerups::get).collect(Collectors.toList());
-			if(availableRewards.size() == 0)
+			if(availableRewards.isEmpty())
 				return;
 
 			if(availableRewards.contains(PowerUp.FIRE_SALE))

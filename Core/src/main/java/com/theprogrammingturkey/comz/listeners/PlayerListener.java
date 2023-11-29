@@ -94,10 +94,12 @@ public class PlayerListener implements Listener
 		if(game.downedPlayerManager.isDownedPlayer(player) && change.getY() != 0)
 			event.setCancelled(true);
 
+		float DEAD_ZONE = 0.001f;
+
 		DownedPlayer downedPlayer = game.downedPlayerManager.getDownedPlayerForReviver(player);
 		if(downedPlayer != null)
 		{
-			if(downedPlayer.isPlayerDown() && (change.getX() != 0 || change.getY() != 0 || change.getZ() != 0))
+			if(downedPlayer.isPlayerDown() && change.lengthSquared() > DEAD_ZONE)
 			{
 				player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You Moved! You are no longer reviving " + downedPlayer.getPlayer().getName());
 				downedPlayer.cancelRevive();
