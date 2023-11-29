@@ -22,7 +22,7 @@ import com.theprogrammingturkey.comz.support.support_1_19_2_R2.NMSUtil_1_19_2_R2
 import com.theprogrammingturkey.comz.support.support_1_19_R1.NMSUtil_1_19_R1;
 import com.theprogrammingturkey.comz.support.support_1_19_R3.NMSUtil_1_19_R3;
 import com.theprogrammingturkey.comz.support.support_1_20_R1.NMSUtil_1_20_R1;
-import com.theprogrammingturkey.comz.support.support_1_20_R1.NMSUtil_1_20_R2;
+import com.theprogrammingturkey.comz.support.support_1_20_R2.NMSUtil_1_20_R2;
 import com.theprogrammingturkey.comz.util.PlaceholderHook;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
