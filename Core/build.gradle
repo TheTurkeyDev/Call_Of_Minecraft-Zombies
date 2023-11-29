@@ -39,6 +39,7 @@ dependencies {
 
 jar {
     from project(":API").sourceSets.main.output.classesDirs
+    from project(":NMS:1_20_R2").sourceSets.main.output.classesDirs
     from project(":NMS:1_20_R1").sourceSets.main.output.classesDirs
     from project(":NMS:1_19_R3").sourceSets.main.output.classesDirs
     from project(":NMS:1_19_2_R2").sourceSets.main.output.classesDirs
