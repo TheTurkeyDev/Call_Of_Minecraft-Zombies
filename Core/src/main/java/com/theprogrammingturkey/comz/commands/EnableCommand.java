@@ -1,7 +1,9 @@
 package com.theprogrammingturkey.comz.commands;
 
+import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.game.actions.BaseAction;
 import com.theprogrammingturkey.comz.util.COMZPermission;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
@@ -34,6 +36,10 @@ public class EnableCommand implements SubCommand
 				}
 				else
 				{
+					BaseAction action = COMZombies.getPlugin().activeActions.get(player);
+					if(action != null && action.getGame().getName().equals(game.getName()))
+						action.cancelAction();
+
 					game.setEnabled();
 					game.signManager.updateGame();
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Arena " + game.getName() + " has been enabled!");

@@ -107,7 +107,7 @@ public class PowerUpManager
 			return;
 
 		Game game = GameManager.INSTANCE.getGame(mob.getLocation());
-		if(game.getMode() != Game.ArenaStatus.INGAME)
+		if(game == null || game.getMode() != Game.ArenaStatus.INGAME)
 			return;
 
 		int chance = (int) (Math.random() * 100);

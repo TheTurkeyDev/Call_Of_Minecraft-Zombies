@@ -106,6 +106,7 @@ public class SignListener implements Listener
 				{
 					b.repair(player);
 					event.setCancelled(true);
+					sign.update();
 				}
 				else
 				{
@@ -130,9 +131,14 @@ public class SignListener implements Listener
 			Player player = event.getPlayer();
 
 			if (GameManager.INSTANCE.isPlayerInGame(player)) {
-				sign.setEditable(false);
-				sign.update();
-				event.setCancelled(true);
+				String lineOne = ChatColor.stripColor(sign.getLine(0));
+				// We don't want to cancel the event if this case so that barrier signs can work
+				if(event.getAction() != Action.LEFT_CLICK_BLOCK || !lineOne.equalsIgnoreCase("[BarrierRepair]"))
+				{
+					sign.setEditable(false);
+					sign.update();
+					event.setCancelled(true);
+				}
 			}
 
 			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && player.isSneaking() && player.isOp())
