@@ -190,4 +190,11 @@ public class GameManager
 
 		return toString.toString();
 	}
+
+	public List<String> getArenas() {
+		List<String> arenas = new ArrayList<>();
+		for(Game game : games)
+			arenas.add(game.getName());
+		return arenas;
+	}
 }

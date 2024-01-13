@@ -8,11 +8,15 @@ import com.theprogrammingturkey.comz.util.COMZPermission;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
 import java.util.Map;
 
-public class JoinCommand implements SubCommand
+public class JoinCommand extends SubCommand
 {
+	public JoinCommand(COMZPermission permission)
+	{
+		super(permission);
+	}
+	
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{

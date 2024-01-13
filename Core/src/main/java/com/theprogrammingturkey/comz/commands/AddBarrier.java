@@ -10,9 +10,14 @@ import com.theprogrammingturkey.comz.game.actions.BarrierSetupAction;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class AddBarrier implements SubCommand
+public class AddBarrier extends SubCommand
 {
 
+	public AddBarrier(COMZPermission permission)
+	{
+		super(permission);
+	}
+	
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{

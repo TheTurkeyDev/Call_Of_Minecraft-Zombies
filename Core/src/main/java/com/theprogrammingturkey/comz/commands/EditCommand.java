@@ -10,8 +10,13 @@ import org.bukkit.entity.Player;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
 
-public class EditCommand implements SubCommand
+public class EditCommand extends SubCommand
 {
+	public EditCommand(COMZPermission permission)
+	{
+		super(permission);
+	}
+	
 	public boolean onCommand(Player player, String[] args)
 	{
 		if(!COMZPermission.EDIT_ARENA.hasPerm(player))

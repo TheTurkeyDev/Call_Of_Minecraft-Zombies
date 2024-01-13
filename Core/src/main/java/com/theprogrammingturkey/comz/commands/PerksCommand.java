@@ -6,8 +6,12 @@ import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class PerksCommand implements SubCommand
+public class PerksCommand extends SubCommand
 {
+	public PerksCommand(COMZPermission permission)
+	{
+		super(permission);
+	}
 
 	@Override
 	public boolean onCommand(Player player, String[] args)

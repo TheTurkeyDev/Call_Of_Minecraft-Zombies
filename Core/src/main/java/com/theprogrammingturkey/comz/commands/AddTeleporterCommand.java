@@ -8,8 +8,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-public class AddTeleporterCommand implements SubCommand
+public class AddTeleporterCommand extends SubCommand
 {
+	public AddTeleporterCommand(COMZPermission permission)
+	{
+		super(permission);
+	}
+
+	public COMZPermission permission = COMZPermission.ADD_TELEPORTER;
+
 	public boolean onCommand(Player player, String[] args)
 	{
 		if(!COMZPermission.ADD_TELEPORTER.hasPerm(player))

@@ -7,8 +7,13 @@ import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class DisableCommand implements SubCommand
+public class DisableCommand extends SubCommand
 {
+	public DisableCommand(COMZPermission permission)
+	{
+		super(permission);
+	}
+	
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{

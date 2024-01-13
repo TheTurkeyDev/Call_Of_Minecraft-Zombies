@@ -10,8 +10,13 @@ import org.bukkit.entity.Player;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
 
-public class CreateArenaCommand implements SubCommand
+public class CreateArenaCommand extends SubCommand
 {
+	public CreateArenaCommand(COMZPermission permission)
+	{
+		super(permission);
+	}
+	
 	public boolean onCommand(Player player, String[] args)
 	{
 		if(!COMZPermission.CREATE_ARENA.hasPerm(player))
