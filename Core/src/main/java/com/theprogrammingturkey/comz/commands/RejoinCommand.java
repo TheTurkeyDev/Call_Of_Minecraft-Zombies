@@ -24,10 +24,11 @@ public class RejoinCommand implements SubCommand
 			CommandUtil.noPermission(player, "rejoin the game");
 			return true;
 		}
-		if(game.wasDisconnected(player))
+		if(game.isDisconnectedPlayer(player)) {
 			game.addPlayer(player);
-		else
+		} else {
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You are already in the game!");
+		}
 
 		return false;
 	}

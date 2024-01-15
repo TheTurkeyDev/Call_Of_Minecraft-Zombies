@@ -137,45 +137,29 @@ public class PlaceholderHook extends PlaceholderExpansion
 
 	private String getStatFromString(String toGet, PlayerStats stats)
 	{
-		switch(toGet)
-		{
-			case "kills":
-				return String.valueOf(stats.getKills());
-			case "revives":
-				return String.valueOf(stats.getRevives());
-			case "deaths":
-				return String.valueOf(stats.getDeaths());
-			case "downs":
-				return String.valueOf(stats.getDowns());
-			case "gamesPlayed":
-				return String.valueOf(stats.getGamesPlayed());
-			case "highestRound":
-				return String.valueOf(stats.getHighestRound());
-			case "mostPoints":
-				return String.valueOf(stats.getMostPoints());
-		}
-		return "";
-	}
+    return switch (toGet) {
+      case "kills" -> String.valueOf(stats.getKills());
+      case "revives" -> String.valueOf(stats.getRevives());
+      case "deaths" -> String.valueOf(stats.getDeaths());
+      case "downs" -> String.valueOf(stats.getDowns());
+      case "gamesPlayed" -> String.valueOf(stats.getGamesPlayed());
+      case "highestRound" -> String.valueOf(stats.getHighestRound());
+      case "mostPoints" -> String.valueOf(stats.getMostPoints());
+      default -> "";
+    };
+  }
 
 	private StatsCategory getStatEnumFromString(String toGet)
 	{
-		switch(toGet)
-		{
-			case "kills":
-				return StatsCategory.KILLS;
-			case "revives":
-				return StatsCategory.REVIVES;
-			case "deaths":
-				return StatsCategory.DEATHS;
-			case "downs":
-				return StatsCategory.DOWNS;
-			case "gamesPlayed":
-				return StatsCategory.GAMES_PLAYED;
-			case "highestRound":
-				return StatsCategory.HIGHEST_ROUND;
-			case "mostPoints":
-				return StatsCategory.MOST_POINTS;
-		}
-		return null;
-	}
+    return switch (toGet) {
+      case "kills" -> StatsCategory.KILLS;
+      case "revives" -> StatsCategory.REVIVES;
+      case "deaths" -> StatsCategory.DEATHS;
+      case "downs" -> StatsCategory.DOWNS;
+      case "gamesPlayed" -> StatsCategory.GAMES_PLAYED;
+      case "highestRound" -> StatsCategory.HIGHEST_ROUND;
+      case "mostPoints" -> StatsCategory.MOST_POINTS;
+      default -> null;
+    };
+  }
 }

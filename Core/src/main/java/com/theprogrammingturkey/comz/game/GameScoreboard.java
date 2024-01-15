@@ -1,9 +1,11 @@
 package com.theprogrammingturkey.comz.game;
 
 import com.theprogrammingturkey.comz.economy.PointManager;
+import java.util.Objects;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -12,17 +14,19 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
 import java.util.HashMap;
+import org.jetbrains.annotations.NotNull;
 
 public class GameScoreboard
 {
 
-	private final Game game;
-	private final ScoreboardManager manager = Bukkit.getScoreboardManager();
-	private final Scoreboard board;
-	private final Team team;
-	private final Objective objective;
-	private final Score round;
-	private final Score zombiesLeft;
+	private final @NotNull Game game;
+	private final @NotNull ScoreboardManager manager = Objects.requireNonNull(
+			Bukkit.getScoreboardManager());
+	private final @NotNull Scoreboard board;
+	private final @NotNull Team team;
+	private final @NotNull Objective objective;
+	private final @NotNull Score round;
+	private final @NotNull Score zombiesLeft;
 	private final HashMap<Player, Score> playerScores = new HashMap<>();
 
 	public GameScoreboard(Game game)
@@ -33,7 +37,7 @@ public class GameScoreboard
 		team.setDisplayName(ChatColor.RED + game.getName());
 		team.setCanSeeFriendlyInvisibles(true);
 		team.setAllowFriendlyFire(false);
-		objective = board.registerNewObjective(this.game.getName(), "dummy", ChatColor.RED + this.game.getName());
+		objective = board.registerNewObjective(this.game.getName(), Criteria.DUMMY, ChatColor.RED + this.game.getName());
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		round = objective.getScore(ChatColor.RED + "Round");
 		round.setScore(0);
@@ -55,7 +59,6 @@ public class GameScoreboard
 				playerScores.get(player).setScore(500);
 			}
 		}
-		game.signManager.updateGame();
 	}
 
 	public void removePlayer(Player player)
@@ -64,7 +67,6 @@ public class GameScoreboard
 		board.resetScores(player.getName());
 		player.setScoreboard(manager.getNewScoreboard());
 		playerScores.remove(player);
-		game.signManager.updateGame();
 	}
 
 	public void update()
@@ -74,7 +76,5 @@ public class GameScoreboard
 
 		for(Player player : playerScores.keySet())
 			playerScores.get(player).setScore(PointManager.INSTANCE.getPlayersPoints(player));
-
-		game.signManager.updateGame();
 	}
 }

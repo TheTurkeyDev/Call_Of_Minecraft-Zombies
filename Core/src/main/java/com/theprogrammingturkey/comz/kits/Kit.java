@@ -146,7 +146,7 @@ public class Kit
 	{
 		for(RoundReward roundReward : roundRewards)
 		{
-			if(roundReward.getRoundEnd() == roundEnd)
+			if(roundReward.roundEnd() == roundEnd)
 			{
 				if(!GameManager.INSTANCE.isPlayerInGame(player) && !COMZPermission.KIT.hasPerm(player, name))
 					return;
@@ -156,13 +156,13 @@ public class Kit
 
 				PlayerWeaponManager manager = game.getPlayersWeapons(player);
 
-				for(Weapon weapon : roundReward.getWeapons())
+				for(Weapon weapon : roundReward.weapons())
 					manager.addWeapon(weapon);
 
-				for(PerkType perk : roundReward.getPerks())
+				for(PerkType perk : roundReward.perks())
 					PerkManager.givePerk(game, player, perk);
 
-				PointManager.INSTANCE.addPoints(player, roundReward.getPoints() - 500);
+				PointManager.INSTANCE.addPoints(player, roundReward.points() - 500);
 				game.scoreboard.update();
 				player.updateInventory();
 			}

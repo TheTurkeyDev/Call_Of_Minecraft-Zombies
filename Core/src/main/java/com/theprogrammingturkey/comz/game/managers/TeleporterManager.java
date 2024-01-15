@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
+import java.util.Locale;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -31,7 +32,7 @@ public class TeleporterManager
 				continue;
 			JsonObject teleporterJson = teleporterElem.getAsJsonObject();
 
-			Location loc = CustomConfig.getLocationAddWorld(teleporterJson, "", game.getWorld());
+			Location loc = CustomConfig.getLocationWithWorld(teleporterJson, "", game.getWorld());
 			String teleporterID = CustomConfig.getString(teleporterJson, "id", "missing");
 			this.teleporters.put(teleporterID, loc);
 		}
@@ -52,14 +53,14 @@ public class TeleporterManager
 
 	public void saveTeleporterSpot(String teleName, Location to)
 	{
-		teleName = teleName.toLowerCase();
+		teleName = teleName.toLowerCase(Locale.ROOT);
 		teleporters.put(teleName, to);
 		GameManager.INSTANCE.saveAllGames();
 	}
 
 	public void removedTeleporter(String teleName, Player player)
 	{
-		teleName = teleName.toLowerCase();
+		teleName = teleName.toLowerCase(Locale.ROOT);
 		if(teleporters.containsKey(teleName))
 		{
 			teleporters.remove(teleName);

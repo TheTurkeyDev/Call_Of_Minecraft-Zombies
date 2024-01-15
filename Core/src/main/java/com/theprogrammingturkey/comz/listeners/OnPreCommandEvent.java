@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.listeners;
 
+import com.theprogrammingturkey.comz.util.COMZPermission;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.ChatColor;
@@ -24,7 +25,7 @@ public class OnPreCommandEvent implements Listener
 			{
 				return;
 			}
-			if(GameManager.INSTANCE.isPlayerInGame(player))
+			if(GameManager.INSTANCE.isPlayerInGame(player) && !COMZPermission.doesPlayerHaveAdminPerms(player))
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You are not allowed to use commands in game!");
 				event.setCancelled(true);

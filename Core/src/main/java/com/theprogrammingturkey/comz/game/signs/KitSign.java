@@ -6,6 +6,7 @@ import com.theprogrammingturkey.comz.kits.KitManager;
 import com.theprogrammingturkey.comz.util.COMZPermission;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
@@ -13,15 +14,15 @@ import org.bukkit.event.block.SignChangeEvent;
 public class KitSign implements IGameSign
 {
 	@Override
-	public void onBreak(Game game, Player player, Sign sign)
+	public void onBreak(Game game, Player player, Block signBlock)
 	{
 
 	}
 
 	@Override
-	public void onInteract(Game game, Player player, Sign sign)
+	public void onInteract(Game game, Player player, Block signBlock)
 	{
-		Kit kit = KitManager.getKit(ChatColor.stripColor(sign.getLine(2)));
+		Kit kit = KitManager.getKit(ChatColor.stripColor(((Sign) signBlock.getState()).getLine(2)));
 		if(COMZPermission.KIT.hasPerm(player, kit.getName()))
 		{
 			KitManager.addPlayersSelectedKit(player, kit);

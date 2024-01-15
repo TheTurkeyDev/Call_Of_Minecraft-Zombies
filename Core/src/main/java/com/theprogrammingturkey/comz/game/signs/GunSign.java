@@ -9,6 +9,7 @@ import com.theprogrammingturkey.comz.game.weapons.BaseGun;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
@@ -16,14 +17,15 @@ import org.bukkit.event.block.SignChangeEvent;
 public class GunSign implements IGameSign
 {
 	@Override
-	public void onBreak(Game game, Player player, Sign sign)
+	public void onBreak(Game game, Player player, Block signBlock)
 	{
 
 	}
 
 	@Override
-	public void onInteract(Game game, Player player, Sign sign)
+	public void onInteract(Game game, Player player, Block signBlock)
 	{
+		final Sign sign = (Sign) signBlock.getState();
 		String line3 = sign.getLine(3);
 		int buyPoints = Integer.parseInt(line3.substring(0, line3.indexOf("/") - 1).trim());
 		int refillPoints = Integer.parseInt(line3.substring(line3.indexOf("/") + 2).trim());

@@ -12,6 +12,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -70,6 +71,10 @@ public class EntityListener implements Listener
 					}
 
 					float damage = (float) ConfigManager.getMainConfig().zombieDamage;
+
+					if (e.getEntity() instanceof Zombie && ((Zombie) e.getEntity()).isAdult()) {
+						damage /= 3.5f;
+					}
 
 					if(game.perkManager.getPlayersPerks(player).contains(PerkType.JUGGERNOG))
 						damage = damage / (float) ConfigManager.getMainConfig().juggernogHealth;

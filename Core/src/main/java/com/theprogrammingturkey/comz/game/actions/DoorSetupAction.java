@@ -10,7 +10,6 @@ import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -32,7 +31,7 @@ public class DoorSetupAction extends BaseAction
 		if(!player.getInventory().contains(Material.WOODEN_SWORD))
 			player.getInventory().addItem(new ItemStack(Material.WOODEN_SWORD));
 
-		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "-------" + ChatColor.DARK_RED + "Door Setup" + ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "-------");
+		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + ChatColor.STRIKETHROUGH + "-------" + ChatColor.DARK_RED + "Door Setup" + ChatColor.RED + ChatColor.BOLD + ChatColor.STRIKETHROUGH + "-------");
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Select each block individually to be the door using the wooden sword.");
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Once you have this complete, type done, go into the room the door opens to and click on any ender portal frame (spawn point) that is in there with the sword.");
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Once you have this complete, type done, find any signs that open this door and click them with the sword.");
@@ -69,10 +68,9 @@ public class DoorSetupAction extends BaseAction
 		if(state == 2 && (event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)))
 		{
 			Block block = event.getClickedBlock();
-			if(BlockUtils.isSign(block.getType()))
+			if(BlockUtils.isSign(block.getBlockData()))
 			{
-				Sign sign = (Sign) event.getClickedBlock().getState();
-				door.addSign(sign);
+				door.addSign(block.getLocation());
 				event.setCancelled(true);
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Sign selected!");
 			}

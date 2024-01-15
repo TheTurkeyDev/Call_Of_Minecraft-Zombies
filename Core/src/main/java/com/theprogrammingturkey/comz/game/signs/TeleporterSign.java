@@ -7,8 +7,10 @@ import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
 import com.theprogrammingturkey.comz.util.CommandUtil;
+import java.util.Locale;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
@@ -18,17 +20,18 @@ import org.bukkit.potion.PotionEffectType;
 public class TeleporterSign implements IGameSign
 {
 	@Override
-	public void onBreak(Game game, Player player, Sign sign)
+	public void onBreak(Game game, Player player, Block signBlock)
 	{
 
 	}
 
 	@Override
-	public void onInteract(Game game, Player player, Sign sign)
+	public void onInteract(Game game, Player player, Block signBlock)
 	{
+		final Sign sign = (Sign) signBlock.getState();
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
-			String teleporterName = sign.getLine(2).toLowerCase();
+			String teleporterName = sign.getLine(2).toLowerCase(Locale.ROOT);
 			if(game.teleporterManager.getTeleporters().containsKey(teleporterName))
 			{
 				if(game.hasPower() && !game.isPowered())
@@ -45,8 +48,11 @@ public class TeleporterSign implements IGameSign
 					player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 30));
 
 					for(int i = 0; i < 50; i++)
-						for(Player pl : Bukkit.getOnlinePlayers())
-							COMZombies.nmsUtil.sendParticleToPlayer(NMSParticleType.WITCH, pl, player.getLocation(), (float) (Math.random()), (float) (Math.random()), (float) (Math.random()), 1, 1);
+						for (Player pl : Bukkit.getOnlinePlayers()) {
+							COMZombies.nmsUtil.sendParticleToPlayer(NMSParticleType.WITCH, pl,
+									player.getLocation(), COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(),
+									COMZombies.rand.nextFloat(), 1, 1);
+						}
 
 					PointManager.INSTANCE.takePoints(player, points);
 					PointManager.INSTANCE.notifyPlayer(player);
@@ -70,7 +76,7 @@ public class TeleporterSign implements IGameSign
 		if(game.teleporterManager.getTeleporters().containsKey(thirdLine))
 		{
 			String line3 = sign.getLine(3);
-			if(line3 == null || line3.equals(""))
+			if(line3 == null || line3.isEmpty())
 			{
 				sign.setLine(0, ChatColor.RED + "[Zombies]");
 				sign.setLine(1, ChatColor.AQUA + "Teleporter");

@@ -28,12 +28,15 @@ import com.theprogrammingturkey.comz.util.PlaceholderHook;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
+import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
-import java.util.Random;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.random.RandomGenerator;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,7 +48,10 @@ import java.util.regex.Pattern;
  */
 public class COMZombies extends JavaPlugin
 {
-	public static final Random rand = new Random();
+	/**
+	 * Not thread-safe.
+	 */
+	public static final RandomGenerator rand;
 	/**
 	 * Default plugin logger.
 	 */
@@ -53,7 +59,7 @@ public class COMZombies extends JavaPlugin
 	/**
 	 * Players currently performing some sort of action or maintenance
 	 */
-	public HashMap<Player, BaseAction> activeActions = new HashMap<>();
+	public final ConcurrentHashMap<Player, BaseAction> activeActions = new ConcurrentHashMap<>();
 
 
 	/**
@@ -61,7 +67,7 @@ public class COMZombies extends JavaPlugin
 	 * sign, the value that corresponds to the player is the sign that the
 	 * player is editing.
 	 */
-	public HashMap<Player, Sign> isEditingASign = new HashMap<>();
+	public final ConcurrentHashMap<Player, Sign> isEditingASign = new ConcurrentHashMap<>();
 
 	/**
 	 * Called when the plugin is reloading to cancel every remove spawn, create
@@ -73,11 +79,28 @@ public class COMZombies extends JavaPlugin
 	}
 
 	public static final String CONSOLE_PREFIX = "[COM_Zombies] ";
-	public static final String PREFIX = ChatColor.RED + "[ " + ChatColor.GOLD + ChatColor.ITALIC + "CoM: Zombies" + ChatColor.RED + " ]" + ChatColor.GRAY + " ";
+	public static final String PREFIX = ChatColor.RED + "[" + ChatColor.GOLD + ChatColor.ITALIC + "CoM: Zombies" + ChatColor.RED + "]" + ChatColor.GRAY + " ";
 
 	public static INMSUtil nmsUtil;
 
 	public Vault vault;
+
+	static {
+		RandomGenerator rng;
+		try {
+			rng = RandomGenerator.of("L64X1024MixRandom");
+		} catch (IllegalArgumentException e) {
+			try {
+				rng = (RandomGenerator) Class.forName("jdk.random.L64X1024MixRandom")
+						.getDeclaredConstructor().newInstance();
+			} catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+							 NoSuchMethodException | ClassNotFoundException ignored) {
+				e.printStackTrace();
+				rng = RandomGenerator.of("SplittableRandom");
+			}
+		}
+		rand = rng;
+	}
 
 	public void onEnable()
 	{
@@ -97,11 +120,29 @@ public class COMZombies extends JavaPlugin
 
 		registerEvents();
 
-		getCommand("zombies").setExecutor(CommandManager.INSTANCE);
+		CommandMap commandMap;
+		try {
+			commandMap = Bukkit.getServer().getCommandMap();
+		} catch (NoSuchMethodError e) {
+			final Field commandMapField;
+			try {
+				commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+			} catch (NoSuchFieldException ex) {
+				throw new RuntimeException(ex);
+			}
+			commandMapField.setAccessible(true);
+			try {
+				commandMap = (CommandMap) commandMapField.get(Bukkit.getServer());
+			} catch (IllegalAccessException ex) {
+				throw new RuntimeException(ex);
+			}
+		}
+		commandMap.register("zombies", CommandManager.INSTANCE);
 
-		log.info(COMZombies.CONSOLE_PREFIX + "has been enabled!");
-
-		GameManager.INSTANCE.loadAllGames();
+		scheduleTask(() -> {
+			GameManager.INSTANCE.loadAllGames();
+			log.info(COMZombies.CONSOLE_PREFIX + "has been enabled!");
+		});
 	}
 
 	private void loadVersionSpecificCode()
@@ -196,6 +237,7 @@ public class COMZombies extends JavaPlugin
 		m.registerEvents(new PlayerListener(), this);
 		m.registerEvents(new OnInventoryChangeEvent(), this);
 		m.registerEvents(new ScopeListener(), this);
+		m.registerEvents(new BarrierRepairListener(), this);
 	}
 
 	/**

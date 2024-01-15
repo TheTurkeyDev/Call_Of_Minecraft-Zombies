@@ -39,7 +39,7 @@ public class BoxManager
 			if(!boxElem.isJsonObject())
 				continue;
 			JsonObject boxJson = boxElem.getAsJsonObject();
-			Location loc = CustomConfig.getLocationAddWorld(boxJson, "", game.getWorld());
+			Location loc = CustomConfig.getLocationWithWorld(boxJson, "", game.getWorld());
 			String facing = CustomConfig.getString(boxJson, "facing", "");
 			int cost = CustomConfig.getInt(boxJson, "cost", 2000);
 			String boxId = CustomConfig.getString(boxJson, "id", "MISSING");
@@ -86,7 +86,7 @@ public class BoxManager
 
 	public RandomBox getRandomBox(RandomBox exclude)
 	{
-		if(boxes.size() == 0)
+		if(boxes.isEmpty())
 			return null;
 
 		// Just to prevent infinite loop below

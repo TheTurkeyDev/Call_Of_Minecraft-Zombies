@@ -5,8 +5,10 @@ import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.PerkType;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.listeners.customEvents.PlayerPerkPurchaseEvent;
+import java.util.Locale;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
@@ -16,14 +18,15 @@ import org.bukkit.potion.PotionEffectType;
 public class PerkMachineSign implements IGameSign
 {
 	@Override
-	public void onBreak(Game game, Player player, Sign sign)
+	public void onBreak(Game game, Player player, Block signBlock)
 	{
 
 	}
 
 	@Override
-	public void onInteract(Game game, Player player, Sign sign)
+	public void onInteract(Game game, Player player, Block signBlock)
 	{
+		final Sign sign = (Sign) signBlock.getState();
 		String perkName = sign.getLine(2);
 		PerkType perk = PerkType.getPerkType(perkName);
 		if(game.hasPower() && !game.isPowered())
@@ -73,7 +76,7 @@ public class PerkMachineSign implements IGameSign
 			return;
 
 		Bukkit.getPluginManager().callEvent(new PlayerPerkPurchaseEvent(player, perk));
-		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You now have " + perk.toString().toLowerCase() + "!");
+		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You now have " + perk.toString().toLowerCase(Locale.ROOT) + "!");
 		int slot = game.perkManager.getAvailablePerkSlot(player);
 		perk.initialEffect(player, perk, slot);
 		if(perk.equals(PerkType.STAMIN_UP))
@@ -112,7 +115,7 @@ public class PerkMachineSign implements IGameSign
 
 			sign.setLine(0, ChatColor.RED + "[Zombies]");
 			sign.setLine(1, ChatColor.AQUA + "Perk Machine");
-			sign.setLine(2, type.toString().toLowerCase());
+			sign.setLine(2, type.toString().toLowerCase(Locale.ROOT));
 			sign.setLine(3, Integer.toString(cost));
 		}
 	}

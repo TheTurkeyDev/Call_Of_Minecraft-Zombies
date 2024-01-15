@@ -7,6 +7,7 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.theprogrammingturkey.comz.COMZombies;
+import java.util.Objects;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -24,10 +25,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.logging.Level;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CustomConfig
 {
-	private static final JsonParser JSON_PARSER = new JsonParser();
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
 	private File file;
@@ -71,16 +73,17 @@ public class CustomConfig
 		{
 			try
 			{
-				file.createNewFile();
-				Reader defConfigStream = new InputStreamReader(plugin.getResource(config.getFileName()), StandardCharsets.UTF_8);
-				BufferedWriter writter = new BufferedWriter(new FileWriter(file.getAbsolutePath()));
+				Reader defConfigStream = new InputStreamReader(
+						Objects.requireNonNull(plugin.getResource(config.getFileName())),
+						StandardCharsets.UTF_8);
+				BufferedWriter writer = new BufferedWriter(new FileWriter(file.getAbsolutePath()));
 				BufferedReader reader = new BufferedReader(defConfigStream);
 				String line;
 				while((line = reader.readLine()) != null)
-					writter.write(line + "\n");
+					writer.write(line + "\n");
 
 				reader.close();
-				writter.close();
+				writer.close();
 			} catch(IOException e)
 			{
 				COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "Unable to load the COM:Z default guns config! THIS IS BAD!!!");
@@ -93,7 +96,7 @@ public class CustomConfig
 	{
 		try
 		{
-			return JSON_PARSER.parse(new FileReader(file));
+			return JsonParser.parseReader(new FileReader(file));
 		} catch(IOException e)
 		{
 			e.printStackTrace();
@@ -118,12 +121,11 @@ public class CustomConfig
 	}
 
 	/***
-	 *
 	 * Custom FileConfig calls
 	 *
 	 */
 
-	public static int getInt(JsonObject json, String key, int defaultVal)
+	public static int getInt(@NotNull JsonObject json, @Nullable String key, int defaultVal)
 	{
 		if(json.has(key))
 		{
@@ -134,7 +136,7 @@ public class CustomConfig
 		return defaultVal;
 	}
 
-	public static double getDouble(JsonObject json, String key, double defaultVal)
+	public static double getDouble(@NotNull JsonObject json, @Nullable String key, double defaultVal)
 	{
 		if(json.has(key))
 		{
@@ -145,7 +147,7 @@ public class CustomConfig
 		return defaultVal;
 	}
 
-	public static String getString(JsonObject json, String key, String defaultVal)
+	public static @Nullable String getString(@NotNull JsonObject json, @Nullable String key, @Nullable String defaultVal)
 	{
 		if(json.has(key))
 		{
@@ -156,7 +158,7 @@ public class CustomConfig
 		return defaultVal;
 	}
 
-	public static boolean getBoolean(JsonObject json, String key, boolean defaultVal)
+	public static boolean getBoolean(@NotNull JsonObject json, @Nullable String key, boolean defaultVal)
 	{
 		if(json.has(key))
 		{
@@ -167,57 +169,40 @@ public class CustomConfig
 		return defaultVal;
 	}
 
-	public static Location getLocation(JsonObject json, String key)
+	public static @Nullable Location getLocation(@NotNull JsonObject json, @Nullable String key)
 	{
 		JsonObject locationJson;
-		if(key.isEmpty())
-		{
+		if (key == null || key.isEmpty()) {
 			locationJson = json;
-		}
-		else
-		{
-			if(!json.has(key))
+		} else {
+			if (!json.has(key)) {
 				return null;
+			}
 			locationJson = json.get(key).getAsJsonObject();
 		}
 
 		int x = getInt(locationJson, "x", 0);
 		int y = getInt(locationJson, "y", 0);
 		int z = getInt(locationJson, "z", 0);
-		String worldName = getString(locationJson, "world", "Undefined");
-		World world = Bukkit.getWorld(worldName);
-		if(world == null)
-		{
-			COMZombies.log.log(Level.CONFIG, "Failed to find world: " + worldName + "! And thus could not get the location!");
+		String worldName = getString(locationJson, "world", null);
+		World world = null;
+
+		if (worldName != null) {
+			world = Bukkit.getWorld(worldName);
+		}
+
+		if (world == null) {
+			COMZombies.log.log(Level.CONFIG,
+					"Failed to find world: " + worldName + "! And thus could not get the location!");
 			return null;
 		}
 		return new Location(world, x, y, z);
 	}
 
-	public static Location getLocationNoWorld(JsonObject json, String key)
+	public static @Nullable Location getLocationWithWorld(@NotNull JsonObject json, @Nullable String key, @NotNull World world)
 	{
 		JsonObject locationJson;
-		if(key.isEmpty())
-		{
-			locationJson = json;
-		}
-		else
-		{
-			if(!json.has(key))
-				return null;
-			locationJson = json.get(key).getAsJsonObject();
-		}
-
-		int x = getInt(locationJson, "x", 0);
-		int y = getInt(locationJson, "y", 0);
-		int z = getInt(locationJson, "z", 0);
-		return new Location(null, x, y, z);
-	}
-
-	public static Location getLocationAddWorld(JsonObject json, String key, World world)
-	{
-		JsonObject locationJson;
-		if(key.isEmpty())
+		if(key == null || key.isEmpty())
 		{
 			locationJson = json;
 		}
@@ -234,14 +219,14 @@ public class CustomConfig
 		return new Location(world, x, y, z);
 	}
 
-	public static JsonObject locationToJson(Location loc)
+	public static @NotNull JsonObject locationToJson(@NotNull Location loc)
 	{
 		JsonObject locJson = locationToJsonNoWorld(loc);
-		locJson.addProperty("world", loc.getWorld() != null ? loc.getWorld().getName() : "NULL");
+		locJson.addProperty("world", loc.getWorld() != null ? loc.getWorld().getName() : null);
 		return locJson;
 	}
 
-	public static JsonObject locationToJsonNoWorld(Location loc)
+	public static @NotNull JsonObject locationToJsonNoWorld(@NotNull Location loc)
 	{
 		JsonObject locJson = new JsonObject();
 		locJson.addProperty("x", loc.getX());

@@ -29,7 +29,7 @@ public enum WeaponType
 	public static WeaponType getWeapon(String name)
 	{
 		for(WeaponType type : values())
-			if(type.toString().toLowerCase().equalsIgnoreCase(name))
+			if(type.toString().equalsIgnoreCase(name))
 				return type;
 		return SPECIAL;
 	}

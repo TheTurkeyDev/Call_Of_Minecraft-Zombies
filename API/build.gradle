@@ -4,5 +4,6 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.jetbrains:annotations:24.1.0'
     implementation group: 'org.spigotmc', name: 'spigot-api', version: '1.16.4-R0.1-SNAPSHOT'
 }

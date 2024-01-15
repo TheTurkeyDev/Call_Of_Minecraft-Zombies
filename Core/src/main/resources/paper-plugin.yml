@@ -1,0 +1,13 @@
+name: COM_Zombies
+version: @version@
+main: com.theprogrammingturkey.comz.COMZombies
+description: 'Call of Minecraft: Zombies'
+api-version: '1.19'
+dependencies:
+  server:
+    Vault:
+      load: BEFORE
+      required: false
+    PlaceholderAPI:
+      load: BEFORE
+      required: false

@@ -5,6 +5,7 @@ import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.PerkType;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 
+import java.util.Collections;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.UnmodifiableView;
 
 public class PerkManager
 {
@@ -31,9 +33,9 @@ public class PerkManager
 		}
 	}
 
-	public List<PerkType> getPlayersPerks(Player player)
+	public @UnmodifiableView List<PerkType> getPlayersPerks(Player player)
 	{
-		return playersPerks.computeIfAbsent(player, k -> new ArrayList<>());
+		return Collections.unmodifiableList(playersPerks.computeIfAbsent(player, k -> new ArrayList<>()));
 	}
 
 	public boolean hasPerk(Player player, PerkType type)
@@ -43,7 +45,7 @@ public class PerkManager
 
 	public boolean addPerk(Player player, PerkType type)
 	{
-		List<PerkType> playerPerks = getPlayersPerks(player);
+		List<PerkType> playerPerks = playersPerks.computeIfAbsent(player, k -> new ArrayList<>());
 
 		if(playerPerks.contains(type))
 		{

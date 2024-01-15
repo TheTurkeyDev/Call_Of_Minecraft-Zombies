@@ -11,47 +11,45 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.jetbrains.annotations.NotNull;
 
-public class PlayerChatListener implements Listener
-{
+public class PlayerChatListener implements Listener {
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerChat(AsyncPlayerChatEvent playerChat)
-	{
-		COMZombies plugin = COMZombies.getPlugin();
-		Player player = playerChat.getPlayer();
-		String message = playerChat.getMessage().replaceFirst(" ", "").trim();
+  @EventHandler(ignoreCancelled = true)
+  public void onPlayerChat(final @NotNull AsyncPlayerChatEvent playerChat) {
+    final COMZombies plugin = COMZombies.getPlugin();
+    final Player player = playerChat.getPlayer();
+    final String message = playerChat.getMessage().replaceFirst(" ", "").trim();
 
-		if(plugin.activeActions.containsKey(player))
-		{
-			BaseAction action = plugin.activeActions.get(player);
+    if (message.equalsIgnoreCase("cancel")) {
+      final BaseAction action = plugin.activeActions.remove(player);
+      if (action != null) {
+        if (playerChat.isAsynchronous()) {
+          COMZombies.scheduleTask(action::cancelAction);
+        } else {
+          action.cancelAction();
+        }
+        playerChat.setCancelled(true);
+      }
+      return;
+    }
 
-			if(message.equalsIgnoreCase("cancel"))
-			{
-				COMZombies.scheduleTask(1, () ->
-				{
-					plugin.activeActions.remove(player);
-					action.cancelAction();
-				});
-			}
-			else
-			{
-				COMZombies.scheduleTask(1, () -> action.onChatMessage(message));
-			}
-			playerChat.setCancelled(true);
-		}
+    final BaseAction action = plugin.activeActions.get(player);
+    if (action != null) {
+      if (playerChat.isAsynchronous()) {
+        COMZombies.scheduleTask(() -> action.onChatMessage(message));
+      } else {
+        action.onChatMessage(message);
+      }
+      playerChat.setCancelled(true);
+    }
 
-		if(plugin.isEditingASign.containsKey(player))
-		{
-			if(message.equalsIgnoreCase("done"))
-			{
-				Sign sign = plugin.isEditingASign.get(player);
-				plugin.isEditingASign.remove(player);
-				Bukkit.getServer().getPluginManager().callEvent(new SignChangeEvent(sign.getBlock(), player, sign.getLines()));
-				CommandUtil.sendMessageToPlayer(player, "You are No longer editing a sign");
-				playerChat.setCancelled(true);
-				sign.update();
-			}
-		}
-	}
+    if (message.equalsIgnoreCase("done")) {
+      final Sign sign = plugin.isEditingASign.remove(player);
+      if (sign != null) {
+        CommandUtil.sendMessageToPlayer(player, "You are No longer editing a sign");
+        playerChat.setCancelled(true);
+      }
+    }
+  }
 }

@@ -4,23 +4,24 @@ import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.util.CommandUtil;
+import java.util.List;
+import java.util.Locale;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 
-public class CommandManager implements CommandExecutor
-{
+public class CommandManager extends Command {
+
 	public static final CommandManager INSTANCE = new CommandManager();
 	private final HashMap<String, SubCommand> commandList = new HashMap<>();
 	private final HashMap<Player, ZombiesHelpCommand> helpCommand = new HashMap<>();
 
-	public CommandManager()
-	{
+	public CommandManager() {
+		super("zombies", "Type /zombies help for more info!", "", List.of("z", "zo", "zom"));
 		load();
 	}
 
@@ -211,73 +212,59 @@ public class CommandManager implements CommandExecutor
 		this.commandList.get(args[0]).onCommand(player, args);
 	}
 
-	@Override
-	public boolean onCommand(@Nonnull CommandSender sender, Command cmd, @Nonnull String label, @Nonnull String[] args)
-	{
-		Player player;
-		String command = cmd.getName();
-		if(command.equalsIgnoreCase("zombies"))
-		{
-			if(sender instanceof Player)
-			{
-				player = (Player) sender;
-			}
-			else
-			{
-				COMZombies.log.info("You must be in game to issue this command!");
-				return true;
-			}
-			if(args.length <= 0)
-			{
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Call of Minecraft: Zombies, By : " + ChatColor.GOLD + "IModZombies4Fun, turkey2349 and smeths!");
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Call of Minecraft: Zombies, By : " + ChatColor.GOLD + "Turkey2349, IModZombies4Fun and Smeths!");
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + " Type /zombies help for a list of commands!");
-				return true;
-			}
-			else if(args[0].equalsIgnoreCase("setround"))
-			{
-				if(!player.isOp())
-					return true;
-				Game arena = GameManager.INSTANCE.getGame(args[1]);
-				if(arena == null)
-					return true;
-				else
-				{
-					for(int i = 0; i < Integer.parseInt(args[2]); i++)
-						arena.nextWave();
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Setting wave to: " + ChatColor.GOLD + args[2]);
-				}
-			}
-			else if(args[0].equalsIgnoreCase("version"))
-			{
-				CommandUtil.sendMessageToPlayer(player, COMZombies.getPlugin().getDescription().getVersion());
-				return true;
-			}
-			if(args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("h"))
-			{
-				ZombiesHelpCommand help;
-				if(helpCommand.get(player) == null)
-				{
-					help = new ZombiesHelpCommand(this, player);
-					helpCommand.put(player, help);
-					help.commandIssued(args);
-				}
-				else
-				{
-					help = helpCommand.get(player);
-					help.commandIssued(args);
-				}
-				return true;
-			}
-			if(commandList.containsKey(args[0].toLowerCase()))
-			{
-				this.commandList.get(args[0].toLowerCase()).onCommand(player, args);
-			}
-			else
-			{
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "No such command! Type /zombies help for a list of commands!");
-			}
+	public boolean execute(@Nonnull CommandSender sender, @Nonnull String label,
+			@Nonnull String[] args) {
+		final Player player;
+		if (sender instanceof Player) {
+			player = (Player) sender;
+		} else {
+			COMZombies.log.info("You must be in game to issue this command!");
+			return true;
 		}
-		return false;
+		if (args.length == 0) {
+			CommandUtil.sendMessageToPlayer(player,
+					ChatColor.RED + "" + ChatColor.BOLD + "Call of Minecraft: Zombies, By : " + ChatColor.GOLD
+							+ "Turkey2349, IModZombies4Fun and Smeths!");
+			CommandUtil.sendMessageToPlayer(player,
+					ChatColor.RED + "" + ChatColor.BOLD + " Type /zombies help for a list of commands!");
+			return true;
+		} else if (args[0].equalsIgnoreCase("setround")) {
+			if (!player.isOp()) {
+				return true;
+			}
+			Game arena = GameManager.INSTANCE.getGame(args[1]);
+			if (arena == null) {
+				return true;
+			} else {
+				for (int i = 0; i < Integer.parseInt(args[2]); i++) {
+					arena.nextWave();
+				}
+				CommandUtil.sendMessageToPlayer(player,
+						ChatColor.RED + "Setting wave to: " + ChatColor.GOLD + args[2]);
+			}
+		} else if (args[0].equalsIgnoreCase("version")) {
+			CommandUtil.sendMessageToPlayer(player, COMZombies.getPlugin().getDescription().getVersion());
+			return true;
+		}
+		if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("h")) {
+			ZombiesHelpCommand help;
+			if (helpCommand.get(player) == null) {
+				help = new ZombiesHelpCommand(this, player);
+				helpCommand.put(player, help);
+				help.commandIssued(args);
+			} else {
+				help = helpCommand.get(player);
+				help.commandIssued(args);
+			}
+			return true;
+		}
+		if (commandList.containsKey(args[0].toLowerCase(Locale.ROOT))) {
+			this.commandList.get(args[0].toLowerCase(Locale.ROOT)).onCommand(player, args);
+		} else {
+			CommandUtil.sendMessageToPlayer(player,
+					ChatColor.RED + "No such command! Type /zombies help for a list of commands!");
+		}
+
+		return true;
 	}
 }

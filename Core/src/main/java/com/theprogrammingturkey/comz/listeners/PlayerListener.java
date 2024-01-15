@@ -11,6 +11,7 @@ import com.theprogrammingturkey.comz.game.features.PerkType;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -20,43 +21,62 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
 public class PlayerListener implements Listener
 {
 	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent event)
+	public static void onPlayerJoin(@NotNull PlayerJoinEvent event)
 	{
 		Player player = event.getPlayer();
-		for(Player pl : Bukkit.getOnlinePlayers())
-		{
-			if(GameManager.INSTANCE.isPlayerInGame(pl))
+		for (Player pl : Bukkit.getOnlinePlayers()) {
+			if (pl == player) {
+				continue;
+			}
+			if (GameManager.INSTANCE.isPlayerInGame(pl)) {
 				pl.hidePlayer(COMZombies.getPlugin(), player);
-			else
+			} else {
 				pl.showPlayer(COMZombies.getPlugin(), player);
+			}
 			player.showPlayer(COMZombies.getPlugin(), pl);
 		}
 
-		Game game = GameManager.INSTANCE.getGame(player);
-		if(game == null)
+		Game playerGame = GameManager.INSTANCE.getGame(player);
+		if (playerGame == null) {
+			Game locationGame = GameManager.INSTANCE.getGame(player.getLocation());
+			if (locationGame != null) {
+				player.teleport(locationGame.getPlayerSpawn());
+			}
 			return;
-		if(game.wasDisconnected(player))
-			CommandUtil.sendClickableMessageToPlayer(player, ChatColor.RED + "You can reconnect to your last game with /z rejoin or ", "CLICK HERE", "/z rejoin");
+		}
+
+		if (!playerGame.getArena().getBoundingBox().contains(player.getBoundingBox())) {
+			player.teleport(playerGame.getPlayerSpawn());
+		}
+
+		if (playerGame.isDisconnectedPlayer(player)) {
+			CommandUtil.sendClickableMessageToPlayer(player,
+					ChatColor.RED + "You can reconnect to your last game with /z rejoin or ", "CLICK HERE",
+					"/z rejoin");
+		}
 	}
 
 	@EventHandler
-	public void onPlayerLeave(PlayerQuitEvent event)
+	public static void onPlayerLeave(@NotNull PlayerQuitEvent event)
 	{
 		Player player = event.getPlayer();
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
 			Game game = GameManager.INSTANCE.getGame(player);
 			game.removePlayer(player);
+			game.addDisconnected(player);
 			player.removePotionEffect(PotionEffectType.BLINDNESS);
 			player.removePotionEffect(PotionEffectType.SLOW);
 		}
@@ -70,8 +90,8 @@ public class PlayerListener implements Listener
 	/**
 	 * Checks if the player is leaving the arena and takes care of his action.
 	 */
-	@EventHandler
-	public void onPlayerMove(PlayerMoveEvent event)
+	@EventHandler(ignoreCancelled = true)
+	public static void onPlayerMove(@NotNull PlayerMoveEvent event)
 	{
 		Player player = event.getPlayer();
 		Game game = GameManager.INSTANCE.getGame(player);
@@ -91,8 +111,10 @@ public class PlayerListener implements Listener
 
 		// Reviving move check
 		Location change = toLoc.clone().subtract(event.getFrom().clone());
-		if(game.downedPlayerManager.isDownedPlayer(player) && change.getY() != 0)
+		if (player.getGameMode() != GameMode.SPECTATOR && game.downedPlayerManager.isDownedPlayer(
+				player) && change.getY() != 0) {
 			event.setCancelled(true);
+		}
 
 		float DEAD_ZONE = 0.001f;
 
@@ -122,12 +144,11 @@ public class PlayerListener implements Listener
 	}
 
 	@EventHandler
-	public void OnPlayerVelocityEvent(PlayerMoveEvent event)
+	public static void OnPlayerVelocityEvent(@NotNull PlayerMoveEvent event)
 	{
 		Player player = event.getPlayer();
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
-			player.setFoodLevel(20);
 			int fallDistance = (int) player.getFallDistance();
 			if(fallDistance > 2)
 			{
@@ -141,9 +162,9 @@ public class PlayerListener implements Listener
 					{
 						for(Player pl : game.getPlayersInGame())
 						{
-							float x = (float) (Math.random() * 2);
-							float y = (float) (Math.random() * 2);
-							float z = (float) (Math.random() * 2);
+							float x = COMZombies.rand.nextFloat(2f);
+							float y = COMZombies.rand.nextFloat(2f);
+							float z = COMZombies.rand.nextFloat(2f);
 							COMZombies.nmsUtil.sendParticleToPlayer(NMSParticleType.LAVA, pl, player.getLocation(), x, y, z, 1, 1);
 							COMZombies.nmsUtil.sendParticleToPlayer(NMSParticleType.FIREWORK, pl, player.getLocation(), x, y, z, 1, 1);
 						}
@@ -159,48 +180,43 @@ public class PlayerListener implements Listener
 		}
 	}
 
-	@EventHandler
-	public void ProjectileHit(EntityDamageEvent event)
+	@EventHandler(ignoreCancelled = true)
+	public static void ProjectileHit(@NotNull EntityDamageEvent event)
 	{
 		if(event.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION)
 		{
-			if(event.getEntity() instanceof Player)
+			if(event.getEntity() instanceof Player player)
 			{
-				Player player = (Player) event.getEntity();
-				if(GameManager.INSTANCE.isPlayerInGame(player))
+        if(GameManager.INSTANCE.isPlayerInGame(player))
 					event.setCancelled(true);
 			}
 		}
 		else if(event.getCause() == EntityDamageEvent.DamageCause.FALL)
 		{
-			if(event.getEntity() instanceof Player)
+			if(event.getEntity() instanceof Player player)
 			{
-				Player player = (Player) event.getEntity();
-				if(GameManager.INSTANCE.isPlayerInGame(player))
-					if(GameManager.INSTANCE.getGame(player).perkManager.hasPerk(player, PerkType.PHD_FLOPPER))
+        if(GameManager.INSTANCE.isPlayerInGame(player))
 						event.setCancelled(true);
 			}
 		}
 	}
 
 	@EventHandler
-	public void playerExp(PlayerExpChangeEvent event)
-	{
-		Player player = event.getPlayer();
-		if(GameManager.INSTANCE.isPlayerInGame(player))
-			player.setExp(0);
+	public static void playerExp(@NotNull PlayerExpChangeEvent event) {
+		if (GameManager.INSTANCE.isPlayerInGame(event.getPlayer())) {
+			event.setAmount(0);
+		}
 	}
 
 	@EventHandler
-	public void interact(PlayerInteractAtEntityEvent event)
+	public static void interact(@NotNull PlayerInteractAtEntityEvent event)
 	{
-		if(!(event.getRightClicked() instanceof Player))
+		if(!(event.getRightClicked() instanceof Player clickedPlayer))
 			return;
 
 		Player reviver = event.getPlayer();
-		Player clickedPlayer = (Player) event.getRightClicked();
 
-		Game game = GameManager.INSTANCE.getGame(reviver);
+    Game game = GameManager.INSTANCE.getGame(reviver);
 
 		if(game == null || !game.isPlayerPlaying(clickedPlayer))
 			return;
@@ -230,6 +246,14 @@ public class PlayerListener implements Listener
 			reviver.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You are reviving " + clickedPlayer.getName());
 			clickedPlayer.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You are being revived by " + reviver.getName() + "!");
 			downedPlayer.startRevive(reviver);
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler(ignoreCancelled = true)
+	public static void preventFoodLevelChange(@NotNull FoodLevelChangeEvent event) {
+		if (event.getEntity() instanceof Player && GameManager.INSTANCE.isPlayerInGame(
+				(Player) event.getEntity())) {
 			event.setCancelled(true);
 		}
 	}

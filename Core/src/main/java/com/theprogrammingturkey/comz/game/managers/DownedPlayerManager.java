@@ -2,10 +2,12 @@ package com.theprogrammingturkey.comz.game.managers;
 
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.DownedPlayer;
+import java.util.Collections;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.UnmodifiableView;
 
 public class DownedPlayerManager
 {
@@ -73,8 +75,8 @@ public class DownedPlayerManager
 		downedPlayers.remove(dp);
 	}
 
-	public List<DownedPlayer> getDownedPlayers()
+	public @UnmodifiableView List<DownedPlayer> getDownedPlayers()
 	{
-		return downedPlayers;
+		return Collections.unmodifiableList(downedPlayers);
 	}
 }

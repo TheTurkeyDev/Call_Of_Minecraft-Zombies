@@ -7,11 +7,15 @@ import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
+import java.util.Collections;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 public class DoorManager
 {
@@ -23,14 +27,10 @@ public class DoorManager
 		this.game = game;
 	}
 
-	public Door getDoorFromSign(Location location)
-	{
-		for(Door door : doors)
-		{
-			for(Sign sign : door.getSigns())
-			{
-				if(sign.getLocation().equals(location))
-				{
+	public @Nullable Door getDoorFromSign(@NotNull Location location) {
+		for (Door door : doors) {
+			for (Location sign : door.getSigns()) {
+				if (sign.equals(location)) {
 					return door;
 				}
 			}
@@ -71,9 +71,9 @@ public class DoorManager
 		return saveJson;
 	}
 
-	public List<Door> getDoors()
+	public @UnmodifiableView List<Door> getDoors()
 	{
-		return doors;
+		return Collections.unmodifiableList(doors);
 	}
 
 	public boolean canSpawnZombieAtPoint(SpawnPoint point)

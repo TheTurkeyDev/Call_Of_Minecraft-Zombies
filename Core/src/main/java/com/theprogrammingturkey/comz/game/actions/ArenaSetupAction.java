@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 
 public class ArenaSetupAction extends BaseAction
 {
-	private int particleBoxID;
+	private int particleBoxId = -1;
 	private boolean runOnce = false;
 
 	private boolean setup = false;
@@ -38,7 +38,7 @@ public class ArenaSetupAction extends BaseAction
 	public void cancelAction()
 	{
 		if(runOnce)
-			Bukkit.getScheduler().cancelTask(particleBoxID);
+			Bukkit.getScheduler().cancelTask(particleBoxId);
 		if(!setup)
 			GameManager.INSTANCE.removeGame(game);
 
@@ -84,7 +84,7 @@ public class ArenaSetupAction extends BaseAction
 			if(game.gameSetupComplete(player))
 			{
 				if(runOnce)
-					Bukkit.getScheduler().cancelTask(particleBoxID);
+					Bukkit.getScheduler().cancelTask(particleBoxId);
 				COMZombies.getPlugin().activeActions.remove(player);
 
 				if(!setup)
@@ -105,11 +105,11 @@ public class ArenaSetupAction extends BaseAction
 			return;
 
 		if(runOnce)
-			Bukkit.getScheduler().cancelTask(particleBoxID);
+			Bukkit.getScheduler().cancelTask(particleBoxId);
 		else
 			runOnce = true;
 
-		particleBoxID = COMZombies.scheduleTask(0, 5, () ->
+		particleBoxId = COMZombies.scheduleTask(0, 5, () ->
 		{
 			Location min = new Location(world, Math.min(p1.getBlockX(), p2.getBlockX()), Math.min(p1.getBlockY(), p2.getBlockY()), Math.min(p1.getBlockZ(), p2.getBlockZ()));
 			Location max = new Location(world, Math.max(p1.getBlockX(), p2.getBlockX()), Math.max(p1.getBlockY(), p2.getBlockY()), Math.max(p1.getBlockZ(), p2.getBlockZ()));

@@ -9,12 +9,14 @@ import com.theprogrammingturkey.comz.game.weapons.Weapon;
 import com.theprogrammingturkey.comz.game.weapons.WeaponInstance;
 import com.theprogrammingturkey.comz.game.weapons.WeaponType;
 
+import java.util.Collections;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.UnmodifiableView;
 
 public class PlayerWeaponManager
 {
@@ -29,9 +31,9 @@ public class PlayerWeaponManager
 	/**
 	 * @return List of guns in the manager
 	 */
-	public List<WeaponInstance> getWeapons()
+	public @UnmodifiableView List<WeaponInstance> getWeapons()
 	{
-		return weapons;
+		return Collections.unmodifiableList(weapons);
 	}
 
 	/**

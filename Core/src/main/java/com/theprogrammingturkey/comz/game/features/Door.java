@@ -9,6 +9,10 @@ import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import com.theprogrammingturkey.comz.util.BlockUtils;
+import java.util.Collections;
+import java.util.NavigableSet;
+import java.util.Objects;
+import java.util.TreeMap;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,18 +22,19 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnmodifiableView;
 
 public class Door
 {
 	public String doorID;
 	private final Game game;
 	private int price = 0;
-	private final Map<Block, Material> blocks = new HashMap<>();
-	private final List<Sign> signs = new ArrayList<>();
+	private final TreeMap<Block, Material> blocks = new TreeMap<>(BlockUtils::compareBlockLocation);
+	private final List<Location> signs = new ArrayList<>();
 	private List<SpawnPoint> spawnsInRoomDoorLeadsTo = new ArrayList<>();
 	private boolean isOpened = false;
 
@@ -75,8 +80,8 @@ public class Door
 
 		JsonArray signsJson = new JsonArray();
 		saveJson.add("signs", signsJson);
-		for(Sign sign : signs)
-			signsJson.add(CustomConfig.locationToJsonNoWorld(sign.getLocation()));
+		for(Location sign : signs)
+			signsJson.add(CustomConfig.locationToJsonNoWorld(sign));
 
 
 		JsonArray spawnsJson = new JsonArray();
@@ -123,21 +128,21 @@ public class Door
 			if(!signElem.isJsonObject())
 				continue;
 			JsonObject signJson = signElem.getAsJsonObject();
-			Location loc = CustomConfig.getLocationAddWorld(signJson, "", game.getWorld());
+			Location loc = CustomConfig.getLocationWithWorld(signJson, "", game.getWorld());
 			if(loc != null)
 			{
 				Block block = loc.getBlock();
-				if(BlockUtils.isSign(block.getType()))
+				if(BlockUtils.isSign(block.getBlockData()))
 				{
 					Sign sign = (Sign) block.getState();
 					String costLine = sign.getLine(3);
 					price = costLine.matches("[0-9]{1,9}") ? Integer.parseInt(costLine) : 750;
-					this.signs.add(sign);
+					this.signs.add(loc);
 				}
 			}
 			else
 			{
-				COMZombies.log.log(Level.WARNING, COMZombies.CONSOLE_PREFIX + "Failed to load in location for door sign! Json: " + signJson.toString());
+				COMZombies.log.log(Level.WARNING, COMZombies.CONSOLE_PREFIX + "Failed to load in location for door sign! Json: " + signJson);
 			}
 
 		}
@@ -152,7 +157,7 @@ public class Door
 
 	public boolean hasDoorBlocks()
 	{
-		return blocks.size() >= 2;
+		return !blocks.isEmpty();
 	}
 
 	public void openDoor()
@@ -164,7 +169,7 @@ public class Door
 				continue;
 
 			COMZombies.scheduleTask(interval, () -> BlockUtils.setBlockToAir(block));
-			interval += 1;
+			interval++;
 		}
 		isOpened = true;
 	}
@@ -176,34 +181,34 @@ public class Door
 
 	public void closeDoor()
 	{
-		for(Block block : blocks.keySet())
-			BlockUtils.setBlockTypeHelper(block, blocks.get(block));
+		blocks.forEach(BlockUtils::setBlockTypeHelper);
 
-		for(Sign sign : signs)
+		for(Location location : signs)
 		{
+			final Sign sign = (Sign) location.getBlock().getState();
 			sign.setLine(0, ChatColor.RED + "[Zombies]");
 			sign.setLine(1, ChatColor.AQUA + "Door");
 			sign.setLine(2, ChatColor.GOLD + "Price:");
 			sign.setLine(3, Integer.toString(price));
-			sign.update(true);
+			sign.update();
 		}
 		isOpened = false;
 	}
 
-	public List<SpawnPoint> getSpawnsInRoomDoorLeadsTo()
+	public @UnmodifiableView List<SpawnPoint> getSpawnsInRoomDoorLeadsTo()
 	{
-		return spawnsInRoomDoorLeadsTo;
+		return Collections.unmodifiableList(spawnsInRoomDoorLeadsTo);
 	}
 
-	public void addSign(Sign sign)
+	public void addSign(Location sign)
 	{
 		signs.add(sign);
 		GameManager.INSTANCE.saveAllGames();
 	}
 
-	public List<Sign> getSigns()
+	public @UnmodifiableView List<Location> getSigns()
 	{
-		return signs;
+		return Collections.unmodifiableList(signs);
 	}
 
 	/**
@@ -220,17 +225,18 @@ public class Door
 				continue;
 			JsonObject blockJson = blockElem.getAsJsonObject();
 
-			Location loc = CustomConfig.getLocationAddWorld(blockJson, "", game.getWorld());
+			Location loc = CustomConfig.getLocationWithWorld(blockJson, "", game.getWorld());
 
 			if(loc != null)
 			{
-				Material mat = BlockUtils.getMaterialFromKey(CustomConfig.getString(blockJson, "material", ""));
+				Material mat = BlockUtils.getMaterialFromKey(
+						Objects.requireNonNull(CustomConfig.getString(blockJson, "material", null)));
 				BlockUtils.setBlockTypeHelper(loc.getBlock(), mat);
 				this.blocks.put(loc.getBlock(), mat);
 			}
 			else
 			{
-				COMZombies.log.log(Level.WARNING, COMZombies.CONSOLE_PREFIX + "Failed to load in location for door block! Json: " + blockJson.toString());
+				COMZombies.log.log(Level.WARNING, COMZombies.CONSOLE_PREFIX + "Failed to load in location for door block! Json: " + blockJson);
 			}
 		}
 	}
@@ -267,26 +273,26 @@ public class Door
 		GameManager.INSTANCE.saveAllGames();
 	}
 
-	public void addDoorBlock(Location loc)
+	public void addDoorBlock(@NotNull Location loc)
 	{
 		Block block = loc.getBlock();
 		this.addDoorBlock(block, block.getType());
 	}
 
-	public void addDoorBlock(Block block, Material mat)
+	public void addDoorBlock(@NotNull Block block, @NotNull Material mat)
 	{
 		blocks.put(block, mat);
 	}
 
-	public void removeDoorBlock(Location loc)
+	public void removeDoorBlock(@NotNull Location loc)
 	{
 		Block block = loc.getBlock();
 		blocks.remove(block);
 	}
 
-	public List<Block> getBlocks()
+	public NavigableSet<Block> getBlocks()
 	{
-		return new ArrayList<>(blocks.keySet());
+		return Collections.unmodifiableNavigableSet(blocks.navigableKeySet());
 	}
 
 	public boolean hasDoorLoc(Block b)

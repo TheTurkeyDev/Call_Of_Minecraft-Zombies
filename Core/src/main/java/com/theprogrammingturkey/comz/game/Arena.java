@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.game;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.util.BoundingBox;
 
 /**
  * Arena contained in every game.
@@ -12,12 +13,7 @@ public class Arena
 	/**
 	 * Location min, order in 3d world does not matter
 	 */
-	private Location min;
-
-	/**
-	 * Location max, order in 3d world does not matter
-	 */
-	private Location max;
+	private BoundingBox arenaBox;
 
 	/**
 	 * World in which min / max are contained, and the world the game is in.
@@ -27,35 +23,24 @@ public class Arena
 	/**
 	 * Constructs a new arena for a given game.
 	 *
-	 * @param minZone to be assigned to max
-	 * @param maxZone to be assigned to min
+	 * @param corner1 to be used to construct arenaBox
+	 * @param corner2 to be used to construct arenaBox
 	 * @param world   in which the game is contained in
 	 */
-	public Arena(Location minZone, Location maxZone, World world)
+	public Arena(Location corner1, Location corner2, World world)
 	{
-		min = minZone;
-		max = maxZone;
+		arenaBox = BoundingBox.of(corner1, corner2);
 		this.world = world;
 	}
 
 	/**
-	 * Sets the min to loc.
+	 * Sets the arenaBox to a bounding box.
 	 *
-	 * @param loc to be assigned to min
+	 * @param box to be assigned to arenaBox
 	 */
-	public void setMin(Location loc)
+	public void setBoundingBox(BoundingBox box)
 	{
-		min = loc;
-	}
-
-	/**
-	 * Sets the max to loc.
-	 *
-	 * @param loc to be assigned to max
-	 */
-	public void setMax(Location loc)
-	{
-		max = loc;
+		arenaBox = box;
 	}
 
 	/**
@@ -78,21 +63,10 @@ public class Arena
 	 */
 	public boolean containsBlock(Location currentLoc)
 	{
-		// Short circut eval.
-		if(currentLoc == null || currentLoc.getWorld() == null)
+		if(currentLoc == null || currentLoc.getWorld() != world)
 			return false;
 
-		if(currentLoc.getWorld() != world)
-			return false;
-
-		double x = currentLoc.getX();
-		double y = currentLoc.getY();
-		double z = currentLoc.getZ();
-
-		if(x <= Math.max(max.getBlockX(), min.getBlockX()) && x >= Math.min(max.getBlockX(), min.getBlockX()))
-			if(y <= Math.max(max.getBlockY(), min.getBlockY()) && y >= Math.min(max.getBlockY(), min.getBlockY()))
-				return z <= Math.max(max.getBlockZ(), min.getBlockZ()) && z >= Math.min(max.getBlockZ(), min.getBlockZ());
-		return false;
+		return arenaBox.contains(currentLoc.toVector());
 	}
 
 	/**
@@ -106,22 +80,12 @@ public class Arena
 	}
 
 	/**
-	 * Get the max location.
+	 * Get the bounding box of the arena.
 	 *
-	 * @return max
+	 * @return arenaBox
 	 */
-	public Location getMax()
+	public BoundingBox getBoundingBox()
 	{
-		return max;
-	}
-
-	/**
-	 * Get the min location.
-	 *
-	 * @return min
-	 */
-	public Location getMin()
-	{
-		return min;
+		return arenaBox.clone();
 	}
 }
