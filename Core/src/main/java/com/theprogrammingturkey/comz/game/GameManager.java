@@ -7,6 +7,7 @@ import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
+import java.util.Collections;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -18,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 public class GameManager
 {
@@ -25,12 +29,12 @@ public class GameManager
 
 	private final List<Game> games = new ArrayList<>();
 
-	public List<Game> getGames()
+	public @UnmodifiableView List<Game> getGames()
 	{
-		return games;
+		return Collections.unmodifiableList(games);
 	}
 
-	public void removeGame(Game game)
+	public void removeGame(@NotNull Game game)
 	{
 		this.games.remove(game);
 	}
@@ -41,7 +45,7 @@ public class GameManager
 			game.endGame();
 	}
 
-	public Game getGame(Entity entity)
+	public @Nullable Game getGame(@NotNull Entity entity)
 	{
 		for(Game game : games)
 			for(Entity ent : game.spawnManager.getEntities())
@@ -68,7 +72,7 @@ public class GameManager
 			else
 				COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "Failed to load arena " + arena.getKey() + "!");
 		}
-		Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.RED + ChatColor.BOLD + " Done loading arenas!");
+		Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.RED + ChatColor.BOLD + "Done loading arenas!");
 	}
 
 	public void saveAllGames()
@@ -84,19 +88,19 @@ public class GameManager
 		for(Game gl : games)
 		{
 			for(Game game : games)
-				for(int q = 0; q < game.doorManager.getDoors().size(); q++)
-					game.doorManager.getDoors().get(q).closeDoor();
+				for(Door door: game.doorManager.getDoors())
+					door.closeDoor();
 			gl.endGame();
 			gl.resetSpawnLocationBlocks();
 		}
 	}
 
-	public void addArena(Game game)
+	public void addArena(@NotNull Game game)
 	{
 		games.add(game);
 	}
 
-	public Game getGame(Door door)
+	public @Nullable Game getGame(@NotNull Door door)
 	{
 		for(Game gl : games)
 			if(gl.doorManager.getDoors().contains(door))
@@ -104,10 +108,10 @@ public class GameManager
 		return null;
 	}
 
-	public Game getGame(Player player)
+	public @Nullable Game getGame(@NotNull Player player)
 	{
 		for(Game game : games)
-			if(game.isPlayerPlaying(player) || game.isPlayerSpectating(player) || game.wasDisconnected(player))
+			if(game.isPlayerPlaying(player) || game.isPlayerSpectating(player) || game.isDisconnectedPlayer(player))
 				return game;
 		return null;
 	}
@@ -120,7 +124,7 @@ public class GameManager
 		return false;
 	}
 
-	public Game getGame(String name)
+	public @Nullable Game getGame(@NotNull String name)
 	{
 		for(Game gl : games)
 			if(name.equalsIgnoreCase(gl.getName()))
@@ -174,7 +178,7 @@ public class GameManager
 		return false;
 	}
 
-	public Game getGame(Location loc)
+	public @Nullable Game getGame(@NotNull Location loc)
 	{
 		for(Game gl : games)
 			if(gl.arena != null && gl.arena.containsBlock(loc))

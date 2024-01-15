@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.features.PowerUp;
+import java.util.Locale;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -114,7 +115,8 @@ public class LegacyConfig
 			JsonObject powerupsStatusJson = new JsonObject();
 			for(PowerUp powerUp : PowerUp.values())
 				if(powerUp != PowerUp.NONE)
-					powerupsStatusJson.addProperty(powerUp.name(), oldConfig.getBoolean(key + ".powerups." + powerUp.name().toLowerCase(), true));
+					powerupsStatusJson.addProperty(powerUp.name(), oldConfig.getBoolean(key + ".powerups." + powerUp.name().toLowerCase(
+							Locale.ROOT), true));
 			powerupsJson.add("powerups", powerupsStatusJson);
 			arenaSettingsJson.add("powerup_settings", powerupsJson);
 
@@ -284,7 +286,7 @@ public class LegacyConfig
 
 					JsonArray spawns = new JsonArray();
 					String location = key + ".Doors.door" + doorID;
-					List<Integer> oldSpawns = oldConfig.getStringList(location + ".SpawnPoints").stream().map(Integer::parseInt).collect(Collectors.toList());
+					List<Integer> oldSpawns = oldConfig.getStringList(location + ".SpawnPoints").stream().map(Integer::parseInt).toList();
 					for(int spawn : oldSpawns)
 						spawns.add(spawn);
 

@@ -8,6 +8,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import javax.annotation.Nonnull;
+import org.jetbrains.annotations.UnmodifiableView;
 
 public class GameStartEvent extends Event
 {
@@ -20,7 +21,7 @@ public class GameStartEvent extends Event
 		this.game = game;
 	}
 
-	public List<Player> getInGamePlayers()
+	public @UnmodifiableView List<Player> getInGamePlayers()
 	{
 		return game.getPlayersInGame();
 	}

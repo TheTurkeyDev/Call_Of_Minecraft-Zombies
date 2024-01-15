@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.game.features;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import java.util.Locale;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -12,7 +13,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public enum PerkType
 {
@@ -30,7 +30,8 @@ public enum PerkType
 	public static PerkType getPerkType(String name)
 	{
 		for(PerkType pt : values())
-			if((ChatColor.GOLD + pt.toString()).equalsIgnoreCase(name) || (pt.toString().toLowerCase().equalsIgnoreCase(name)))
+			if((ChatColor.GOLD + pt.toString()).equalsIgnoreCase(name) || (pt.toString().toLowerCase(
+					Locale.ROOT).equalsIgnoreCase(name)))
 				return pt;
 		if(name.equalsIgnoreCase("der wunderfizz") || name.equalsIgnoreCase("wunderfizz") || name.equalsIgnoreCase("random"))
 			return DER_WUNDERFIZZ;
@@ -147,12 +148,11 @@ public enum PerkType
 
 	public static PerkType getRandomPerk(List<PerkType> exclude)
 	{
-		List<PerkType> availablePerks = Arrays.stream(PerkType.values()).filter(pt -> !exclude.contains(pt) && pt != PerkType.DER_WUNDERFIZZ).collect(Collectors.toList());
+		List<PerkType> availablePerks = Arrays.stream(PerkType.values()).filter(pt -> !exclude.contains(pt) && pt != PerkType.DER_WUNDERFIZZ).toList();
 
 		if(availablePerks.isEmpty())
 			return null;
-		//get random perk from list of available perks
-		int rand = (int) (Math.random() * availablePerks.size());
-		return availablePerks.get(rand);
+		// get random perk from list of available perks
+		return availablePerks.get(COMZombies.rand.nextInt(availablePerks.size()));
 	}
 }

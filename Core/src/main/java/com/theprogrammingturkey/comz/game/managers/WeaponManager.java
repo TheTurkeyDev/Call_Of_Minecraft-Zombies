@@ -63,15 +63,15 @@ public class WeaponManager
 			if(weapon instanceof BaseGun && playerWeaponManager.hasGun((BaseGun) weapon))
 				return false;
 			return includePackaPunch || !(weapon instanceof PackAPunchGun);
-		}).collect(Collectors.toList());
+		}).toList();
 		return weaponsToChoose.get(COMZombies.rand.nextInt(weaponsToChoose.size()));
 	}
 
 	public static void listGuns(Player player)
 	{
-		List<BaseGun> guns = weapons.stream().filter(weapon -> weapon instanceof BaseGun).map(weapon -> (BaseGun) weapon).collect(Collectors.toList());
+		List<BaseGun> guns = weapons.stream().filter(weapon -> weapon instanceof BaseGun).map(weapon -> (BaseGun) weapon).toList();
 		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "---------" + ChatColor.GOLD + "Guns" + ChatColor.RED + "----------");
-		if(guns.size() == 0)
+		if(guns.isEmpty())
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You have no guns! Make sure COM: Z can read from your " + ChatColor.GOLD + "guns.json");
 
 		WeaponType gunClass = guns.get(0).getWeaponType();

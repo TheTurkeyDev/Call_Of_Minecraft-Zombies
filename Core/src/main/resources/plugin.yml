@@ -5,8 +5,4 @@ version: @version@
 authors: [TurkeyDev]
 api-version: '1.14'
 load: POSTWORLD
-softdepend: [Multiverse-Core, Vault, PlaceholderAPI, My_Worlds]
-commands:
-  zombies:
-    description: Type /zombies help for more info!
-    aliases: [z, zo, zom]
+softdepend: [Vault, PlaceholderAPI]

@@ -3,7 +3,6 @@ package com.theprogrammingturkey.comz.game.managers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
@@ -11,6 +10,7 @@ import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import com.theprogrammingturkey.comz.util.BlockUtils;
 import com.theprogrammingturkey.comz.util.Util;
+import java.util.Collections;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,9 +21,8 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import org.jetbrains.annotations.UnmodifiableView;
 
 public class BarrierManager
 {
@@ -48,29 +47,24 @@ public class BarrierManager
 			String barrierID = CustomConfig.getString(barrierJson, "id", "MISSING");
 			Barrier barrier = new Barrier(barrierID, game);
 
-			barrier.setRepairLoc(CustomConfig.getLocationAddWorld(barrierJson, "repair_loc", game.getWorld()));
+			barrier.setRepairLoc(CustomConfig.getLocationWithWorld(barrierJson, "repair_loc", game.getWorld()));
 			barrier.setSignFacing(BlockFace.valueOf(CustomConfig.getString(barrierJson, "repair_facing", "NORTH")));
 
 			JsonArray barrierBlocks = barrierJson.get("blocks").getAsJsonArray();
-			for(JsonElement blockElem : barrierBlocks)
-			{
-				if(!blockElem.isJsonObject())
-					continue;
-				JsonObject blockJson = blockElem.getAsJsonObject();
+			barrierBlocks.asList().stream().filter(JsonElement::isJsonObject)
+					.map(JsonElement::getAsJsonObject).forEach(blockJson -> {
+						Location blockLocation = Objects.requireNonNull(
+								CustomConfig.getLocationWithWorld(blockJson, "", game.getWorld()),
+								"Failed to load a block location for Barrier: " + barrierID + ", Json: " + barrierJson);
+						Material blockMaterial = BlockUtils.getMaterialFromKey(
+								Objects.requireNonNull(CustomConfig.getString(blockJson, "material", null)));
+						barrier.addBarrierBlock(game.world.getBlockAt(blockLocation), blockMaterial);
+					});
 
-				Location loc = CustomConfig.getLocationAddWorld(blockJson, "", game.getWorld());
-				if(loc != null)
-				{
-					Material mat = BlockUtils.getMaterialFromKey(CustomConfig.getString(blockJson, "material", ""));
-					barrier.addBarrierBlock(game.world.getBlockAt(loc), mat);
-				}
-				else
-				{
-					COMZombies.log.log(Level.WARNING, COMZombies.CONSOLE_PREFIX + "Failed to load a block location for Barrier: " + barrierID + ", Json: " + barrierJson);
-				}
-			}
-
-			barrier.addSpawnPoints(StreamSupport.stream(barrierJson.get("spawns").getAsJsonArray().spliterator(), false).map(sp -> game.spawnManager.getSpawnPoint(sp.getAsString())).filter(Objects::nonNull).collect(Collectors.toList()));
+			barrier.addSpawnPoints(
+					StreamSupport.stream(barrierJson.get("spawns").getAsJsonArray().spliterator(), false)
+							.map(sp -> game.spawnManager.getSpawnPoint(sp.getAsString())).filter(Objects::nonNull)
+							.toList());
 
 			barrier.setReward(CustomConfig.getInt(barrierJson, "reward", 1));
 
@@ -177,9 +171,9 @@ public class BarrierManager
 		}
 	}
 
-	public List<Barrier> getBarriers()
+	public @UnmodifiableView List<Barrier> getBarriers()
 	{
-		return barriers;
+		return Collections.unmodifiableList(barriers);
 	}
 
 	public int getTotalBarriers()

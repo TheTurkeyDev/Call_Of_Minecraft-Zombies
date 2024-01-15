@@ -3,10 +3,11 @@ package com.theprogrammingturkey.comz.listeners;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
-import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.signs.*;
 import com.theprogrammingturkey.comz.util.BlockUtils;
+import com.theprogrammingturkey.comz.util.COMZPermission;
 import com.theprogrammingturkey.comz.util.CommandUtil;
+import java.util.Locale;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -20,6 +21,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 public class SignListener implements Listener
 {
@@ -72,18 +74,12 @@ public class SignListener implements Listener
 		GAME_SIGNS.put("grenade", grenade);
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockBreakEvent(BlockBreakEvent event)
 	{
-		if(!BlockUtils.isSign(event.getBlock().getType()))
-			return;
-
-		Sign sign = (Sign) event.getBlock().getState();
-
-		String lineOne = ChatColor.stripColor(sign.getLine(0));
-		String lineTwo = ChatColor.stripColor(sign.getLine(1));
-		if(lineOne.equalsIgnoreCase("[Zombies]"))
+		if(BlockUtils.isZombiesSign(event.getBlock()))
 		{
+			final Sign sign = (Sign) event.getBlock().getState();
 			Game game = GameManager.INSTANCE.getGame(sign.getLocation());
 			if(game != null && game.getMode() != Game.ArenaStatus.DISABLED)
 			{
@@ -91,60 +87,37 @@ public class SignListener implements Listener
 				return;
 			}
 
-			IGameSign signLogic = GAME_SIGNS.get(lineTwo.toLowerCase());
+			String lineTwo = ChatColor.stripColor(sign.getLine(1));
+			IGameSign signLogic = GAME_SIGNS.get(lineTwo.toLowerCase(Locale.ROOT));
 			if(signLogic != null && (game != null || !signLogic.requiresGame()))
-				signLogic.onBreak(game, event.getPlayer(), sign);
-		}
-		else if(lineOne.equalsIgnoreCase("[BarrierRepair]"))
-		{
-			Player player = event.getPlayer();
-			if(GameManager.INSTANCE.isPlayerInGame(player))
-			{
-				Game game = GameManager.INSTANCE.getGame(player);
-				Barrier b = game.barrierManager.getBarrierFromRepair(sign.getLocation());
-				if(b != null)
-				{
-					b.repair(player);
-					event.setCancelled(true);
-					sign.update();
-				}
-				else
-				{
-					CommandUtil.sendMessageToPlayer(player, "Congrats! You broke the plugin! JK its all fixed now.");
-					BlockUtils.setBlockToAir(event.getBlock());
-				}
-			}
+				signLogic.onBreak(game, event.getPlayer(), event.getBlock());
 		}
 	}
 
 	@EventHandler
-	public void RightClickSign(PlayerInteractEvent event)
+	public void onPlayerInteractWithBlock(@NotNull PlayerInteractEvent event)
 	{
 		if(event.getClickedBlock() == null)
 			return;
 
 		COMZombies plugin = COMZombies.getPlugin();
 
-		if(BlockUtils.isSign(event.getClickedBlock().getType()))
+		if(BlockUtils.isSign(event.getClickedBlock().getBlockData()))
 		{
-			Sign sign = (Sign) event.getClickedBlock().getState();
-			Player player = event.getPlayer();
+			final Sign sign = (Sign) event.getClickedBlock().getState();
+			final Player player = event.getPlayer();
 
 			if (GameManager.INSTANCE.isPlayerInGame(player)) {
-				String lineOne = ChatColor.stripColor(sign.getLine(0));
-				// We don't want to cancel the event if this case so that barrier signs can work
-				if(event.getAction() != Action.LEFT_CLICK_BLOCK || !lineOne.equalsIgnoreCase("[BarrierRepair]"))
-				{
-					sign.setEditable(false);
-					sign.update();
+				sign.setEditable(false);
+				sign.update();
+				if (!BlockUtils.isBarrierRepairSign(event.getClickedBlock())) {
 					event.setCancelled(true);
 				}
 			}
 
 			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && player.isSneaking() && player.isOp())
 			{
-				String Line1 = ChatColor.stripColor(sign.getLine(0));
-				if(!plugin.isEditingASign.containsKey(player) && Line1.equalsIgnoreCase("[Zombies]") && !GameManager.INSTANCE.isPlayerInGame(player))
+				if(!plugin.isEditingASign.containsKey(player) && BlockUtils.isZombiesSign(event.getClickedBlock()) && !GameManager.INSTANCE.isPlayerInGame(player))
 				{
 					plugin.isEditingASign.put(player, sign);
 					CommandUtil.sendMessageToPlayer(player, "You are now editing a sign!");
@@ -152,18 +125,17 @@ public class SignListener implements Listener
 				}
 			}
 
-			String lineOne = ChatColor.stripColor(sign.getLine(0));
-			String lineTwo = ChatColor.stripColor(sign.getLine(1));
-			if(lineOne.equalsIgnoreCase("[Zombies]"))
+			if(BlockUtils.isZombiesSign(event.getClickedBlock()))
 			{
 				Game game = GameManager.INSTANCE.getGame(sign.getLocation());
-				IGameSign signLogic = GAME_SIGNS.get(lineTwo.toLowerCase());
+				String lineTwo = ChatColor.stripColor(sign.getLine(1));
+				IGameSign signLogic = GAME_SIGNS.get(lineTwo.toLowerCase(Locale.ROOT));
 				if(signLogic != null && (game != null || !signLogic.requiresGame()))
 				{
 					if(game != null && signLogic.requiresGame() && game.getMode() != Game.ArenaStatus.INGAME)
 						return;
 
-					signLogic.onInteract(game, player, sign);
+					signLogic.onInteract(game, player, event.getClickedBlock());
 					event.setCancelled(true);
 				}
 			}
@@ -171,33 +143,42 @@ public class SignListener implements Listener
 	}
 
 	@EventHandler
-	public void eventSignChanged(SignChangeEvent event)
-	{
-		if(!BlockUtils.isSign(event.getBlock().getType()))
+	public void eventSignChanged(@NotNull SignChangeEvent event) {
+		if (!BlockUtils.isSign(event.getBlock())) {
+			throw new IllegalStateException("eventSignChanged is invoked with a non-sign block");
+		}
+
+		if (GameManager.INSTANCE.isPlayerInGame(event.getPlayer()) || (
+				GameManager.INSTANCE.isLocationInGame(event.getBlock().getLocation())
+						&& !COMZPermission.doesPlayerHaveAdminPerms(event.getPlayer()))) {
+			event.setCancelled(true);
 			return;
-		String lineOne = ChatColor.stripColor(event.getLine(0));
-		String lineTwo = ChatColor.stripColor(event.getLine(1));
-		if(lineOne != null && lineOne.equalsIgnoreCase("[Zombies]") && lineTwo != null)
-		{
-			Game game = GameManager.INSTANCE.getGame(event.getBlock().getLocation());
-			IGameSign signLogic = GAME_SIGNS.get(lineTwo.toLowerCase());
-			if(signLogic != null && (game != null || !signLogic.requiresGame()))
-			{
-				signLogic.onChange(game, event.getPlayer(), event);
+		}
+
+		if (BlockUtils.isZombiesSign(event.getBlock())) {
+			String lineTwo = ChatColor.stripColor(event.getLine(1));
+			if (lineTwo == null) {
+				return;
 			}
-			else if(signLogic == null)
-			{
+
+			IGameSign signLogic = GAME_SIGNS.get(lineTwo.toLowerCase(Locale.ROOT));
+			if (signLogic != null) {
+				Game game = null;
+				if (signLogic.requiresGame()) {
+					game = GameManager.INSTANCE.getGame(event.getBlock().getLocation());
+				}
+				if (game == null) {
+					event.setLine(0, ChatColor.RED + String.valueOf(ChatColor.BOLD) + "Sign is");
+					event.setLine(1, ChatColor.RED + String.valueOf(ChatColor.BOLD) + "not in");
+					event.setLine(2, ChatColor.RED + String.valueOf(ChatColor.BOLD) + "an arena!");
+					event.setLine(3, "");
+					return;
+				}
+				signLogic.onChange(game, event.getPlayer(), event);
+			} else {
 				event.setLine(0, ChatColor.RED + String.valueOf(ChatColor.BOLD) + lineTwo);
 				event.setLine(1, ChatColor.RED + String.valueOf(ChatColor.BOLD) + "is not a");
 				event.setLine(2, ChatColor.RED + String.valueOf(ChatColor.BOLD) + "valid sign");
-				event.setLine(3, "");
-
-			}
-			else
-			{
-				event.setLine(0, ChatColor.RED + String.valueOf(ChatColor.BOLD) + "Sign is");
-				event.setLine(1, ChatColor.RED + String.valueOf(ChatColor.BOLD) + "not in");
-				event.setLine(2, ChatColor.RED + String.valueOf(ChatColor.BOLD) + "an arena!");
 				event.setLine(3, "");
 			}
 		}

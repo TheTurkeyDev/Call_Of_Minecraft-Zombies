@@ -4,6 +4,7 @@ import com.theprogrammingturkey.comz.leaderboards.Leaderboard;
 import com.theprogrammingturkey.comz.leaderboards.StatsCategory;
 import com.theprogrammingturkey.comz.util.COMZPermission;
 import com.theprogrammingturkey.comz.util.CommandUtil;
+import java.util.Locale;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -23,17 +24,17 @@ public class LeaderboardsCommand implements SubCommand
 			CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "Try /z leaderboard <catergory>");
 			StringBuilder cats = new StringBuilder();
 			for(StatsCategory cat : StatsCategory.values())
-				cats.append(cat.name().toLowerCase()).append(", ");
+				cats.append(cat.name().toLowerCase(Locale.ROOT)).append(", ");
 			cats.delete(cats.length() - 2, cats.length());
 			CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "Categories: " + cats);
 		}
 		else if(args.length == 2)
 		{
 			//TODO: dynamic length
-			String catName = args[1].toLowerCase();
+			String catName = args[1].toLowerCase(Locale.ROOT);
 			for(StatsCategory cat : StatsCategory.values())
 			{
-				if(cat.name().toLowerCase().equals(catName))
+				if(cat.name().toLowerCase(Locale.ROOT).equals(catName))
 				{
 					Leaderboard.getTopX(cat, 15, player);
 					return true;
@@ -42,7 +43,7 @@ public class LeaderboardsCommand implements SubCommand
 			CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + catName + " is not a valid category! ");
 			StringBuilder cats = new StringBuilder();
 			for(StatsCategory cat : StatsCategory.values())
-				cats.append(cat.name().toLowerCase()).append(", ");
+				cats.append(cat.name().toLowerCase(Locale.ROOT)).append(", ");
 			cats.delete(cats.length() - 2, cats.length());
 			CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "Categories: " + cats);
 		}

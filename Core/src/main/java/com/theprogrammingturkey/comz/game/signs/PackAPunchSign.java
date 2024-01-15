@@ -8,6 +8,7 @@ import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
@@ -15,13 +16,13 @@ import org.bukkit.event.block.SignChangeEvent;
 public class PackAPunchSign implements IGameSign
 {
 	@Override
-	public void onBreak(Game game, Player player, Sign sign)
+	public void onBreak(Game game, Player player, Block signBlock)
 	{
 
 	}
 
 	@Override
-	public void onInteract(Game game, Player player, Sign sign)
+	public void onInteract(Game game, Player player, Block signBlock)
 	{
 		if(game.hasPower() && !game.isPowered())
 		{
@@ -39,7 +40,7 @@ public class PackAPunchSign implements IGameSign
 
 		GunInstance gun = manager.getGun(player.getInventory().getHeldItemSlot());
 
-		int cost = Integer.parseInt(sign.getLine(2));
+		int cost = Integer.parseInt(((Sign) signBlock.getState()).getLine(2));
 		if(PointManager.INSTANCE.canBuy(player, cost))
 		{
 			if(gun.isPackOfPunched())

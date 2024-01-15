@@ -5,8 +5,15 @@ import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import com.theprogrammingturkey.comz.util.BlockUtils;
+import java.util.Collections;
+import java.util.Map.Entry;
+import java.util.NavigableSet;
+import java.util.Objects;
+import java.util.TreeMap;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -18,16 +25,16 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import org.jetbrains.annotations.UnmodifiableView;
 
 public class Barrier implements Runnable
 {
-	private final Map<Block, Material> blocks = new HashMap<>();
+	private final TreeMap<Block, Material> blocks = new TreeMap<>(BlockUtils::compareBlockLocation);
 	private Location repairLoc;
 	private BlockFace signFacing;
 	private final List<SpawnPoint> spawns = new ArrayList<>();
 
-	private int stage;
+	private int stage = -1;
 	private boolean breaking = false;
 
 	private final String id;
@@ -37,74 +44,91 @@ public class Barrier implements Runnable
 	private int reward;
 
 	private final List<Entity> ents = new ArrayList<>();
-	private final HashMap<Player, Integer> earnedPoints = new HashMap<>();
+
+	private int taskId = -1;
 
 	public Barrier(String id, Game game)
 	{
-		stage = 0;
-		this.id = id;
+    this.id = id;
 		this.game = game;
+	}
+
+	public void putSign() {
+		Block block = repairLoc.getBlock();
+		block.setType(Material.OAK_WALL_SIGN);
+		BlockData blockData = block.getBlockData();
+		((Directional) blockData).setFacing(signFacing);
+		block.setBlockData(blockData);
+		final Sign sign = (Sign) block.getState();
+		sign.setLine(0, "[BarrierRepair]");
+		sign.setLine(1, "Break this to");
+		sign.setLine(2, "repair the");
+		sign.setLine(3, "barrier");
+		sign.update();
 	}
 
 	public boolean damage()
 	{
-		stage++;
+		int maxStage = blocks.size() - 1;
 
-		if(stage > 5)
-			stage = 5;
+		if (stage > maxStage) {
+			throw new IllegalStateException(
+					"stage (" + stage + ") must be equal or less than maxStage (" + maxStage + ")");
+		}
+		if (stage == maxStage) {
+			return true;
+		}
+
+		stage++;
 
 		game.updateBarrierDamage(stage, blocks.keySet());
 
-		if(stage >= 5)
-		{
-			for(Block b : blocks.keySet())
-				BlockUtils.setBlockToAir(b);
-			return true;
+		if (stage == 0) {
+			putSign();
 		}
-		else
-		{
-			if(stage > -1)
-			{
-				Block block = repairLoc.getBlock();
-				block.setType(Material.OAK_WALL_SIGN);
-				BlockData blockData = block.getBlockData();
-				((Directional) blockData).setFacing(signFacing);
-				block.setBlockData(blockData);
-				Sign sign = (Sign) block.getState();
-				sign.setLine(0, "[BarrierRepair]");
-				sign.setLine(1, "Break this to");
-				sign.setLine(2, "repair the");
-				sign.setLine(3, "barrier");
-				sign.update(true);
-			}
-			return false;
+
+		if (stage == maxStage) {
+			blocks.keySet().forEach(BlockUtils::setBlockToAir);
+		} else {
+			blocks.keySet().stream().filter(block -> block.getType() != Material.BARRIER).findFirst()
+					.orElseThrow().setType(Material.BARRIER);
 		}
+
+		return stage == maxStage;
 	}
 
 	public boolean repair(Player player)
 	{
+		if (stage < -1) {
+			throw new IllegalStateException("stage (" + stage + ") must be equal or larger than -1");
+		}
+
+		if (stage == -1) {
+			return true;
+		}
+
+		boolean wasMaxStage = stage == (blocks.size() - 1);
+
 		stage--;
 
-		if(stage < -1)
-			stage = -1;
-
 		game.updateBarrierDamage(stage, blocks.keySet());
-		int pointsEarned = earnedPoints.getOrDefault(player, 0);
-		//TODO: Make configurable
-		if(pointsEarned < reward * 6)
-		{
-			earnedPoints.put(player, pointsEarned + reward);
-			PointManager.INSTANCE.addPoints(player, reward);
-			PointManager.INSTANCE.notifyPlayer(player);
-		}
+
+		PointManager.INSTANCE.addPoints(player, reward);
+		PointManager.INSTANCE.notifyPlayer(player);
 
 		if(stage == -1)
 			BlockUtils.setBlockToAir(repairLoc);
 
-		for(Block b : blocks.keySet())
-			if(game.getWorld().getBlockAt(b.getLocation()).getType().equals(Material.AIR))
-				BlockUtils.setBlockTypeHelper(game.getWorld().getBlockAt(b.getLocation()), blocks.get(b));
-		return stage <= -1;
+		if (wasMaxStage) {
+			blocks.keySet().forEach(block -> block.setType(Material.BARRIER));
+		}
+
+		Entry<Block, Material> blockMaterialEntry = blocks.entrySet().stream()
+				.filter(entry -> entry.getKey().getType() == Material.BARRIER || entry.getKey().isEmpty())
+				.findFirst().orElseThrow();
+		BlockUtils.setBlockTypeHelper(blockMaterialEntry.getKey(), blockMaterialEntry.getValue());
+
+		return stage == -1;
 	}
 
 	public void repairFull()
@@ -113,18 +137,13 @@ public class Barrier implements Runnable
 
 		game.updateBarrierDamage(-1, blocks.keySet());
 
-		for(Block b : blocks.keySet())
-			if(b.getType().equals(Material.AIR))
-				BlockUtils.setBlockTypeHelper(b, blocks.get(b));
+		blocks.entrySet().stream()
+				.filter(entry -> entry.getKey().isEmpty() || entry.getKey().getType() == Material.BARRIER)
+				.forEach(entry -> BlockUtils.setBlockTypeHelper(entry.getKey(), entry.getValue()));
 
 		BlockUtils.setBlockToAir(repairLoc);
 
 		this.breaking = false;
-	}
-
-	public void resetEarnedPoints()
-	{
-		earnedPoints.replaceAll((p, v) -> 0);
 	}
 
 	public void addBarrierBlock(Location loc)
@@ -138,9 +157,9 @@ public class Barrier implements Runnable
 		blocks.put(block, mat);
 	}
 
-	public List<Block> getBlocks()
+	public NavigableSet<Block> getBlocks()
 	{
-		return new ArrayList<>(blocks.keySet());
+		return Collections.unmodifiableNavigableSet(blocks.navigableKeySet());
 	}
 
 	public boolean hasBarrierLoc(Block b)
@@ -173,9 +192,9 @@ public class Barrier implements Runnable
 		return spawns.contains(sp);
 	}
 
-	public List<SpawnPoint> getSpawnPoints()
+	public @UnmodifiableView List<SpawnPoint> getSpawnPoints()
 	{
-		return spawns;
+		return Collections.unmodifiableList(spawns);
 	}
 
 	public String getID()
@@ -220,31 +239,32 @@ public class Barrier implements Runnable
 		return game;
 	}
 
-	public void update()
-	{
-		for(int i = 0; i < ents.size(); i++)
-		{
-			Entity ent = ents.get(i);
-			if(ent.isDead())
-			{
-				ents.remove(ent);
-				i--;
+	public void update() {
+		ents.removeIf(Entity::isDead);
+
+		if (ents.isEmpty()) {
+			this.breaking = false;
+			taskId = -1;
+		} else {
+			boolean fullyDamaged = this.damage();
+			Objects.requireNonNull(repairLoc.getWorld())
+					.playSound(repairLoc, Sound.ENTITY_WITHER_SHOOT, 1, 1);
+			if (fullyDamaged) {
+				this.breaking = false;
+				taskId = -1;
+			} else {
+				taskId = COMZombies.scheduleTask(60, this);
 			}
 		}
-
-		if(ents.size() > 0 && !this.damage())
-			COMZombies.scheduleTask(60, this);
-		else
-			this.breaking = false;
 	}
 
 	public void initBarrier(Entity ent)
 	{
 		ents.add(ent);
-		if(this.stage < 6 && !breaking)
+		if(!breaking && !Bukkit.getScheduler().isQueued(taskId))
 		{
 			this.breaking = true;
-			COMZombies.scheduleTask(60, this);
+			taskId = COMZombies.scheduleTask(60, this);
 		}
 	}
 

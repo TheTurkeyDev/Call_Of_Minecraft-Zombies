@@ -6,6 +6,7 @@ import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.GamePlayer;
 import com.theprogrammingturkey.comz.util.COMZPermission;
 import com.theprogrammingturkey.comz.util.CommandUtil;
+import java.util.Objects;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -16,15 +17,19 @@ public class JoinCommand implements SubCommand
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
-		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
-			Map<Player, GamePlayer> gamePlayers = GameManager.INSTANCE.getGame(player).gamePlayers;
-			if(gamePlayers.get(player).hasLeftGame())
-				gamePlayers.remove(player);
-			else
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You must leave your current game first!");
-			return true;
+			final Game playerGame = GameManager.INSTANCE.getGame(player);
+			if (playerGame != null) {
+				if (Objects.requireNonNull(playerGame.getGamePlayer(player)).hasLeftGame()) {
+					playerGame.removePlayerFromGamePlayers(player);
+				} else {
+					CommandUtil.sendMessageToPlayer(player,
+							ChatColor.RED + "" + ChatColor.BOLD + "You must leave your current game first!");
+				}
+				return true;
+			}
 		}
+
 		if(GameManager.INSTANCE.getGames().isEmpty())
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "There are no arenas!");

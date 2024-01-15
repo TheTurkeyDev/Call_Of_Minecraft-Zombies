@@ -21,14 +21,20 @@ public class ZombieSpawner extends RoundSpawner
 			if(zomb.getEquipment() != null)
 				zomb.getEquipment().clear();
 		});
-		zomb.setBaby(false);
+		if (!zomb.isAdult()) {
+			if (COMZombies.rand.nextInt(4) != 0) {
+				zomb.setAdult();
+			} else {
+				setSpeed(zomb, (float) 2 / 3);
+			}
+		}
 		setFollowDistance(zomb, 512);
 
 		float strength = ((wave * 100f) + 50) / 50f;
 		setMaxHealth(zomb, strength);
 		zomb.setHealth(strength);
 
-		if(game.getWave() > 4 && COMZombies.rand.nextInt(100) < 20 + (15 * (game.getWave() - 5)))
+		if(game.getWave() > 4 && COMZombies.rand.nextInt(10) < 2 + (15 * (game.getWave() - 5)))
 			setSpeed(zomb, 1.25f);
 
 		Barrier b = game.barrierManager.getBarrier(loc);

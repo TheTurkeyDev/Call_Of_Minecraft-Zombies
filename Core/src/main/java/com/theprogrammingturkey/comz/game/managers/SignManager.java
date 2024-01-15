@@ -4,26 +4,27 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.config.COMZConfig;
+import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
+import java.util.HashSet;
+import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SignManager
 {
-	public List<Sign> gameSigns = new ArrayList<>();
+	private final HashSet<@NotNull Location> gameSigns = new HashSet<>();
 
-	private final Game game;
+	private final @NotNull Game game;
 
-	public SignManager(Game game)
+	public SignManager(@NotNull Game game)
 	{
 		this.game = game;
 
@@ -38,7 +39,7 @@ public class SignManager
 			load(jsonObject.getAsJsonArray(game.getName()));
 	}
 
-	private void load(JsonArray signsJson)
+	private void load(@NotNull JsonArray signsJson)
 	{
 		for(JsonElement signElem : signsJson)
 		{
@@ -49,17 +50,16 @@ public class SignManager
 
 			if(loc == null)
 			{
-				COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "Could not load the sign with json: " + signJson.toString());
+				COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "Could not load the sign with json: " + signJson);
 				continue;
 			}
 			Block block = loc.getBlock();
 			if(block.getState() instanceof Sign)
 			{
-				Sign sB = (Sign) block.getState();
-				gameSigns.add(sB);
+        gameSigns.add(loc);
 			}
 		}
-		enable();
+		updateGame();
 	}
 
 	private void save()
@@ -83,70 +83,63 @@ public class SignManager
 			jsonObject.add(game.getName(), signsArray);
 		}
 
-		for(Sign sign : gameSigns)
-			signsArray.add(CustomConfig.locationToJson(sign.getLocation()));
+		gameSigns.forEach(sign -> signsArray.add(CustomConfig.locationToJson(sign)));
 
 		config.saveConfig(jsonObject);
 	}
 
 	public void updateGame()
 	{
-		COMZombies.scheduleTask(20, () ->
-		{
-			for(Sign s : gameSigns)
-			{
-				if(game.getMode().equals(Game.ArenaStatus.DISABLED))
-				{
-					s.setLine(0, ChatColor.DARK_RED + "[maintenance]".toUpperCase());
-					s.setLine(1, game.getName());
-					s.setLine(2, "Game will be");
-					s.setLine(3, "available soon!");
+		final ArenaStatus gameMode = game.getMode();
+		for (final Location location : gameSigns) {
+			final Sign sign = (Sign) location.getBlock().getState();
+			switch (gameMode) {
+				case DISABLED -> {
+					sign.setLine(0, ChatColor.DARK_RED + "[MAINTENANCE]");
+					sign.setLine(1, game.getName());
+					sign.setLine(2, "Game will be");
+					sign.setLine(3, "available soon!");
 				}
-				else if(game.getMode().equals(Game.ArenaStatus.WAITING) || game.getMode().equals(Game.ArenaStatus.STARTING))
-				{
-					s.setLine(0, ChatColor.RED + "[Zombies]");
-					s.setLine(1, ChatColor.AQUA + "Join");
-					s.setLine(2, game.getName());
-					s.setLine(3, ChatColor.GREEN + "Players: " + game.getPlayersInGame().size() + "/" + game.maxPlayers);
+				case WAITING, STARTING -> {
+					sign.setLine(0, ChatColor.RED + "[Zombies]");
+					sign.setLine(1, ChatColor.AQUA + "Join");
+					sign.setLine(2, game.getName());
+					sign.setLine(3, ChatColor.GREEN + "Players: " + game.getPlayersInGame().size() + "/"
+							+ game.maxPlayers);
 				}
-				else if(game.getMode().equals(Game.ArenaStatus.INGAME))
-				{
-					s.setLine(0, ChatColor.GREEN + game.getName());
-					s.setLine(1, ChatColor.RED + "InProgress");
-					s.setLine(2, ChatColor.RED + "Wave: " + game.getWave());
-					s.setLine(3, ChatColor.DARK_RED + "Alive: " + game.getPlayersInGame().size());
+				case INGAME -> {
+					sign.setLine(0, ChatColor.GREEN + game.getName());
+					sign.setLine(1, ChatColor.RED + "InProgress");
+					sign.setLine(2, ChatColor.RED + "Wave: " + game.getWave());
+					sign.setLine(3, ChatColor.DARK_RED + "Alive: " + game.getPlayersInGame().size());
 				}
-				s.update();
 			}
-		});
+			sign.update();
+		}
 	}
 
-	public void enable()
-	{
-		updateGame();
-	}
-
-	public void addSign(Sign sign)
+	public void addSign(@NotNull Location sign)
 	{
 		gameSigns.add(sign);
 		save();
 	}
 
-	public void removeSign(Sign sign)
+	public void removeSign(@NotNull Location sign)
 	{
 		gameSigns.remove(sign);
 		save();
 	}
 
-	public boolean isSign(Sign sign)
+	public boolean isGameSign(@Nullable Location sign)
 	{
 		return gameSigns.contains(sign);
 	}
 
 	public void removeAllSigns()
 	{
-		for(Sign sign : gameSigns)
+		for(Location location : gameSigns)
 		{
+			Sign sign = (Sign) location.getBlock().getState();
 			sign.setLine(0, "");
 			sign.setLine(1, "");
 			sign.setLine(2, "");

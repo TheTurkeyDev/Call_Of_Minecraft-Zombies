@@ -12,8 +12,10 @@ import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.util.BlockUtils;
 import com.theprogrammingturkey.comz.util.Util;
+import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.Collections;
+import java.util.Comparator;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Mob;
@@ -24,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnmodifiableView;
 
 public class SpawnManager
 {
@@ -60,7 +64,7 @@ public class SpawnManager
 		{
 			if(!spawnElem.isJsonObject())
 				continue;
-			Location loc = CustomConfig.getLocationAddWorld(spawnElem.getAsJsonObject(), "", game.getWorld());
+			Location loc = CustomConfig.getLocationWithWorld(spawnElem.getAsJsonObject(), "", game.getWorld());
 			String id = CustomConfig.getString(spawnElem.getAsJsonObject(), "id", "MISSING");
 			if(loc != null && !id.equals("MISSING"))
 				points.add(new SpawnPoint(loc, game, loc.getBlock().getType(), id));
@@ -108,9 +112,9 @@ public class SpawnManager
 		GameManager.INSTANCE.saveAllGames();
 	}
 
-	public List<SpawnPoint> getPoints()
+	public @UnmodifiableView List<SpawnPoint> getPoints()
 	{
-		return points;
+		return Collections.unmodifiableList(points);
 	}
 
 	public void killMob(Entity entity)
@@ -139,9 +143,9 @@ public class SpawnManager
 		mobs.clear();
 	}
 
-	public List<Mob> getEntities()
+	public @UnmodifiableView List<Mob> getEntities()
 	{
-		return mobs;
+		return Collections.unmodifiableList(mobs);
 	}
 
 	public void removeEntity(Entity entity)
@@ -151,7 +155,7 @@ public class SpawnManager
 
 		mobs.remove(entity);
 
-		if((mobs.size() == 0) && (mobsSpawned >= mobsToSpawn))
+		if((mobs.isEmpty()) && (mobsSpawned >= mobsToSpawn))
 			game.nextWave();
 
 		game.scoreboard.update();
@@ -177,42 +181,19 @@ public class SpawnManager
 		return game;
 	}
 
-	private List<SpawnPoint> getNearestPoints(Location loc, int numToGet)
-	{
+	private @NotNull List<SpawnPoint> getNearestPoints(@NotNull Location loc, int numToGet) {
 		List<SpawnPoint> points = game.spawnManager.getPoints();
-		if(numToGet <= 0 || points.size() == 0)
-			return new ArrayList<>();
-
-		int numPoints = Math.min(numToGet, points.size());
-		List<SpawnPoint> results = new ArrayList<>(numPoints);
-		for(int i = 0; i < numPoints; i++)
-			results.add(points.get(i));
-
-		List<Double> distances = new ArrayList<>();
-		for(int i = 0; i < numToGet; i++)
-			distances.add(Double.POSITIVE_INFINITY);
-
-
-		for(SpawnPoint point : points)
-		{
-			Location spawnLoc = point.getLocation();
-			double dx = spawnLoc.getBlockX() - loc.getBlockX();
-			double dy = spawnLoc.getBlockY() - loc.getBlockY();
-			double dz = spawnLoc.getBlockZ() - loc.getBlockZ();
-			double dist2 = (dx * dx) + (dy * dy) + (dz * dz);
-			for(int resultIndex = 0; resultIndex < results.size(); resultIndex++)
-			{
-				if(dist2 >= distances.get(resultIndex))
-					continue;
-
-				distances.add(resultIndex, dist2);
-				results.add(resultIndex, point);
-				results.remove(numPoints);
-				distances.remove(numPoints);
-				break;
-			}
+		if (numToGet < 0) {
+			throw new IllegalArgumentException("numToGet should not be less than zero");
 		}
-		return results;
+		if (numToGet == 0) {
+			return new ArrayList<>();
+		}
+
+		return points.stream().filter(this::canSpawn)
+				.map(point -> new SimpleImmutableEntry<>(point, point.getLocation().distanceSquared(loc)))
+				.sorted(Comparator.comparingDouble(SimpleImmutableEntry::getValue))
+				.limit(Math.min(numToGet, points.size())).map(SimpleImmutableEntry::getKey).toList();
 	}
 
 	private void smartSpawn(final int wave)
@@ -230,33 +211,11 @@ public class SpawnManager
 			return;
 		}
 
-		int playersSize = game.getPlayersInGame().size();
-
-		SpawnPoint selectPoint = null;
-		Player player = game.getPlayersInGame().get(COMZombies.rand.nextInt(playersSize));
+		Player player = game.getPlayersInGame().get(COMZombies.rand.nextInt(game.getPlayersInGame().size()));
 
 		List<SpawnPoint> points = getNearestPoints(player.getLocation(), mobsToSpawn);
-		int totalRetries = 0;
-		int curr = 0;
-		while(selectPoint == null)
-		{
-			if(curr == points.size())
-			{
-				player = game.getPlayersInGame().get(COMZombies.rand.nextInt(playersSize));
-				points = getNearestPoints(player.getLocation(), mobsToSpawn / playersSize);
-				curr = 0;
-				continue;
-			}
-			selectPoint = points.get(COMZombies.rand.nextInt(points.size()));
-			if(!(canSpawn(selectPoint)))
-				selectPoint = null;
-			curr++;
-			if(totalRetries > 1000)
-				oopsWeHadAnError();
-			totalRetries++;
-		}
 
-		final SpawnPoint finalPoint = selectPoint;
+		final SpawnPoint finalPoint = points.get(COMZombies.rand.nextInt(points.size()));
 		COMZombies.scheduleTask((int) spawnInterval * 20L, () ->
 		{
 			if(!this.canSpawn || wave != game.getWave())
@@ -339,16 +298,6 @@ public class SpawnManager
 		return maySpawn;
 	}
 
-	private void oopsWeHadAnError()
-	{
-		if(game.getMode() != ArenaStatus.INGAME)
-			return;
-
-		for(Player pl : game.getPlayersInGame())
-			pl.sendMessage(ChatColor.RED + "Well..  I guess we had an error trying to pick a spawn point out of the many we had! We'll have to end your game because of our lack of skillez.");
-		game.endGame();
-	}
-
 	public RoundSpawnType nextWave(int wave, final List<Player> players)
 	{
 		canSpawn = false;
@@ -378,7 +327,7 @@ public class SpawnManager
 	{
 		canSpawn = true;
 
-		if(game.getPlayersInGame().size() == 0 && game.getMode() == ArenaStatus.INGAME)
+		if(game.getPlayersInGame().isEmpty() && game.getMode() == ArenaStatus.INGAME)
 		{
 			this.game.endGame();
 			Bukkit.broadcastMessage(COMZombies.PREFIX + "SmartSpawn was sent a players list with no players in it! Game was ended");

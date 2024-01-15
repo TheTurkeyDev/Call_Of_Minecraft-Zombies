@@ -13,7 +13,6 @@ import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.economy.PointManager;
-import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.game.features.DownedPlayer;
 import com.theprogrammingturkey.comz.game.features.PowerUp;
@@ -23,6 +22,7 @@ import com.theprogrammingturkey.comz.game.weapons.BaseGun;
 import com.theprogrammingturkey.comz.kits.KitManager;
 import com.theprogrammingturkey.comz.leaderboards.Leaderboard;
 import com.theprogrammingturkey.comz.leaderboards.PlayerStats;
+import com.theprogrammingturkey.comz.listeners.customEvents.GameStartEvent;
 import com.theprogrammingturkey.comz.spawning.RoundSpawnType;
 import com.theprogrammingturkey.comz.spawning.SpawnManager;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
@@ -30,8 +30,8 @@ import com.theprogrammingturkey.comz.util.BlockUtils;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.EntityEffect;
 import org.bukkit.GameMode;
+import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -49,7 +49,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 /**
  * Main game class.
@@ -60,7 +62,9 @@ public class Game
 	/**
 	 * List of every player contained in game.
 	 */
-	public Map<Player, GamePlayer> gamePlayers = new LinkedHashMap<>();
+	private final Map<Player, GamePlayer> gamePlayers = new LinkedHashMap<>();
+
+	private final Map<Player, GamePlayer> disconnectedPlayers = new LinkedHashMap<>();
 
 	private boolean debugMode = false;
 
@@ -115,6 +119,8 @@ public class Game
 
 	private boolean maxAmmoReplishClip;
 
+	private boolean forceNight;
+
 	private String startingGun = "M1911";
 
 	/**
@@ -123,7 +129,7 @@ public class Game
 	private int waveNumber = 0;
 
 	/**
-	 * World name for the game.
+	 * World for the game.
 	 */
 	public World world;
 
@@ -170,7 +176,7 @@ public class Game
 	/**
 	 * Auto start timer, constructed upon join.
 	 */
-	public AutoStart starter;
+	private AutoStart starter;
 
 	/**
 	 * contains all of the Mysteryboxes in the game
@@ -266,14 +272,26 @@ public class Game
 		return null;
 	}
 
-	public List<Player> getPlayersInGame()
-	{
-		return gamePlayers.values().stream().filter(gp -> gp.isInGame() || gp.isDead()).map(GamePlayer::getPlayer).collect(Collectors.toList());
+	public @UnmodifiableView List<Player> getPlayersInGame() {
+		return gamePlayers.values().stream().filter(gp -> gp.isInGame() || gp.isDead())
+				.map(GamePlayer::getPlayer).toList();
 	}
 
-	public boolean wasDisconnected(Player player)
+	public boolean isDisconnectedPlayer(Player player)
 	{
-		return gamePlayers.containsKey(player);
+		return disconnectedPlayers.containsKey(player);
+	}
+
+	public void addDisconnected(Player player)
+	{
+		GamePlayer gamePlayer = gamePlayers.get(player);
+		if (gamePlayer != null) {
+			disconnectedPlayers.put(player, gamePlayer);
+		}
+	}
+
+	public void removeDisconnectedPlayer(Player player) {
+		disconnectedPlayers.remove(player);
 	}
 
 	/**
@@ -428,13 +446,19 @@ public class Game
 		if(mode == ArenaStatus.STARTING && !forced)
 			return;
 
-		if(forced && mode == ArenaStatus.STARTING && !starter.forced)
+		if(forced && mode == ArenaStatus.STARTING) {
+			boolean lastForced = starter.forced;
 			starter.endTimer();
-
+			starter = null;
+			if(lastForced) {
+				startArena();
+				return;
+			}
+		}
 
 		int delay = ConfigManager.getMainConfig().arenaStartTime + 1;
 
-		if(forced)
+		if(forced && delay > 6)
 			delay = 6;
 
 		starter = new AutoStart(this, delay);
@@ -455,6 +479,8 @@ public class Game
 		if(mode == ArenaStatus.INGAME)
 			return;
 
+		Bukkit.getPluginManager().callEvent(new GameStartEvent(this));
+
 		waveNumber = 0;
 		changingRound = false;
 		mode = ArenaStatus.INGAME;
@@ -465,6 +491,7 @@ public class Game
 			player.setFlying(false);
 			player.setHealth(20D);
 			player.setFoodLevel(20);
+			player.setExp(0);
 			player.setLevel(0);
 			PointManager.INSTANCE.setPoints(player, 500);
 			Leaderboard.getPlayerStatFromPlayer(player).incGamesPlayed();
@@ -545,8 +572,12 @@ public class Game
 		for(Player player : getDeathPlayers())
 			addPlayer(player);
 
-		for(DownedPlayer player : downedPlayerManager.getDownedPlayers())
-			player.revivePlayer();
+//		for(DownedPlayer player : downedPlayerManager.getDownedPlayers())
+//			player.revivePlayer();
+		List<DownedPlayer> downedPlayers = downedPlayerManager.getDownedPlayers();
+		while (!downedPlayers.isEmpty()) {
+			downedPlayers.get(downedPlayers.size() - 1).revivePlayer();
+		}
 
 		int delay = 0;
 		if(waveNumber != 1)
@@ -582,8 +613,6 @@ public class Game
 			signManager.updateGame();
 			changingRound = false;
 			scoreboard.update();
-			for(Barrier b : barrierManager.getBarriers())
-				b.resetEarnedPoints();
 		});
 
 	}
@@ -597,8 +626,8 @@ public class Game
 		player.setFoodLevel(20);
 		player.getInventory().clear();
 		player.getInventory().setArmorContents(null);
-		player.setLevel(0);
 		player.setExp(0);
+		player.setLevel(0);
 		player.teleport(lobbyLocation);
 		PointManager.INSTANCE.setPoints(player, points);
 		assignPlayerInventory(player);
@@ -645,14 +674,14 @@ public class Game
 			if(getPlayersInGame().size() >= minPlayers)
 			{
 				setStarting(false);
-				signManager.updateGame();
 			}
 		}
 		else if(mode == ArenaStatus.INGAME)
 		{
-			if(wasDisconnected(player))
+			if(isDisconnectedPlayer(player))
 			{
 				removePlayer(player);
+				removeDisconnectedPlayer(player);
 
 				gamePlayers.put(player, new GamePlayer(player));
 				setDead(player);
@@ -694,7 +723,7 @@ public class Game
 
 	public void setDead(Player player)
 	{
-		gamePlayers.computeIfAbsent(player, GamePlayer::new).setState(PlayerState.DEAD);
+		gamePlayers.get(player).setState(PlayerState.DEAD);
 		setPlayerSpectatorMode(player);
 	}
 
@@ -713,15 +742,14 @@ public class Game
 	 */
 	public void removePlayer(Player player)
 	{
-		if(downedPlayerManager.isDownedPlayer(player))
-		{
-			//removePlayerActions(player);
-			// gamePlayers.remove(player);
+		if (downedPlayerManager.isDownedPlayer(player)) {
 			setDead(player);
-		}
-		else if(gamePlayers.containsKey(player))
-		{
-			gamePlayers.get(player).setState(PlayerState.LEFT_GAME);
+		} else if (gamePlayers.containsKey(player)) {
+			if (mode == ArenaStatus.WAITING) {
+				gamePlayers.remove(player);
+			} else {
+				gamePlayers.get(player).setState(PlayerState.LEFT_GAME);
+			}
 		}
 		resetPlayer(player);
 
@@ -730,6 +758,10 @@ public class Game
 
 		if(getPlayersInGame().isEmpty() && mode != ArenaStatus.WAITING && !isDisabled)
 			endGame();
+	}
+
+	public void removePlayerFromGamePlayers(Player player) {
+		gamePlayers.remove(player);
 	}
 
 	private void removePlayerActions(Player player)
@@ -764,7 +796,7 @@ public class Game
 		}
 	}
 
-	private void resetPlayer(Player player)
+	private void resetPlayer(final @NotNull Player player)
 	{
 		for(PotionEffectType t : PotionEffectType.values())
 			player.removePotionEffect(t);
@@ -777,14 +809,16 @@ public class Game
 		scoreboard.removePlayer(player);
 		player.updateInventory();
 		COMZombies plugin = COMZombies.getPlugin();
-		for(Player pl : Bukkit.getOnlinePlayers())
-		{
-			if(!gamePlayers.containsKey(pl))
-				player.showPlayer(plugin, pl);
-			else
+		for (final Player pl : Bukkit.getOnlinePlayers()) {
+			if (pl == player) {
+				continue;
+			}
+			if (gamePlayers.containsKey(pl)) {
 				pl.hidePlayer(plugin, player);
+			} else {
+				player.showPlayer(plugin, pl);
+			}
 		}
-
 
 		signManager.updateGame();
 	}
@@ -795,7 +829,8 @@ public class Game
 	 */
 	public void forceNight()
 	{
-		COMZombies.scheduleTask(5, 1200, () -> getWorld().setTime(14000L));
+		getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+		getWorld().setTime(18000L);
 	}
 
 	/**
@@ -937,6 +972,7 @@ public class Game
 		turnOffPower();
 		boxManager.loadAllBoxes();
 		barrierManager.unloadAllBarriers();
+		disconnectedPlayers.clear();
 		gamePlayers.clear();
 		scoreboard = new GameScoreboard(this);
 		instaKill = false;
@@ -995,6 +1031,9 @@ public class Game
 			return false;
 		}
 
+		getWorld().setGameRule(GameRule.DO_TILE_DROPS, false);
+		getWorld().setGameRule(GameRule.DO_ENTITY_DROPS, false);
+
 		powerSetup = CustomConfig.getBoolean(arenaSaveJson, "power_setup", false);
 		minPlayers = CustomConfig.getInt(arenaSettingsJson, "min_players", 1);
 		maxPlayers = CustomConfig.getInt(arenaSettingsJson, "max_players", 8);
@@ -1002,15 +1041,16 @@ public class Game
 		startingGun = CustomConfig.getString(arenaSettingsJson, "StartingGun", "M1911");
 		dogRoundEveryX = CustomConfig.getInt(arenaSettingsJson, "dog_round_every_x", 5);
 		maxAmmoReplishClip = CustomConfig.getBoolean(arenaSettingsJson, "max_ammo_replenish_clip", false);
-
-		if(CustomConfig.getBoolean(arenaSettingsJson, "force_night", false))
+		forceNight = CustomConfig.getBoolean(arenaSettingsJson, "force_night", false);
+		if (forceNight) {
 			forceNight();
+		}
 
-		min = CustomConfig.getLocationAddWorld(arenaSaveJson, "p1", world);
-		max = CustomConfig.getLocationAddWorld(arenaSaveJson, "p2", world);
-		playerTPLocation = CustomConfig.getLocationAddWorld(arenaSaveJson, "player_spawn", world);
-		spectateLocation = CustomConfig.getLocationAddWorld(arenaSaveJson, "spectator_spawn", world);
-		lobbyLocation = CustomConfig.getLocationAddWorld(arenaSaveJson, "lobby_spawn", world);
+		min = CustomConfig.getLocationWithWorld(arenaSaveJson, "p1", world);
+		max = CustomConfig.getLocationWithWorld(arenaSaveJson, "p2", world);
+		playerTPLocation = CustomConfig.getLocationWithWorld(arenaSaveJson, "player_spawn", world);
+		spectateLocation = CustomConfig.getLocationWithWorld(arenaSaveJson, "spectator_spawn", world);
+		lobbyLocation = CustomConfig.getLocationWithWorld(arenaSaveJson, "lobby_spawn", world);
 
 		arena = new Arena(min, max, world);
 		mode = ArenaStatus.WAITING;
@@ -1036,6 +1076,8 @@ public class Game
 		hasWarps = true;
 		hasPoints = true;
 
+		signManager.updateGame();
+
 		return true;
 	}
 
@@ -1053,6 +1095,7 @@ public class Game
 		arenaSettingsJson.addProperty("StartingGun", startingGun);
 		arenaSettingsJson.addProperty("dog_round_every_x", dogRoundEveryX);
 		arenaSettingsJson.addProperty("max_ammo_replenish_clip", maxAmmoReplishClip);
+		arenaSettingsJson.addProperty("force_night", forceNight);
 
 
 		arenaSaveJson.addProperty("world_name", world.getName());
@@ -1250,7 +1293,9 @@ public class Game
 	public void damageMob(Mob mob, Player player, float damageAmount)
 	{
 		double mobHealth = mob.getHealth() - damageAmount;
-		mob.playEffect(EntityEffect.HURT);
+
+		mob.playHurtAnimation(player.getLocation()
+				.setDirection(mob.getLocation().subtract(player.getLocation()).toVector()).getYaw());
 
 		if(isInstaKill())
 		{
@@ -1299,7 +1344,7 @@ public class Game
 			if(mob instanceof Zombie)
 				zombieKilled(player);
 
-			if(spawnManager.getEntities().size() <= 0 && spawnManager.getMobsSpawned() == spawnManager.getMobsToSpawn())
+			if(spawnManager.getEntities().isEmpty() && spawnManager.getMobsSpawned() == spawnManager.getMobsToSpawn())
 			{
 				if(mob instanceof Wolf)
 					powerUpManager.dropPowerUp(mob, PowerUp.MAX_AMMO);
@@ -1421,20 +1466,28 @@ public class Game
 		return gamePlayers.containsKey(player) && gamePlayers.get(player).isSpectating();
 	}
 
-	public List<Player> getPlayersAndSpectators()
+	public @Nullable GamePlayer getGamePlayer(@NotNull Player player) {
+		return gamePlayers.get(player);
+	}
+
+	public @UnmodifiableView List<Player> getPlayersAndSpectators()
 	{
 		return gamePlayers.values().stream()
 				.filter(v -> v.isInGame() || v.isSpectating())
 				.map(GamePlayer::getPlayer)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
-	public List<Player> getDeathPlayers()
+	public @UnmodifiableView List<Player> getDeathPlayers()
 	{
 		return gamePlayers.values().stream()
 				.filter(GamePlayer::isDead)
 				.map(GamePlayer::getPlayer)
-				.collect(Collectors.toList());
+				.toList();
+	}
+
+	public @NotNull Arena getArena() {
+		return arena;
 	}
 
 	public void sendMessageToPlayers(String message)

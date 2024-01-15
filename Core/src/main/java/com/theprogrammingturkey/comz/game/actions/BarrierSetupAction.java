@@ -30,7 +30,7 @@ public class BarrierSetupAction extends BaseAction
 		if(!player.getInventory().contains(Material.WOODEN_SWORD))
 			player.getInventory().addItem(new ItemStack(Material.WOODEN_SWORD));
 
-		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "------" + ChatColor.DARK_RED + "Barrier Setup" + ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "-----");
+		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + ChatColor.STRIKETHROUGH + "------" + ChatColor.DARK_RED + "Barrier Setup" + ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "-----");
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Select each block individually to be the barrier using the wooden sword.");
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Once you have this complete, type done, go into the room the barrier blocks to and click on any ender portal frames (spawn points) that is in there with the sword.");
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Lastly! In chat, type a price for the each repairation stage of the barrier");

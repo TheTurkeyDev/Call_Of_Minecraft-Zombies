@@ -51,25 +51,16 @@ public class PlayerStats
 
 	public int getStat(StatsCategory cat)
 	{
-		switch(cat)
-		{
-			case KILLS:
-				return kills;
-			case REVIVES:
-				return revives;
-			case DEATHS:
-				return deaths;
-			case DOWNS:
-				return downs;
-			case GAMES_PLAYED:
-				return gamesPlayed;
-			case HIGHEST_ROUND:
-				return highestRound;
-			case MOST_POINTS:
-				return mostPoints;
-			default:
-				return 0;
-		}
+    return switch (cat) {
+      case KILLS -> kills;
+      case REVIVES -> revives;
+      case DEATHS -> deaths;
+      case DOWNS -> downs;
+      case GAMES_PLAYED -> gamesPlayed;
+      case HIGHEST_ROUND -> highestRound;
+      case MOST_POINTS -> mostPoints;
+      default -> 0;
+    };
 	}
 
 	public int getKills()

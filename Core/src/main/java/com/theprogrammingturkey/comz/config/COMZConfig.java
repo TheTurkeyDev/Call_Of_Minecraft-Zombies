@@ -1,5 +1,7 @@
 package com.theprogrammingturkey.comz.config;
 
+import org.jetbrains.annotations.NotNull;
+
 public enum COMZConfig
 {
 	ARENAS("arenas"),
@@ -8,24 +10,24 @@ public enum COMZConfig
 	STATS("stats"),
 	SIGNS("signs");
 
-	private final String name;
+	private final @NotNull String name;
 
-	COMZConfig(String name)
+	COMZConfig(@NotNull String name)
 	{
 		this.name = name;
 	}
 
-	public String getName()
+	public @NotNull String getName()
 	{
 		return name;
 	}
 
-	public String getLegacyFileName()
+	public @NotNull String getLegacyFileName()
 	{
 		return name + ".yml";
 	}
 
-	public String getFileName()
+	public @NotNull String getFileName()
 	{
 		return name + ".json";
 	}

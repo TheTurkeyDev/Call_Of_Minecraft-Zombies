@@ -37,10 +37,9 @@ public class InfoCommand implements SubCommand
 			{
 				if(mode.equalsIgnoreCase("info"))
 				{
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "----------" + ChatColor.GOLD + game.getName() + ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "----------");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "----------" + ChatColor.GOLD + game.getName() + ChatColor.RED + ChatColor.STRIKETHROUGH + "----------");
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "World: " + ChatColor.BLUE + game.arena.getWorld());
-					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Point One: x:" + ChatColor.BLUE + game.arena.getMin().getBlockX() + ChatColor.GREEN + ", y:" + ChatColor.BLUE + game.arena.getMin().getBlockY() + ChatColor.GREEN + ", z:" + ChatColor.BLUE + game.arena.getMin().getBlockZ());
-					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Point Two: x:" + ChatColor.BLUE + game.arena.getMax().getBlockX() + ChatColor.GREEN + ", y:" + ChatColor.BLUE + game.arena.getMax().getBlockY() + ChatColor.GREEN + ", z:" + ChatColor.BLUE + game.arena.getMax().getBlockZ());
+					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Bounding Box: " + ChatColor.BLUE + game.arena.getBoundingBox());
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Player Spawn: x:" + ChatColor.BLUE + game.getPlayerSpawn().getBlockX() + ChatColor.GREEN + ", y:" + ChatColor.BLUE + game.getPlayerSpawn().getBlockY() + ChatColor.GREEN + ", z:" + ChatColor.BLUE + game.getPlayerSpawn().getBlockZ());
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Lobby Spawn: x:" + ChatColor.BLUE + game.getLobbyLocation().getBlockX() + ChatColor.GREEN + ", y:" + ChatColor.BLUE + game.getLobbyLocation().getBlockY() + ChatColor.GREEN + ", z:" + ChatColor.BLUE + game.getLobbyLocation().getBlockZ());
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Spectator Spawn: x:" + ChatColor.BLUE + game.getSpectateLocation().getBlockX() + ChatColor.GREEN + ", y:" + ChatColor.BLUE + game.getSpectateLocation().getBlockY() + ChatColor.GREEN + ", z:" + ChatColor.BLUE + game.getSpectateLocation().getBlockZ());
@@ -59,7 +58,7 @@ public class InfoCommand implements SubCommand
 				}
 				else if(mode.equalsIgnoreCase("spawns") || mode.equalsIgnoreCase("spawn"))
 				{
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "----------" + ChatColor.GOLD + "Spawn Points" + ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "----------");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "----------" + ChatColor.GOLD + "Spawn Points" + ChatColor.RED + ChatColor.STRIKETHROUGH + "----------");
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Total spawns: " + game.spawnManager.getTotalSpawns());
 					for(int i = 0; i < game.spawnManager.getTotalSpawns(); i++)
 					{
@@ -72,11 +71,10 @@ public class InfoCommand implements SubCommand
 				}
 				else if(mode.equalsIgnoreCase("doors") || mode.equalsIgnoreCase("door"))
 				{
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "----------" + ChatColor.GOLD + "Spawn Points" + ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "----------");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "----------" + ChatColor.GOLD + "Spawn Points" + ChatColor.RED + ChatColor.STRIKETHROUGH + "----------");
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Total doors: " + game.doorManager.getDoors().size());
-					for(int i = 0; i < game.doorManager.getDoors().size(); i++)
+					for (Door door: game.doorManager.getDoors())
 					{
-						Door door = game.doorManager.getDoors().get(i);
 						CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Door " + door.doorID);
 						CommandUtil.sendMessageToPlayer(player, "  " + ChatColor.GREEN + "Blocks: " + ChatColor.BLUE + door.getBlocks().size());
 						CommandUtil.sendMessageToPlayer(player, "  " + ChatColor.GREEN + "Signs: " + ChatColor.BLUE + door.getSigns().size());
@@ -86,18 +84,17 @@ public class InfoCommand implements SubCommand
 				}
 				else if(mode.equalsIgnoreCase("zombies") || mode.equalsIgnoreCase("zombie"))
 				{
-					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "----------" + ChatColor.GOLD + "Zombies" + ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "----------");
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "----------" + ChatColor.GOLD + "Zombies" + ChatColor.RED + ChatColor.STRIKETHROUGH + "----------");
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Total Zombies Alive: " + game.spawnManager.getEntities().size());
-					for(int i = 1; i <= game.spawnManager.getEntities().size(); i++)
+					for(int i = 0, size = game.spawnManager.getEntities().size(); i < size; i++)
 					{
-						int acc = i - 1;
-						CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Zombie " + i);
-						CommandUtil.sendMessageToPlayer(player, "  " + ChatColor.GREEN + "Is Dead: " + ChatColor.BLUE + game.spawnManager.getEntities().get(acc).isDead());
+						CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Zombie " + (i + 1));
+						CommandUtil.sendMessageToPlayer(player, "  " + ChatColor.GREEN + "Is Dead: " + ChatColor.BLUE + game.spawnManager.getEntities().get(i).isDead());
 						CommandUtil.sendMessageToPlayer(player, "  " + ChatColor.GREEN + "Location: ");
-						CommandUtil.sendMessageToPlayer(player, "    " + ChatColor.GREEN + "X: " + ChatColor.BLUE + game.spawnManager.getEntities().get(acc).getLocation().getBlockX());
-						CommandUtil.sendMessageToPlayer(player, "    " + ChatColor.GREEN + "Y: " + ChatColor.BLUE + game.spawnManager.getEntities().get(acc).getLocation().getBlockY());
-						CommandUtil.sendMessageToPlayer(player, "    " + ChatColor.GREEN + "Z: " + ChatColor.BLUE + game.spawnManager.getEntities().get(acc).getLocation().getBlockZ());
-						CommandUtil.sendMessageToPlayer(player, "  " + ChatColor.GREEN + "Health: " + ChatColor.BLUE + (game.spawnManager.getEntities().get(acc)));
+						CommandUtil.sendMessageToPlayer(player, "    " + ChatColor.GREEN + "X: " + ChatColor.BLUE + game.spawnManager.getEntities().get(i).getLocation().getBlockX());
+						CommandUtil.sendMessageToPlayer(player, "    " + ChatColor.GREEN + "Y: " + ChatColor.BLUE + game.spawnManager.getEntities().get(i).getLocation().getBlockY());
+						CommandUtil.sendMessageToPlayer(player, "    " + ChatColor.GREEN + "Z: " + ChatColor.BLUE + game.spawnManager.getEntities().get(i).getLocation().getBlockZ());
+						CommandUtil.sendMessageToPlayer(player, "  " + ChatColor.GREEN + "Health: " + ChatColor.BLUE + (game.spawnManager.getEntities().get(i)));
 					}
 				}
 

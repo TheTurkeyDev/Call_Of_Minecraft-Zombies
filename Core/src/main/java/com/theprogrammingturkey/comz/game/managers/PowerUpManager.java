@@ -6,6 +6,7 @@ import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PowerUp;
+import java.util.Locale;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -37,7 +38,8 @@ public class PowerUpManager
 		JsonObject powerUpsJson = powerUpSettings.get("powerups").getAsJsonObject();
 		for(PowerUp powerUp : PowerUp.values())
 			if(powerUp != PowerUp.NONE)
-				powerups.put(powerUp, CustomConfig.getBoolean(powerUpsJson, powerUp.name().toLowerCase(), true));
+				powerups.put(powerUp, CustomConfig.getBoolean(powerUpsJson, powerUp.name().toLowerCase(
+						Locale.ROOT), true));
 	}
 
 	public JsonObject save()
@@ -48,7 +50,7 @@ public class PowerUpManager
 		JsonObject powerUpsJson = new JsonObject();
 		for(PowerUp powerUp : PowerUp.values())
 			if(powerUp != PowerUp.NONE)
-				powerUpsJson.addProperty(powerUp.name().toLowerCase(), powerups.get(powerUp));
+				powerUpsJson.addProperty(powerUp.name().toLowerCase(Locale.ROOT), powerups.get(powerUp));
 
 		saveJson.add("powerups", powerUpsJson);
 
@@ -110,16 +112,14 @@ public class PowerUpManager
 		if(game == null || game.getMode() != Game.ArenaStatus.INGAME)
 			return;
 
-		int chance = (int) (Math.random() * 100);
-		if(chance <= dropChance)
+		int chance = COMZombies.rand.nextInt(100);
+		if(chance < dropChance)
 		{
-			List<PowerUp> availableRewards = powerups.keySet().stream().filter(powerups::get).collect(Collectors.toList());
+			List<PowerUp> availableRewards = powerups.keySet().stream().filter(powerups::get)
+					.filter(powerUp -> !(powerUp == PowerUp.FIRE_SALE && game.boxManager.isMultiBox()))
+					.toList();
 			if(availableRewards.isEmpty())
 				return;
-
-			if(availableRewards.contains(PowerUp.FIRE_SALE))
-				if(game.boxManager.isMultiBox())
-					availableRewards.remove(PowerUp.FIRE_SALE);
 
 			this.dropPowerUp(mob, availableRewards.get(COMZombies.rand.nextInt(availableRewards.size())));
 		}
