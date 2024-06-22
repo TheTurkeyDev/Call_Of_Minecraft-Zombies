@@ -78,7 +78,7 @@ public class DoorSetupAction extends BaseAction
 			}
 		}
 
-		if(clickedBlock != null && (event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)))
+		if(state == 0 && clickedBlock != null && (event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)))
 		{
 			if(!door.hasDoorLoc(clickedBlock))
 			{
@@ -122,16 +122,22 @@ public class DoorSetupAction extends BaseAction
 			else if(state == 2)
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Signs for door set!");
-				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now type in a price for the doors.");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Now type in a price for the doors. And use POWER:PRICE to make the door require power to open.");
 				state++;
 			}
 		}
 		else if(state == 3)
 		{
-			if(!message.matches("[0-9]{1,5}"))
+			if(!message.matches("[0-9]{1,5}") && !message.matches("POWER:[0-9]{1,5}"))
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + message + " is not a number!");
 				return;
+			}
+
+			if(message.contains("POWER:"))
+			{
+				door.setPowerRequired(true);
+				message = message.replace("POWER:", "");
 			}
 
 			int price = Integer.parseInt(message);

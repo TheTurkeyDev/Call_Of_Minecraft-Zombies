@@ -9,8 +9,13 @@ import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class EditZSpawnCommand implements SubCommand
+public class EditZSpawnCommand extends SubCommand
 {
+	public EditZSpawnCommand(COMZPermission permission)
+	{
+		super(permission);
+	}
+	
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{

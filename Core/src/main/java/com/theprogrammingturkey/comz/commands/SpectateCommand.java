@@ -7,8 +7,13 @@ import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class SpectateCommand implements SubCommand
+public class SpectateCommand extends SubCommand
 {
+	public SpectateCommand(COMZPermission permission)
+	{
+		super(permission);
+	}
+	
 	public boolean onCommand(Player player, String[] args)
 	{
 		if(args.length == 1)

@@ -9,8 +9,12 @@ import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class RemoveBarrierCommand implements SubCommand
+public class RemoveBarrierCommand extends SubCommand
 {
+	public RemoveBarrierCommand(COMZPermission permission)
+	{
+		super(permission);
+	}
 
 	@Override
 	public boolean onCommand(Player player, String[] args)

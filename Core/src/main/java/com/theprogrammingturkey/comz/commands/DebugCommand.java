@@ -6,8 +6,13 @@ import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.util.COMZPermission;
 import org.bukkit.entity.Player;
 
-public class DebugCommand implements SubCommand
+public class DebugCommand extends SubCommand
 {
+	public DebugCommand(COMZPermission permission)
+	{
+		super(permission);
+	}
+	
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
