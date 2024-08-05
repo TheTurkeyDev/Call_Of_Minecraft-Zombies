@@ -8,8 +8,13 @@ import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class EndCommand implements SubCommand
+public class EndCommand extends SubCommand
 {
+	public EndCommand(COMZPermission permission)
+	{
+		super(permission);
+	}
+	
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{

@@ -7,8 +7,12 @@ import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class RejoinCommand implements SubCommand
+public class RejoinCommand extends SubCommand
 {
+	public RejoinCommand(COMZPermission permission)
+	{
+		super(permission);
+	}
 
 	@Override
 	public boolean onCommand(Player player, String[] args)

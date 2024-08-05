@@ -6,8 +6,13 @@ import com.theprogrammingturkey.comz.util.COMZPermission;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.entity.Player;
 
-public class CancelCommand implements SubCommand
+public class CancelCommand extends SubCommand
 {
+	public CancelCommand(COMZPermission permission)
+	{
+		super(permission);
+	}	
+	
 	public boolean onCommand(Player player, String[] args)
 	{
 		if(!COMZPermission.CANCEL.hasPerm(player))
