@@ -32,11 +32,13 @@ public class Door
 	private final List<Sign> signs = new ArrayList<>();
 	private List<SpawnPoint> spawnsInRoomDoorLeadsTo = new ArrayList<>();
 	private boolean isOpened = false;
+	private boolean powerRequired = false;
 
-	public Door(Game game, String id)
+	public Door(Game game, String id, boolean powerRequired)
 	{
 		this.game = game;
 		doorID = id;
+		this.powerRequired = powerRequired;
 	}
 
 	public boolean canOpen(int moneyHas)
@@ -63,6 +65,7 @@ public class Door
 	{
 		JsonObject saveJson = new JsonObject();
 		saveJson.addProperty("id", doorID);
+		saveJson.addProperty("powerRequired", powerRequired);
 
 		JsonArray blocksJson = new JsonArray();
 		saveJson.add("blocks", blocksJson);
@@ -292,6 +295,16 @@ public class Door
 	public boolean hasDoorLoc(Block b)
 	{
 		return blocks.containsKey(b);
+	}
+
+	public void setPowerRequired(boolean powerRequired)
+	{
+		this.powerRequired = powerRequired;
+	}
+
+	public boolean requiresPower()
+	{
+		return powerRequired;
 	}
 
 }

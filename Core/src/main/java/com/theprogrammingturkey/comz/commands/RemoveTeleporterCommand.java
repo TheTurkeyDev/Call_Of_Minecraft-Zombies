@@ -8,8 +8,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-public class RemoveTeleporterCommand implements SubCommand
+public class RemoveTeleporterCommand extends SubCommand
 {
+	public RemoveTeleporterCommand(COMZPermission permission)
+	{
+		super(permission);
+	}
+
 	public boolean onCommand(Player player, String[] args)
 	{
 		if(!COMZPermission.REMOVE_TELEPORTER.hasPerm(player))

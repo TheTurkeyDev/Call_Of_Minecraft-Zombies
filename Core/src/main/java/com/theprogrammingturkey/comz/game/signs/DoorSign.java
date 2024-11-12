@@ -28,6 +28,10 @@ public class DoorSign implements IGameSign
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "This door is already open!");
 		}
+		else if(door.requiresPower() && !game.isPowered())
+		{
+			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "This door requires power to open!");
+		}
 		else if(PointManager.INSTANCE.getPlayerPoints(player).getPoints() < door.getCost())
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You don't have enough points!");
