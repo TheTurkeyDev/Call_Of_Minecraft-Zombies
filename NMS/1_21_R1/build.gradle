@@ -2,7 +2,7 @@ archivesBaseName = "comz-1.21.r1-support"
 
 dependencies {
     implementation project(':API')
-    implementation group: 'org.spigotmc', name: 'spigot', version: '1.21-R0.1-SNAPSHOT'
+    implementation group: 'org.spigotmc', name: 'spigot', version: '1.21.1-R0.1-SNAPSHOT'
 }
 
 repositories {
