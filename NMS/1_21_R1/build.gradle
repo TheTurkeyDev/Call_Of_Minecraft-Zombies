@@ -9,10 +9,10 @@ repositories {
     mavenCentral()
 }
 
-sourceCompatibility = targetCompatibility = JavaLanguageVersion.of(17)
+sourceCompatibility = targetCompatibility = JavaLanguageVersion.of(21)
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
