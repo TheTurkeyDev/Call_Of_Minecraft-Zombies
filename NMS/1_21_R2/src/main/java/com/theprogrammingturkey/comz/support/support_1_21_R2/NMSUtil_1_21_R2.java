@@ -72,13 +72,22 @@ public class NMSUtil_1_21_R2 implements INMSUtil
 
 	public void sendParticleToPlayer(NMSParticleType particleType, Player player, Location location, float offsetX, float offsetY, float offsetZ, float speed, int count)
 	{
-		ParticleType particle = switch(particleType)
+		ParticleType particle = Particles.a;
+		switch(particleType)
 		{
-			case WITCH -> Particles.ad; // Witch
-			case LAVA -> Particles.N;
-			case FIREWORK -> Particles.A;
-			case HEART -> Particles.G;
-		};
+			case WITCH:
+				particle = Particles.ad; // Witch
+				break;
+			case LAVA:
+				particle = Particles.N;
+				break;
+			case FIREWORK:
+				particle = Particles.A;
+				break;
+			case HEART:
+				particle = Particles.G;
+				break;
+		}
 		sendPacket(player, new PacketPlayOutWorldParticles(particle, true, location.getX(), location.getY(), location.getZ(), offsetX, offsetY, offsetZ, speed, count));
 	}
 

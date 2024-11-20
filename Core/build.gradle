@@ -5,6 +5,14 @@ apply plugin: 'maven-publish'
 
 archivesBaseName = "comzombies-Universal"
 
+sourceCompatibility = targetCompatibility = JavaLanguageVersion.of(17)
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
 repositories {
     mavenCentral()
     maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
