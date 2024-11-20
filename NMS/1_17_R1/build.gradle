@@ -5,3 +5,11 @@ dependencies {
     implementation project(':API')
     implementation group: 'org.spigotmc', name: 'spigot', version: '1.17.1-R0.1-SNAPSHOT'
 }
+
+sourceCompatibility = targetCompatibility = JavaLanguageVersion.of(16)
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(16)
+    }
+}
