@@ -15,8 +15,6 @@ allprojects {
 subprojects {
     apply plugin: 'java'
 
-    sourceCompatibility = targetCompatibility = '17'
-
     repositories {
         mavenLocal()
     }
