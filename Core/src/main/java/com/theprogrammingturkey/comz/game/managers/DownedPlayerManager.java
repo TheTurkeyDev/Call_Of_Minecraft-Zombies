@@ -73,8 +73,9 @@ public class DownedPlayerManager
 		downedPlayers.remove(dp);
 	}
 
-	public List<DownedPlayer> getDownedPlayers()
+	public void reviveDownedPlayers()
 	{
-		return downedPlayers;
+		for(int i = downedPlayers.size() - 1; i >= 0; i--)
+			downedPlayers.get(i).revivePlayer();
 	}
 }

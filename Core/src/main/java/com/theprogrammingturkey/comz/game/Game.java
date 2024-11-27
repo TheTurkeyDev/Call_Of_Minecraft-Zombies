@@ -15,7 +15,6 @@ import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.Door;
-import com.theprogrammingturkey.comz.game.features.DownedPlayer;
 import com.theprogrammingturkey.comz.game.features.PowerUp;
 import com.theprogrammingturkey.comz.game.features.RandomBox;
 import com.theprogrammingturkey.comz.game.managers.*;
@@ -545,8 +544,7 @@ public class Game
 		for(Player player : getDeathPlayers())
 			addPlayer(player);
 
-		for(DownedPlayer player : downedPlayerManager.getDownedPlayers())
-			player.revivePlayer();
+		downedPlayerManager.reviveDownedPlayers();
 
 		int delay = 0;
 		if(waveNumber != 1)
