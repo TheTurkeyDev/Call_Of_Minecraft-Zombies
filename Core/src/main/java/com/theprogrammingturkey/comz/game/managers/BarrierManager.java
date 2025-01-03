@@ -48,7 +48,7 @@ public class BarrierManager
 			String barrierID = CustomConfig.getString(barrierJson, "id", "MISSING");
 			Barrier barrier = new Barrier(barrierID, game);
 
-			barrier.setRepairLoc(CustomConfig.getLocationAddWorld(barrierJson, "repair_loc", game.getWorld()));
+			barrier.setRepairLoc(CustomConfig.getLocationWithWorld(barrierJson, "repair_loc", game.getWorld()));
 			barrier.setSignFacing(BlockFace.valueOf(CustomConfig.getString(barrierJson, "repair_facing", "NORTH")));
 
 			JsonArray barrierBlocks = barrierJson.get("blocks").getAsJsonArray();
@@ -58,7 +58,7 @@ public class BarrierManager
 					continue;
 				JsonObject blockJson = blockElem.getAsJsonObject();
 
-				Location loc = CustomConfig.getLocationAddWorld(blockJson, "", game.getWorld());
+				Location loc = CustomConfig.getLocationWithWorld(blockJson, "", game.getWorld());
 				if(loc != null)
 				{
 					Material mat = BlockUtils.getMaterialFromKey(CustomConfig.getString(blockJson, "material", ""));
@@ -66,7 +66,7 @@ public class BarrierManager
 				}
 				else
 				{
-					COMZombies.log.log(Level.WARNING, COMZombies.CONSOLE_PREFIX + "Failed to load a block location for Barrier: " + barrierID + ", Json: " + barrierJson);
+					COMZombies.log.log(Level.WARNING, "Failed to load a block location for Barrier: " + barrierID + ", Json: " + barrierJson);
 				}
 			}
 

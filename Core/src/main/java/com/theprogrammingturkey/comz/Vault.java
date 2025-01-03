@@ -48,7 +48,7 @@ public class Vault
 	{
 		if(Bukkit.getPluginManager().isPluginEnabled("Vault") && setupEconomy() && setupPermission())
 		{
-			COMZombies.log.log(Level.INFO, COMZombies.CONSOLE_PREFIX + " Vault hook enabled!");
+			COMZombies.log.log(Level.INFO, "Vault hook enabled!");
 			this.enabled = true;
 		}
 	}

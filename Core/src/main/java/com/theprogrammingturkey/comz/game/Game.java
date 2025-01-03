@@ -22,6 +22,7 @@ import com.theprogrammingturkey.comz.game.weapons.BaseGun;
 import com.theprogrammingturkey.comz.kits.KitManager;
 import com.theprogrammingturkey.comz.leaderboards.Leaderboard;
 import com.theprogrammingturkey.comz.leaderboards.PlayerStats;
+import com.theprogrammingturkey.comz.listeners.customEvents.GameStartEvent;
 import com.theprogrammingturkey.comz.spawning.RoundSpawnType;
 import com.theprogrammingturkey.comz.spawning.SpawnManager;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
@@ -31,6 +32,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.EntityEffect;
 import org.bukkit.GameMode;
+import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -155,6 +157,8 @@ public class Game
 	 * Location in which players will teleport upon first join.
 	 */
 	private Location lobbyLocation;
+
+	private boolean forceNight;
 
 	/**
 	 * Arena contained in the game.
@@ -433,7 +437,7 @@ public class Game
 
 		int delay = ConfigManager.getMainConfig().arenaStartTime + 1;
 
-		if(forced)
+		if(forced && delay > 6)
 			delay = 6;
 
 		starter = new AutoStart(this, delay);
@@ -454,6 +458,8 @@ public class Game
 		if(mode == ArenaStatus.INGAME)
 			return;
 
+		Bukkit.getPluginManager().callEvent(new GameStartEvent(this));
+
 		waveNumber = 0;
 		changingRound = false;
 		mode = ArenaStatus.INGAME;
@@ -464,6 +470,7 @@ public class Game
 			player.setFlying(false);
 			player.setHealth(20D);
 			player.setFoodLevel(20);
+			player.setExp(0);
 			player.setLevel(0);
 			PointManager.INSTANCE.setPoints(player, 500);
 			Leaderboard.getPlayerStatFromPlayer(player).incGamesPlayed();
@@ -472,7 +479,7 @@ public class Game
 		scoreboard.update();
 		if(this.boxManager.isMultiBox())
 		{
-			sendMessageToPlayers(ChatColor.RED + "[Zombies] All mystery boxes are being generated.");
+			sendMessageToPlayers(ChatColor.RED + "All mystery boxes are being generated.");
 			this.boxManager.loadAllBoxes();
 		}
 		else
@@ -595,8 +602,8 @@ public class Game
 		player.setFoodLevel(20);
 		player.getInventory().clear();
 		player.getInventory().setArmorContents(null);
-		player.setLevel(0);
 		player.setExp(0);
+		player.setLevel(0);
 		player.teleport(lobbyLocation);
 		PointManager.INSTANCE.setPoints(player, points);
 		assignPlayerInventory(player);
@@ -623,7 +630,7 @@ public class Game
 		}
 		else if(gun == null)
 		{
-			COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "The " + startingGun + " is listed as the starting gun, but it could not be found! Did you forget to change this?");
+			COMZombies.log.log(Level.SEVERE, "The " + startingGun + " is listed as the starting gun, but it could not be found! Did you forget to change this?");
 		}
 	}
 
@@ -712,15 +719,10 @@ public class Game
 	public void removePlayer(Player player)
 	{
 		if(downedPlayerManager.isDownedPlayer(player))
-		{
-			//removePlayerActions(player);
-			// gamePlayers.remove(player);
 			setDead(player);
-		}
 		else if(gamePlayers.containsKey(player))
-		{
 			gamePlayers.get(player).setState(PlayerState.LEFT_GAME);
-		}
+
 		resetPlayer(player);
 
 		if(!isDisabled)
@@ -777,13 +779,14 @@ public class Game
 		COMZombies plugin = COMZombies.getPlugin();
 		for(Player pl : Bukkit.getOnlinePlayers())
 		{
-			if(!gamePlayers.containsKey(pl))
-				player.showPlayer(plugin, pl);
-			else
+			if (pl == player)
+				continue;
+
+			if(gamePlayers.containsKey(pl))
 				pl.hidePlayer(plugin, player);
+			else
+				player.showPlayer(plugin, pl);
 		}
-
-
 		signManager.updateGame();
 	}
 
@@ -793,7 +796,8 @@ public class Game
 	 */
 	public void forceNight()
 	{
-		COMZombies.scheduleTask(5, 1200, () -> getWorld().setTime(14000L));
+		getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+		getWorld().setTime(18000L);
 	}
 
 	/**
@@ -989,7 +993,7 @@ public class Game
 
 		if(world == null)
 		{
-			COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + worldName + " isn't a valid world name for the arena " + arenaName);
+			COMZombies.log.log(Level.SEVERE, worldName + " isn't a valid world name for the arena " + arenaName);
 			return false;
 		}
 
@@ -1001,14 +1005,15 @@ public class Game
 		dogRoundEveryX = CustomConfig.getInt(arenaSettingsJson, "dog_round_every_x", 5);
 		maxAmmoReplishClip = CustomConfig.getBoolean(arenaSettingsJson, "max_ammo_replenish_clip", false);
 
-		if(CustomConfig.getBoolean(arenaSettingsJson, "force_night", false))
+		forceNight = CustomConfig.getBoolean(arenaSettingsJson, "force_night", false);
+		if(forceNight)
 			forceNight();
 
-		min = CustomConfig.getLocationAddWorld(arenaSaveJson, "p1", world);
-		max = CustomConfig.getLocationAddWorld(arenaSaveJson, "p2", world);
-		playerTPLocation = CustomConfig.getLocationAddWorld(arenaSaveJson, "player_spawn", world);
-		spectateLocation = CustomConfig.getLocationAddWorld(arenaSaveJson, "spectator_spawn", world);
-		lobbyLocation = CustomConfig.getLocationAddWorld(arenaSaveJson, "lobby_spawn", world);
+		min = CustomConfig.getLocationWithWorld(arenaSaveJson, "p1", world);
+		max = CustomConfig.getLocationWithWorld(arenaSaveJson, "p2", world);
+		playerTPLocation = CustomConfig.getLocationWithWorld(arenaSaveJson, "player_spawn", world);
+		spectateLocation = CustomConfig.getLocationWithWorld(arenaSaveJson, "spectator_spawn", world);
+		lobbyLocation = CustomConfig.getLocationWithWorld(arenaSaveJson, "lobby_spawn", world);
 
 		arena = new Arena(min, max, world);
 		mode = ArenaStatus.WAITING;
@@ -1033,6 +1038,8 @@ public class Game
 
 		hasWarps = true;
 		hasPoints = true;
+
+		signManager.updateGame();
 
 		return true;
 	}
@@ -1060,7 +1067,7 @@ public class Game
 		arenaSaveJson.add("player_spawn", CustomConfig.locationToJsonNoWorld(playerTPLocation));
 		arenaSaveJson.add("spectator_spawn", CustomConfig.locationToJsonNoWorld(spectateLocation));
 		arenaSaveJson.add("lobby_spawn", CustomConfig.locationToJsonNoWorld(lobbyLocation));
-
+		arenaSettingsJson.addProperty("force_night", forceNight);
 
 		arenaSettingsJson.add("powerup_settings", powerUpManager.save());
 		arenaSaveJson.add("zombie_spawns", spawnManager.save());
@@ -1297,7 +1304,7 @@ public class Game
 			if(mob instanceof Zombie)
 				zombieKilled(player);
 
-			if(spawnManager.getEntities().size() <= 0 && spawnManager.getMobsSpawned() == spawnManager.getMobsToSpawn())
+			if(spawnManager.getEntities().isEmpty() && spawnManager.getMobsSpawned() == spawnManager.getMobsToSpawn())
 			{
 				if(mob instanceof Wolf)
 					powerUpManager.dropPowerUp(mob, PowerUp.MAX_AMMO);

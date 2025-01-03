@@ -71,7 +71,7 @@ public class WeaponManager
 	{
 		List<BaseGun> guns = weapons.stream().filter(weapon -> weapon instanceof BaseGun).map(weapon -> (BaseGun) weapon).collect(Collectors.toList());
 		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "---------" + ChatColor.GOLD + "Guns" + ChatColor.RED + "----------");
-		if(guns.size() == 0)
+		if(guns.isEmpty())
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You have no guns! Make sure COM: Z can read from your " + ChatColor.GOLD + "guns.json");
 
 		WeaponType gunClass = guns.get(0).getWeaponType();
@@ -105,7 +105,7 @@ public class WeaponManager
 		JsonElement jsonElement = ConfigManager.getConfig(COMZConfig.GUNS).getJson();
 		if(jsonElement.isJsonNull())
 		{
-			COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "Failed to load in the guns from the guns config!");
+			COMZombies.log.log(Level.SEVERE, "Failed to load in the guns from the guns config!");
 			return;
 		}
 		JsonObject jsonObject = jsonElement.getAsJsonObject();

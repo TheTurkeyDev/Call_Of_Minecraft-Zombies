@@ -24,9 +24,7 @@ public class DoorRemoveAction extends BaseAction
 			for(Sign sign : door.getSigns())
 			{
 				if(!(sign.getBlock().getState() instanceof Sign))
-				{
 					sign.getBlock().setType(Material.OAK_WALL_SIGN);
-				}
 				sign.setLine(0, ChatColor.RED + "Break a sign");
 				sign.setLine(1, ChatColor.RED + "to remove the");
 				sign.setLine(2, ChatColor.RED + "door that the");
@@ -54,7 +52,7 @@ public class DoorRemoveAction extends BaseAction
 
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "" + ChatColor.BOLD + "Door removed!");
 		game.doorManager.removeDoor(door);
-		if(game.doorManager.getDoors().size() == 0)
+		if(game.doorManager.getDoors().isEmpty())
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "No doors left!");
 			cancelAction();

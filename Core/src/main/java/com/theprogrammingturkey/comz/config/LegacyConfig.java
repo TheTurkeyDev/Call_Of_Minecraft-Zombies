@@ -25,7 +25,7 @@ public class LegacyConfig
 
 	public static void convertLegacyConfig(File oldFile, CustomConfig config)
 	{
-		COMZombies.log.log(Level.INFO, COMZombies.CONSOLE_PREFIX + "Converting legacy file " + config.getConfig().getLegacyFileName());
+		COMZombies.log.log(Level.INFO, "Converting legacy file " + config.getConfig().getLegacyFileName());
 		switch(config.getConfig())
 		{
 			case ARENAS:

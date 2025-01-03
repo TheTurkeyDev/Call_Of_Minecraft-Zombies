@@ -151,8 +151,7 @@ public enum PerkType
 
 		if(availablePerks.isEmpty())
 			return null;
-		//get random perk from list of available perks
-		int rand = (int) (Math.random() * availablePerks.size());
-		return availablePerks.get(rand);
+		// get random perk from list of available perks
+		return availablePerks.get(COMZombies.rand.nextInt(availablePerks.size()));
 	}
 }

@@ -31,7 +31,7 @@ public class TeleporterManager
 				continue;
 			JsonObject teleporterJson = teleporterElem.getAsJsonObject();
 
-			Location loc = CustomConfig.getLocationAddWorld(teleporterJson, "", game.getWorld());
+			Location loc = CustomConfig.getLocationWithWorld(teleporterJson, "", game.getWorld());
 			String teleporterID = CustomConfig.getString(teleporterJson, "id", "missing");
 			this.teleporters.put(teleporterID, loc);
 		}

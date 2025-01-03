@@ -53,8 +53,7 @@ public class DownedPlayer implements Listener
 		guns[1] = manager.removeWeapon(2);
 		manager.removeWeapon(3);
 		manager.addWeapon(WeaponManager.getGun(game.getStartingGun()).getNewInstance(player, 1));
-		player.setGameMode(GameMode.CREATIVE);
-		player.setAllowFlight(false);
+		player.setInvulnerable(true);
 		player.setWalkSpeed(0.02f);
 		scheduleTask();
 	}
@@ -65,6 +64,7 @@ public class DownedPlayer implements Listener
 		isBeingRevived = false;
 		Bukkit.getScheduler().cancelTask(fireWorksTask);
 		player.setGameMode(GameMode.SURVIVAL);
+		player.setInvulnerable(false);
 		player.setWalkSpeed(0.2F);
 		player.setHealth(20);
 		reviver = null;
@@ -85,6 +85,7 @@ public class DownedPlayer implements Listener
 		manager.removeWeapon(1);
 		manager.addWeapon(guns[0]);
 		manager.addWeapon(guns[1]);
+
 		if(reviver != null)
 			PointManager.INSTANCE.addPoints(reviver, 10);
 	}
@@ -101,6 +102,8 @@ public class DownedPlayer implements Listener
 		this.isBeingRevived = true;
 		this.reviver = reviver;
 		int reviveTime = ConfigManager.getMainConfig().reviveTimer * 20;
+		if (game.perkManager.hasPerk(reviver, PerkType.QUICK_REVIVE))
+			reviveTime /= 5;
 		reviveTask = COMZombies.scheduleTask(reviveTime, this::revivePlayer);
 	}
 
@@ -135,27 +138,11 @@ public class DownedPlayer implements Listener
 
 	private FireworkEffect getRandomFireworkEffect()
 	{
-		boolean trail = Math.random() * 100 > 50;
+		boolean trail = COMZombies.rand.nextBoolean();
+		boolean flickr = COMZombies.rand.nextBoolean();
 
-		boolean flickr = Math.random() * 100 > 50;
-
-		int r = (int) (Math.random() * 255);
-		int g = (int) (Math.random() * 255);
-		int b = (int) (Math.random() * 255);
-		Color color = Color.fromRGB(r, g, b);
-		int rand = (int) (Math.random() * 5);
-		Type type;
-		if(rand == 0)
-			type = Type.BALL;
-		else if(rand == 1)
-			type = Type.BALL_LARGE;
-		else if(rand == 2)
-			type = Type.BURST;
-		else if(rand == 3)
-			type = Type.CREEPER;
-		else
-			type = Type.STAR;
-
+		Color color = Color.fromRGB(COMZombies.rand.nextInt(256), COMZombies.rand.nextInt(256), COMZombies.rand.nextInt(256));
+		Type type = Type.values()[COMZombies.rand.nextInt(Type.values().length)];
 		return FireworkEffect.builder().trail(trail).flicker(flickr).withColor(color).with(type).build();
 	}
 

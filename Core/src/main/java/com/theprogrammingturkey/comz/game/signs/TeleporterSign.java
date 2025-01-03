@@ -46,7 +46,7 @@ public class TeleporterSign implements IGameSign
 
 					for(int i = 0; i < 50; i++)
 						for(Player pl : Bukkit.getOnlinePlayers())
-							COMZombies.nmsUtil.sendParticleToPlayer(NMSParticleType.WITCH, pl, player.getLocation(), (float) (Math.random()), (float) (Math.random()), (float) (Math.random()), 1, 1);
+							COMZombies.nmsUtil.sendParticleToPlayer(NMSParticleType.WITCH, pl, player.getLocation(), COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(), 1, 1);
 
 					PointManager.INSTANCE.takePoints(player, points);
 					PointManager.INSTANCE.notifyPlayer(player);
@@ -70,7 +70,7 @@ public class TeleporterSign implements IGameSign
 		if(game.teleporterManager.getTeleporters().containsKey(thirdLine))
 		{
 			String line3 = sign.getLine(3);
-			if(line3 == null || line3.equals(""))
+			if(line3 == null || line3.isEmpty())
 			{
 				sign.setLine(0, ChatColor.RED + "[Zombies]");
 				sign.setLine(1, ChatColor.AQUA + "Teleporter");

@@ -30,7 +30,7 @@ public class SignManager
 		JsonElement jsonElement = ConfigManager.getConfig(COMZConfig.SIGNS).getJson();
 		if(jsonElement.isJsonNull())
 		{
-			COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "Failed to load in the signs for the arena: " + game.getName());
+			COMZombies.log.log(Level.SEVERE, "Failed to load in the signs for the arena: " + game.getName());
 			return;
 		}
 		JsonObject jsonObject = jsonElement.getAsJsonObject();
@@ -49,7 +49,7 @@ public class SignManager
 
 			if(loc == null)
 			{
-				COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "Could not load the sign with json: " + signJson.toString());
+				COMZombies.log.log(Level.SEVERE, "Could not load the sign with json: " + signJson.toString());
 				continue;
 			}
 			Block block = loc.getBlock();

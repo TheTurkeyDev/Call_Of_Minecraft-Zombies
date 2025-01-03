@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.kits;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
@@ -49,7 +50,7 @@ public class Kit
 			Weapon weapon = WeaponManager.getGun(weaponName);
 			if(weapon == null)
 			{
-				Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] Kit Weapon: " + weaponName + "  is an invalid gun name!");
+				Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.RED + "Kit Weapon: " + weaponName + "  is an invalid gun name!");
 				continue;
 			}
 			this.weapons.add(weapon);
@@ -64,7 +65,7 @@ public class Kit
 			PerkType perk = PerkType.getPerkType(perkName);
 			if(perk == null)
 			{
-				Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] Perk: " + perkName + "  is an invalid perk name!");
+				Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.RED + "Perk: " + perkName + "  is an invalid perk name!");
 				continue;
 			}
 			if(perks.size() < 4)
@@ -88,7 +89,7 @@ public class Kit
 				Weapon weapon = WeaponManager.getWeapon(weaponName);
 				if(weapon == null)
 				{
-					Bukkit.broadcastMessage(ChatColor.RED + "[Zombies] Kit Round Reward weapon: " + weaponName + "  is an invalid weapon name!");
+					Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.RED + "Kit Round Reward weapon: " + weaponName + "  is an invalid weapon name!");
 					continue;
 				}
 				weapons.add(weapon);
@@ -104,7 +105,7 @@ public class Kit
 				PerkType perk = PerkType.getPerkType(perkName);
 				if(perk == null)
 				{
-					Bukkit.broadcastMessage(ChatColor.RED + "[Zombies]  Kit Round Reward Perk: " + perkName + "  is an invalid perk name!");
+					Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.RED + "Kit Round Reward Perk: " + perkName + "  is an invalid perk name!");
 					continue;
 				}
 				perks.add(perk);

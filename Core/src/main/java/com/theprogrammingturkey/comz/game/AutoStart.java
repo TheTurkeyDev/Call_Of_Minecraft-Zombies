@@ -1,7 +1,6 @@
 package com.theprogrammingturkey.comz.game;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.listeners.customEvents.GameStartEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -23,6 +22,10 @@ public class AutoStart
 	 */
 	private int seconds;
 	/**
+	 * ID of the countdown task.
+	 */
+	private int countdownTaskId = -1;
+	/**
 	 * If the timer is started, value is true.
 	 */
 	public boolean started = false;
@@ -31,9 +34,9 @@ public class AutoStart
 	 */
 	public boolean forced = false;
 	/**
-	 * If this is false, the timer will not continue.
+	 * If this is true, the timer will not continue.
 	 */
-	public boolean stopped = false;
+	private boolean stopped = false;
 
 	/**
 	 * Constructs a new AutoStart based off of the params
@@ -66,12 +69,12 @@ public class AutoStart
 	public void endTimer()
 	{
 		stopped = true;
+		Bukkit.getScheduler().cancelTask(countdownTaskId);
 	}
 
-	public class Countdown implements Runnable
+	private class Countdown implements Runnable
 	{
-
-		public int remain;
+		private int remain;
 		private int index;
 
 		private Countdown(int seconds)
@@ -85,6 +88,9 @@ public class AutoStart
 		@Override
 		public void run()
 		{
+			if(stopped)
+				return;
+
 			if(game.getMode() == Game.ArenaStatus.INGAME || game.getPlayersInGame().isEmpty())
 				return;
 
@@ -93,25 +99,19 @@ public class AutoStart
 			if(remain <= 0)
 			{
 				game.startArena();
-				Bukkit.getPluginManager().callEvent(new GameStartEvent(game));
+				return;
 			}
-			else
+
+			if(remain == WARNINGS[index])
 			{
-				if(stopped)
-					return;
-
-				if(remain == WARNINGS[index])
-				{
-					game.sendMessageToPlayers(WARNINGS[index] + " seconds!");
-					index = index - 1;
-				}
-
-				for(Player player : game.getPlayersInGame())
-					COMZombies.nmsUtil.sendActionBarMessage(player, ChatColor.RED + "Starting In: " + remain);
-
-				game.signManager.updateGame();
-				COMZombies.scheduleTask(20, this);
+				game.sendMessageToPlayers(WARNINGS[index] + " seconds!");
+				index = index - 1;
 			}
+
+			for(Player player : game.getPlayersInGame())
+				COMZombies.nmsUtil.sendActionBarMessage(player, ChatColor.RED + "Starting In: " + remain);
+
+			countdownTaskId = COMZombies.scheduleTask(20, this);
 		}
 	}
 }

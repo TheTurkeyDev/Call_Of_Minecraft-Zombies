@@ -103,8 +103,7 @@ public class GunInstance extends WeaponInstance
 	}
 
 	/**
-	 * Used to reload this current weapon. If the player contained in this gun
-	 * has speed cola, reload times speed up.
+	 * Used to reload this current weapon.
 	 */
 	public void reload()
 	{
@@ -117,13 +116,8 @@ public class GunInstance extends WeaponInstance
 
 			isReloading = true;
 			Game game = GameManager.INSTANCE.getGame(player);
-			final int reloadTime;
-			if(game.perkManager.hasPerk(player, PerkType.SPEED_COLA))
-				reloadTime = (ConfigManager.getMainConfig().reloadTime) / 2;
-			else reloadTime = ConfigManager.getMainConfig().reloadTime;
-			COMZombies.scheduleTask(reloadTime * 20L, () ->
+			COMZombies.scheduleTask(ConfigManager.getMainConfig().reloadTime * 20L, () ->
 			{
-
 				if(!(totalAmmo - (gun.clipAmmo - clipAmmo) < 0))
 				{
 					totalAmmo -= (gun.clipAmmo - clipAmmo);
@@ -142,7 +136,7 @@ public class GunInstance extends WeaponInstance
 				if(totalAmmo == 0)
 					return;
 
-				double range = 12 * (1 - ((double)clipAmmo / gun.clipAmmo));
+				double range = 12 * (1 - ((double) clipAmmo / gun.clipAmmo));
 
 				List<Entity> near = player.getNearbyEntities(range, range, range);
 				for(Entity ent : near)
@@ -184,7 +178,8 @@ public class GunInstance extends WeaponInstance
 
 	/**
 	 * Called when the gun was shot, decrements total ammo count and reloads if
-	 * the bullet shot was the last in the clip.
+	 * the bullet shot was the last in the clip. If the player contained in this gun
+	 * has speed cola, fire delay speeds up.
 	 */
 	public boolean wasShot()
 	{
@@ -213,13 +208,13 @@ public class GunInstance extends WeaponInstance
 		updateWeapon();
 		canFire = false;
 
-		COMZombies.scheduleTask(this.gun.fireDelay, () -> canFire = true);
+		Game game = GameManager.INSTANCE.getGame(player);
+		COMZombies.scheduleTask(
+				game.perkManager.hasPerk(player, PerkType.SPEED_COLA)
+						? (long) (this.gun.fireDelay / 1.25)
+						: this.gun.fireDelay
+				, () -> canFire = true);
 		return true;
-	}
-
-	public double getAdjust()
-	{
-		return (Math.random() - 0.5) * 1.5;
 	}
 
 	/**

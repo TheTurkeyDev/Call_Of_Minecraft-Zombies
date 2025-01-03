@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.util;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -22,9 +23,26 @@ public class BlockUtils
 		return mat.data == Sign.class;
 	}
 
+	public static boolean isSign(Block block)
+	{
+		return block != null && isSign(block.getType());
+	}
+
 	public static boolean isSign(Material mat)
 	{
 		return isStandingSign(mat) || isWallSign(mat);
+	}
+
+	public static boolean isZombiesSign(Block block)
+	{
+		return isSign(block) &&
+				ChatColor.stripColor(((org.bukkit.block.Sign) block.getState()).getLine(0)).equalsIgnoreCase("[Zombies]");
+	}
+
+	public static boolean isBarrierRepairSign(Block block)
+	{
+		return isSign(block) &&
+				ChatColor.stripColor(((org.bukkit.block.Sign) block.getState()).getLine(0)).equalsIgnoreCase("[BarrierRepair]");
 	}
 
 	public static Material getMaterialFromKey(String key)

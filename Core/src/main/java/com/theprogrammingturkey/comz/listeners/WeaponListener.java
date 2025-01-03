@@ -37,10 +37,13 @@ public class WeaponListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteractEvent(PlayerInteractEvent event)
 	{
-		if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && BlockUtils.isSign(event.getClickedBlock().getType()))
+		if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && BlockUtils.isSign(event.getClickedBlock()) && !BlockUtils.isBarrierRepairSign(event.getClickedBlock()))
 			return;
 
 		if(event.getAction().equals(Action.PHYSICAL))
+			return;
+
+		if(event.getAction().equals(Action.LEFT_CLICK_BLOCK) && BlockUtils.isBarrierRepairSign(event.getClickedBlock()))
 			return;
 
 		Player player = event.getPlayer();
@@ -71,13 +74,13 @@ public class WeaponListener implements Listener
 							Vector dirVec = event.getPlayer().getEyeLocation().getDirection();
 
 							if(shots > 1)
-								dirVec.add(new Vector((Math.random() - 0.5) / 2.0, (Math.random() - 0.5) / 2.0, (Math.random() - 0.5) / 2.0));
+								dirVec.add(new Vector(COMZombies.rand.nextDouble(0.5) - 0.25, COMZombies.rand.nextDouble(0.5) - 0.25, COMZombies.rand.nextDouble(0.5) - 0.25));
 
 							RayTrace rayTrace = new RayTrace(event.getPlayer().getEyeLocation().toVector(), dirVec);
 							double distance = gun.getType().distance;
 							List<RayTrace.RayEntityIntersection> hitEnts = rayTrace.getZombieIntersects(event.getPlayer().getWorld(), game.spawnManager.getEntities(), distance, game);
 
-							if(hitEnts.size() == 0)
+							if(hitEnts.isEmpty())
 							{
 								rayTrace.showParticles(event.getPlayer().getWorld(), distance, 0.5f, gun.getType().particleColor);
 								continue;
@@ -120,12 +123,7 @@ public class WeaponListener implements Listener
 									if(gun.getType().getName().equalsIgnoreCase("Zombie BFF"))
 									{
 										for(int i = 0; i < 30; i++)
-										{
-											float x = (float) (Math.random());
-											float y = (float) (Math.random());
-											float z = (float) (Math.random());
-											COMZombies.nmsUtil.sendParticleToPlayer(NMSParticleType.HEART, player, mob.getLocation(), x, y, z, 1, 1);
-										}
+											COMZombies.nmsUtil.sendParticleToPlayer(NMSParticleType.HEART, player, mob.getLocation(), COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(), 1, 1);
 									}
 									for(Player pl : game.getPlayersInGame())
 										pl.playSound(pl.getLocation(), Sound.BLOCK_LAVA_POP, 1.0F, 0.0F);
@@ -136,7 +134,7 @@ public class WeaponListener implements Listener
 									{
 										damage *= 1.5f;
 										for(int i = 0; i < 20; i++)
-											event.getPlayer().getWorld().spawnParticle(Particle.CRIT_MAGIC, entToDamage.getLocation().getX(), entToDamage.getLocation().getY() + eyeHeight, entToDamage.getLocation().getZ(), 0, (Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2, 1);
+											event.getPlayer().getWorld().spawnParticle(Particle.CRIT_MAGIC, entToDamage.getLocation().getX(), entToDamage.getLocation().getY() + eyeHeight, entToDamage.getLocation().getZ(), 0, COMZombies.rand.nextDouble(2d) - 1d, COMZombies.rand.nextDouble(2d) - 1d, COMZombies.rand.nextDouble(2d) - 1d, 1);
 									}
 
 									game.damageMob(mob, player, damage);
@@ -205,7 +203,7 @@ public class WeaponListener implements Listener
 					player.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 0.0F, false, false);
 					List<Mob> ents = game.spawnManager.getEntities();
 					int ticker = COMZombies.scheduleTask(0, 5, () ->
-							item.getWorld().spawnParticle(Particle.SMOKE_NORMAL, item.getLocation().clone(), 0, Math.random() - 0.5, 0.5, Math.random() - 0.5, 0.05));
+							item.getWorld().spawnParticle(Particle.SMOKE_NORMAL, item.getLocation().clone(), 0, COMZombies.rand.nextDouble() - 0.5, 0.5, COMZombies.rand.nextDouble() - 0.5, 0.05));
 
 					for(int i = ents.size() - 1; i >= 0; i--)
 					{
@@ -237,7 +235,7 @@ public class WeaponListener implements Listener
 
 				int ticker = COMZombies.scheduleTask(0, 5, () ->
 				{
-					item.getWorld().spawnParticle(Particle.SMOKE_NORMAL, item.getLocation().clone(), 0, Math.random() - 0.5, 0.5, Math.random() - 0.5, 0.05);
+					item.getWorld().spawnParticle(Particle.SMOKE_NORMAL, item.getLocation().clone(), 0, COMZombies.rand.nextDouble() - 0.5, 0.5, COMZombies.rand.nextDouble() - 0.5, 0.05);
 					for(Mob e : game.spawnManager.getEntities())
 						e.setTarget(attackEnt);
 				});

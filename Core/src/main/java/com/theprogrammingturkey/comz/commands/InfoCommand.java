@@ -78,9 +78,8 @@ public class InfoCommand extends SubCommand
 				{
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "----------" + ChatColor.GOLD + "Spawn Points" + ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "----------");
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Total doors: " + game.doorManager.getDoors().size());
-					for(int i = 0; i < game.doorManager.getDoors().size(); i++)
+					for(Door door : game.doorManager.getDoors())
 					{
-						Door door = game.doorManager.getDoors().get(i);
 						CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Door " + door.doorID);
 						CommandUtil.sendMessageToPlayer(player, "  " + ChatColor.GREEN + "Blocks: " + ChatColor.BLUE + door.getBlocks().size());
 						CommandUtil.sendMessageToPlayer(player, "  " + ChatColor.GREEN + "Signs: " + ChatColor.BLUE + door.getSigns().size());

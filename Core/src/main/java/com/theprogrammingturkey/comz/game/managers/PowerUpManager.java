@@ -110,16 +110,18 @@ public class PowerUpManager
 		if(game == null || game.getMode() != Game.ArenaStatus.INGAME)
 			return;
 
-		int chance = (int) (Math.random() * 100);
-		if(chance <= dropChance)
+		int chance = COMZombies.rand.nextInt(100);
+		if(chance < dropChance)
 		{
-			List<PowerUp> availableRewards = powerups.keySet().stream().filter(powerups::get).collect(Collectors.toList());
+			List<PowerUp> availableRewards = powerups.keySet().stream().filter(powerUp ->
+			{
+				if(powerUp == PowerUp.FIRE_SALE && game.boxManager.isMultiBox())
+					return false;
+				return powerups.get(powerUp);
+			}).collect(Collectors.toList());
+
 			if(availableRewards.isEmpty())
 				return;
-
-			if(availableRewards.contains(PowerUp.FIRE_SALE))
-				if(game.boxManager.isMultiBox())
-					availableRewards.remove(PowerUp.FIRE_SALE);
 
 			this.dropPowerUp(mob, availableRewards.get(COMZombies.rand.nextInt(availableRewards.size())));
 		}

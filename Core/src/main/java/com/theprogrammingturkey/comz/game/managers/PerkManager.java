@@ -43,7 +43,7 @@ public class PerkManager
 
 	public boolean addPerk(Player player, PerkType type)
 	{
-		List<PerkType> playerPerks = getPlayersPerks(player);
+		List<PerkType> playerPerks = playersPerks.computeIfAbsent(player, k -> new ArrayList<>());
 
 		if(playerPerks.contains(type))
 		{

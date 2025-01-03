@@ -32,7 +32,7 @@ public class BarrierRemoveAction extends BaseAction
 			sign.setLine(1, "Break this to");
 			sign.setLine(2, "remove the");
 			sign.setLine(3, "barrier");
-			sign.update(true);
+			sign.update();
 		}
 
 		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------" + ChatColor.DARK_RED + "Barrier Removal" + ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------");

@@ -60,12 +60,12 @@ public class SpawnManager
 		{
 			if(!spawnElem.isJsonObject())
 				continue;
-			Location loc = CustomConfig.getLocationAddWorld(spawnElem.getAsJsonObject(), "", game.getWorld());
+			Location loc = CustomConfig.getLocationWithWorld(spawnElem.getAsJsonObject(), "", game.getWorld());
 			String id = CustomConfig.getString(spawnElem.getAsJsonObject(), "id", "MISSING");
 			if(loc != null && !id.equals("MISSING"))
 				points.add(new SpawnPoint(loc, game, loc.getBlock().getType(), id));
 			else
-				COMZombies.log.log(Level.WARNING, COMZombies.CONSOLE_PREFIX + "Failed to load zombie spawn! ID: " + id + " w/ Loc: " + loc);
+				COMZombies.log.log(Level.WARNING, "Failed to load zombie spawn! ID: " + id + " w/ Loc: " + loc);
 		}
 	}
 
@@ -151,7 +151,7 @@ public class SpawnManager
 
 		mobs.remove(entity);
 
-		if((mobs.size() == 0) && (mobsSpawned >= mobsToSpawn))
+		if(mobs.isEmpty() && mobsSpawned >= mobsToSpawn)
 			game.nextWave();
 
 		game.scoreboard.update();
@@ -180,7 +180,9 @@ public class SpawnManager
 	private List<SpawnPoint> getNearestPoints(Location loc, int numToGet)
 	{
 		List<SpawnPoint> points = game.spawnManager.getPoints();
-		if(numToGet <= 0 || points.size() == 0)
+		if (numToGet < 0)
+			throw new IllegalArgumentException("numToGet should not be less than zero");
+		if (numToGet == 0)
 			return new ArrayList<>();
 
 		int numPoints = Math.min(numToGet, points.size());
@@ -378,7 +380,7 @@ public class SpawnManager
 	{
 		canSpawn = true;
 
-		if(game.getPlayersInGame().size() == 0 && game.getMode() == ArenaStatus.INGAME)
+		if(game.getPlayersInGame().isEmpty() && game.getMode() == ArenaStatus.INGAME)
 		{
 			this.game.endGame();
 			Bukkit.broadcastMessage(COMZombies.PREFIX + "SmartSpawn was sent a players list with no players in it! Game was ended");

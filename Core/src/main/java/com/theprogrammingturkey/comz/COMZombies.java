@@ -75,8 +75,8 @@ public class COMZombies extends JavaPlugin
 		activeActions.clear();
 	}
 
-	public static final String CONSOLE_PREFIX = "[COM_Zombies] ";
-	public static final String PREFIX = ChatColor.RED + "[ " + ChatColor.GOLD + ChatColor.ITALIC + "CoM: Zombies" + ChatColor.RED + " ]" + ChatColor.GRAY + " ";
+	public static final String CONSOLE_PREFIX = "[COM:Z] ";
+	public static final String PREFIX = ChatColor.RED + "[ " + ChatColor.GOLD + ChatColor.ITALIC + "COM:Z" + ChatColor.RED + " ]" + ChatColor.GRAY + " ";
 
 	public static INMSUtil nmsUtil;
 
@@ -85,11 +85,7 @@ public class COMZombies extends JavaPlugin
 	public void onEnable()
 	{
 		loadVersionSpecificCode();
-		reloadConfig();
-		ConfigManager.loadFiles();
-		WeaponManager.loadGuns();
-		KitManager.loadKits();
-		PointManager.INSTANCE.saveAll();
+		loadConfigFiles();
 
 		vault = new Vault();
 
@@ -105,6 +101,15 @@ public class COMZombies extends JavaPlugin
 		log.info(COMZombies.CONSOLE_PREFIX + "has been enabled!");
 
 		GameManager.INSTANCE.loadAllGames();
+	}
+
+	public void loadConfigFiles()
+	{
+		reloadConfig();
+		ConfigManager.loadFiles();
+		WeaponManager.loadGuns();
+		KitManager.loadKits();
+		PointManager.INSTANCE.saveAll();
 	}
 
 	private void loadVersionSpecificCode()

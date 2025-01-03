@@ -38,7 +38,7 @@ public class KitManager
 		JsonElement jsonElement = ConfigManager.getConfig(COMZConfig.KITS).getJson();
 		if(jsonElement.isJsonNull())
 		{
-			COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "Failed to load in the arenas from the arenas config!");
+			COMZombies.log.log(Level.SEVERE, "Failed to load in the arenas from the arenas config!");
 			return;
 		}
 		JsonObject jsonObject = jsonElement.getAsJsonObject();

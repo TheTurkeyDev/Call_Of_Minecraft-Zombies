@@ -56,7 +56,7 @@ public class GameManager
 		JsonElement jsonElement = ConfigManager.getConfig(COMZConfig.ARENAS).getJson();
 		if(jsonElement.isJsonNull())
 		{
-			COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "Failed to load in the arenas from the arenas config!");
+			COMZombies.log.log(Level.SEVERE, "Failed to load in the arenas from the arenas config!");
 			return;
 		}
 		JsonObject jsonObject = jsonElement.getAsJsonObject();
@@ -66,7 +66,7 @@ public class GameManager
 			if(game.loadGame(arena.getValue()))
 				games.add(game);
 			else
-				COMZombies.log.log(Level.SEVERE, COMZombies.CONSOLE_PREFIX + "Failed to load arena " + arena.getKey() + "!");
+				COMZombies.log.log(Level.SEVERE, "Failed to load arena " + arena.getKey() + "!");
 		}
 		Bukkit.broadcastMessage(COMZombies.PREFIX + ChatColor.RED + ChatColor.BOLD + " Done loading arenas!");
 	}
@@ -84,8 +84,8 @@ public class GameManager
 		for(Game gl : games)
 		{
 			for(Game game : games)
-				for(int q = 0; q < game.doorManager.getDoors().size(); q++)
-					game.doorManager.getDoors().get(q).closeDoor();
+				for(Door door : game.doorManager.getDoors())
+					door.closeDoor();
 			gl.endGame();
 			gl.resetSpawnLocationBlocks();
 		}
@@ -125,7 +125,7 @@ public class GameManager
 		for(Game gl : games)
 			if(name.equalsIgnoreCase(gl.getName()))
 				return gl;
-		
+
 		for(Game gl : games)
 		{
 			String gameName = gl.getName();
@@ -191,7 +191,8 @@ public class GameManager
 		return toString.toString();
 	}
 
-	public List<String> getArenas() {
+	public List<String> getArenas()
+	{
 		List<String> arenas = new ArrayList<>();
 		for(Game game : games)
 			arenas.add(game.getName());

@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class CachedPlayerInfo
 {
-	public static Map<Player, CachedPlayerInfo> savedPlayerInfo = new HashMap<>();
+	public static Map<UUID, CachedPlayerInfo> savedPlayerInfo = new HashMap<>();
 
 	private Location oldLoc;
 	private GameMode gameMode;
@@ -31,15 +31,15 @@ public class CachedPlayerInfo
 		info.invContents = player.getInventory().getContents().clone();
 		info.armorContents = player.getInventory().getArmorContents().clone();
 		//don't overwrite existing info
-		if(!savedPlayerInfo.containsKey(player))
-			savedPlayerInfo.put(player, info);
+		if(!savedPlayerInfo.containsKey(player.getUniqueId()))
+			savedPlayerInfo.put(player.getUniqueId(), info);
 	}
 
 	public static void restorePlayerInfo(Player player)
 	{
-		if(savedPlayerInfo.containsKey(player))
+		if(savedPlayerInfo.containsKey(player.getUniqueId()))
 		{
-			CachedPlayerInfo info = savedPlayerInfo.get(player);
+			CachedPlayerInfo info = savedPlayerInfo.get(player.getUniqueId());
 			COMZombies.scheduleTask(() -> player.teleport(info.oldLoc));
 			player.setGameMode(info.gameMode);
 			if(player.getAllowFlight())
@@ -47,7 +47,7 @@ public class CachedPlayerInfo
 			player.setTotalExperience(info.totalExp);
 			player.getInventory().setContents(info.invContents);
 			player.getInventory().setArmorContents(info.armorContents);
-			savedPlayerInfo.remove(player);
+			savedPlayerInfo.remove(player.getUniqueId());
 		}
 	}
 }

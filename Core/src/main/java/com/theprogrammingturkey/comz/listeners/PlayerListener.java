@@ -11,6 +11,7 @@ import com.theprogrammingturkey.comz.game.features.PerkType;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -91,7 +92,7 @@ public class PlayerListener implements Listener
 
 		// Reviving move check
 		Location change = toLoc.clone().subtract(event.getFrom().clone());
-		if(game.downedPlayerManager.isDownedPlayer(player) && change.getY() != 0)
+		if (player.getGameMode() != GameMode.SPECTATOR && game.downedPlayerManager.isDownedPlayer(player) && change.getY() != 0)
 			event.setCancelled(true);
 
 		float DEAD_ZONE = 0.001f;
@@ -141,9 +142,9 @@ public class PlayerListener implements Listener
 					{
 						for(Player pl : game.getPlayersInGame())
 						{
-							float x = (float) (Math.random() * 2);
-							float y = (float) (Math.random() * 2);
-							float z = (float) (Math.random() * 2);
+							float x = COMZombies.rand.nextFloat(2f);
+							float y = COMZombies.rand.nextFloat(2f);
+							float z = COMZombies.rand.nextFloat(2f);
 							COMZombies.nmsUtil.sendParticleToPlayer(NMSParticleType.LAVA, pl, player.getLocation(), x, y, z, 1, 1);
 							COMZombies.nmsUtil.sendParticleToPlayer(NMSParticleType.FIREWORK, pl, player.getLocation(), x, y, z, 1, 1);
 						}

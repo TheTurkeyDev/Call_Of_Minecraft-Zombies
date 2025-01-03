@@ -126,7 +126,7 @@ public class Door
 			if(!signElem.isJsonObject())
 				continue;
 			JsonObject signJson = signElem.getAsJsonObject();
-			Location loc = CustomConfig.getLocationAddWorld(signJson, "", game.getWorld());
+			Location loc = CustomConfig.getLocationWithWorld(signJson, "", game.getWorld());
 			if(loc != null)
 			{
 				Block block = loc.getBlock();
@@ -140,7 +140,7 @@ public class Door
 			}
 			else
 			{
-				COMZombies.log.log(Level.WARNING, COMZombies.CONSOLE_PREFIX + "Failed to load in location for door sign! Json: " + signJson.toString());
+				COMZombies.log.log(Level.WARNING, "Failed to load in location for door sign! Json: " + signJson.toString());
 			}
 
 		}
@@ -223,7 +223,7 @@ public class Door
 				continue;
 			JsonObject blockJson = blockElem.getAsJsonObject();
 
-			Location loc = CustomConfig.getLocationAddWorld(blockJson, "", game.getWorld());
+			Location loc = CustomConfig.getLocationWithWorld(blockJson, "", game.getWorld());
 
 			if(loc != null)
 			{
@@ -233,7 +233,7 @@ public class Door
 			}
 			else
 			{
-				COMZombies.log.log(Level.WARNING, COMZombies.CONSOLE_PREFIX + "Failed to load in location for door block! Json: " + blockJson.toString());
+				COMZombies.log.log(Level.WARNING, "Failed to load in location for door block! Json: " + blockJson.toString());
 			}
 		}
 	}

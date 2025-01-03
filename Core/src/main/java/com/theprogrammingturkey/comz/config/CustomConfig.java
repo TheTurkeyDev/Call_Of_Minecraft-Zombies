@@ -214,7 +214,7 @@ public class CustomConfig
 		return new Location(null, x, y, z);
 	}
 
-	public static Location getLocationAddWorld(JsonObject json, String key, World world)
+	public static Location getLocationWithWorld(JsonObject json, String key, World world)
 	{
 		JsonObject locationJson;
 		if(key.isEmpty())
