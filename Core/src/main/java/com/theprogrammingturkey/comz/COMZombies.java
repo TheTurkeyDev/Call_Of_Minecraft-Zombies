@@ -27,6 +27,7 @@ import com.theprogrammingturkey.comz.support.support_1_20_R3.NMSUtil_1_20_R3;
 import com.theprogrammingturkey.comz.support.support_1_20_R4.NMSUtil_1_20_R4;
 import com.theprogrammingturkey.comz.support.support_1_21_R1.NMSUtil_1_21_R1;
 import com.theprogrammingturkey.comz.support.support_1_21_R2.NMSUtil_1_21_R2;
+import com.theprogrammingturkey.comz.support.support_1_21_R3.NMSUtil_1_21_R3;
 import com.theprogrammingturkey.comz.util.PlaceholderHook;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -190,6 +191,9 @@ public class COMZombies extends JavaPlugin
 				break;
 			case "1.21.3":
 				nmsUtil = new NMSUtil_1_21_R2();
+				break;
+			case "1.21.4":
+				nmsUtil = new NMSUtil_1_21_R3();
 				break;
 			default:
 				throw new IllegalStateException("Sorry, COM:Z Does not current support server version" + version);
