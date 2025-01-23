@@ -2,9 +2,14 @@ package com.theprogrammingturkey.comz.support.support_1_16_R3;
 
 import com.theprogrammingturkey.comz.api.INMSUtil;
 import com.theprogrammingturkey.comz.api.NMSParticleType;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.server.v1_16_R3.*;
+import net.minecraft.server.v1_16_R3.BlockPosition;
+import net.minecraft.server.v1_16_R3.EntityPlayer;
+import net.minecraft.server.v1_16_R3.PacketPlayOutBlockBreakAnimation;
+import net.minecraft.server.v1_16_R3.PacketPlayOutWorldParticles;
+import net.minecraft.server.v1_16_R3.ParticleType;
+import net.minecraft.server.v1_16_R3.Particles;
+import net.minecraft.server.v1_16_R3.TileEntityChest;
+import net.minecraft.server.v1_16_R3.World;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
@@ -35,38 +40,5 @@ public class NMSUtil_1_16_R3 implements INMSUtil
 			if(d4 * d4 + d5 * d5 + d6 * d6 < 64 * 64)
 				entityplayer.playerConnection.sendPacket(packet);
 		}
-	}
-
-	public void playSound(Player player, String sound)
-	{
-		PacketPlayOutNamedSoundEffect packet = new PacketPlayOutNamedSoundEffect(new SoundEffect(new MinecraftKey(sound)), SoundCategory.AMBIENT, player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ(), 1.0F, 1.0F);
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
-	}
-
-	public void sendActionBarMessage(Player player, String message)
-	{
-		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
-	}
-
-	public void sendParticleToPlayer(NMSParticleType particleType, Player player, Location location, float offsetX, float offsetY, float offsetZ, float speed, int count)
-	{
-		ParticleType particle = Particles.AMBIENT_ENTITY_EFFECT;
-		switch(particleType)
-		{
-			case WITCH:
-				particle = Particles.WITCH;
-				break;
-			case LAVA:
-				particle = Particles.LAVA;
-				break;
-			case FIREWORK:
-				particle = Particles.FIREWORK;
-				break;
-			case HEART:
-				particle = Particles.HEART;
-				break;
-		}
-		PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(particle, true, location.getX(), location.getY(), location.getZ(), offsetX, offsetY, offsetZ, speed, count);
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
 	}
 }

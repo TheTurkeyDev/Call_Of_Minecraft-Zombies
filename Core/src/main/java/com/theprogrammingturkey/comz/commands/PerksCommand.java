@@ -28,5 +28,4 @@ public class PerksCommand extends SubCommand
 
 		return true;
 	}
-
 }

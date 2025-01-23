@@ -232,7 +232,7 @@ public class Barrier implements Runnable
 			}
 		}
 
-		if(ents.size() > 0 && !this.damage())
+		if(!ents.isEmpty() && !this.damage())
 			COMZombies.scheduleTask(60, this);
 		else
 			this.breaking = false;

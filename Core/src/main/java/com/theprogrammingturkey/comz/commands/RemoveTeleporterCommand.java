@@ -38,6 +38,5 @@ public class RemoveTeleporterCommand extends SubCommand
 		arena.teleporterManager.removedTeleporter(args[1], player);
 		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Teleporter removed for arena: " + ChatColor.GOLD + arena.getName() + ChatColor.RED + "!");
 		return true;
-
 	}
 }

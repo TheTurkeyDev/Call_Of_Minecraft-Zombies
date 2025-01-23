@@ -38,5 +38,4 @@ public class LeaveCommand extends SubCommand
 
 		return true;
 	}
-
 }

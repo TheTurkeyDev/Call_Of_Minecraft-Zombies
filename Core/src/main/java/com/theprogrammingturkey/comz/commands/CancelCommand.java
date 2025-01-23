@@ -27,5 +27,4 @@ public class CancelCommand extends SubCommand
 
 		return true;
 	}
-
 }

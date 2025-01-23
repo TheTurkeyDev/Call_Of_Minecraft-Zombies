@@ -29,7 +29,9 @@ public class RemoveBarrierCommand extends SubCommand
 		if(plugin.activeActions.containsKey(player))
 		{
 			CommandUtil.sendMessageToPlayer(player, "You are currently performing another action and cannot remove a barrier right now!");
+			return true;
 		}
+
 		if(args.length < 2)
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Please specify an arena to remove a barrier from!");

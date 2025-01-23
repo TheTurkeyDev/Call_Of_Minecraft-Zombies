@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class GameManager
 {
@@ -193,9 +194,6 @@ public class GameManager
 
 	public List<String> getArenas()
 	{
-		List<String> arenas = new ArrayList<>();
-		for(Game game : games)
-			arenas.add(game.getName());
-		return arenas;
+		return games.stream().map(Game::getName).collect(Collectors.toList());
 	}
 }

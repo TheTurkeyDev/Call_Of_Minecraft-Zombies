@@ -42,5 +42,4 @@ public class SpectateCommand extends SubCommand
 
 		return true;
 	}
-
 }

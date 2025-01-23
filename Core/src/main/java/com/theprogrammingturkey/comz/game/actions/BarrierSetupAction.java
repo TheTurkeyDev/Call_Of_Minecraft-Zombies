@@ -111,6 +111,7 @@ public class BarrierSetupAction extends BaseAction
 			CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "You have not selected a block for the barrier yet!");
 			return;
 		}
+
 		if(message.equalsIgnoreCase("done"))
 		{
 			if(state == 0)

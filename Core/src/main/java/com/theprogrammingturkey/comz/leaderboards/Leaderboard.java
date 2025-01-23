@@ -46,9 +46,7 @@ public class Leaderboard
 	public static PlayerStats getPosX(StatsCategory cat, int pos)
 	{
 		List<PlayerStats> sorted = sort(cat);
-		if(sorted.size() > pos)
-			return sorted.get(pos);
-		return null;
+		return sorted.size() > pos ? sorted.get(pos) : null;
 	}
 
 	public static void addPlayerStats(PlayerStats stat)

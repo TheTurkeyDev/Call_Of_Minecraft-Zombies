@@ -26,15 +26,9 @@ public class DoorManager
 	public Door getDoorFromSign(Location location)
 	{
 		for(Door door : doors)
-		{
 			for(Sign sign : door.getSigns())
-			{
 				if(sign.getLocation().equals(location))
-				{
 					return door;
-				}
-			}
-		}
 		return null;
 	}
 
@@ -79,15 +73,9 @@ public class DoorManager
 	public boolean canSpawnZombieAtPoint(SpawnPoint point)
 	{
 		for(Door door : doors)
-		{
 			if(door.getSpawnsInRoomDoorLeadsTo().contains(point))
-			{
 				if(door.isOpened())
-				{
 					return true;
-				}
-			}
-		}
 		return false;
 	}
 }

@@ -69,9 +69,8 @@ public class HellHoundSpawner extends RoundSpawner
 			}
 		}
 
-
 		Location location;
-		if(possibleSpawns.size() > 0)
+		if(!possibleSpawns.isEmpty())
 			location = possibleSpawns.get(COMZombies.rand.nextInt(possibleSpawns.size()));
 		else
 			location = backupLocation;
@@ -101,14 +100,12 @@ public class HellHoundSpawner extends RoundSpawner
 
 		setSpeed(wolf, 1.15f);
 
-
 		//Incase they can't get to the player
 		COMZombies.scheduleTask(1200, () ->
 		{
 			if(!wolf.isDead())
 				wolf.remove();
 		});
-
 
 		return wolf;
 	}

@@ -21,7 +21,6 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 
 public class ArenaListener implements Listener
 {
-
 	/**
 	 * Called whenever a block is broken.
 	 *

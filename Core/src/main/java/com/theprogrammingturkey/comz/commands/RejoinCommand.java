@@ -23,11 +23,13 @@ public class RejoinCommand extends SubCommand
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "There is no game to rejoin!");
 			return true;
 		}
+
 		if(!COMZPermission.REJOIN_ARENA.hasPerm(player, game.getName()))
 		{
 			CommandUtil.noPermission(player, "rejoin the game");
 			return true;
 		}
+
 		if(game.wasDisconnected(player))
 			game.addPlayer(player);
 		else
@@ -35,5 +37,4 @@ public class RejoinCommand extends SubCommand
 
 		return false;
 	}
-
 }

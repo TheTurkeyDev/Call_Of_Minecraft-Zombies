@@ -118,11 +118,9 @@ public class CustomConfig
 	}
 
 	/***
-	 *
 	 * Custom FileConfig calls
 	 *
 	 */
-
 	public static int getInt(JsonObject json, String key, int defaultVal)
 	{
 		if(json.has(key))

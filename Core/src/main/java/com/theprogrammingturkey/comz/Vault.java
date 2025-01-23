@@ -22,12 +22,11 @@ public class Vault
 	private boolean setupEconomy()
 	{
 		RegisteredServiceProvider<Economy> economyProvider = COMZombies.getPlugin().getServer().getServicesManager().getRegistration(Economy.class);
-		if(economyProvider != null)
-		{
-			this.economy = economyProvider.getProvider();
-			return true;
-		}
-		return false;
+		if(economyProvider == null)
+			return false;
+
+		this.economy = economyProvider.getProvider();
+		return true;
 	}
 
 	/**
@@ -36,12 +35,11 @@ public class Vault
 	private boolean setupPermission()
 	{
 		RegisteredServiceProvider<Permission> permissionProvider = COMZombies.getPlugin().getServer().getServicesManager().getRegistration(Permission.class);
-		if(permissionProvider != null)
-		{
-			this.permission = permissionProvider.getProvider();
-			return true;
-		}
-		return false;
+		if(permissionProvider == null)
+			return false;
+
+		this.permission = permissionProvider.getProvider();
+		return true;
 	}
 
 	public Vault()
@@ -72,9 +70,7 @@ public class Vault
 	 */
 	public double getAmount(Player player)
 	{
-		if(enabled)
-			return this.economy.getBalance(Bukkit.getOfflinePlayer(player.getUniqueId()));
-		return -1;
+		return enabled ? this.economy.getBalance(Bukkit.getOfflinePlayer(player.getUniqueId())) : -1;
 	}
 
 	/**
@@ -86,13 +82,12 @@ public class Vault
 	 */
 	public boolean hasEnough(Player player, double amount)
 	{
-		if(enabled)
-		{
-			if(!hasAccount(player))
-				return false;
-			return this.economy.has(Bukkit.getOfflinePlayer(player.getUniqueId()), amount);
-		}
-		return true;
+		if(!enabled)
+			return true;
+
+		if(!hasAccount(player))
+			return false;
+		return this.economy.has(Bukkit.getOfflinePlayer(player.getUniqueId()), amount);
 	}
 
 	/**
@@ -102,9 +97,7 @@ public class Vault
 	 */
 	public boolean hasAccount(Player player)
 	{
-		if(enabled)
-			return this.economy.hasAccount(Bukkit.getOfflinePlayer(player.getUniqueId()));
-		return true;
+		return !enabled || this.economy.hasAccount(Bukkit.getOfflinePlayer(player.getUniqueId()));
 	}
 
 	/**
@@ -138,26 +131,21 @@ public class Vault
 
 	public String getMainGroup(Player player)
 	{
-		if(enabled)
-		{
-			int i = this.permission.getPlayerGroups(player).length - 1;
-			return this.permission.getPlayerGroups(player)[i];
-		}
-		return "";
+		if(!enabled)
+			return "";
+
+		int i = this.permission.getPlayerGroups(player).length - 1;
+		return this.permission.getPlayerGroups(player)[i];
 	}
 
 	public String getGroup(Player player, int group)
 	{
-		if(enabled)
-			return this.permission.getPlayerGroups(player)[group];
-		return "";
+		return enabled ? this.permission.getPlayerGroups(player)[group] : "";
 	}
 
 	public int amountOfGroups(Player player)
 	{
-		if(enabled)
-			return this.permission.getPlayerGroups(player).length;
-		return 0;
+		return enabled ? this.permission.getPlayerGroups(player).length : 0;
 	}
 
 	public void removeGroup(World world, Player player, String group)

@@ -50,5 +50,4 @@ public class AddDoorCommand extends SubCommand
 		}
 		return true;
 	}
-
 }

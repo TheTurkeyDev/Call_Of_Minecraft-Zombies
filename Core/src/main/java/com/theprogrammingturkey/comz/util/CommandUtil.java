@@ -1,11 +1,10 @@
 package com.theprogrammingturkey.comz.util;
 
 import com.theprogrammingturkey.comz.COMZombies;
-
-import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
-
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -42,16 +41,5 @@ public class CommandUtil
 	public static void noPermission(Player player, String action)
 	{
 		player.sendMessage(COMZombies.PREFIX + ChatColor.RED + "You do not have permission to " + action + "!");
-	}
-
-	/**
-	 * @param message to be sent to all players on the server
-	 */
-	public static void sendAll(String message)
-	{
-		for(Player player : Bukkit.getOnlinePlayers())
-		{
-			sendMessageToPlayer(player, message);
-		}
 	}
 }

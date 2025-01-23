@@ -29,5 +29,4 @@ public class ArenaListCommand extends SubCommand
 
 		return true;
 	}
-
 }

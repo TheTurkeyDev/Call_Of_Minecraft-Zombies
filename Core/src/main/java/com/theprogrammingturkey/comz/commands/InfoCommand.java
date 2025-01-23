@@ -34,9 +34,8 @@ public class InfoCommand extends SubCommand
 			String mode = "info";
 			Game game = GameManager.INSTANCE.getGame(args[1]);
 			if(args.length >= 3)
-			{
 				mode = args[2];
-			}
+
 			try
 			{
 				if(mode.equalsIgnoreCase("info"))
@@ -121,5 +120,4 @@ public class InfoCommand extends SubCommand
 		}
 		return true;
 	}
-
 }

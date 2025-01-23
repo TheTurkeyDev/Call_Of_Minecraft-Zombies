@@ -36,6 +36,4 @@ public class ConfigManager
 	{
 		return mainConfig;
 	}
-
-
 }

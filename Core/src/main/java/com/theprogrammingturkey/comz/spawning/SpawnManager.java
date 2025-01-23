@@ -194,7 +194,6 @@ public class SpawnManager
 		for(int i = 0; i < numToGet; i++)
 			distances.add(Double.POSITIVE_INFINITY);
 
-
 		for(SpawnPoint point : points)
 		{
 			Location spawnLoc = point.getLocation();

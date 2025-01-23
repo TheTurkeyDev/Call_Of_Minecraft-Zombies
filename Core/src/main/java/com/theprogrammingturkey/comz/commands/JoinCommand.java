@@ -8,6 +8,7 @@ import com.theprogrammingturkey.comz.util.COMZPermission;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+
 import java.util.Map;
 
 public class JoinCommand extends SubCommand
@@ -16,7 +17,7 @@ public class JoinCommand extends SubCommand
 	{
 		super(permission);
 	}
-	
+
 	@Override
 	public boolean onCommand(Player player, String[] args)
 	{
@@ -77,11 +78,9 @@ public class JoinCommand extends SubCommand
 						CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "" + ChatColor.BOLD + "You joined " + game.getName());
 						return true;
 					}
-					else
-					{
-						CommandUtil.noPermission(player, "join this game");
-						return false;
-					}
+
+					CommandUtil.noPermission(player, "join this game");
+					return false;
 				}
 				else
 				{

@@ -9,6 +9,8 @@ import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.PowerUp;
 import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.game.managers.PowerUpManager;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -127,7 +129,7 @@ public class PowerUpDropListener implements Listener
 		if(!GameManager.INSTANCE.isPlayerInGame(player))
 			return;
 
-		COMZombies.nmsUtil.sendActionBarMessage(player, ChatColor.RED + powerUp.getDisplay() + ": " + (duration / 20));
+		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.RED + powerUp.getDisplay() + ": " + (duration / 20)));
 		COMZombies.scheduleTask(20, () ->
 		{
 			if(duration - 20 > 0)

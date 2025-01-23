@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 public class LegacyConfig
 {
-
 	public static void convertLegacyConfig(File oldFile, CustomConfig config)
 	{
 		COMZombies.log.log(Level.INFO, "Converting legacy file " + config.getConfig().getLegacyFileName());
@@ -86,9 +85,7 @@ public class LegacyConfig
 		gunsJsonObj.add("guns", gunsJson);
 
 		for(GunWrapper wrapper : packAPunchGunsMap)
-		{
 			wrapper.gunJson.add("pack_a_punch_gun", packAPunchGuns.get(wrapper.packAPunchGunName));
-		}
 
 		config.saveConfig(gunsJson);
 	}
@@ -240,7 +237,6 @@ public class LegacyConfig
 			}
 			arenaSaveJson.add("barriers", barriers);
 
-
 			JsonArray doors = new JsonArray();
 
 			ConfigurationSection doorsSec = oldConfig.getConfigurationSection(key + ".Doors");
@@ -313,10 +309,8 @@ public class LegacyConfig
 
 			arenaJson.add("save_data", arenaSaveJson);
 
-
 			arenasJsonObj.add(key, arenaJson);
 		}
-
 		config.saveConfig(arenasJsonObj);
 	}
 

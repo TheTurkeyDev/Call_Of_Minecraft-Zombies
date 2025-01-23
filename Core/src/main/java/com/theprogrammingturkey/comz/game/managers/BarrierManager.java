@@ -200,8 +200,6 @@ public class BarrierManager
 	public void unloadAllBarriers()
 	{
 		for(Barrier b : barriers)
-		{
 			b.repairFull();
-		}
 	}
 }

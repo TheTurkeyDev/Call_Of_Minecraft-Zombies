@@ -1,6 +1,8 @@
 package com.theprogrammingturkey.comz.game;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -109,7 +111,7 @@ public class AutoStart
 			}
 
 			for(Player player : game.getPlayersInGame())
-				COMZombies.nmsUtil.sendActionBarMessage(player, ChatColor.RED + "Starting In: " + remain);
+				player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.RED + "Starting In: " + remain));
 
 			countdownTaskId = COMZombies.scheduleTask(20, this);
 		}

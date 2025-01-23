@@ -39,7 +39,6 @@ public class PerkMachineSign implements IGameSign
 			return;
 		}
 
-
 		int playerPoints = PointManager.INSTANCE.getPlayersPoints(player);
 		String costStr = sign.getLine(3);
 		int cost;

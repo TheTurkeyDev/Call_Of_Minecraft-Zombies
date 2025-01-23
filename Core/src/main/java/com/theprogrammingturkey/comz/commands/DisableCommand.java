@@ -51,5 +51,4 @@ public class DisableCommand extends SubCommand
 		}
 		return true;
 	}
-
 }

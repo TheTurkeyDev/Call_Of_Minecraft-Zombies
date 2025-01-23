@@ -1,7 +1,6 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.api.NMSParticleType;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
@@ -13,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -92,7 +92,7 @@ public class PlayerListener implements Listener
 
 		// Reviving move check
 		Location change = toLoc.clone().subtract(event.getFrom().clone());
-		if (player.getGameMode() != GameMode.SPECTATOR && game.downedPlayerManager.isDownedPlayer(player) && change.getY() != 0)
+		if(player.getGameMode() != GameMode.SPECTATOR && game.downedPlayerManager.isDownedPlayer(player) && change.getY() != 0)
 			event.setCancelled(true);
 
 		float DEAD_ZONE = 0.001f;
@@ -140,14 +140,11 @@ public class PlayerListener implements Listener
 					loc.getWorld().playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
 					for(int i = 0; i < 30; i++)
 					{
-						for(Player pl : game.getPlayersInGame())
-						{
-							float x = COMZombies.rand.nextFloat(2f);
-							float y = COMZombies.rand.nextFloat(2f);
-							float z = COMZombies.rand.nextFloat(2f);
-							COMZombies.nmsUtil.sendParticleToPlayer(NMSParticleType.LAVA, pl, player.getLocation(), x, y, z, 1, 1);
-							COMZombies.nmsUtil.sendParticleToPlayer(NMSParticleType.FIREWORK, pl, player.getLocation(), x, y, z, 1, 1);
-						}
+						float x = COMZombies.rand.nextFloat(2f);
+						float y = COMZombies.rand.nextFloat(2f);
+						float z = COMZombies.rand.nextFloat(2f);
+						player.getWorld().spawnParticle(Particle.LAVA, loc.getX(), loc.getY(), loc.getZ(), 1, x, y, z, 1);
+						player.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, loc.getX(), loc.getY(), loc.getZ(), 1, x, y, z, 1);
 					}
 
 					for(Entity e : player.getNearbyEntities(5, 5, 5))

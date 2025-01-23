@@ -44,5 +44,4 @@ public class DisablePowerCommand extends SubCommand
 		}
 		return true;
 	}
-
 }

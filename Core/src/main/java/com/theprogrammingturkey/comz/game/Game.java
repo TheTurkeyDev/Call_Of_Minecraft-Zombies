@@ -166,7 +166,7 @@ public class Game
 	public Arena arena;
 
 	/**
-	 * Manager controlling zombie spawing and spawn points for the game.
+	 * Manager controlling zombie spawning and spawn points for the game.
 	 */
 	public SpawnManager spawnManager;
 
@@ -206,12 +206,12 @@ public class Game
 	public TeleporterManager teleporterManager;
 
 	/**
-	 * contains all of the downed palyers in the game
+	 * contains all of the downed players in the game
 	 */
 	public DownedPlayerManager downedPlayerManager;
 
 	/**
-	 * contains all of the downed palyers in the game
+	 * contains all of the downed players in the game
 	 */
 	public SignManager signManager;
 
@@ -264,9 +264,7 @@ public class Game
 	 */
 	public PlayerWeaponManager getPlayersWeapons(Player player)
 	{
-		if(gamePlayers.containsKey(player))
-			return gamePlayers.get(player).getWeaponManager();
-		return null;
+		return gamePlayers.getOrDefault(player, new GamePlayer(player)).getWeaponManager();
 	}
 
 	public List<Player> getPlayersInGame()
@@ -433,7 +431,6 @@ public class Game
 
 		if(forced && mode == ArenaStatus.STARTING && !starter.forced)
 			starter.endTimer();
-
 
 		int delay = ConfigManager.getMainConfig().arenaStartTime + 1;
 
@@ -750,8 +747,6 @@ public class Game
 			downedPlayerManager.removeDownedPlayer(player);
 		if(getPlayersInGame().contains(player))
 			resetPlayer(player);
-
-
 	}
 
 	public void removeSpectator(Player player)
@@ -779,7 +774,7 @@ public class Game
 		COMZombies plugin = COMZombies.getPlugin();
 		for(Player pl : Bukkit.getOnlinePlayers())
 		{
-			if (pl == player)
+			if(pl == player)
 				continue;
 
 			if(gamePlayers.containsKey(pl))
@@ -789,7 +784,6 @@ public class Game
 		}
 		signManager.updateGame();
 	}
-
 
 	/**
 	 * Causes the game to always be at night time.
@@ -1202,7 +1196,6 @@ public class Game
 		player.updateInventory();
 	}
 
-
 	public static final List<Class<? extends Entity>> BLACKLISTED_ENTITIES = Arrays.asList(Player.class, Minecart.class, Painting.class, ItemFrame.class);
 
 	/**
@@ -1344,10 +1337,8 @@ public class Game
 			playerDowned(player);
 			return 0;
 		}
-		else
-		{
-			return damageAmount;
-		}
+
+		return damageAmount;
 	}
 
 	private void playerDowned(Player player)

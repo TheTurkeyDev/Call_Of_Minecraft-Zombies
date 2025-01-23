@@ -1,14 +1,14 @@
 package com.theprogrammingturkey.comz.game.signs;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.api.NMSParticleType;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
 import com.theprogrammingturkey.comz.util.CommandUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
@@ -45,9 +45,10 @@ public class TeleporterSign implements IGameSign
 					player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 30));
 
 					for(int i = 0; i < 50; i++)
-						for(Player pl : Bukkit.getOnlinePlayers())
-							COMZombies.nmsUtil.sendParticleToPlayer(NMSParticleType.WITCH, pl, player.getLocation(), COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(), 1, 1);
-
+					{
+						Location loc = player.getLocation();
+						player.getWorld().spawnParticle(Particle.SPELL_WITCH, loc.getX(), loc.getY(), loc.getZ(), 1, COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(), 1);
+					}
 					PointManager.INSTANCE.takePoints(player, points);
 					PointManager.INSTANCE.notifyPlayer(player);
 				}

@@ -53,7 +53,6 @@ public class RayTrace
 		List<Vector> positions = new ArrayList<>();
 		for(double d = 0; d <= blocksAway; d += accuracy)
 			positions.add(getPosition(d));
-
 		return positions;
 	}
 
@@ -83,7 +82,8 @@ public class RayTrace
 			return false;
 		else if(position.getY() < min.getY() || position.getY() > max.getY())
 			return false;
-		else return !(position.getZ() < min.getZ()) && !(position.getZ() > max.getZ());
+		else
+			return !(position.getZ() < min.getZ()) && !(position.getZ() > max.getZ());
 	}
 
 	public void showParticles(World world, double blocksAway, float seperation, Color color)

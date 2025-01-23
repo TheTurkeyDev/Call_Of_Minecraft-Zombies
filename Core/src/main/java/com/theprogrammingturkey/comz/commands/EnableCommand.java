@@ -57,5 +57,4 @@ public class EnableCommand extends SubCommand
 		}
 		return false;
 	}
-
 }

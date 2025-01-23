@@ -1,7 +1,6 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
-import com.theprogrammingturkey.comz.api.NMSParticleType;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
@@ -123,7 +122,10 @@ public class WeaponListener implements Listener
 									if(gun.getType().getName().equalsIgnoreCase("Zombie BFF"))
 									{
 										for(int i = 0; i < 30; i++)
-											COMZombies.nmsUtil.sendParticleToPlayer(NMSParticleType.HEART, player, mob.getLocation(), COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(), 1, 1);
+										{
+											Location loc = mob.getLocation();
+											player.getWorld().spawnParticle(Particle.HEART, loc.getX(), loc.getY(), loc.getZ(), 1, COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(), 1);
+										}
 									}
 									for(Player pl : game.getPlayersInGame())
 										pl.playSound(pl.getLocation(), Sound.BLOCK_LAVA_POP, 1.0F, 0.0F);

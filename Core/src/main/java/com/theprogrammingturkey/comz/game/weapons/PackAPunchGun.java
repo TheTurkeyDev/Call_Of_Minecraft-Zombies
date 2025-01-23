@@ -25,5 +25,4 @@ public class PackAPunchGun extends BaseGun
 	{
 		return true;
 	}
-
 }
