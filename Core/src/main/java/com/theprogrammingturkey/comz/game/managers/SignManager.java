@@ -4,22 +4,21 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.config.COMZConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class SignManager
 {
-	public List<Sign> gameSigns = new ArrayList<>();
+	public Set<Location> gameSigns = new HashSet<>();
 
 	private final Game game;
 
@@ -52,12 +51,7 @@ public class SignManager
 				COMZombies.log.log(Level.SEVERE, "Could not load the sign with json: " + signJson.toString());
 				continue;
 			}
-			Block block = loc.getBlock();
-			if(block.getState() instanceof Sign)
-			{
-				Sign sB = (Sign) block.getState();
-				gameSigns.add(sB);
-			}
+			gameSigns.add(loc);
 		}
 		enable();
 	}
@@ -83,8 +77,8 @@ public class SignManager
 			jsonObject.add(game.getName(), signsArray);
 		}
 
-		for(Sign sign : gameSigns)
-			signsArray.add(CustomConfig.locationToJson(sign.getLocation()));
+		for(Location loc : gameSigns)
+			signsArray.add(CustomConfig.locationToJson(loc));
 
 		config.saveConfig(jsonObject);
 	}
@@ -93,30 +87,31 @@ public class SignManager
 	{
 		COMZombies.scheduleTask(20, () ->
 		{
-			for(Sign s : gameSigns)
+			for(Location loc : gameSigns)
 			{
+				final Sign sign = (Sign) loc.getBlock().getState();
 				if(game.getMode().equals(Game.ArenaStatus.DISABLED))
 				{
-					s.setLine(0, ChatColor.DARK_RED + "[maintenance]".toUpperCase());
-					s.setLine(1, game.getName());
-					s.setLine(2, "Game will be");
-					s.setLine(3, "available soon!");
+					sign.setLine(0, ChatColor.DARK_RED + "[maintenance]".toUpperCase());
+					sign.setLine(1, game.getName());
+					sign.setLine(2, "Game will be");
+					sign.setLine(3, "available soon!");
 				}
 				else if(game.getMode().equals(Game.ArenaStatus.WAITING) || game.getMode().equals(Game.ArenaStatus.STARTING))
 				{
-					s.setLine(0, ChatColor.RED + "[Zombies]");
-					s.setLine(1, ChatColor.AQUA + "Join");
-					s.setLine(2, game.getName());
-					s.setLine(3, ChatColor.GREEN + "Players: " + game.getPlayersInGame().size() + "/" + game.maxPlayers);
+					sign.setLine(0, ChatColor.RED + "[Zombies]");
+					sign.setLine(1, ChatColor.AQUA + "Join");
+					sign.setLine(2, game.getName());
+					sign.setLine(3, ChatColor.GREEN + "Players: " + game.getPlayersInGame().size() + "/" + game.maxPlayers);
 				}
 				else if(game.getMode().equals(Game.ArenaStatus.INGAME))
 				{
-					s.setLine(0, ChatColor.GREEN + game.getName());
-					s.setLine(1, ChatColor.RED + "InProgress");
-					s.setLine(2, ChatColor.RED + "Wave: " + game.getWave());
-					s.setLine(3, ChatColor.DARK_RED + "Alive: " + game.getPlayersInGame().size());
+					sign.setLine(0, ChatColor.GREEN + game.getName());
+					sign.setLine(1, ChatColor.RED + "InProgress");
+					sign.setLine(2, ChatColor.RED + "Wave: " + game.getWave());
+					sign.setLine(3, ChatColor.DARK_RED + "Alive: " + game.getPlayersInGame().size());
 				}
-				s.update();
+				sign.update();
 			}
 		});
 	}
@@ -126,27 +121,28 @@ public class SignManager
 		updateGame();
 	}
 
-	public void addSign(Sign sign)
+	public void addSign(Location loc)
 	{
-		gameSigns.add(sign);
+		gameSigns.add(loc);
 		save();
 	}
 
-	public void removeSign(Sign sign)
+	public void removeSign(Location loc)
 	{
-		gameSigns.remove(sign);
+		gameSigns.remove(loc);
 		save();
 	}
 
-	public boolean isSign(Sign sign)
+	public boolean isSign(Location loc)
 	{
-		return gameSigns.contains(sign);
+		return gameSigns.contains(loc);
 	}
 
 	public void removeAllSigns()
 	{
-		for(Sign sign : gameSigns)
+		for(Location loc : gameSigns)
 		{
+			Sign sign = (Sign) loc.getBlock().getState();
 			sign.setLine(0, "");
 			sign.setLine(1, "");
 			sign.setLine(2, "");

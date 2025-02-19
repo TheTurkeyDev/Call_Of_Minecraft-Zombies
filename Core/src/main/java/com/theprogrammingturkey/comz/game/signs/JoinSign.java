@@ -5,6 +5,7 @@ import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -15,17 +16,18 @@ public class JoinSign implements IGameSign
 	@Override
 	public void onBreak(Game game, Player player, Sign sign)
 	{
-		game.signManager.removeSign(sign);
+		game.signManager.removeSign(sign.getLocation());
 	}
 
 	@Override
 	public void onInteract(Game game, Player player, Sign sign)
 	{
+		Location loc = sign.getLocation();
 		game = GameManager.INSTANCE.getGame(sign.getLine(2));
 		if(game != null)
 		{
-			if(!game.signManager.isSign(sign))
-				game.signManager.addSign(sign);
+			if(!game.signManager.isSign(loc))
+				game.signManager.addSign(loc);
 
 			String[] args = new String[2];
 			args[0] = "join";
@@ -54,7 +56,7 @@ public class JoinSign implements IGameSign
 			return;
 		}
 		game = GameManager.INSTANCE.getGame(thirdLine);
-		game.signManager.addSign((Sign) event.getBlock().getState());
+		game.signManager.addSign(event.getBlock().getLocation());
 	}
 
 	@Override
