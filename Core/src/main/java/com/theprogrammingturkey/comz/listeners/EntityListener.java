@@ -131,10 +131,10 @@ public class EntityListener implements Listener
 			if(game.downedPlayerManager.isDownedPlayer(player))
 				e.setCancelled(true);
 
-			if(game.getMode() == Game.ArenaStatus.STARTING)
+			if(game.getStatus() == Game.GameStatus.STARTING)
 				e.setCancelled(true);
 
-			if(game.getMode() == Game.ArenaStatus.INGAME)
+			if(game.getStatus() == Game.GameStatus.INGAME)
 			{
 				float damage = game.damagePlayer(player, (float) e.getDamage());
 				e.setDamage(damage);
@@ -149,7 +149,7 @@ public class EntityListener implements Listener
 			Mob m = (Mob) e.getEntity();
 			Game game = GameManager.INSTANCE.getGame(m);
 			m.setFireTicks(0);
-			m.teleport(game.getPlayerSpawn());
+			m.teleport(game.arena.getPlayerTPLocation());
 			e.setCancelled(true);
 		}
 	}

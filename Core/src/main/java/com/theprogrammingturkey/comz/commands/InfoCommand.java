@@ -44,14 +44,14 @@ public class InfoCommand extends SubCommand
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "World: " + ChatColor.BLUE + game.arena.getWorld());
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Point One: x:" + ChatColor.BLUE + game.arena.getMin().getBlockX() + ChatColor.GREEN + ", y:" + ChatColor.BLUE + game.arena.getMin().getBlockY() + ChatColor.GREEN + ", z:" + ChatColor.BLUE + game.arena.getMin().getBlockZ());
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Point Two: x:" + ChatColor.BLUE + game.arena.getMax().getBlockX() + ChatColor.GREEN + ", y:" + ChatColor.BLUE + game.arena.getMax().getBlockY() + ChatColor.GREEN + ", z:" + ChatColor.BLUE + game.arena.getMax().getBlockZ());
-					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Player Spawn: x:" + ChatColor.BLUE + game.getPlayerSpawn().getBlockX() + ChatColor.GREEN + ", y:" + ChatColor.BLUE + game.getPlayerSpawn().getBlockY() + ChatColor.GREEN + ", z:" + ChatColor.BLUE + game.getPlayerSpawn().getBlockZ());
-					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Lobby Spawn: x:" + ChatColor.BLUE + game.getLobbyLocation().getBlockX() + ChatColor.GREEN + ", y:" + ChatColor.BLUE + game.getLobbyLocation().getBlockY() + ChatColor.GREEN + ", z:" + ChatColor.BLUE + game.getLobbyLocation().getBlockZ());
-					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Spectator Spawn: x:" + ChatColor.BLUE + game.getSpectateLocation().getBlockX() + ChatColor.GREEN + ", y:" + ChatColor.BLUE + game.getSpectateLocation().getBlockY() + ChatColor.GREEN + ", z:" + ChatColor.BLUE + game.getSpectateLocation().getBlockZ());
+					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Player Spawn: x:" + ChatColor.BLUE + game.arena.getPlayerTPLocation().getBlockX() + ChatColor.GREEN + ", y:" + ChatColor.BLUE + game.arena.getPlayerTPLocation().getBlockY() + ChatColor.GREEN + ", z:" + ChatColor.BLUE + game.arena.getPlayerTPLocation().getBlockZ());
+					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Lobby Spawn: x:" + ChatColor.BLUE + game.arena.getLobbyLocation().getBlockX() + ChatColor.GREEN + ", y:" + ChatColor.BLUE + game.arena.getLobbyLocation().getBlockY() + ChatColor.GREEN + ", z:" + ChatColor.BLUE + game.arena.getLobbyLocation().getBlockZ());
+					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Spectator Spawn: x:" + ChatColor.BLUE + game.arena.getSpectateLocation().getBlockX() + ChatColor.GREEN + ", y:" + ChatColor.BLUE + game.arena.getSpectateLocation().getBlockY() + ChatColor.GREEN + ", z:" + ChatColor.BLUE + game.arena.getSpectateLocation().getBlockZ());
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Players: ");
 					for(Player p : game.getPlayersInGame())
 						CommandUtil.sendMessageToPlayer(player, ChatColor.BLUE + "  " + p.getName());
 
-					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Mode: " + ChatColor.BLUE + game.getMode().toString());
+					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Mode: " + ChatColor.BLUE + game.getStatus().toString());
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Wave Number: " + ChatColor.BLUE + game.getWave());
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Zombies: " + ChatColor.BLUE + game.spawnManager.getEntities().size());
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Zombies Spawned: " + ChatColor.BLUE + game.spawnManager.getMobsSpawned());

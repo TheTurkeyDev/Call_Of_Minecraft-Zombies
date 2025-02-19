@@ -17,8 +17,6 @@ public class ArenaSetupAction extends BaseAction
 	private int particleBoxID;
 	private boolean runOnce = false;
 
-	private boolean setup = false;
-
 	public ArenaSetupAction(Player player, Game game)
 	{
 		super(player, game);
@@ -29,9 +27,6 @@ public class ArenaSetupAction extends BaseAction
 		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type cancel to cancel this operation.");
 		CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Type done when all points have been set where you want them.");
 
-		if(game.arena != null)
-			setup = true;
-
 		updateBoxParticles();
 	}
 
@@ -39,7 +34,7 @@ public class ArenaSetupAction extends BaseAction
 	{
 		if(runOnce)
 			Bukkit.getScheduler().cancelTask(particleBoxID);
-		if(!setup)
+		if(!game.arena.isSetupComplete())
 			GameManager.INSTANCE.removeGame(game);
 
 		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Arena setup operation canceled!");
@@ -87,7 +82,7 @@ public class ArenaSetupAction extends BaseAction
 					Bukkit.getScheduler().cancelTask(particleBoxID);
 				COMZombies.getPlugin().activeActions.remove(player);
 
-				if(!setup)
+				if(!game.arena.isSetupComplete())
 					COMZombies.getPlugin().activeActions.put(player, new SpawnsEditAction(player, game));
 			}
 		}
@@ -97,10 +92,10 @@ public class ArenaSetupAction extends BaseAction
 	{
 		World world = game.getWorld();
 
-		Location p1 = game.getLoc1();
+		Location p1 = game.arena.getMin();
 		if(p1 == null)
 			return;
-		Location p2 = game.getLoc2();
+		Location p2 = game.arena.getMax();
 		if(p2 == null)
 			return;
 

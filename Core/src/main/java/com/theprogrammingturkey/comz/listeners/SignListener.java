@@ -8,6 +8,7 @@ import com.theprogrammingturkey.comz.game.signs.*;
 import com.theprogrammingturkey.comz.util.BlockUtils;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -84,8 +85,9 @@ public class SignListener implements Listener
 		String lineTwo = ChatColor.stripColor(sign.getLine(1));
 		if(lineOne.equalsIgnoreCase("[Zombies]"))
 		{
-			Game game = GameManager.INSTANCE.getGame(sign.getLocation());
-			if(game != null && game.getMode() != Game.ArenaStatus.DISABLED)
+			Location signLoc = sign.getLocation();
+			Game game = GameManager.INSTANCE.getGame(signLoc);
+			if(game != null && game.getStatus() != Game.GameStatus.DISABLED)
 			{
 				event.setCancelled(true);
 				return;
@@ -93,7 +95,7 @@ public class SignListener implements Listener
 
 			IGameSign signLogic = GAME_SIGNS.get(lineTwo.toLowerCase());
 			if(signLogic != null && (game != null || !signLogic.requiresGame()))
-				signLogic.onBreak(game, event.getPlayer(), sign);
+				signLogic.onBreak(game, event.getPlayer(), signLoc);
 		}
 		else if(lineOne.equalsIgnoreCase("[BarrierRepair]"))
 		{
@@ -130,7 +132,8 @@ public class SignListener implements Listener
 			Sign sign = (Sign) event.getClickedBlock().getState();
 			Player player = event.getPlayer();
 
-			if (GameManager.INSTANCE.isPlayerInGame(player)) {
+			if(GameManager.INSTANCE.isPlayerInGame(player))
+			{
 				String lineOne = ChatColor.stripColor(sign.getLine(0));
 				// We don't want to cancel the event if this case so that barrier signs can work
 				if(event.getAction() != Action.LEFT_CLICK_BLOCK || !lineOne.equalsIgnoreCase("[BarrierRepair]"))
@@ -160,10 +163,10 @@ public class SignListener implements Listener
 				IGameSign signLogic = GAME_SIGNS.get(lineTwo.toLowerCase());
 				if(signLogic != null && (game != null || !signLogic.requiresGame()))
 				{
-					if(game != null && signLogic.requiresGame() && game.getMode() != Game.ArenaStatus.INGAME)
+					if(game != null && signLogic.requiresGame() && game.getStatus() != Game.GameStatus.INGAME)
 						return;
 
-					signLogic.onInteract(game, player, sign);
+					signLogic.onInteract(game, player, sign.getLocation(), sign.getLines());
 					event.setCancelled(true);
 				}
 			}

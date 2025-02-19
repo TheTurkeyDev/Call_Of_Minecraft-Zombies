@@ -1,7 +1,7 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
+import com.theprogrammingturkey.comz.game.Game.GameStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.game.weapons.WeaponInstance;
@@ -22,7 +22,7 @@ public class OnInventoryChangeEvent implements Listener
 			event.setCancelled(true);
 
 		Game game = GameManager.INSTANCE.getGame(player);
-		if(game == null || game.getMode() != ArenaStatus.INGAME)
+		if(game == null || game.getStatus() != GameStatus.INGAME)
 			return;
 
 		if(game.getPlayersWeapons(player) != null)
@@ -43,7 +43,7 @@ public class OnInventoryChangeEvent implements Listener
 			event.setCancelled(true);
 
 		Game game = GameManager.INSTANCE.getGame(event.getPlayer());
-		if(game == null || game.getMode() != ArenaStatus.INGAME)
+		if(game == null || game.getStatus() != GameStatus.INGAME)
 			return;
 
 		if(game.getPlayersWeapons(event.getPlayer()) != null)

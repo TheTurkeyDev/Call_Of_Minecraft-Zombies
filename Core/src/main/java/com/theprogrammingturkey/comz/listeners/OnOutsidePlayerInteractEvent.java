@@ -1,7 +1,7 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
+import com.theprogrammingturkey.comz.game.Game.GameStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.managers.PowerUpManager;
 import org.bukkit.ChatColor;
@@ -21,10 +21,10 @@ public class OnOutsidePlayerInteractEvent implements Listener
 			return;
 		Player player = (Player) e.getEntity();
 		Game game = GameManager.INSTANCE.getGame(player.getLocation());
-		if(game == null || game.getMode() == null)
+		if(game == null || game.getStatus() == null)
 			return;
 
-		if(game.getMode() != ArenaStatus.INGAME)
+		if(game.getStatus() != GameStatus.INGAME)
 			return;
 
 		if(!GameManager.INSTANCE.isPlayerInGame(player) && GameManager.INSTANCE.isLocationInGame(player.getLocation()))
@@ -53,7 +53,7 @@ public class OnOutsidePlayerInteractEvent implements Listener
 		Location loc = player.getLocation();
 		if(GameManager.INSTANCE.isLocationInGame(loc))
 		{
-			if(GameManager.INSTANCE.getGame(loc).getMode() != ArenaStatus.INGAME)
+			if(GameManager.INSTANCE.getGame(loc).getStatus() != GameStatus.INGAME)
 				return;
 
 			event.setCancelled(true);

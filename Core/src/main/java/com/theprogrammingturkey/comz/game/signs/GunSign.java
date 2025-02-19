@@ -8,26 +8,26 @@ import com.theprogrammingturkey.comz.game.managers.WeaponManager;
 import com.theprogrammingturkey.comz.game.weapons.BaseGun;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Sound;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 
 public class GunSign implements IGameSign
 {
 	@Override
-	public void onBreak(Game game, Player player, Sign sign)
+	public void onBreak(Game game, Player player, Location location)
 	{
 
 	}
 
 	@Override
-	public void onInteract(Game game, Player player, Sign sign)
+	public void onInteract(Game game, Player player, Location location, String[] lines)
 	{
-		String line3 = sign.getLine(3);
+		String line3 = lines[3];
 		int buyPoints = Integer.parseInt(line3.substring(0, line3.indexOf("/") - 1).trim());
 		int refillPoints = Integer.parseInt(line3.substring(line3.indexOf("/") + 2).trim());
-		BaseGun gunType = WeaponManager.getGun(sign.getLine(2));
+		BaseGun gunType = WeaponManager.getGun(lines[2]);
 
 		if(gunType == null)
 		{

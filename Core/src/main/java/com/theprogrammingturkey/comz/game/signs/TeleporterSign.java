@@ -9,7 +9,6 @@ import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.potion.PotionEffect;
@@ -18,17 +17,17 @@ import org.bukkit.potion.PotionEffectType;
 public class TeleporterSign implements IGameSign
 {
 	@Override
-	public void onBreak(Game game, Player player, Sign sign)
+	public void onBreak(Game game, Player player, Location location)
 	{
 
 	}
 
 	@Override
-	public void onInteract(Game game, Player player, Sign sign)
+	public void onInteract(Game game, Player player, Location location, String[] lines)
 	{
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
-			String teleporterName = sign.getLine(2).toLowerCase();
+			String teleporterName = lines[2].toLowerCase();
 			if(game.teleporterManager.getTeleporters().containsKey(teleporterName))
 			{
 				if(game.hasPower() && !game.isPowered())
@@ -38,7 +37,7 @@ public class TeleporterSign implements IGameSign
 					return;
 				}
 
-				int points = Integer.parseInt(sign.getLine(3));
+				int points = Integer.parseInt(lines[3]);
 				if(PointManager.INSTANCE.canBuy(player, points))
 				{
 					player.teleport(game.teleporterManager.getTeleporters().get(teleporterName));

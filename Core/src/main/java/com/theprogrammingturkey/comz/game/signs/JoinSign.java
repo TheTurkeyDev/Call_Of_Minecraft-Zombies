@@ -7,27 +7,25 @@ import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 
 public class JoinSign implements IGameSign
 {
 	@Override
-	public void onBreak(Game game, Player player, Sign sign)
+	public void onBreak(Game game, Player player, Location location)
 	{
-		game.signManager.removeSign(sign.getLocation());
+		game.signManager.removeSign(location);
 	}
 
 	@Override
-	public void onInteract(Game game, Player player, Sign sign)
+	public void onInteract(Game game, Player player, Location location, String[] lines)
 	{
-		Location loc = sign.getLocation();
-		game = GameManager.INSTANCE.getGame(sign.getLine(2));
+		game = GameManager.INSTANCE.getGame(lines[2]);
 		if(game != null)
 		{
-			if(!game.signManager.isSign(loc))
-				game.signManager.addSign(loc);
+			if(!game.signManager.isSign(location))
+				game.signManager.addSign(location);
 
 			String[] args = new String[2];
 			args[0] = "join";
@@ -38,7 +36,7 @@ public class JoinSign implements IGameSign
 		}
 		else
 		{
-			CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "There is no arena called " + ChatColor.GOLD + sign.getLine(2) + ChatColor.DARK_RED + "! Contact an admin to fix this issue!");
+			CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "There is no arena called " + ChatColor.GOLD + lines[2] + ChatColor.DARK_RED + "! Contact an admin to fix this issue!");
 		}
 	}
 

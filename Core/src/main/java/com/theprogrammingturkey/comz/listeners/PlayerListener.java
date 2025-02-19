@@ -82,9 +82,9 @@ public class PlayerListener implements Listener
 
 		if(!game.arena.containsBlock(toLoc))
 		{
-			if(game.getMode() == Game.ArenaStatus.INGAME)
+			if(game.getStatus() == Game.GameStatus.INGAME)
 			{
-				player.teleport(game.getPlayerSpawn());
+				player.teleport(game.arena.getPlayerTPLocation());
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Please do not leave the arena!");
 			}
 		}

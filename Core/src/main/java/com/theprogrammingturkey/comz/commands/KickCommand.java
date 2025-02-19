@@ -1,7 +1,7 @@
 package com.theprogrammingturkey.comz.commands;
 
 import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
+import com.theprogrammingturkey.comz.game.Game.GameStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.util.COMZPermission;
 import com.theprogrammingturkey.comz.util.CommandUtil;
@@ -39,9 +39,9 @@ public class KickCommand extends SubCommand
 			}
 
 			Game game = GameManager.INSTANCE.getGame(kick);
-			if(game.getMode() == ArenaStatus.DISABLED)
+			if(game.getStatus() == GameStatus.DISABLED)
 			{
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "The arena that the player has a status of " + game.getMode().toString() + "!");
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "The arena that the player has a status of " + game.getStatus().toString() + "!");
 				return true;
 			}
 

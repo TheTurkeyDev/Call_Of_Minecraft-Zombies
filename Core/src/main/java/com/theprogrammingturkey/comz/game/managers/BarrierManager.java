@@ -62,7 +62,7 @@ public class BarrierManager
 				if(loc != null)
 				{
 					Material mat = BlockUtils.getMaterialFromKey(CustomConfig.getString(blockJson, "material", ""));
-					barrier.addBarrierBlock(game.world.getBlockAt(loc), mat);
+					barrier.addBarrierBlock(game.getWorld().getBlockAt(loc), mat);
 				}
 				else
 				{
@@ -155,7 +155,7 @@ public class BarrierManager
 
 	public void addBarrier(Barrier barrier)
 	{
-		if(game.getMode() == Game.ArenaStatus.DISABLED || game.getMode() == Game.ArenaStatus.WAITING)
+		if(game.getStatus() == Game.GameStatus.DISABLED || game.getStatus() == Game.GameStatus.WAITING)
 		{
 			boolean same = false;
 			for(Barrier b : barriers)

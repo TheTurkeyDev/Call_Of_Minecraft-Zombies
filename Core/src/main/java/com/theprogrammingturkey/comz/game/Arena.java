@@ -1,5 +1,7 @@
 package com.theprogrammingturkey.comz.game;
 
+import com.google.gson.JsonObject;
+import com.theprogrammingturkey.comz.config.CustomConfig;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -8,6 +10,11 @@ import org.bukkit.World;
  */
 public class Arena
 {
+
+	/**
+	 * Arena name for the game.
+	 */
+	private String name;
 
 	/**
 	 * Location min, order in 3d world does not matter
@@ -25,17 +32,59 @@ public class Arena
 	private World world;
 
 	/**
+	 * Location players will teleport to when the game starts.
+	 */
+	private Location playerTPLocation;
+
+	/**
+	 * Location players will teleport to when they leave or die.
+	 */
+	private Location spectateLocation;
+
+	/**
+	 * Location in which players will teleport upon first join.
+	 */
+	private Location lobbyLocation;
+
+	/**
 	 * Constructs a new arena for a given game.
+	 */
+	public Arena(String name)
+	{
+		this.name = name;
+	}
+
+	/**
+	 * Constructs a new arena.
 	 *
 	 * @param minZone to be assigned to max
 	 * @param maxZone to be assigned to min
 	 * @param world   in which the game is contained in
 	 */
-	public Arena(Location minZone, Location maxZone, World world)
+	public Arena(String name, Location minZone, Location maxZone, World world)
 	{
-		min = minZone;
-		max = maxZone;
+		this.name = name;
+		this.min = minZone;
+		this.max = maxZone;
 		this.world = world;
+	}
+
+	/**
+	 * gets the name of the game
+	 */
+	public String getName()
+	{
+		return name;
+	}
+
+	/**
+	 * Sets the name of the arena
+	 *
+	 * @param name Name of the arena to be set to
+	 */
+	public void setName(String name)
+	{
+		this.name = name;
 	}
 
 	/**
@@ -96,13 +145,33 @@ public class Arena
 	}
 
 	/**
-	 * Get the world arena is contained in.
+	 * Get the world the arena is contained in.
 	 *
-	 * @return world field
+	 * @return world
 	 */
-	public String getWorld()
+	public World getWorld()
+	{
+		return world;
+	}
+
+	/**
+	 * Get the world name the arena is contained in.
+	 *
+	 * @return world name
+	 */
+	public String getWorldName()
 	{
 		return world.getName();
+	}
+
+	/**
+	 * Is the max location set.
+	 *
+	 * @return max is not equal to null
+	 */
+	public boolean hasMax()
+	{
+		return max != null;
 	}
 
 	/**
@@ -116,6 +185,16 @@ public class Arena
 	}
 
 	/**
+	 * Is the min location set.
+	 *
+	 * @return min is not equal to null
+	 */
+	public boolean hasMin()
+	{
+		return min != null;
+	}
+
+	/**
 	 * Get the min location.
 	 *
 	 * @return min
@@ -123,5 +202,138 @@ public class Arena
 	public Location getMin()
 	{
 		return min;
+	}
+
+	/**
+	 * Is player teleport location in the arena not null
+	 *
+	 * @return playerTPLocation is not null
+	 */
+	public boolean hasPlayerTPLocation()
+	{
+		return playerTPLocation != null;
+	}
+
+	/**
+	 * Get the location to teleport the player in the arena when the game starts.
+	 *
+	 * @return playerTPLocation
+	 */
+	public Location getPlayerTPLocation()
+	{
+		return playerTPLocation;
+	}
+
+	/**
+	 * Set the location to teleport the player in the arena when the game starts.
+	 */
+	public void setPlayerTPLocation(Location loc)
+	{
+		this.playerTPLocation = loc;
+	}
+
+	/**
+	 * Is the location to teleport players when spectating set.
+	 *
+	 * @return spectateLocation is not null
+	 */
+	public boolean hasSpectateLocation()
+	{
+		return spectateLocation != null;
+	}
+
+	/**
+	 * Get the location to teleport players when spectating.
+	 *
+	 * @return spectateLocation
+	 */
+	public Location getSpectateLocation()
+	{
+		return spectateLocation;
+	}
+
+	/**
+	 * Set the location to teleport players when spectating.
+	 */
+	public void setSpectateLocation(Location location)
+	{
+		this.spectateLocation = location;
+	}
+
+	/**
+	 * Is the location of the lobby to teleport players set.
+	 *
+	 * @return spectateLocation
+	 */
+	public boolean hasLobbyLocation()
+	{
+		return lobbyLocation != null;
+	}
+
+	/**
+	 * Get the location of the lobby to teleport players.
+	 *
+	 * @return spectateLocation
+	 */
+	public Location getLobbyLocation()
+	{
+		return lobbyLocation;
+	}
+
+	/**
+	 * Get the location of the lobby to teleport players.
+	 */
+	public void setLobbyLocation(Location location)
+	{
+		this.lobbyLocation = location;
+	}
+
+	/**
+	 * Get is both the min and max locations are not null
+	 *
+	 * @return If min and max are not null
+	 */
+	public boolean areMinAndMaxSet()
+	{
+		return this.hasMin() && this.hasMax();
+	}
+
+	/**
+	 * Get if all 3 teleport locations are not null
+	 *
+	 * @return If playerTP, Lobby, and Spectate locations are not null
+	 */
+	public boolean areAllLocationsSet()
+	{
+		return this.hasPlayerTPLocation() && this.hasLobbyLocation() && this.hasSpectateLocation();
+	}
+
+	/**
+	 * Get if all points and locations are set
+	 *
+	 * @return If min, max, playerTP, Lobby, and Spectate locations are not null
+	 */
+	public boolean isSetupComplete()
+	{
+		return this.areMinAndMaxSet() && this.areAllLocationsSet();
+	}
+
+	public void loadArena(JsonObject arenaSaveJson, World world)
+	{
+		this.setMin(CustomConfig.getLocationWithWorld(arenaSaveJson, "p1", world));
+		this.setMax(CustomConfig.getLocationWithWorld(arenaSaveJson, "p2", world));
+		this.setPlayerTPLocation(CustomConfig.getLocationWithWorld(arenaSaveJson, "player_spawn", world));
+		this.setSpectateLocation(CustomConfig.getLocationWithWorld(arenaSaveJson, "spectator_spawn", world));
+		this.setLobbyLocation(CustomConfig.getLocationWithWorld(arenaSaveJson, "lobby_spawn", world));
+	}
+
+	public void saveArena(JsonObject arenaSaveJson)
+	{
+		arenaSaveJson.addProperty("world_name", getWorldName());
+		arenaSaveJson.add("p1", CustomConfig.locationToJsonNoWorld(min));
+		arenaSaveJson.add("p2", CustomConfig.locationToJsonNoWorld(max));
+		arenaSaveJson.add("player_spawn", CustomConfig.locationToJsonNoWorld(playerTPLocation));
+		arenaSaveJson.add("spectator_spawn", CustomConfig.locationToJsonNoWorld(spectateLocation));
+		arenaSaveJson.add("lobby_spawn", CustomConfig.locationToJsonNoWorld(lobbyLocation));
 	}
 }

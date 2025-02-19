@@ -2,35 +2,35 @@ package com.theprogrammingturkey.comz.game.signs;
 
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.game.features.RandomBox;
+import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 
 public class MysteryBoxSign implements IGameSign
 {
-	public void onBreak(Game game, Player player, Sign sign)
+	public void onBreak(Game game, Player player, Location location)
 	{
-		RandomBox box = game.boxManager.getBox(sign.getLocation());
+		RandomBox box = game.boxManager.getBox(location);
 		if(box != null)
 			game.boxManager.removeBox(player, box);
 	}
 
 	@Override
-	public void onInteract(Game game, Player player, Sign sign)
+	public void onInteract(Game game, Player player, Location location, String[] lines)
 	{
-		RandomBox box = game.boxManager.getBox(sign.getLocation());
+		RandomBox box = game.boxManager.getBox(location);
 		if(box == null)
 			return;
 
 		if(box.canActivate())
 		{
-			int points = Integer.parseInt(sign.getLine(2));
+			int points = Integer.parseInt(lines[2]);
 			if(game.isFireSale())
 				points = 10;
 

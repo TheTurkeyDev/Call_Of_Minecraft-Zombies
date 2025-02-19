@@ -57,7 +57,6 @@ import java.util.stream.Collectors;
  */
 public class Game
 {
-
 	/**
 	 * List of every player contained in game.
 	 */
@@ -68,22 +67,7 @@ public class Game
 	/**
 	 * Status of the game.
 	 */
-	private ArenaStatus mode = ArenaStatus.DISABLED;
-
-	/**
-	 * Assuring that the game has every warp, spectator, game, and lobby.
-	 */
-	private boolean hasWarps = false;
-
-	/**
-	 * Assuring that the game has every point, point one for the arena, and point two.
-	 */
-	private boolean hasPoints = false;
-
-	/**
-	 * If the game is disabled / edit mode, true.
-	 */
-	private boolean isDisabled = false;
+	private GameStatus status = GameStatus.DISABLED;
 
 	/**
 	 * If double points is active.
@@ -122,41 +106,6 @@ public class Game
 	 * Current wave number.
 	 */
 	private int waveNumber = 0;
-
-	/**
-	 * World name for the game.
-	 */
-	public World world;
-
-	/**
-	 * Arena name for the game.
-	 */
-	private String arenaName;
-
-	/**
-	 * Min point in which the game is contained.
-	 */
-	private Location min;
-
-	/**
-	 * Max point in which the game is contained.
-	 */
-	private Location max;
-
-	/**
-	 * Location players will teleport to when the game starts.
-	 */
-	private Location playerTPLocation;
-
-	/**
-	 * Location players will teleport to when they leave or die.
-	 */
-	private Location spectateLocation;
-
-	/**
-	 * Location in which players will teleport upon first join.
-	 */
-	private Location lobbyLocation;
 
 	private boolean forceNight;
 
@@ -239,7 +188,7 @@ public class Game
 	 */
 	public Game(String name)
 	{
-		arenaName = name;
+		this.arena = new Arena(name);
 
 		starter = new AutoStart(this, 60);
 
@@ -275,30 +224,6 @@ public class Game
 	public boolean wasDisconnected(Player player)
 	{
 		return gamePlayers.containsKey(player);
-	}
-
-	/**
-	 * @return the players spawn location on the map
-	 */
-	public Location getPlayerSpawn()
-	{
-		return playerTPLocation;
-	}
-
-	/**
-	 * @return the spectators spawn location on the map
-	 */
-	public Location getSpectateLocation()
-	{
-		return spectateLocation;
-	}
-
-	/**
-	 * @return the lobby spawn location on the map
-	 */
-	public Location getLobbyLocation()
-	{
-		return lobbyLocation;
 	}
 
 	/**
@@ -372,9 +297,9 @@ public class Game
 		return powerSetup;
 	}
 
-	public ArenaStatus getMode()
+	public GameStatus getStatus()
 	{
-		return this.mode;
+		return this.status;
 	}
 
 	public int getWave()
@@ -413,9 +338,9 @@ public class Game
 	 */
 	public boolean isCreated()
 	{
-		if(isDisabled)
+		if(status == GameStatus.DISABLED)
 			return false;
-		return hasPoints && hasWarps;
+		return arena.areMinAndMaxSet() && arena.areAllLocationsSet();
 	}
 
 	/**
@@ -423,13 +348,13 @@ public class Game
 	 */
 	public void setStarting(boolean forced)
 	{
-		if(mode != ArenaStatus.WAITING && mode != ArenaStatus.STARTING)
+		if(status != GameStatus.WAITING && status != GameStatus.STARTING)
 			return;
 
-		if(mode == ArenaStatus.STARTING && !forced)
+		if(status == GameStatus.STARTING && !forced)
 			return;
 
-		if(forced && mode == ArenaStatus.STARTING && !starter.forced)
+		if(forced && status == GameStatus.STARTING && !starter.forced)
 			starter.endTimer();
 
 		int delay = ConfigManager.getMainConfig().arenaStartTime + 1;
@@ -444,7 +369,7 @@ public class Game
 			starter.forced = true;
 
 		sendMessageToPlayers(ChatColor.RED + "" + ChatColor.BOLD + "Game starting soon!");
-		mode = ArenaStatus.STARTING;
+		status = GameStatus.STARTING;
 	}
 
 	/**
@@ -452,17 +377,17 @@ public class Game
 	 */
 	public void startArena()
 	{
-		if(mode == ArenaStatus.INGAME)
+		if(status == GameStatus.INGAME)
 			return;
 
 		Bukkit.getPluginManager().callEvent(new GameStartEvent(this));
 
 		waveNumber = 0;
 		changingRound = false;
-		mode = ArenaStatus.INGAME;
+		status = GameStatus.INGAME;
 		for(Player player : getPlayersInGame())
 		{
-			player.teleport(playerTPLocation);
+			player.teleport(arena.getPlayerTPLocation());
 			player.setAllowFlight(false);
 			player.setFlying(false);
 			player.setHealth(20D);
@@ -491,7 +416,7 @@ public class Game
 		}
 		spawnManager.update();
 
-		for(LivingEntity entity : getWorld().getLivingEntities())
+		for(LivingEntity entity : arena.getWorld().getLivingEntities())
 		{
 			if(arena.containsBlock(entity.getLocation()))
 			{
@@ -536,7 +461,7 @@ public class Game
 			for(Player p : getPlayersInGame())
 				pl.showPlayer(plugin, p);
 
-		if(mode != ArenaStatus.INGAME)
+		if(status != GameStatus.INGAME)
 		{
 			endGame();
 			return;
@@ -601,7 +526,7 @@ public class Game
 		player.getInventory().setArmorContents(null);
 		player.setExp(0);
 		player.setLevel(0);
-		player.teleport(lobbyLocation);
+		player.teleport(arena.getLobbyLocation());
 		PointManager.INSTANCE.setPoints(player, points);
 		assignPlayerInventory(player);
 		player.setGameMode(GameMode.SURVIVAL);
@@ -638,7 +563,7 @@ public class Game
 	 */
 	public void addPlayer(Player player)
 	{
-		if(mode == ArenaStatus.WAITING || mode == ArenaStatus.STARTING)
+		if(status == GameStatus.WAITING || status == GameStatus.STARTING)
 		{
 			gamePlayers.put(player, new GamePlayer(player));
 			internalAddPlayer(player, 500);
@@ -650,7 +575,7 @@ public class Game
 				signManager.updateGame();
 			}
 		}
-		else if(mode == ArenaStatus.INGAME)
+		else if(status == GameStatus.INGAME)
 		{
 			if(wasDisconnected(player))
 			{
@@ -705,7 +630,7 @@ public class Game
 		CachedPlayerInfo.savePlayerInfo(player);
 		scoreboard.addPlayer(player);
 		player.setGameMode(GameMode.SPECTATOR);
-		player.teleport(getPlayerSpawn());
+		player.teleport(arena.getSpectateLocation());
 	}
 
 	/**
@@ -722,10 +647,10 @@ public class Game
 
 		resetPlayer(player);
 
-		if(!isDisabled)
+		if(status != GameStatus.DISABLED)
 			sendMessageToPlayers(player.getName() + " has left the game! Only " + getPlayersInGame().size() + "/" + this.maxPlayers + " player(s) left!");
 
-		if(getPlayersInGame().isEmpty() && mode != ArenaStatus.WAITING && !isDisabled)
+		if(getPlayersInGame().isEmpty() && status != GameStatus.WAITING && status != GameStatus.DISABLED)
 			endGame();
 	}
 
@@ -790,16 +715,8 @@ public class Game
 	 */
 	public void forceNight()
 	{
-		getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-		getWorld().setTime(18000L);
-	}
-
-	/**
-	 * Gets the world where the map is located
-	 */
-	public World getWorld()
-	{
-		return world;
+		arena.getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+		arena.getWorld().setTime(18000L);
 	}
 
 	/**
@@ -809,11 +726,9 @@ public class Game
 	 */
 	public void setPlayerTPLocation(Location loc)
 	{
-		playerTPLocation = loc;
-		if(arena != null)
+		arena.setPlayerTPLocation(loc);
+		if(arena.isSetupComplete())
 			GameManager.INSTANCE.saveAllGames();
-		if(spectateLocation != null && lobbyLocation != null)
-			hasWarps = true;
 	}
 
 	/**
@@ -823,11 +738,9 @@ public class Game
 	 */
 	public void setSpectateLocation(Location loc)
 	{
-		spectateLocation = loc;
-		if(arena != null)
+		arena.setSpectateLocation(loc);
+		if(arena.isSetupComplete())
 			GameManager.INSTANCE.saveAllGames();
-		if(playerTPLocation != null && lobbyLocation != null)
-			hasWarps = true;
 	}
 
 	/**
@@ -837,11 +750,9 @@ public class Game
 	 */
 	public void setLobbySpawn(Location loc)
 	{
-		lobbyLocation = loc;
-		if(arena != null)
+		arena.setLobbyLocation(loc);
+		if(arena.isSetupComplete())
 			GameManager.INSTANCE.saveAllGames();
-		if(playerTPLocation != null && spectateLocation != null)
-			hasWarps = true;
 	}
 
 	/**
@@ -851,10 +762,10 @@ public class Game
 	 */
 	public void addPointOne(Location loc)
 	{
-		min = new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-		if(arena != null)
+		arena.setMin(new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+		arena.setWorld(loc.getWorld());
+		if(arena.isSetupComplete())
 			GameManager.INSTANCE.saveAllGames();
-		world = loc.getWorld();
 	}
 
 	/**
@@ -865,13 +776,12 @@ public class Game
 	 */
 	public boolean addPointTwo(Location loc)
 	{
-		if(min == null)
+		if(!arena.hasMin())
 			return false;
 
-		max = new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-		if(arena != null)
+		arena.setMax(new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+		if(arena.isSetupComplete())
 			GameManager.INSTANCE.saveAllGames();
-		hasPoints = true;
 		return true;
 	}
 
@@ -881,8 +791,7 @@ public class Game
 	public void setDisabled()
 	{
 		endGame();
-		isDisabled = true;
-		mode = ArenaStatus.DISABLED;
+		status = GameStatus.DISABLED;
 	}
 
 	/**
@@ -891,11 +800,10 @@ public class Game
 	public void setEnabled()
 	{
 		resetSpawnLocationBlocks();
-		isDisabled = false;
-		if(mode == ArenaStatus.INGAME)
+		if(status == GameStatus.INGAME)
 			return;
 
-		mode = ArenaStatus.WAITING;
+		status = GameStatus.WAITING;
 		signManager.updateGame();
 	}
 
@@ -904,10 +812,10 @@ public class Game
 	 */
 	public void endGame()
 	{
-		if(this.mode == ArenaStatus.WAITING)
+		if(this.status == GameStatus.WAITING)
 			return;
 
-		this.mode = ArenaStatus.WAITING;
+		this.status = GameStatus.WAITING;
 
 		for(GamePlayer v : gamePlayers.values())
 		{
@@ -956,17 +864,7 @@ public class Game
 		signManager.updateGame();
 	}
 
-	/**
-	 * Sets the name of the game
-	 *
-	 * @param name Name of the arena to be set to
-	 */
-	public void setName(String name)
-	{
-		arenaName = name;
-	}
-
-	public enum ArenaStatus
+	public enum GameStatus
 	{
 		DISABLED, STARTING, WAITING, INGAME
 	}
@@ -983,11 +881,11 @@ public class Game
 		JsonObject arenaSettingsJson = arenaJson.get("settings").getAsJsonObject();
 
 		String worldName = CustomConfig.getString(arenaSaveJson, "world_name", "Undefined");
-		world = Bukkit.getServer().getWorld(worldName);
+		World world = Bukkit.getServer().getWorld(worldName);
 
 		if(world == null)
 		{
-			COMZombies.log.log(Level.SEVERE, worldName + " isn't a valid world name for the arena " + arenaName);
+			COMZombies.log.log(Level.SEVERE, worldName + " isn't a valid world name for the arena " + arena.getName());
 			return false;
 		}
 
@@ -1003,14 +901,8 @@ public class Game
 		if(forceNight)
 			forceNight();
 
-		min = CustomConfig.getLocationWithWorld(arenaSaveJson, "p1", world);
-		max = CustomConfig.getLocationWithWorld(arenaSaveJson, "p2", world);
-		playerTPLocation = CustomConfig.getLocationWithWorld(arenaSaveJson, "player_spawn", world);
-		spectateLocation = CustomConfig.getLocationWithWorld(arenaSaveJson, "spectator_spawn", world);
-		lobbyLocation = CustomConfig.getLocationWithWorld(arenaSaveJson, "lobby_spawn", world);
-
-		arena = new Arena(min, max, world);
-		mode = ArenaStatus.WAITING;
+		arena.loadArena(arenaSaveJson, world);
+		status = GameStatus.WAITING;
 
 		if(arenaSettingsJson.has("powerup_settings"))
 			powerUpManager.loadAllPowerUps(arenaSettingsJson.get("powerup_settings").getAsJsonObject());
@@ -1029,9 +921,6 @@ public class Game
 
 		if(arenaSaveJson.has("teleporters"))
 			teleporterManager.loadAllTeleportersToGame(arenaSaveJson.get("teleporters").getAsJsonArray());
-
-		hasWarps = true;
-		hasPoints = true;
 
 		signManager.updateGame();
 
@@ -1053,14 +942,8 @@ public class Game
 		arenaSettingsJson.addProperty("dog_round_every_x", dogRoundEveryX);
 		arenaSettingsJson.addProperty("max_ammo_replenish_clip", maxAmmoReplishClip);
 
-
-		arenaSaveJson.addProperty("world_name", world.getName());
+		arena.saveArena(arenaSaveJson);
 		arenaSaveJson.addProperty("power_setup", powerSetup);
-		arenaSaveJson.add("p1", CustomConfig.locationToJsonNoWorld(min));
-		arenaSaveJson.add("p2", CustomConfig.locationToJsonNoWorld(max));
-		arenaSaveJson.add("player_spawn", CustomConfig.locationToJsonNoWorld(playerTPLocation));
-		arenaSaveJson.add("spectator_spawn", CustomConfig.locationToJsonNoWorld(spectateLocation));
-		arenaSaveJson.add("lobby_spawn", CustomConfig.locationToJsonNoWorld(lobbyLocation));
 		arenaSettingsJson.addProperty("force_night", forceNight);
 
 		arenaSettingsJson.add("powerup_settings", powerUpManager.save());
@@ -1072,24 +955,6 @@ public class Game
 		arenaSaveJson.add("teleporters", teleporterManager.save());
 
 		return gamejson;
-	}
-
-	public Location getLoc1()
-	{
-		return min;
-	}
-
-	public Location getLoc2()
-	{
-		return max;
-	}
-
-	/**
-	 * gets the name of the game
-	 */
-	public String getName()
-	{
-		return arenaName;
 	}
 
 	/**
@@ -1203,9 +1068,9 @@ public class Game
 	 */
 	public void clearArena()
 	{
-		if(this.getWorld() == null || arena == null)
+		if(arena.getWorld() == null)
 			return;
-		for(Entity entity : this.getWorld().getEntities())
+		for(Entity entity : arena.getWorld().getEntities())
 		{
 			if(BLACKLISTED_ENTITIES.contains(entity.getClass()) && arena.containsBlock(entity.getLocation()))
 			{
@@ -1220,9 +1085,9 @@ public class Game
 	 */
 	public void clearArenaItems()
 	{
-		if(this.getWorld() == null)
+		if(arena.getWorld() == null)
 			return;
-		List<Entity> entList = getWorld().getEntities();// get all entities in the world
+		List<Entity> entList = arena.getWorld().getEntities();// get all entities in the world
 
 		for(Entity current : entList)
 		{
@@ -1441,23 +1306,22 @@ public class Game
 
 	public boolean gameSetupComplete(Player player)
 	{
-		if(!hasPoints)
+		if(!arena.areMinAndMaxSet())
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Either P1 or P2 or both are not set!");
 			return false;
 		}
 
-		if(!hasWarps)
+		if(!arena.areAllLocationsSet())
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "One or multiple of the game warps (gw, lw, sw) are not set!");
 			return false;
 		}
 
-		arena = new Arena(min, max, world);
-		mode = ArenaStatus.DISABLED;
+		status = GameStatus.DISABLED;
 		maxPlayers = 8;
 		GameManager.INSTANCE.saveAllGames();
-		CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Arena [" + arenaName + "] is setup!");
+		CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Arena [" + arena.getName() + "] is setup!");
 		return true;
 	}
 
@@ -1469,5 +1333,15 @@ public class Game
 	public boolean getDebugMode()
 	{
 		return this.debugMode;
+	}
+
+	public World getWorld()
+	{
+		return this.arena.getWorld();
+	}
+
+	public String getName()
+	{
+		return arena.getName();
 	}
 }

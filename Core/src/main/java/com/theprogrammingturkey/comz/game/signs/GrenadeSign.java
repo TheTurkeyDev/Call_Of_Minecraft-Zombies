@@ -7,23 +7,22 @@ import com.theprogrammingturkey.comz.game.managers.WeaponManager;
 import com.theprogrammingturkey.comz.game.weapons.Weapon;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
-import org.bukkit.block.Sign;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 
 public class GrenadeSign implements IGameSign
 {
 	@Override
-	public void onBreak(Game game, Player player, Sign sign)
+	public void onBreak(Game game, Player player, Location location)
 	{
 
 	}
 
 	@Override
-	public void onInteract(Game game, Player player, Sign sign)
+	public void onInteract(Game game, Player player, Location location, String[] lines)
 	{
-		String line2 = sign.getLine(2);
-		int buyPoints = Integer.parseInt(line2);
+		int buyPoints = Integer.parseInt(lines[2]);
 		Weapon w = WeaponManager.getWeapon("grenade");
 		PlayerWeaponManager manager = game.getPlayersWeapons(player);
 

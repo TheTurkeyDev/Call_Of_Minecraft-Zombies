@@ -30,7 +30,7 @@ public class SpawnsEditAction extends BaseAction
 	{
 		if(message.equalsIgnoreCase("add"))
 		{
-			if(!game.getMode().equals(Game.ArenaStatus.DISABLED))
+			if(game.getStatus() != Game.GameStatus.DISABLED)
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You cannot add spawn points to an arena unless it is disabled!");
 				return;

@@ -3,7 +3,7 @@ package com.theprogrammingturkey.comz.commands;
 import com.theprogrammingturkey.comz.util.COMZPermission;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
+import com.theprogrammingturkey.comz.game.Game.GameStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -31,7 +31,7 @@ public class DisablePowerCommand extends SubCommand
 		else if(GameManager.INSTANCE.isValidArena(args[1]))
 		{
 			Game game = GameManager.INSTANCE.getGame(args[1]);
-			if(game.getMode() != ArenaStatus.DISABLED)
+			if(game.getStatus() != GameStatus.DISABLED)
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must disable this arena first!");
 				return true;

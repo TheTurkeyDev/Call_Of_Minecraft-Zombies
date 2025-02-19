@@ -107,7 +107,7 @@ public class PowerUpManager
 			return;
 
 		Game game = GameManager.INSTANCE.getGame(mob.getLocation());
-		if(game == null || game.getMode() != Game.ArenaStatus.INGAME)
+		if(game == null || game.getStatus() != Game.GameStatus.INGAME)
 			return;
 
 		int chance = COMZombies.rand.nextInt(100);

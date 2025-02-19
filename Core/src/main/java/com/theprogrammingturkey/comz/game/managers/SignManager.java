@@ -90,21 +90,21 @@ public class SignManager
 			for(Location loc : gameSigns)
 			{
 				final Sign sign = (Sign) loc.getBlock().getState();
-				if(game.getMode().equals(Game.ArenaStatus.DISABLED))
+				if(game.getStatus() == Game.GameStatus.DISABLED)
 				{
 					sign.setLine(0, ChatColor.DARK_RED + "[maintenance]".toUpperCase());
 					sign.setLine(1, game.getName());
 					sign.setLine(2, "Game will be");
 					sign.setLine(3, "available soon!");
 				}
-				else if(game.getMode().equals(Game.ArenaStatus.WAITING) || game.getMode().equals(Game.ArenaStatus.STARTING))
+				else if(game.getStatus() == Game.GameStatus.WAITING || game.getStatus() == Game.GameStatus.STARTING)
 				{
 					sign.setLine(0, ChatColor.RED + "[Zombies]");
 					sign.setLine(1, ChatColor.AQUA + "Join");
 					sign.setLine(2, game.getName());
 					sign.setLine(3, ChatColor.GREEN + "Players: " + game.getPlayersInGame().size() + "/" + game.maxPlayers);
 				}
-				else if(game.getMode().equals(Game.ArenaStatus.INGAME))
+				else if(game.getStatus() == Game.GameStatus.INGAME)
 				{
 					sign.setLine(0, ChatColor.GREEN + game.getName());
 					sign.setLine(1, ChatColor.RED + "InProgress");

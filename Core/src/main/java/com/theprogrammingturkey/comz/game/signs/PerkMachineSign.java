@@ -3,11 +3,11 @@ package com.theprogrammingturkey.comz.game.signs;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.PerkType;
-import com.theprogrammingturkey.comz.util.CommandUtil;
 import com.theprogrammingturkey.comz.listeners.customEvents.PlayerPerkPurchaseEvent;
+import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.block.Sign;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.potion.PotionEffect;
@@ -16,16 +16,15 @@ import org.bukkit.potion.PotionEffectType;
 public class PerkMachineSign implements IGameSign
 {
 	@Override
-	public void onBreak(Game game, Player player, Sign sign)
+	public void onBreak(Game game, Player player, Location location)
 	{
 
 	}
 
 	@Override
-	public void onInteract(Game game, Player player, Sign sign)
+	public void onInteract(Game game, Player player, Location location, String[] lines)
 	{
-		String perkName = sign.getLine(2);
-		PerkType perk = PerkType.getPerkType(perkName);
+		PerkType perk = PerkType.getPerkType(lines[2]);
 		if(game.hasPower() && !game.isPowered())
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must turn on the power first!");
@@ -40,7 +39,7 @@ public class PerkMachineSign implements IGameSign
 		}
 
 		int playerPoints = PointManager.INSTANCE.getPlayersPoints(player);
-		String costStr = sign.getLine(3);
+		String costStr = lines[3];
 		int cost;
 		if(costStr.matches("[0-9]{1,5}"))
 		{

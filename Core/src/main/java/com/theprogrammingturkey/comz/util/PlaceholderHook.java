@@ -123,7 +123,7 @@ public class PlaceholderHook extends PlaceholderExpansion
 				switch(parts[2])
 				{
 					case "status":
-						return game.getName() + " - " + game.getMode().name();
+						return game.getName() + " - " + game.getStatus().name();
 					case "wave":
 						return game.getName() + " - " + game.getWave();
 					case "players":

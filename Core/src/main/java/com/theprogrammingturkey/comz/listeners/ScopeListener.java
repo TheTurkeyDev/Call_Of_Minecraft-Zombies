@@ -27,7 +27,7 @@ public class ScopeListener implements Listener
 			if(!manager.isHeldItemGun())
 				return;
 			GunInstance g = manager.getGun(player.getInventory().getHeldItemSlot());
-			if(game.getMode().equals(Game.ArenaStatus.INGAME))
+			if(game.getStatus() == Game.GameStatus.INGAME)
 			{
 				if(player.isSneaking())
 				{
@@ -38,7 +38,7 @@ public class ScopeListener implements Listener
 				{
 					if(player.getWalkSpeed() == 0.2F)
 					{
-						if(g != null && g.getType().getWeaponType().equals(WeaponType.SNIPER_RIFLES))
+						if(g != null && g.getType().getWeaponType() == WeaponType.SNIPER_RIFLES)
 						{
 							player.setWalkSpeed(-0.2F);
 							if(plugin.getConfig().getBoolean("config.gameSettings.ZoomTexture"))

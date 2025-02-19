@@ -7,7 +7,7 @@ import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
+import com.theprogrammingturkey.comz.game.Game.GameStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.util.BlockUtils;
@@ -159,7 +159,7 @@ public class SpawnManager
 
 	public boolean addPoint(SpawnPoint point)
 	{
-		if(game.getMode() == ArenaStatus.DISABLED)
+		if(game.getStatus() == GameStatus.DISABLED)
 			return points.add(point);
 		return false;
 	}
@@ -180,9 +180,9 @@ public class SpawnManager
 	private List<SpawnPoint> getNearestPoints(Location loc, int numToGet)
 	{
 		List<SpawnPoint> points = game.spawnManager.getPoints();
-		if (numToGet < 0)
+		if(numToGet < 0)
 			throw new IllegalArgumentException("numToGet should not be less than zero");
-		if (numToGet == 0)
+		if(numToGet == 0)
 			return new ArrayList<>();
 
 		int numPoints = Math.min(numToGet, points.size());
@@ -220,7 +220,7 @@ public class SpawnManager
 	{
 		if(!this.canSpawn || wave != game.getWave())
 			return;
-		if(game.getMode() != ArenaStatus.INGAME)
+		if(game.getStatus() != GameStatus.INGAME)
 			return;
 		if(this.mobsSpawned >= this.mobsToSpawn)
 			return;
@@ -277,7 +277,7 @@ public class SpawnManager
 	{
 		COMZombies.scheduleTask(100, () ->
 		{
-			if(game.getMode() != ArenaStatus.INGAME)
+			if(game.getStatus() != GameStatus.INGAME)
 				return;
 
 			for(int i = mobs.size() - 1; i >= 0; i--)
@@ -342,7 +342,7 @@ public class SpawnManager
 
 	private void oopsWeHadAnError()
 	{
-		if(game.getMode() != ArenaStatus.INGAME)
+		if(game.getStatus() != GameStatus.INGAME)
 			return;
 
 		for(Player pl : game.getPlayersInGame())
@@ -379,13 +379,13 @@ public class SpawnManager
 	{
 		canSpawn = true;
 
-		if(game.getPlayersInGame().isEmpty() && game.getMode() == ArenaStatus.INGAME)
+		if(game.getPlayersInGame().isEmpty() && game.getStatus() == GameStatus.INGAME)
 		{
 			this.game.endGame();
 			Bukkit.broadcastMessage(COMZombies.PREFIX + "SmartSpawn was sent a players list with no players in it! Game was ended");
 			return;
 		}
-		else if(game.getMode() != ArenaStatus.INGAME)
+		else if(game.getStatus() != GameStatus.INGAME)
 		{
 			return;
 		}

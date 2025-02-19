@@ -93,7 +93,7 @@ public class AutoStart
 			if(stopped)
 				return;
 
-			if(game.getMode() == Game.ArenaStatus.INGAME || game.getPlayersInGame().isEmpty())
+			if(game.getStatus() == Game.GameStatus.INGAME || game.getPlayersInGame().isEmpty())
 				return;
 
 			remain = remain - 1;

@@ -114,7 +114,7 @@ public class BoxManager
 
 	public void addBox(RandomBox box)
 	{
-		if(game.getMode() == Game.ArenaStatus.DISABLED || game.getMode() == Game.ArenaStatus.WAITING)
+		if(game.getStatus() == Game.GameStatus.DISABLED || game.getStatus() == Game.GameStatus.WAITING)
 		{
 			boolean same = false;
 			for(RandomBox b : boxes)

@@ -2,7 +2,7 @@ package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
+import com.theprogrammingturkey.comz.game.Game.GameStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.game.weapons.GunInstance;
@@ -49,7 +49,7 @@ public class WeaponListener implements Listener
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
 			Game game = GameManager.INSTANCE.getGame(player);
-			if(game.getMode() != ArenaStatus.INGAME)
+			if(game.getStatus() != GameStatus.INGAME)
 				return;
 
 			if(game.getPlayersWeapons(player) != null)
@@ -158,7 +158,7 @@ public class WeaponListener implements Listener
 			if(GameManager.INSTANCE.isPlayerInGame(player))
 			{
 				Game game = GameManager.INSTANCE.getGame(player);
-				if(game.getMode() != ArenaStatus.INGAME)
+				if(game.getStatus() != GameStatus.INGAME)
 					return;
 
 				if(game.getPlayersWeapons(player) != null)
@@ -188,7 +188,7 @@ public class WeaponListener implements Listener
 		if(GameManager.INSTANCE.isPlayerInGame(player))
 		{
 			Game game = GameManager.INSTANCE.getGame(player);
-			if(game.getMode() != ArenaStatus.INGAME)
+			if(game.getStatus() != GameStatus.INGAME)
 				return;
 
 			ItemStack handStack = player.getInventory().getItemInMainHand();

@@ -6,7 +6,7 @@ import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.COMZConfig;
 import com.theprogrammingturkey.comz.config.ConfigManager;
-import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
+import com.theprogrammingturkey.comz.game.Game.GameStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -143,7 +143,7 @@ public class GameManager
 	public boolean isLocationInGame(Location loc)
 	{
 		for(Game gl : games)
-			if(gl.arena != null && gl.arena.containsBlock(loc) && gl.getMode() != ArenaStatus.DISABLED)
+			if(gl.arena.containsBlock(loc) && gl.getStatus() != GameStatus.DISABLED)
 				return true;
 		return false;
 	}
@@ -178,7 +178,7 @@ public class GameManager
 	public Game getGame(Location loc)
 	{
 		for(Game gl : games)
-			if(gl.arena != null && gl.arena.containsBlock(loc))
+			if(gl.arena.containsBlock(loc))
 				return gl;
 		return null;
 	}

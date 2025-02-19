@@ -1,25 +1,25 @@
 package com.theprogrammingturkey.comz.game.signs;
 
-import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
-import org.bukkit.block.Sign;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 
 public class DoorSign implements IGameSign
 {
 	@Override
-	public void onBreak(Game game, Player player, Sign sign)
+	public void onBreak(Game game, Player player, Location location)
 	{
 	}
 
 	@Override
-	public void onInteract(Game game, Player player, Sign sign)
+	public void onInteract(Game game, Player player, Location location, String[] lines)
 	{
-		Door door = game.doorManager.getDoorFromSign(sign.getLocation());
+		Door door = game.doorManager.getDoorFromSign(location);
 		if(door == null)
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "An error occured when trying to open this door! Leave the game an contact an admin please.");

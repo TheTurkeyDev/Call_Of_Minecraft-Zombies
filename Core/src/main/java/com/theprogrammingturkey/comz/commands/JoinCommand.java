@@ -1,7 +1,7 @@
 package com.theprogrammingturkey.comz.commands;
 
 import com.theprogrammingturkey.comz.game.Game;
-import com.theprogrammingturkey.comz.game.Game.ArenaStatus;
+import com.theprogrammingturkey.comz.game.Game.GameStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.GamePlayer;
 import com.theprogrammingturkey.comz.util.COMZPermission;
@@ -40,7 +40,7 @@ public class JoinCommand extends SubCommand
 		{
 			for(Game game : GameManager.INSTANCE.getGames())
 			{
-				if(game.getMode() != ArenaStatus.DISABLED && game.getMode() != ArenaStatus.INGAME)
+				if(game.getStatus() != GameStatus.DISABLED && game.getStatus() != GameStatus.INGAME)
 				{
 					if(game.spawnManager.getPoints().isEmpty())
 						continue;
@@ -60,7 +60,7 @@ public class JoinCommand extends SubCommand
 			if(GameManager.INSTANCE.isValidArena(args[1]))
 			{
 				Game game = GameManager.INSTANCE.getGame(args[1]);
-				if(game.getMode() != ArenaStatus.DISABLED && game.getMode() != ArenaStatus.INGAME)
+				if(game.getStatus() != GameStatus.DISABLED && game.getStatus() != GameStatus.INGAME)
 				{
 					if(game.spawnManager.getPoints().isEmpty())
 					{
@@ -84,12 +84,12 @@ public class JoinCommand extends SubCommand
 				}
 				else
 				{
-					if(game.getMode() == ArenaStatus.INGAME)
+					if(game.getStatus() == GameStatus.INGAME)
 					{
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + game.getName() + " is already in game!");
 						return true;
 					}
-					else if(game.getMode() == ArenaStatus.DISABLED)
+					else if(game.getStatus() == GameStatus.DISABLED)
 					{
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "This arena is disabled!");
 						return true;

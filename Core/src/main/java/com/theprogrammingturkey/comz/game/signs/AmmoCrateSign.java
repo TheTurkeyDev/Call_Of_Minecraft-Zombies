@@ -6,22 +6,22 @@ import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.game.weapons.GunInstance;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
-import org.bukkit.block.Sign;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 
 public class AmmoCrateSign implements IGameSign
 {
 	@Override
-	public void onBreak(Game game, Player player, Sign sign)
+	public void onBreak(Game game, Player player, Location location)
 	{
 
 	}
 
 	@Override
-	public void onInteract(Game game, Player player, Sign sign)
+	public void onInteract(Game game, Player player, Location location, String[] lines)
 	{
-		int buyPoints = Integer.parseInt(sign.getLine(2).trim());
+		int buyPoints = Integer.parseInt(lines[2].trim());
 
 		PlayerWeaponManager manager = game.getPlayersWeapons(player);
 		if(manager.isHeldItemWeapon())
