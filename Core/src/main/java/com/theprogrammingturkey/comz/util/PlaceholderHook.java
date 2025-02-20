@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import javax.annotation.Nonnull;
+import java.util.UUID;
 
 public class PlaceholderHook extends PlaceholderExpansion
 {
@@ -72,7 +73,7 @@ public class PlaceholderHook extends PlaceholderExpansion
 	 * This is the version of the expansion.
 	 * <br>You don't have to use numbers, since it is set as a String.
 	 * <p>
-	 * For convienience do we return the version from the plugin.yml
+	 * For convenience do we return the version from the plugin.yml
 	 *
 	 * @return The version as a String.
 	 */
@@ -100,19 +101,42 @@ public class PlaceholderHook extends PlaceholderExpansion
 
 		if(parts[0].equals("leaderboard"))
 		{
+			if(parts.length == 1)
+				return null;
+
+			StatsCategory category = getStatEnumFromString(parts[1]);
 			if(parts.length == 2)
 			{
 				PlayerStats stats = Leaderboard.getPlayerStatFromPlayer(player);
-				return getStatFromString(parts[1], stats);
+				return getStatForCategory(category, stats);
 			}
-			else if(parts.length == 3)
+			else
 			{
+				String part2 = parts[2];
+				boolean isPosition = part2.matches("\\d+");
+
 				PlayerStats stat;
-				if(parts[2].matches("\\d+"))
-					stat = Leaderboard.getPosX(getStatEnumFromString(parts[1]), Integer.parseInt(parts[2]));
+				if(isPosition)
+				{
+					stat = Leaderboard.getPosX(category, Integer.parseInt(part2));
+				}
 				else
-					stat = Leaderboard.getPlayerStatFromPlayer(Bukkit.getServer().getOfflinePlayer(parts[2]));
-				return stat == null ? "" : stat.getPlayerDisplay() + " - " + getStatFromString(parts[1], stat);
+				{
+					if(!part2.matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"))
+						return null;
+
+					stat = Leaderboard.getPlayerStatFromPlayer(Bukkit.getServer().getOfflinePlayer(UUID.fromString(part2)));
+				}
+
+				String statValue = getStatForCategory(category, stat);
+				String fullText = stat == null ? "" : stat.getPlayerDisplay() + " - " + statValue;
+				if(parts.length == 4)
+				{
+					if(parts[3].equals("value"))
+						return statValue;
+				}
+
+				return fullText;
 			}
 		}
 		else if(parts[0].equals("arena"))
@@ -135,26 +159,27 @@ public class PlaceholderHook extends PlaceholderExpansion
 		return null;
 	}
 
-	private String getStatFromString(String toGet, PlayerStats stats)
+	private String getStatForCategory(StatsCategory category, PlayerStats stats)
 	{
-		switch(toGet)
+		switch(category)
 		{
-			case "kills":
+			case KILLS:
 				return String.valueOf(stats.getKills());
-			case "revives":
+			case REVIVES:
 				return String.valueOf(stats.getRevives());
-			case "deaths":
+			case DEATHS:
 				return String.valueOf(stats.getDeaths());
-			case "downs":
+			case DOWNS:
 				return String.valueOf(stats.getDowns());
-			case "gamesPlayed":
+			case GAMES_PLAYED:
 				return String.valueOf(stats.getGamesPlayed());
-			case "highestRound":
+			case HIGHEST_ROUND:
 				return String.valueOf(stats.getHighestRound());
-			case "mostPoints":
+			case MOST_POINTS:
 				return String.valueOf(stats.getMostPoints());
+			default:
+				return "";
 		}
-		return "";
 	}
 
 	private StatsCategory getStatEnumFromString(String toGet)
@@ -176,6 +201,6 @@ public class PlaceholderHook extends PlaceholderExpansion
 			case "mostPoints":
 				return StatsCategory.MOST_POINTS;
 		}
-		return null;
+		return StatsCategory.KILLS;
 	}
 }

@@ -1257,9 +1257,9 @@ public class Game
 
 	public void updateBarrierDamage(int damage, Collection<Block> blocks)
 	{
+		List<Player> players = getPlayersAndSpectators();
 		for(Block block : blocks)
-			for(Player player : getPlayersAndSpectators())
-				COMZombies.nmsUtil.playBlockBreakAction(player, damage, block);
+			COMZombies.nmsUtil.playBlockBreakAction(players, damage, block);
 	}
 
 	public boolean isPlayerPlaying(Player player)

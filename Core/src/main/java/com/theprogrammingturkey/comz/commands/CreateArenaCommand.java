@@ -44,7 +44,7 @@ public class CreateArenaCommand extends SubCommand
 
 			Game newGame = new Game(args[1]);
 			//TODO: Don't add yet?
-			GameManager.INSTANCE.addArena(newGame);
+			GameManager.INSTANCE.addGame(newGame);
 			plugin.activeActions.put(player, new ArenaSetupAction(player, newGame));
 		}
 		return true;

@@ -21,3 +21,8 @@ subprojects {
         mavenLocal()
     }
 }
+
+tasks.withType(JavaCompile).configureEach {
+    //Ignore Java 8 warnings. Not much I can do here
+    options.compilerArgs += ['-Xlint:deprecation']
+}

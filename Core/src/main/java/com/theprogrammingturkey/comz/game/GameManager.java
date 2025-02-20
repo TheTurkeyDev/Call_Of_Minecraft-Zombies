@@ -92,7 +92,7 @@ public class GameManager
 		}
 	}
 
-	public void addArena(Game game)
+	public void addGame(Game game)
 	{
 		games.add(game);
 	}

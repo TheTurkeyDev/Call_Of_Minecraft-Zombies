@@ -3,13 +3,14 @@ package com.theprogrammingturkey.comz.support.support_1_19_R3;
 import com.theprogrammingturkey.comz.api.INMSUtil;
 import net.minecraft.core.BlockPosition;
 import net.minecraft.network.protocol.game.PacketPlayOutBlockBreakAnimation;
-import net.minecraft.server.level.EntityPlayer;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Lidded;
-import org.bukkit.craftbukkit.v1_19_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class NMSUtil_1_19_R3 implements INMSUtil
 {
@@ -27,16 +28,10 @@ public class NMSUtil_1_19_R3 implements INMSUtil
 		}
 	}
 
-	public void playBlockBreakAction(Player player, int damage, Block block)
+	public void playBlockBreakAction(List<Player> players, int damage, Block block)
 	{
 		PacketPlayOutBlockBreakAnimation packet = new PacketPlayOutBlockBreakAnimation(0, new BlockPosition(block.getX(), block.getY(), block.getZ()), damage);
-		for(EntityPlayer entityplayer : ((CraftServer) player.getServer()).getHandle().k)
-		{
-			double d4 = block.getX() - entityplayer.dk();
-			double d5 = block.getY() - entityplayer.dm();
-			double d6 = block.getZ() - entityplayer.dq();
-			if(d4 * d4 + d5 * d5 + d6 * d6 < 64 * 64)
-				entityplayer.b.a(packet);
-		}
+		for(Player player : players)
+			((CraftPlayer) player).getHandle().b.a(packet);
 	}
 }
