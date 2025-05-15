@@ -72,7 +72,7 @@ public class Kit
 				this.perks.add(perk);
 		}
 
-		points = CustomConfig.getInt(kitJson, "points,", 0);
+		points = CustomConfig.getInt(kitJson, "points", 0);
 
 		for(JsonElement roundRewardElem : kitJson.getAsJsonArray("round_rewards"))
 		{
