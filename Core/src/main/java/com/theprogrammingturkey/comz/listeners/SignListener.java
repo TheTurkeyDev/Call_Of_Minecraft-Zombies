@@ -149,7 +149,7 @@ public class SignListener implements Listener
 				String Line1 = ChatColor.stripColor(sign.getLine(0));
 				if(!plugin.isEditingASign.containsKey(player) && Line1.equalsIgnoreCase("[Zombies]") && !GameManager.INSTANCE.isPlayerInGame(player))
 				{
-					plugin.isEditingASign.put(player, sign);
+					plugin.isEditingASign.put(player, event.getClickedBlock().getLocation());
 					CommandUtil.sendMessageToPlayer(player, "You are now editing a sign!");
 					return;
 				}

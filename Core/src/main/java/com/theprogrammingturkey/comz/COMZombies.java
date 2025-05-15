@@ -31,7 +31,7 @@ import com.theprogrammingturkey.comz.support.support_1_21_R3.NMSUtil_1_21_R3;
 import com.theprogrammingturkey.comz.util.PlaceholderHook;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.block.Sign;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -65,7 +65,7 @@ public class COMZombies extends JavaPlugin
 	 * sign, the value that corresponds to the player is the sign that the
 	 * player is editing.
 	 */
-	public HashMap<Player, Sign> isEditingASign = new HashMap<>();
+	public HashMap<Player, Location> isEditingASign = new HashMap<>();
 
 	/**
 	 * Called when the plugin is reloading to cancel every remove spawn, create

@@ -81,7 +81,7 @@ public class InfoCommand extends SubCommand
 					{
 						CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Door " + door.doorID);
 						CommandUtil.sendMessageToPlayer(player, "  " + ChatColor.GREEN + "Blocks: " + ChatColor.BLUE + door.getBlocks().size());
-						CommandUtil.sendMessageToPlayer(player, "  " + ChatColor.GREEN + "Signs: " + ChatColor.BLUE + door.getSigns().size());
+						CommandUtil.sendMessageToPlayer(player, "  " + ChatColor.GREEN + "Signs: " + ChatColor.BLUE + door.getSignsLocations().size());
 						CommandUtil.sendMessageToPlayer(player, "  " + ChatColor.GREEN + "Is Open: " + ChatColor.BLUE + door.isOpened());
 					}
 					return true;

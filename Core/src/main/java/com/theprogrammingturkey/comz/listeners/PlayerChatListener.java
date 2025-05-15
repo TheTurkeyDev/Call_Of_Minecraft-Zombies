@@ -4,6 +4,7 @@ import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.game.actions.BaseAction;
 import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -45,7 +46,8 @@ public class PlayerChatListener implements Listener
 		{
 			if(message.equalsIgnoreCase("done"))
 			{
-				Sign sign = plugin.isEditingASign.get(player);
+				Location loc = plugin.isEditingASign.get(player);
+				Sign sign = (Sign) loc.getBlock().getState();
 				plugin.isEditingASign.remove(player);
 				Bukkit.getServer().getPluginManager().callEvent(new SignChangeEvent(sign.getBlock(), player, sign.getLines()));
 				CommandUtil.sendMessageToPlayer(player, "You are No longer editing a sign");

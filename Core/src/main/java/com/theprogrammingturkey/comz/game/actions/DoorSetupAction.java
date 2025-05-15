@@ -10,7 +10,6 @@ import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -71,8 +70,7 @@ public class DoorSetupAction extends BaseAction
 			Block block = event.getClickedBlock();
 			if(BlockUtils.isSign(block.getType()))
 			{
-				Sign sign = (Sign) event.getClickedBlock().getState();
-				door.addSign(sign);
+				door.addSign(block.getLocation());
 				event.setCancelled(true);
 				CommandUtil.sendMessageToPlayer(player, ChatColor.GREEN + "Sign selected!");
 			}

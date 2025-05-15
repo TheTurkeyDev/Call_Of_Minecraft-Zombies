@@ -29,7 +29,7 @@ public class Door
 	private final Game game;
 	private int price = 0;
 	private final Map<Block, Material> blocks = new HashMap<>();
-	private final List<Sign> signs = new ArrayList<>();
+	private final List<Location> signsLocations = new ArrayList<>();
 	private List<SpawnPoint> spawnsInRoomDoorLeadsTo = new ArrayList<>();
 	private boolean isOpened = false;
 	private boolean powerRequired = false;
@@ -78,8 +78,8 @@ public class Door
 
 		JsonArray signsJson = new JsonArray();
 		saveJson.add("signs", signsJson);
-		for(Sign sign : signs)
-			signsJson.add(CustomConfig.locationToJsonNoWorld(sign.getLocation()));
+		for(Location loc : signsLocations)
+			signsJson.add(CustomConfig.locationToJsonNoWorld(loc));
 
 
 		JsonArray spawnsJson = new JsonArray();
@@ -135,7 +135,7 @@ public class Door
 					Sign sign = (Sign) block.getState();
 					String costLine = sign.getLine(3);
 					price = costLine.matches("[0-9]{1,9}") ? Integer.parseInt(costLine) : 750;
-					this.signs.add(sign);
+					this.signsLocations.add(loc);
 				}
 			}
 			else
@@ -182,8 +182,9 @@ public class Door
 		for(Block block : blocks.keySet())
 			BlockUtils.setBlockTypeHelper(block, blocks.get(block));
 
-		for(Sign sign : signs)
+		for(Location loc : signsLocations)
 		{
+			Sign sign = (Sign) loc.getBlock().getState();
 			sign.setLine(0, ChatColor.RED + "[Zombies]");
 			sign.setLine(1, ChatColor.AQUA + "Door");
 			sign.setLine(2, ChatColor.GOLD + "Price:");
@@ -198,15 +199,15 @@ public class Door
 		return spawnsInRoomDoorLeadsTo;
 	}
 
-	public void addSign(Sign sign)
+	public void addSign(Location loc)
 	{
-		signs.add(sign);
+		signsLocations.add(loc);
 		GameManager.INSTANCE.saveAllGames();
 	}
 
-	public List<Sign> getSigns()
+	public List<Location> getSignsLocations()
 	{
-		return signs;
+		return signsLocations;
 	}
 
 	/**

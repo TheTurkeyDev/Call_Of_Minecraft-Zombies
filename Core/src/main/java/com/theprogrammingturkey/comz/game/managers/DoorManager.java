@@ -8,7 +8,6 @@ import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.Door;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import org.bukkit.Location;
-import org.bukkit.block.Sign;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +25,8 @@ public class DoorManager
 	public Door getDoorFromSign(Location location)
 	{
 		for(Door door : doors)
-			for(Sign sign : door.getSigns())
-				if(sign.getLocation().equals(location))
+			for(Location loc : door.getSignsLocations())
+				if(loc.equals(location))
 					return door;
 		return null;
 	}
