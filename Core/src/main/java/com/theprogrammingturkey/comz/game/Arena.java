@@ -55,21 +55,6 @@ public class Arena
 	}
 
 	/**
-	 * Constructs a new arena.
-	 *
-	 * @param minZone to be assigned to max
-	 * @param maxZone to be assigned to min
-	 * @param world   in which the game is contained in
-	 */
-	public Arena(String name, Location minZone, Location maxZone, World world)
-	{
-		this.name = name;
-		this.min = minZone;
-		this.max = maxZone;
-		this.world = world;
-	}
-
-	/**
 	 * gets the name of the game
 	 */
 	public String getName()
@@ -320,6 +305,7 @@ public class Arena
 
 	public void loadArena(JsonObject arenaSaveJson, World world)
 	{
+		this.setWorld(world);
 		this.setMin(CustomConfig.getLocationWithWorld(arenaSaveJson, "p1", world));
 		this.setMax(CustomConfig.getLocationWithWorld(arenaSaveJson, "p2", world));
 		this.setPlayerTPLocation(CustomConfig.getLocationWithWorld(arenaSaveJson, "player_spawn", world));
