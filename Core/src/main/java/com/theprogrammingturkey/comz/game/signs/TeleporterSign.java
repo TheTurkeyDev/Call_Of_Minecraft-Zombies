@@ -46,7 +46,7 @@ public class TeleporterSign implements IGameSign
 					for(int i = 0; i < 50; i++)
 					{
 						Location loc = player.getLocation();
-						player.getWorld().spawnParticle(Particle.SPELL_WITCH, loc.getX(), loc.getY(), loc.getZ(), 1, COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(), 1);
+						player.getWorld().spawnParticle(Particle.WITCH, loc.getX(), loc.getY(), loc.getZ(), 1, COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(), 1);
 					}
 					PointManager.INSTANCE.takePoints(player, points);
 					PointManager.INSTANCE.notifyPlayer(player);

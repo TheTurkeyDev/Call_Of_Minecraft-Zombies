@@ -109,7 +109,7 @@ public class EntityListener implements Listener
 						Mob mob = (Mob) entity;
 						double dist = mob.getLocation().distance(player.getLocation());
 						if(dist <= ConfigManager.getMainConfig().meleeRange)
-							game.damageMob(mob, player, (float) (mob.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() / game.getWave()));
+							game.damageMob(mob, player, (float) (mob.getAttribute(Attribute.MAX_HEALTH).getValue() / game.getWave()));
 					}
 				}
 			}

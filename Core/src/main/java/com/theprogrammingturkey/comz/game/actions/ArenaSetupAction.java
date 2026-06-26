@@ -111,26 +111,26 @@ public class ArenaSetupAction extends BaseAction
 
 			for(int x = min.getBlockX(); x < max.getBlockX(); x++)
 			{
-				world.spawnParticle(Particle.REDSTONE, x, min.getBlockY(), min.getBlockZ(), 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
-				world.spawnParticle(Particle.REDSTONE, x, max.getBlockY(), min.getBlockZ(), 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
-				world.spawnParticle(Particle.REDSTONE, x, min.getBlockY(), max.getBlockZ(), 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
-				world.spawnParticle(Particle.REDSTONE, x, max.getBlockY(), max.getBlockZ(), 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
+				world.spawnParticle(Particle.DUST, x, min.getBlockY(), min.getBlockZ(), 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
+				world.spawnParticle(Particle.DUST, x, max.getBlockY(), min.getBlockZ(), 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
+				world.spawnParticle(Particle.DUST, x, min.getBlockY(), max.getBlockZ(), 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
+				world.spawnParticle(Particle.DUST, x, max.getBlockY(), max.getBlockZ(), 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
 			}
 
 			for(int y = min.getBlockY(); y <= max.getBlockY(); y++)
 			{
-				world.spawnParticle(Particle.REDSTONE, min.getBlockX(), y, min.getBlockZ(), 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
-				world.spawnParticle(Particle.REDSTONE, max.getBlockX(), y, min.getBlockZ(), 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
-				world.spawnParticle(Particle.REDSTONE, min.getBlockX(), y, max.getBlockZ(), 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
-				world.spawnParticle(Particle.REDSTONE, max.getBlockX(), y, max.getBlockZ(), 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
+				world.spawnParticle(Particle.DUST, min.getBlockX(), y, min.getBlockZ(), 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
+				world.spawnParticle(Particle.DUST, max.getBlockX(), y, min.getBlockZ(), 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
+				world.spawnParticle(Particle.DUST, min.getBlockX(), y, max.getBlockZ(), 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
+				world.spawnParticle(Particle.DUST, max.getBlockX(), y, max.getBlockZ(), 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
 			}
 
 			for(int z = min.getBlockZ(); z < max.getBlockZ(); z++)
 			{
-				world.spawnParticle(Particle.REDSTONE, min.getBlockX(), min.getBlockY(), z, 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
-				world.spawnParticle(Particle.REDSTONE, max.getBlockX(), min.getBlockY(), z, 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
-				world.spawnParticle(Particle.REDSTONE, min.getBlockX(), max.getBlockY(), z, 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
-				world.spawnParticle(Particle.REDSTONE, max.getBlockX(), max.getBlockY(), z, 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
+				world.spawnParticle(Particle.DUST, min.getBlockX(), min.getBlockY(), z, 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
+				world.spawnParticle(Particle.DUST, max.getBlockX(), min.getBlockY(), z, 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
+				world.spawnParticle(Particle.DUST, min.getBlockX(), max.getBlockY(), z, 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
+				world.spawnParticle(Particle.DUST, max.getBlockX(), max.getBlockY(), z, 0, 0, 0, 0, 1, new Particle.DustOptions(Color.RED, 1));
 			}
 		});
 	}

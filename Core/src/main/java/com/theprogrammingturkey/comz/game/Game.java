@@ -715,7 +715,7 @@ public class Game
 	 */
 	public void forceNight()
 	{
-		arena.getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+		arena.getWorld().setGameRule(GameRule.ADVANCE_TIME, false);
 		arena.getWorld().setTime(18000L);
 	}
 
@@ -833,7 +833,17 @@ public class Game
 		spawnManager.killAll(false);
 		spawnManager.reset();
 		for(Door door : doorManager.getDoors())
-			door.closeDoor();
+		{
+			// Isolate each door: a failure to restore one door's blocks/sign must never abort the
+			// rest of the game-end cleanup (clearing players, scoreboard, points, etc.).
+			try
+			{
+				door.closeDoor();
+			} catch(Exception e)
+			{
+				COMZombies.log.log(Level.WARNING, "Failed to close door '" + door.doorID + "' while ending the game; continuing cleanup.", e);
+			}
+		}
 
 		boxManager.resetBoxes();
 		perkManager.clearPerks();

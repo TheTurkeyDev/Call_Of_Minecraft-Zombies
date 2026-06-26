@@ -136,7 +136,7 @@ public class WeaponListener implements Listener
 									{
 										damage *= 1.5f;
 										for(int i = 0; i < 20; i++)
-											event.getPlayer().getWorld().spawnParticle(Particle.CRIT_MAGIC, entToDamage.getLocation().getX(), entToDamage.getLocation().getY() + eyeHeight, entToDamage.getLocation().getZ(), 0, COMZombies.rand.nextDouble(2d) - 1d, COMZombies.rand.nextDouble(2d) - 1d, COMZombies.rand.nextDouble(2d) - 1d, 1);
+											event.getPlayer().getWorld().spawnParticle(Particle.ENCHANTED_HIT, entToDamage.getLocation().getX(), entToDamage.getLocation().getY() + eyeHeight, entToDamage.getLocation().getZ(), 0, COMZombies.rand.nextDouble(2d) - 1d, COMZombies.rand.nextDouble(2d) - 1d, COMZombies.rand.nextDouble(2d) - 1d, 1);
 									}
 
 									game.damageMob(mob, player, damage);
@@ -205,7 +205,7 @@ public class WeaponListener implements Listener
 					player.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 0.0F, false, false);
 					List<Mob> ents = game.spawnManager.getEntities();
 					int ticker = COMZombies.scheduleTask(0, 5, () ->
-							item.getWorld().spawnParticle(Particle.SMOKE_NORMAL, item.getLocation().clone(), 0, COMZombies.rand.nextDouble() - 0.5, 0.5, COMZombies.rand.nextDouble() - 0.5, 0.05));
+							item.getWorld().spawnParticle(Particle.SMOKE, item.getLocation().clone(), 0, COMZombies.rand.nextDouble() - 0.5, 0.5, COMZombies.rand.nextDouble() - 0.5, 0.05));
 
 					for(int i = ents.size() - 1; i >= 0; i--)
 					{
@@ -237,7 +237,7 @@ public class WeaponListener implements Listener
 
 				int ticker = COMZombies.scheduleTask(0, 5, () ->
 				{
-					item.getWorld().spawnParticle(Particle.SMOKE_NORMAL, item.getLocation().clone(), 0, COMZombies.rand.nextDouble() - 0.5, 0.5, COMZombies.rand.nextDouble() - 0.5, 0.05);
+					item.getWorld().spawnParticle(Particle.SMOKE, item.getLocation().clone(), 0, COMZombies.rand.nextDouble() - 0.5, 0.5, COMZombies.rand.nextDouble() - 0.5, 0.05);
 					for(Mob e : game.spawnManager.getEntities())
 						e.setTarget(attackEnt);
 				});
