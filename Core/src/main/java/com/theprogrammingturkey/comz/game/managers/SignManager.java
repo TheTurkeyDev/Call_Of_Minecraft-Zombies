@@ -89,6 +89,8 @@ public class SignManager
 		{
 			for(Location loc : gameSigns)
 			{
+				if(!(loc.getBlock().getState() instanceof Sign))
+					continue;
 				final Sign sign = (Sign) loc.getBlock().getState();
 				if(game.getStatus() == Game.GameStatus.DISABLED)
 				{
@@ -142,6 +144,8 @@ public class SignManager
 	{
 		for(Location loc : gameSigns)
 		{
+			if(!(loc.getBlock().getState() instanceof Sign))
+				continue;
 			Sign sign = (Sign) loc.getBlock().getState();
 			sign.setLine(0, "");
 			sign.setLine(1, "");

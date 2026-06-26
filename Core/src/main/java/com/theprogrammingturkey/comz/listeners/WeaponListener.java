@@ -1,9 +1,11 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.GameStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.game.features.PerkType;
 import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.game.weapons.GunInstance;
 import com.theprogrammingturkey.comz.game.weapons.WeaponType;
@@ -132,14 +134,18 @@ public class WeaponListener implements Listener
 
 									double zombieHitLocY = toDamageIntesect.intersection.getY() - entToDamage.getLocation().getY();
 									double eyeHeight = ((Mob) entToDamage).getEyeHeight();
-									if(zombieHitLocY > eyeHeight - (entToDamage.getHeight() - eyeHeight))
+									boolean headshot = zombieHitLocY > eyeHeight - (entToDamage.getHeight() - eyeHeight);
+									if(headshot)
 									{
 										damage *= 1.5f;
+										// Tier 1 — Deadshot Daiquiri: extra headshot damage on top of the base bonus.
+										if(game.perkManager.hasPerk(player, PerkType.DEADSHOT_DAIQ))
+											damage *= (float) ConfigManager.getMainConfig().deadshotHeadshotMultiplier;
 										for(int i = 0; i < 20; i++)
-											event.getPlayer().getWorld().spawnParticle(Particle.CRIT_MAGIC, entToDamage.getLocation().getX(), entToDamage.getLocation().getY() + eyeHeight, entToDamage.getLocation().getZ(), 0, COMZombies.rand.nextDouble(2d) - 1d, COMZombies.rand.nextDouble(2d) - 1d, COMZombies.rand.nextDouble(2d) - 1d, 1);
+											event.getPlayer().getWorld().spawnParticle(Particle.ENCHANTED_HIT, entToDamage.getLocation().getX(), entToDamage.getLocation().getY() + eyeHeight, entToDamage.getLocation().getZ(), 0, COMZombies.rand.nextDouble(2d) - 1d, COMZombies.rand.nextDouble(2d) - 1d, COMZombies.rand.nextDouble(2d) - 1d, 1);
 									}
 
-									game.damageMob(mob, player, damage);
+									game.damageMob(mob, player, damage, headshot, false);
 								}
 							}
 						}
@@ -205,7 +211,7 @@ public class WeaponListener implements Listener
 					player.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 0.0F, false, false);
 					List<Mob> ents = game.spawnManager.getEntities();
 					int ticker = COMZombies.scheduleTask(0, 5, () ->
-							item.getWorld().spawnParticle(Particle.SMOKE_NORMAL, item.getLocation().clone(), 0, COMZombies.rand.nextDouble() - 0.5, 0.5, COMZombies.rand.nextDouble() - 0.5, 0.05));
+							item.getWorld().spawnParticle(Particle.SMOKE, item.getLocation().clone(), 0, COMZombies.rand.nextDouble() - 0.5, 0.5, COMZombies.rand.nextDouble() - 0.5, 0.05));
 
 					for(int i = ents.size() - 1; i >= 0; i--)
 					{
@@ -237,7 +243,7 @@ public class WeaponListener implements Listener
 
 				int ticker = COMZombies.scheduleTask(0, 5, () ->
 				{
-					item.getWorld().spawnParticle(Particle.SMOKE_NORMAL, item.getLocation().clone(), 0, COMZombies.rand.nextDouble() - 0.5, 0.5, COMZombies.rand.nextDouble() - 0.5, 0.05);
+					item.getWorld().spawnParticle(Particle.SMOKE, item.getLocation().clone(), 0, COMZombies.rand.nextDouble() - 0.5, 0.5, COMZombies.rand.nextDouble() - 0.5, 0.05);
 					for(Mob e : game.spawnManager.getEntities())
 						e.setTarget(attackEnt);
 				});

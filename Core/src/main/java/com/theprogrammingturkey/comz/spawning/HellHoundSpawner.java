@@ -93,8 +93,7 @@ public class HellHoundSpawner extends RoundSpawner
 		wolf.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 99999, 1, true));
 		setFollowDistance(wolf, 512);
 
-		//TODO: Strength?
-		float strength = ((wave * 100f) + 50) / 50f;
+		float strength = zombieHealth(wave);
 		setMaxHealth(wolf, strength);
 		wolf.setHealth(strength);
 

@@ -12,7 +12,9 @@ public enum PowerUp
 	CARPENTER("Carpenter", Material.DIAMOND_PICKAXE, Sound.BLOCK_STONE_BREAK),
 	NUKE("Nuke", Material.TNT, Sound.ENTITY_GENERIC_EXPLODE),
 	DOUBLE_POINTS("Double points", Material.EXPERIENCE_BOTTLE, Sound.BLOCK_GLASS_BREAK),
-	FIRE_SALE("Fire sale", Material.GOLD_INGOT, Sound.ITEM_FLINTANDSTEEL_USE);
+	FIRE_SALE("Fire sale", Material.GOLD_INGOT, Sound.ITEM_FLINTANDSTEEL_USE),
+	BONUS_POINTS("Bonus points", Material.EMERALD, Sound.ENTITY_PLAYER_LEVELUP),
+	RANDOM_PERK("Random perk", Material.POTION, Sound.ENTITY_WITCH_DRINK);
 
 	private final String display;
 	private final Material material;

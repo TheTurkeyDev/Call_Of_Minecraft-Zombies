@@ -18,9 +18,51 @@ public class TeleporterManager
 
 	private final Map<String, Location> teleporters = new HashMap<>();
 
+	/**
+	 * 0k — last activation time (epoch millis) per teleporter, used for the recharge/cooldown gate.
+	 */
+	private final Map<String, Long> lastUse = new HashMap<>();
+
 	public TeleporterManager(Game game)
 	{
 		this.game = game;
+	}
+
+	/**
+	 * Records that the named teleporter was just used, starting its cooldown.
+	 */
+	public void recordUse(String name)
+	{
+		lastUse.put(name, System.currentTimeMillis());
+	}
+
+	/**
+	 * @return seconds remaining before the named teleporter can be used again, or 0 if it is ready now.
+	 */
+	public int secondsUntilReady(String name, int cooldownSeconds)
+	{
+		if(cooldownSeconds <= 0)
+			return 0;
+		long last = lastUse.getOrDefault(name, 0L);
+		long now = System.currentTimeMillis();
+		if(offCooldown(last, now, cooldownSeconds))
+			return 0;
+		long elapsedMs = now - last;
+		long remainingMs = (cooldownSeconds * 1000L) - elapsedMs;
+		// Round up so a partial second still reads as "1s left" rather than "0s".
+		return (int) ((remainingMs + 999L) / 1000L);
+	}
+
+	/**
+	 * Pure cooldown decision, extracted for testing.
+	 *
+	 * @return true if enough time has elapsed since the last use for the teleporter to fire again.
+	 */
+	public static boolean offCooldown(long lastUseMs, long nowMs, int cooldownSeconds)
+	{
+		if(cooldownSeconds <= 0)
+			return true;
+		return (nowMs - lastUseMs) >= (cooldownSeconds * 1000L);
 	}
 
 	public void loadAllTeleportersToGame(JsonArray teleporters)

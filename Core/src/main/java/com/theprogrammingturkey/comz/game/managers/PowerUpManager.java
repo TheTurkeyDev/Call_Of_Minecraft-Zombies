@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.game.managers;
 
 import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
@@ -28,6 +29,42 @@ public class PowerUpManager
 	private int dropChance = 0;
 	private final Map<PowerUp, Boolean> powerups = new HashMap<>();
 	private final Map<Entity, Integer> powerupTasks = new HashMap<>();
+	private final Map<Entity, ArmorStand> powerupNameplates = new HashMap<>();
+
+	/**
+	 * Pure decision for the ground cap: whether the oldest power-up must be
+	 * evicted before a new one is dropped. True once the current number on the
+	 * ground meets or exceeds the configured maximum.
+	 *
+	 * @param current number of power-ups currently on the ground
+	 * @param max     configured maximum allowed on the ground
+	 * @return true if the oldest power-up should be removed first
+	 */
+	public static boolean shouldEvictOldest(int current, int max)
+	{
+		return current >= max;
+	}
+
+	/**
+	 * Fully removes a single power-up from the ground: cancels its expiry task,
+	 * removes its nameplate armour stand and the dropped item, and clears all
+	 * tracking maps.
+	 *
+	 * @param powerUp the dropped item entity to remove
+	 */
+	private void removePowerUp(Entity powerUp)
+	{
+		Integer taskId = powerupTasks.remove(powerUp);
+		if(taskId != null)
+			Bukkit.getScheduler().cancelTask(taskId);
+
+		ArmorStand namePlate = powerupNameplates.remove(powerUp);
+		if(namePlate != null)
+			namePlate.remove();
+
+		powerUp.remove();
+		currentPowerUps.remove(powerUp);
+	}
 
 
 	public void loadAllPowerUps(JsonObject powerUpSettings)
@@ -72,7 +109,14 @@ public class PowerUpManager
 		namePlate.setAI(false);
 		namePlate.setCustomName("30");
 		namePlate.setCustomNameVisible(true);
+
+		// Enforce the ground cap: drop the oldest power-up before adding a new one.
+		int max = ConfigManager.getMainConfig().maxPowerUpsOnGround;
+		while(!currentPowerUps.isEmpty() && shouldEvictOldest(currentPowerUps.size(), max))
+			removePowerUp(currentPowerUps.get(0));
+
 		currentPowerUps.add(droppedItem);
+		powerupNameplates.put(droppedItem, namePlate);
 		int id = COMZombies.scheduleTask(0, 20, new Runnable()
 		{
 			int time = 30;
@@ -82,8 +126,7 @@ public class PowerUpManager
 			{
 				if(!currentPowerUps.contains(droppedItem))
 				{
-					namePlate.remove();
-					Bukkit.getScheduler().cancelTask(powerupTasks.get(droppedItem));
+					removePowerUp(droppedItem);
 					return;
 				}
 
@@ -91,10 +134,7 @@ public class PowerUpManager
 				namePlate.setCustomName(String.valueOf(time));
 				if(time == 0)
 				{
-					namePlate.remove();
-					droppedItem.remove();
-					currentPowerUps.remove(droppedItem);
-					Bukkit.getScheduler().cancelTask(powerupTasks.get(droppedItem));
+					removePowerUp(droppedItem);
 				}
 			}
 		});
