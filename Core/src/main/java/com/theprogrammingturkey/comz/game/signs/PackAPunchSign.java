@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.game.signs;
 
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.features.PerkType;
@@ -39,20 +40,37 @@ public class PackAPunchSign implements IGameSign
 
 		GunInstance gun = manager.getGun(player.getInventory().getHeldItemSlot());
 
-		int cost = Integer.parseInt(lines[2]);
-		if(PointManager.INSTANCE.canBuy(player, cost))
+		if(gun.isPackOfPunched())
 		{
-			if(gun.isPackOfPunched())
+			// Already Pack-A-Punched: optionally allow a re-pack that refills ammo for a fee.
+			if(!ConfigManager.getMainConfig().packAPunchRepackEnabled)
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Your " + ChatColor.GOLD + gun.getType().getName() + ChatColor.RED + " is already Pack-A-Punched!");
+				return;
+			}
+
+			int repackCost = ConfigManager.getMainConfig().packAPunchRepackCost;
+			if(PointManager.INSTANCE.canBuy(player, repackCost))
+			{
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Your " + ChatColor.GOLD + gun.getType().getName() + ChatColor.RED + " was refilled");
+				player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
+				gun.maxAmmo();
+				PointManager.INSTANCE.takePoints(player, repackCost);
 			}
 			else
 			{
-				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Your " + ChatColor.GOLD + gun.getType().getName() + ChatColor.RED + " was Pack-A-Punched");
-				player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
-				gun.setPackOfPunch();
-				PointManager.INSTANCE.takePoints(player, cost);
+				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You do not have enough points to re-pack your " + gun.getType().getName() + "!");
 			}
+			return;
+		}
+
+		int cost = Integer.parseInt(lines[2]);
+		if(PointManager.INSTANCE.canBuy(player, cost))
+		{
+			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Your " + ChatColor.GOLD + gun.getType().getName() + ChatColor.RED + " was Pack-A-Punched");
+			player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
+			gun.setPackOfPunch();
+			PointManager.INSTANCE.takePoints(player, cost);
 		}
 		else
 		{

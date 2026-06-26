@@ -715,7 +715,7 @@ public class Game
 	 */
 	public void forceNight()
 	{
-		arena.getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+		arena.getWorld().setGameRule(GameRule.ADVANCE_TIME, false);
 		arena.getWorld().setTime(18000L);
 	}
 
@@ -833,7 +833,17 @@ public class Game
 		spawnManager.killAll(false);
 		spawnManager.reset();
 		for(Door door : doorManager.getDoors())
-			door.closeDoor();
+		{
+			// Isolate each door: a failure to restore one door's blocks/sign must never abort the
+			// rest of the game-end cleanup (clearing players, scoreboard, points, etc.).
+			try
+			{
+				door.closeDoor();
+			} catch(Exception e)
+			{
+				COMZombies.log.log(Level.WARNING, "Failed to close door '" + door.doorID + "' while ending the game; continuing cleanup.", e);
+			}
+		}
 
 		boxManager.resetBoxes();
 		perkManager.clearPerks();
@@ -1110,7 +1120,22 @@ public class Game
 		return isFireSale;
 	}
 
+	/**
+	 * Tier 0d — pure point calculation for a kill. Base reward plus optional
+	 * headshot/melee bonuses; Double Points doubles the whole total.
+	 */
+	public static int killPoints(int base, boolean headshot, boolean melee, int hsBonus, int meleeBonus, boolean doublePoints)
+	{
+		int total = base + (headshot ? hsBonus : 0) + (melee ? meleeBonus : 0);
+		return doublePoints ? total * 2 : total;
+	}
+
 	public void damageMob(Mob mob, Player player, float damageAmount)
+	{
+		damageMob(mob, player, damageAmount, false, false);
+	}
+
+	public void damageMob(Mob mob, Player player, float damageAmount, boolean headshotKill, boolean meleeKill)
 	{
 		double mobHealth = mob.getHealth() - damageAmount;
 		mob.playEffect(EntityEffect.HURT);
@@ -1124,10 +1149,8 @@ public class Game
 
 			powerUpManager.powerUpDrop(mob, player);
 			mob.remove();
-			if(isDoublePoints())
-				PointManager.INSTANCE.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
-			else
-				PointManager.INSTANCE.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
+			PointManager.INSTANCE.addPoints(player, killPoints(ConfigManager.getMainConfig().pointsOnKill, headshotKill, meleeKill,
+					ConfigManager.getMainConfig().headshotKillBonus, ConfigManager.getMainConfig().meleeKillBonus, isDoublePoints()));
 
 			PointManager.INSTANCE.notifyPlayer(player);
 			spawnManager.removeEntity(mob);
@@ -1151,10 +1174,8 @@ public class Game
 
 			powerUpManager.powerUpDrop(mob, player);
 			mob.remove();
-			if(isDoublePoints())
-				PointManager.INSTANCE.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
-			else
-				PointManager.INSTANCE.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
+			PointManager.INSTANCE.addPoints(player, killPoints(ConfigManager.getMainConfig().pointsOnKill, headshotKill, meleeKill,
+					ConfigManager.getMainConfig().headshotKillBonus, ConfigManager.getMainConfig().meleeKillBonus, isDoublePoints()));
 
 			PointManager.INSTANCE.notifyPlayer(player);
 			spawnManager.removeEntity(mob);

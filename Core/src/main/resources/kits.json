@@ -1,16 +1,72 @@
 {
-  "KitName": {
+  "Assault": {
     "weapons": [
       {
-        "weapon_name": ""
+        "weapon_name": "MTAR"
+      },
+      {
+        "weapon_name": "M1911"
       }
     ],
     "perks": [
       {
-        "perk_name": ""
+        "perk_name": "JUGGERNOG"
+      },
+      {
+        "perk_name": "SPEED_COLA"
       }
     ],
-    "points": 0,
-    "round_rewards": []
+    "points": 1500,
+    "round_rewards": [
+      {
+        "weapons": [
+          {
+            "weapon_name": "LSAT"
+          }
+        ],
+        "perks": [
+          {
+            "perk_name": "DOUBLE_TAP"
+          }
+        ],
+        "points": 1000,
+        "after_round": 5
+      }
+    ]
+  },
+  "Marksman": {
+    "weapons": [
+      {
+        "weapon_name": "DSR 50"
+      },
+      {
+        "weapon_name": "Five-Seven"
+      }
+    ],
+    "perks": [
+      {
+        "perk_name": "QUICK_REVIVE"
+      },
+      {
+        "perk_name": "DEADSHOT_DAIQ"
+      }
+    ],
+    "points": 1000,
+    "round_rewards": [
+      {
+        "weapons": [
+          {
+            "weapon_name": "Ray Gun"
+          }
+        ],
+        "perks": [
+          {
+            "perk_name": "STAMIN_UP"
+          }
+        ],
+        "points": 1500,
+        "after_round": 10
+      }
+    ]
   }
 }

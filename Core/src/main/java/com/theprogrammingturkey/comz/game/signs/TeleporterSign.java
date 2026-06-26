@@ -1,6 +1,8 @@
 package com.theprogrammingturkey.comz.game.signs;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.config.ConfigManager;
+import com.theprogrammingturkey.comz.config.ConfigSetup;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
@@ -9,6 +11,9 @@ import com.theprogrammingturkey.comz.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.World;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.potion.PotionEffect;
@@ -37,19 +42,46 @@ public class TeleporterSign implements IGameSign
 					return;
 				}
 
+				ConfigSetup cfg = ConfigManager.getMainConfig();
+
+				// 0k — recharge/cooldown gate. Check before charging points so a recharging
+				// teleporter never takes the player's points.
+				int secondsLeft = game.teleporterManager.secondsUntilReady(teleporterName, cfg.teleporterCooldownSeconds);
+				if(secondsLeft > 0)
+				{
+					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Teleporter is recharging! " + secondsLeft + "s left.");
+					return;
+				}
+
 				int points = Integer.parseInt(lines[3]);
 				if(PointManager.INSTANCE.canBuy(player, points))
 				{
-					player.teleport(game.teleporterManager.getTeleporters().get(teleporterName));
-					player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 30));
+					Location target = game.teleporterManager.getTeleporters().get(teleporterName);
+					Location origin = player.getLocation();
 
-					for(int i = 0; i < 50; i++)
-					{
-						Location loc = player.getLocation();
-						player.getWorld().spawnParticle(Particle.SPELL_WITCH, loc.getX(), loc.getY(), loc.getZ(), 1, COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(), 1);
-					}
+					// Charge points up front on activation.
 					PointManager.INSTANCE.takePoints(player, points);
 					PointManager.INSTANCE.notifyPlayer(player);
+					game.teleporterManager.recordUse(teleporterName);
+
+					// 0k — kill any zombies standing on the pad (around the player's pre-teleport location).
+					killZombiesOnPad(game, origin, cfg.teleporterPadKillRadius);
+
+					// 0k — sound + brief blindness now, then the actual teleport after the charge-up delay.
+					if(cfg.teleporterSound)
+						origin.getWorld().playSound(origin, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
+					player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, cfg.teleporterChargeUpTicks + 30, 30));
+
+					COMZombies.scheduleTask(cfg.teleporterChargeUpTicks, () -> {
+						player.teleport(target);
+						player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 30));
+
+						for(int i = 0; i < 50; i++)
+						{
+							Location loc = player.getLocation();
+							player.getWorld().spawnParticle(Particle.WITCH, loc.getX(), loc.getY(), loc.getZ(), 1, COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(), COMZombies.rand.nextFloat(), 1);
+						}
+					});
 				}
 				else
 				{
@@ -60,6 +92,32 @@ public class TeleporterSign implements IGameSign
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "ERROR teleporter does not exist!");
 			}
+		}
+	}
+
+	/**
+	 * 0k — kills any tracked zombies within {@code radius} blocks of the teleporter pad
+	 * (the activating player's pre-teleport location).
+	 */
+	private static void killZombiesOnPad(Game game, Location center, double radius)
+	{
+		if(radius <= 0)
+			return;
+		World world = center.getWorld();
+		if(world == null)
+			return;
+
+		// Copy first: killMob mutates the tracked-mob list.
+		for(Mob mob : new java.util.ArrayList<>(game.spawnManager.getEntities()))
+		{
+			if(mob == null)
+				continue;
+			Location mobLoc = mob.getLocation();
+			// Guard against null / cross-world distance (distance() throws if worlds differ).
+			if(mobLoc.getWorld() == null || !mobLoc.getWorld().equals(world))
+				continue;
+			if(mobLoc.distance(center) <= radius)
+				game.spawnManager.killMob(mob);
 		}
 	}
 

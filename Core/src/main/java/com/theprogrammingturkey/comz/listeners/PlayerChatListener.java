@@ -47,12 +47,15 @@ public class PlayerChatListener implements Listener
 			if(message.equalsIgnoreCase("done"))
 			{
 				Location loc = plugin.isEditingASign.get(player);
-				Sign sign = (Sign) loc.getBlock().getState();
 				plugin.isEditingASign.remove(player);
-				Bukkit.getServer().getPluginManager().callEvent(new SignChangeEvent(sign.getBlock(), player, sign.getLines()));
-				CommandUtil.sendMessageToPlayer(player, "You are No longer editing a sign");
 				playerChat.setCancelled(true);
-				sign.update();
+				CommandUtil.sendMessageToPlayer(player, "You are No longer editing a sign");
+				if(loc.getBlock().getState() instanceof Sign)
+				{
+					Sign sign = (Sign) loc.getBlock().getState();
+					Bukkit.getServer().getPluginManager().callEvent(new SignChangeEvent(sign.getBlock(), player, sign.getLines()));
+					sign.update();
+				}
 			}
 		}
 	}
