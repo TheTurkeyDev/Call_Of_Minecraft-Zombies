@@ -14,3 +14,6 @@
 build/
 Core/bin/*
 .project
+
+# Local build/test harness (not part of the plugin build)
+/verification/

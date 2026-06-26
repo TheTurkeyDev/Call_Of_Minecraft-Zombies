@@ -71,6 +71,9 @@ public class SignListener implements Listener
 
 		GrenadeSign grenade = new GrenadeSign();
 		GAME_SIGNS.put("grenade", grenade);
+
+		TrapSign trap = new TrapSign();
+		GAME_SIGNS.put("trap", trap);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

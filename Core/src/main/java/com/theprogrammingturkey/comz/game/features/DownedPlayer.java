@@ -129,7 +129,7 @@ public class DownedPlayer implements Listener
 
 	private void displayDown()
 	{
-		Firework f = (Firework) player.getWorld().spawnEntity(player.getLocation(), EntityType.FIREWORK);
+		Firework f = (Firework) player.getWorld().spawnEntity(player.getLocation(), EntityType.FIREWORK_ROCKET);
 		FireworkMeta meta = f.getFireworkMeta();
 		meta.setPower(1);
 		meta.addEffect(getRandomFireworkEffect());

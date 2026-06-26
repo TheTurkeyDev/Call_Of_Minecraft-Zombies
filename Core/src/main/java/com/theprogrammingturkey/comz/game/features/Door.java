@@ -184,7 +184,19 @@ public class Door
 
 		for(Location loc : signsLocations)
 		{
-			Sign sign = (Sign) loc.getBlock().getState();
+			Block block = loc.getBlock();
+			// A wall sign mounted on a door block pops off when the door opens (its support
+			// becomes air), so recreate it after the door blocks are restored (same approach as
+			// DoorRemoveAction). The guard means a sign we cannot restore is skipped with a
+			// warning instead of throwing and aborting the whole game-end cleanup.
+			if(!(block.getState() instanceof Sign))
+				block.setType(Material.OAK_WALL_SIGN);
+			if(!(block.getState() instanceof Sign))
+			{
+				COMZombies.log.log(Level.WARNING, "Could not restore door sign at " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + " for door '" + doorID + "'; skipping.");
+				continue;
+			}
+			Sign sign = (Sign) block.getState();
 			sign.setLine(0, ChatColor.RED + "[Zombies]");
 			sign.setLine(1, ChatColor.AQUA + "Door");
 			sign.setLine(2, ChatColor.GOLD + "Price:");

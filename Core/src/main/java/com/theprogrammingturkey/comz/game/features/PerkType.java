@@ -25,6 +25,7 @@ public enum PerkType
 	DEADSHOT_DAIQ,
 	MULE_KICK,
 	ELECTRIC_C,
+	VULTURE_AID,
 	DER_WUNDERFIZZ;
 
 	public static PerkType getPerkType(String name)
@@ -34,6 +35,8 @@ public enum PerkType
 				return pt;
 		if(name.equalsIgnoreCase("der wunderfizz") || name.equalsIgnoreCase("wunderfizz") || name.equalsIgnoreCase("random"))
 			return DER_WUNDERFIZZ;
+		if(name.equalsIgnoreCase("vulture aid") || name.equalsIgnoreCase("vulture"))
+			return VULTURE_AID;
 		return null;
 	}
 
@@ -85,6 +88,10 @@ public enum PerkType
 			case ELECTRIC_C:
 				stack = new ItemStack(Material.NETHER_STAR);
 				Perktype = "Electric Cherry";
+				break;
+			case VULTURE_AID:
+				stack = new ItemStack(Material.ROTTEN_FLESH);
+				Perktype = "Vulture Aid";
 				break;
 			default:
 				break;
@@ -138,6 +145,9 @@ public enum PerkType
 				break;
 			case ELECTRIC_C:
 				stack = new ItemStack(Material.NETHER_STAR);
+				break;
+			case VULTURE_AID:
+				stack = new ItemStack(Material.ROTTEN_FLESH);
 				break;
 			default:
 				break;

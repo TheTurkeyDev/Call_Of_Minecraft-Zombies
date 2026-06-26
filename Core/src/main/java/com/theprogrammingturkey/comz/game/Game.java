@@ -15,6 +15,7 @@ import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.Door;
+import com.theprogrammingturkey.comz.game.features.PerkType;
 import com.theprogrammingturkey.comz.game.features.PowerUp;
 import com.theprogrammingturkey.comz.game.features.RandomBox;
 import com.theprogrammingturkey.comz.game.managers.*;
@@ -78,6 +79,13 @@ public class Game
 	 * If fire salse is active
 	 */
 	private boolean isFireSale = false;
+
+	/**
+	 * Tier 2 — Global temporary Pack-a-Punch first-pack cost override. -1 means no
+	 * override is active and the per-sign cost is used; >= 0 replaces it (set by the
+	 * Bonfire Sale power-up, cleared when it expires).
+	 */
+	private int paPCostOverride = -1;
 
 	/**
 	 * If insta kill is active.
@@ -155,6 +163,11 @@ public class Game
 	public TeleporterManager teleporterManager;
 
 	/**
+	 * Tier 2 — contains all of the buyable kill-zone traps in the game
+	 */
+	public TrapManager trapManager;
+
+	/**
 	 * contains all of the downed players in the game
 	 */
 	public DownedPlayerManager downedPlayerManager;
@@ -199,6 +212,7 @@ public class Game
 		perkManager = new PerkManager();
 		powerUpManager = new PowerUpManager();
 		teleporterManager = new TeleporterManager(this);
+		trapManager = new TrapManager(this);
 		downedPlayerManager = new DownedPlayerManager();
 		signManager = new SignManager(this);
 
@@ -715,7 +729,7 @@ public class Game
 	 */
 	public void forceNight()
 	{
-		arena.getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+		arena.getWorld().setGameRule(GameRule.ADVANCE_TIME, false);
 		arena.getWorld().setTime(18000L);
 	}
 
@@ -833,7 +847,17 @@ public class Game
 		spawnManager.killAll(false);
 		spawnManager.reset();
 		for(Door door : doorManager.getDoors())
-			door.closeDoor();
+		{
+			// Isolate each door: a failure to restore one door's blocks/sign must never abort the
+			// rest of the game-end cleanup (clearing players, scoreboard, points, etc.).
+			try
+			{
+				door.closeDoor();
+			} catch(Exception e)
+			{
+				COMZombies.log.log(Level.WARNING, "Failed to close door '" + door.doorID + "' while ending the game; continuing cleanup.", e);
+			}
+		}
 
 		boxManager.resetBoxes();
 		perkManager.clearPerks();
@@ -845,6 +869,8 @@ public class Game
 		scoreboard = new GameScoreboard(this);
 		instaKill = false;
 		doublePoints = false;
+		isFireSale = false;
+		paPCostOverride = -1;
 		waveNumber = 0;
 		changingRound = false;
 		clearArena();
@@ -922,6 +948,9 @@ public class Game
 		if(arenaSaveJson.has("teleporters"))
 			teleporterManager.loadAllTeleportersToGame(arenaSaveJson.get("teleporters").getAsJsonArray());
 
+		if(arenaSaveJson.has("traps"))
+			trapManager.loadAllTrapsToGame(arenaSaveJson.get("traps").getAsJsonArray());
+
 		signManager.updateGame();
 
 		return true;
@@ -953,6 +982,7 @@ public class Game
 		arenaSaveJson.add("barriers", barrierManager.save());
 		arenaSaveJson.add("doors", doorManager.save());
 		arenaSaveJson.add("teleporters", teleporterManager.save());
+		arenaSaveJson.add("traps", trapManager.save());
 
 		return gamejson;
 	}
@@ -1110,12 +1140,103 @@ public class Game
 		return isFireSale;
 	}
 
+	public void setPaPCostOverride(int cost)
+	{
+		paPCostOverride = cost;
+	}
+
+	public int getPaPCostOverride()
+	{
+		return paPCostOverride;
+	}
+
+	/**
+	 * Tier 2 — pure decision for the effective Pack-a-Punch first-pack cost.
+	 * Returns {@code overrideCost} when an override is active ({@code >= 0});
+	 * otherwise the per-sign {@code signCost} is used.
+	 *
+	 * @param overrideCost the game's PaP cost override (-1 = none active)
+	 * @param signCost     the cost configured on the Pack-a-Punch sign
+	 * @return the cost the player should be charged
+	 */
+	public static int effectivePaPCost(int overrideCost, int signCost)
+	{
+		return overrideCost >= 0 ? overrideCost : signCost;
+	}
+
+	/**
+	 * Tier 0d — pure point calculation for a kill. Base reward plus optional
+	 * headshot/melee bonuses; Double Points doubles the whole total.
+	 */
+	public static int killPoints(int base, boolean headshot, boolean melee, int hsBonus, int meleeBonus, boolean doublePoints)
+	{
+		int total = base + (headshot ? hsBonus : 0) + (melee ? meleeBonus : 0);
+		return doublePoints ? total * 2 : total;
+	}
+
+	/**
+	 * Tier 2 — Vulture Aid: pure roll test. A drop fires when a 0-99 roll lands below the
+	 * configured percent chance (so chance 0 never drops, chance 100 always drops).
+	 */
+	public static boolean vultureDrops(int roll, int chancePercent)
+	{
+		return roll < chancePercent;
+	}
+
+	/**
+	 * Tier 2 — Vulture Aid: even-odds split of the reward. Even rolls award points, odd rolls
+	 * refill ammo.
+	 */
+	public static boolean vultureRewardIsPoints(int roll)
+	{
+		return roll % 2 == 0;
+	}
+
+	/**
+	 * Tier 2 — Vulture Aid: on a zombie kill, if the killer holds the perk, roll for a modest
+	 * drop. On success either award a small points bonus or refill the player's ammo (even odds),
+	 * with a subtle pickup effect.
+	 */
+	private void tryVultureDrop(Mob mob, Player player)
+	{
+		if(!(mob instanceof Zombie))
+			return;
+		if(!perkManager.hasPerk(player, PerkType.VULTURE_AID))
+			return;
+		if(!vultureDrops(COMZombies.rand.nextInt(100), ConfigManager.getMainConfig().vultureDropChance))
+			return;
+
+		if(vultureRewardIsPoints(COMZombies.rand.nextInt(100)))
+		{
+			PointManager.INSTANCE.addPoints(player, ConfigManager.getMainConfig().vulturePointsDrop);
+			PointManager.INSTANCE.notifyPlayer(player);
+		}
+		else
+		{
+			getPlayersWeapons(player).maxAmmo();
+		}
+
+		World world = player.getWorld();
+		if(world != null)
+		{
+			world.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.6f, 1.4f);
+			world.spawnParticle(org.bukkit.Particle.HAPPY_VILLAGER, player.getLocation().add(0, 1, 0), 6, 0.3, 0.5, 0.3);
+		}
+	}
+
 	public void damageMob(Mob mob, Player player, float damageAmount)
+	{
+		damageMob(mob, player, damageAmount, false, false);
+	}
+
+	public void damageMob(Mob mob, Player player, float damageAmount, boolean headshotKill, boolean meleeKill)
 	{
 		double mobHealth = mob.getHealth() - damageAmount;
 		mob.playEffect(EntityEffect.HURT);
 
-		if(isInstaKill())
+		// Tier 2 — Insta-Kill must not instantly remove a last-zombie crawler, otherwise it would
+		// auto-end the round players are deliberately holding. Crawlers take normal damage instead.
+		if(isInstaKill() && !com.theprogrammingturkey.comz.spawning.ZombieSpawner.isCrawler(mob))
 		{
 			if(mob instanceof Zombie)
 				player.getWorld().playSound(mob.getLocation(), Sound.ENTITY_ZOMBIE_DEATH, 1f, 1f);
@@ -1124,12 +1245,11 @@ public class Game
 
 			powerUpManager.powerUpDrop(mob, player);
 			mob.remove();
-			if(isDoublePoints())
-				PointManager.INSTANCE.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
-			else
-				PointManager.INSTANCE.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
+			PointManager.INSTANCE.addPoints(player, killPoints(ConfigManager.getMainConfig().pointsOnKill, headshotKill, meleeKill,
+					ConfigManager.getMainConfig().headshotKillBonus, ConfigManager.getMainConfig().meleeKillBonus, isDoublePoints()));
 
 			PointManager.INSTANCE.notifyPlayer(player);
+			tryVultureDrop(mob, player);
 			spawnManager.removeEntity(mob);
 
 			if(mob instanceof Zombie)
@@ -1151,12 +1271,11 @@ public class Game
 
 			powerUpManager.powerUpDrop(mob, player);
 			mob.remove();
-			if(isDoublePoints())
-				PointManager.INSTANCE.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
-			else
-				PointManager.INSTANCE.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
+			PointManager.INSTANCE.addPoints(player, killPoints(ConfigManager.getMainConfig().pointsOnKill, headshotKill, meleeKill,
+					ConfigManager.getMainConfig().headshotKillBonus, ConfigManager.getMainConfig().meleeKillBonus, isDoublePoints()));
 
 			PointManager.INSTANCE.notifyPlayer(player);
+			tryVultureDrop(mob, player);
 			spawnManager.removeEntity(mob);
 
 			if(mob instanceof Zombie)

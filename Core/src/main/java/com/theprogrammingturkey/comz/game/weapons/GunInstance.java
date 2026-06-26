@@ -103,6 +103,41 @@ public class GunInstance extends WeaponInstance
 	}
 
 	/**
+	 * Pure, server-free reload-duration core. Minecraft runs at 20 TPS, so seconds
+	 * are converted to ticks at &times;20. A per-gun {@code reload_time} (seconds)
+	 * takes priority; {@code gunReload <= 0} falls back to the global config value.
+	 * Speed Cola multiplies the result by {@code speedColaMult} (0.5 = half reload).
+	 *
+	 * @param gunReload     per-gun reload in seconds, or 0/negative if unset
+	 * @param cfgReload     global config reload fallback in seconds
+	 * @param speedCola     whether the player has Speed Cola
+	 * @param speedColaMult Speed Cola reload multiplier (e.g. 0.5)
+	 * @return reload duration in server ticks
+	 */
+	public static long reloadTicks(double gunReload, double cfgReload, boolean speedCola, double speedColaMult)
+	{
+		double secs = gunReload > 0 ? gunReload : cfgReload;
+		return Math.round(secs * (speedCola ? speedColaMult : 1.0) * 20);
+	}
+
+	/**
+	 * Pure, server-free per-shot cooldown core. Double Tap divides the base fire
+	 * delay by {@code doubleTapMult} (1.5 = 50% faster). Speed Cola no longer
+	 * affects fire rate (Tier 0e rewire). Clamped to a minimum of 1 tick (the
+	 * 20-TPS / 1200-RPM ceiling).
+	 *
+	 * @param baseFireDelay base per-shot delay in ticks
+	 * @param doubleTap     whether the player has Double Tap
+	 * @param doubleTapMult Double Tap fire-delay divisor (e.g. 1.5)
+	 * @return per-shot cooldown in server ticks
+	 */
+	public static long fireDelayTicks(long baseFireDelay, boolean doubleTap, double doubleTapMult)
+	{
+		long ticks = doubleTap ? (long) (baseFireDelay / doubleTapMult) : baseFireDelay;
+		return Math.max(1, ticks);
+	}
+
+	/**
 	 * Used to reload this current weapon.
 	 */
 	public void reload()
@@ -116,7 +151,12 @@ public class GunInstance extends WeaponInstance
 
 			isReloading = true;
 			Game game = GameManager.INSTANCE.getGame(player);
-			COMZombies.scheduleTask(ConfigManager.getMainConfig().reloadTime * 20L, () ->
+			long reloadTicks = reloadTicks(
+					gun.reloadTime,
+					ConfigManager.getMainConfig().reloadTime,
+					game.perkManager.hasPerk(player, PerkType.SPEED_COLA),
+					ConfigManager.getMainConfig().speedColaReloadMultiplier);
+			COMZombies.scheduleTask(reloadTicks, () ->
 			{
 				if(!(totalAmmo - (gun.clipAmmo - clipAmmo) < 0))
 				{
@@ -210,9 +250,10 @@ public class GunInstance extends WeaponInstance
 
 		Game game = GameManager.INSTANCE.getGame(player);
 		COMZombies.scheduleTask(
-				game.perkManager.hasPerk(player, PerkType.SPEED_COLA)
-						? (long) (this.gun.fireDelay / 1.25)
-						: this.gun.fireDelay
+				fireDelayTicks(
+						this.gun.fireDelay,
+						game.perkManager.hasPerk(player, PerkType.DOUBLE_TAP),
+						ConfigManager.getMainConfig().doubleTapFireMultiplier)
 				, () -> canFire = true);
 		return true;
 	}
