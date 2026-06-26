@@ -16,54 +16,16 @@ repositories {
 
 dependencies {
     implementation project(':API')
-    implementation project(':NMS:1_21_R4')
-    implementation project(':NMS:1_21_R3')
-    implementation project(':NMS:1_21_R2')
-    implementation project(':NMS:1_21_R1')
-    implementation project(':NMS:1_20_R4')
-    implementation project(':NMS:1_20_R3')
-    implementation project(':NMS:1_20_R2')
-    implementation project(':NMS:1_20_R1')
-    implementation project(':NMS:1_19_R3')
-    implementation project(':NMS:1_19_2_R2')
-    implementation project(':NMS:1_19_2_R1')
-    implementation project(':NMS:1_19_R1')
-    implementation project(':NMS:1_18_R2')
-    implementation project(':NMS:1_18_R1')
-    implementation project(':NMS:1_17_R1')
-    implementation project(':NMS:1_16_R3')
-    implementation project(':NMS:1_16_R2')
-    implementation project(':NMS:1_16_R1')
-    implementation project(':NMS:1_15_R1')
-    implementation project(':NMS:1_14_R1')
     compileOnly "com.github.MilkBowl:VaultAPI:1.7.1"
-    implementation group: 'org.spigotmc', name: 'spigot-api', version: '1.16.4-R0.1-SNAPSHOT'
-    implementation group: 'org.spigotmc', name: 'spigot', version: '1.16.4-R0.1-SNAPSHOT'
+    implementation group: 'org.spigotmc', name: 'spigot-api', version: '26.2-R0.1-SNAPSHOT'
     implementation 'me.clip:placeholderapi:2.11.6'
+    // JSR-305 (javax.annotation.Nonnull) used to arrive transitively via spigot-api; 26.2 dropped it.
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
 
 }
 
 jar {
     from project(":API").sourceSets.main.output.classesDirs
-    from project(":NMS:1_21_R3").sourceSets.main.output.classesDirs
-    from project(":NMS:1_21_R2").sourceSets.main.output.classesDirs
-    from project(":NMS:1_21_R1").sourceSets.main.output.classesDirs
-    from project(":NMS:1_20_R4").sourceSets.main.output.classesDirs
-    from project(":NMS:1_20_R3").sourceSets.main.output.classesDirs
-    from project(":NMS:1_20_R2").sourceSets.main.output.classesDirs
-    from project(":NMS:1_20_R1").sourceSets.main.output.classesDirs
-    from project(":NMS:1_19_R3").sourceSets.main.output.classesDirs
-    from project(":NMS:1_19_2_R2").sourceSets.main.output.classesDirs
-    from project(":NMS:1_19_2_R1").sourceSets.main.output.classesDirs
-    from project(":NMS:1_19_R1").sourceSets.main.output.classesDirs
-    from project(":NMS:1_18_R2").sourceSets.main.output.classesDirs
-    from project(":NMS:1_18_R1").sourceSets.main.output.classesDirs
-    from project(":NMS:1_17_R1").sourceSets.main.output.classesDirs
-    from project(":NMS:1_16_R3").sourceSets.main.output.classesDirs
-    from project(":NMS:1_16_R2").sourceSets.main.output.classesDirs
-    from project(":NMS:1_16_R1").sourceSets.main.output.classesDirs
-    from project(":NMS:1_15_R1").sourceSets.main.output.classesDirs
-    from project(":NMS:1_14_R1").sourceSets.main.output.classesDirs
 }
 
 processResources {

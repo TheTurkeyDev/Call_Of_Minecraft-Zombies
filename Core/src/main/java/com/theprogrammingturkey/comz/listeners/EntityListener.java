@@ -5,10 +5,10 @@ import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
+import com.theprogrammingturkey.comz.spawning.RoundSpawner;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
@@ -20,6 +20,8 @@ import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
@@ -28,6 +30,18 @@ import java.util.Map;
 public class EntityListener implements Listener
 {
 	private final Map<Player, Integer> healTimers = new HashMap<>();
+
+	/** Metadata key used to record the last time a zombie damaged a player (0c). */
+	private static final String LAST_ATTACK_META = "comz_last_attack_ms";
+
+	/**
+	 * Tier 0f — flat knife damage: a one-shot through the configured round, i.e.
+	 * the (compressed) zombie HP of that round, independent of the current wave.
+	 */
+	public static float knifeDamage(int throughRound)
+	{
+		return RoundSpawner.zombieHealth(throughRound);
+	}
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void entityCombustEvent(EntityCombustEvent event)
@@ -69,6 +83,27 @@ public class EntityListener implements Listener
 						return;
 					}
 
+					// 0c — per-zombie attack cooldown: each attacker may only hit a player
+					// once per zombieAttackCooldownTicks; hits from different zombies stack
+					// (no shared i-frame). Last-attack time lives in the ATTACKER's metadata.
+					long now = System.currentTimeMillis();
+					long cooldownMs = (long) ConfigManager.getMainConfig().zombieAttackCooldownTicks * 50L;
+					long last = 0L;
+					for(MetadataValue mv : damager.getMetadata(LAST_ATTACK_META))
+					{
+						if(mv.getOwningPlugin() == COMZombies.getPlugin())
+						{
+							last = mv.asLong();
+							break;
+						}
+					}
+					if(now - last < cooldownMs)
+					{
+						e.setCancelled(true);
+						return;
+					}
+					damager.setMetadata(LAST_ATTACK_META, new FixedMetadataValue(COMZombies.getPlugin(), now));
+
 					float damage = (float) ConfigManager.getMainConfig().zombieDamage;
 
 					if(game.perkManager.getPlayersPerks(player).contains(PerkType.JUGGERNOG))
@@ -76,6 +111,10 @@ public class EntityListener implements Listener
 
 					damage = game.damagePlayer(player, damage);
 					e.setDamage(damage);
+
+					// 0c — clear i-frames so concurrent swarm hits this tick all land
+					player.setNoDamageTicks(0);
+					player.setMaximumNoDamageTicks(0);
 
 					//heal system
 					resetHealingTimer(player);
@@ -109,7 +148,7 @@ public class EntityListener implements Listener
 						Mob mob = (Mob) entity;
 						double dist = mob.getLocation().distance(player.getLocation());
 						if(dist <= ConfigManager.getMainConfig().meleeRange)
-							game.damageMob(mob, player, (float) (mob.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() / game.getWave()));
+							game.damageMob(mob, player, knifeDamage(ConfigManager.getMainConfig().knifeOneShotThroughRound), false, true);
 					}
 				}
 			}

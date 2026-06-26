@@ -25,6 +25,9 @@ public enum PerkType
 	DEADSHOT_DAIQ,
 	MULE_KICK,
 	ELECTRIC_C,
+	VULTURE_AID,
+	TOMBSTONE_SODA,
+	WHOS_WHO,
 	DER_WUNDERFIZZ;
 
 	public static PerkType getPerkType(String name)
@@ -34,6 +37,12 @@ public enum PerkType
 				return pt;
 		if(name.equalsIgnoreCase("der wunderfizz") || name.equalsIgnoreCase("wunderfizz") || name.equalsIgnoreCase("random"))
 			return DER_WUNDERFIZZ;
+		if(name.equalsIgnoreCase("vulture aid") || name.equalsIgnoreCase("vulture"))
+			return VULTURE_AID;
+		if(name.equalsIgnoreCase("tombstone soda") || name.equalsIgnoreCase("tombstone"))
+			return TOMBSTONE_SODA;
+		if(name.equalsIgnoreCase("whos who") || name.equalsIgnoreCase("who's who") || name.equalsIgnoreCase("whoswho"))
+			return WHOS_WHO;
 		return null;
 	}
 
@@ -85,6 +94,18 @@ public enum PerkType
 			case ELECTRIC_C:
 				stack = new ItemStack(Material.NETHER_STAR);
 				Perktype = "Electric Cherry";
+				break;
+			case VULTURE_AID:
+				stack = new ItemStack(Material.ROTTEN_FLESH);
+				Perktype = "Vulture Aid";
+				break;
+			case TOMBSTONE_SODA:
+				stack = new ItemStack(Material.WITHER_ROSE, 1);
+				Perktype = "Tombstone Soda";
+				break;
+			case WHOS_WHO:
+				stack = new ItemStack(Material.SKELETON_SKULL, 1);
+				Perktype = "Who's Who";
 				break;
 			default:
 				break;
@@ -138,6 +159,15 @@ public enum PerkType
 				break;
 			case ELECTRIC_C:
 				stack = new ItemStack(Material.NETHER_STAR);
+				break;
+			case VULTURE_AID:
+				stack = new ItemStack(Material.ROTTEN_FLESH);
+				break;
+			case TOMBSTONE_SODA:
+				stack = new ItemStack(Material.WITHER_ROSE, 1);
+				break;
+			case WHOS_WHO:
+				stack = new ItemStack(Material.SKELETON_SKULL, 1);
 				break;
 			default:
 				break;

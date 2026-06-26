@@ -22,6 +22,7 @@ public class ConfigManager
 		CONFIGS.put(COMZConfig.SIGNS, new CustomConfig(COMZConfig.SIGNS));
 		CONFIGS.put(COMZConfig.KITS, new CustomConfig(COMZConfig.KITS));
 		CONFIGS.put(COMZConfig.STATS, new CustomConfig(COMZConfig.STATS));
+		CONFIGS.put(COMZConfig.PLAYER_DATA, new CustomConfig(COMZConfig.PLAYER_DATA));
 
 		mainConfig.setup();
 	}

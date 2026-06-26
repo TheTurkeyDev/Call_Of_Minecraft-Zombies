@@ -2,13 +2,25 @@ package com.theprogrammingturkey.comz.game.weapons;
 
 import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.config.CustomConfig;
+import com.theprogrammingturkey.comz.util.Compat;
 import org.bukkit.Color;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public abstract class BaseGun extends Weapon
 {
+	/**
+	 * Per-shot cooldown in server ticks. Minecraft runs at 20 TPS, so a value of
+	 * 1 tick is the hard fire-rate ceiling: 1 shot / tick = 20 shots/sec = 1200 RPM.
+	 * Any real-world RPM above 1200 collapses to this 1-tick floor. {@code fire_delay}
+	 * in guns.json is tuned to {@code round(1200 / RPM)} clamped to a minimum of 1.
+	 */
 	public int fireDelay;
+	/**
+	 * Per-gun reload duration in seconds. 0 means "unset" — the global
+	 * {@code config.gameSettings.reloadTime} fallback is used instead.
+	 */
+	public double reloadTime;
 	public double distance;
 	public int clipAmmo;
 	public Color particleColor = Color.GRAY;
@@ -27,6 +39,7 @@ public abstract class BaseGun extends Weapon
 		super.loadWeapon(json);
 		this.clipAmmo = CustomConfig.getInt(json, "clip_ammo", 1);
 		this.fireDelay = CustomConfig.getInt(json, "fire_delay", 5);
+		this.reloadTime = CustomConfig.getDouble(json, "reload_time", 0);
 		this.distance = CustomConfig.getDouble(json, "max_distance", 30);
 		this.multiHit = CustomConfig.getBoolean(json, "multi_hit", false);
 
@@ -34,7 +47,8 @@ public abstract class BaseGun extends Weapon
 		if(particleColor.matches("\\A[0-9a-fA-F]{6}$"))
 			this.particleColor = Color.fromRGB(Integer.parseInt(particleColor, 16));
 
-		this.sound = Sound.valueOf(CustomConfig.getString(json, "sound", this.isPackAPunched() ? "ENTITY_GHAST_SHOOT" : "BLOCK_LAVA_POP"));
+		Sound defaultSound = this.isPackAPunched() ? Sound.ENTITY_GHAST_SHOOT : Sound.BLOCK_LAVA_POP;
+		this.sound = Compat.sound(CustomConfig.getString(json, "sound", null), defaultSound);
 	}
 
 	public void updateAmmo(int clip, int total)
