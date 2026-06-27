@@ -59,7 +59,7 @@ public class PlayerListener implements Listener
 			Game game = GameManager.INSTANCE.getGame(player);
 			game.removePlayer(player);
 			player.removePotionEffect(PotionEffectType.BLINDNESS);
-			player.removePotionEffect(PotionEffectType.SLOW);
+			player.removePotionEffect(PotionEffectType.SLOWNESS);
 		}
 		for(Player pl : Bukkit.getOnlinePlayers())
 		{
@@ -144,7 +144,7 @@ public class PlayerListener implements Listener
 						float y = COMZombies.rand.nextFloat(2f);
 						float z = COMZombies.rand.nextFloat(2f);
 						player.getWorld().spawnParticle(Particle.LAVA, loc.getX(), loc.getY(), loc.getZ(), 1, x, y, z, 1);
-						player.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, loc.getX(), loc.getY(), loc.getZ(), 1, x, y, z, 1);
+						player.getWorld().spawnParticle(Particle.FIREWORK, loc.getX(), loc.getY(), loc.getZ(), 1, x, y, z, 1);
 					}
 
 					for(Entity e : player.getNearbyEntities(5, 5, 5))

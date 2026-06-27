@@ -30,7 +30,7 @@ public class JoinSign implements IGameSign
 			String[] args = new String[2];
 			args[0] = "join";
 			args[1] = game.getName();
-			player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_ZOMBIE_AMBIENT, 1, 1);
+			com.theprogrammingturkey.comz.util.SoundUtil.play(player.getWorld(), player.getLocation(), com.theprogrammingturkey.comz.util.SoundConfig.get("game.join", Sound.ENTITY_ZOMBIE_AMBIENT.name()), org.bukkit.SoundCategory.MASTER, 1, 1);
 			CommandManager.INSTANCE.onRemoteCommand(player, args);
 			game.signManager.updateGame();
 		}

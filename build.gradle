@@ -15,14 +15,19 @@ allprojects {
 subprojects {
     apply plugin: 'java'
 
-    sourceCompatibility = targetCompatibility = JavaLanguageVersion.of(8)
+    // spigot-api 26.2 ships Java 17 bytecode. Build with JDK >= 17 and target 17 so
+    // the plugin compiles anywhere and runs on the Java 25 server that 26.2 requires.
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
 
     repositories {
         mavenLocal()
     }
-}
 
-tasks.withType(JavaCompile).configureEach {
-    //Ignore Java 8 warnings. Not much I can do here
-    options.compilerArgs += ['-Xlint:deprecation']
+    tasks.withType(JavaCompile).configureEach {
+        options.release = 17
+    }
 }
