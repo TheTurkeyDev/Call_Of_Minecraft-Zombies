@@ -1,0 +1,1786 @@
+{
+  "block.lever.click": {
+    "replace": true,
+    "category": "master",
+    "sounds": [
+      "custom/global/circuit/circuit_00",
+      "custom/global/circuit/circuit_01",
+      "custom/global/circuit/circuit_02"
+    ]
+  },
+  "block.wood.break": {
+    "replace": true,
+    "category": "master",
+    "sounds": [
+      "custom/global/windows/wood/snap-01",
+      "custom/global/windows/wood/snap-02",
+      "custom/global/windows/wood/snap-03",
+      "custom/global/windows/wood/snap-04",
+      "custom/global/windows/wood/snap-05",
+      "custom/global/windows/wood/snap-06"
+    ]
+  },
+  "block.stone.break": {
+    "replace": true,
+    "category": "master",
+    "sounds": [
+      "custom/global/windows/stone/rock-01",
+      "custom/global/windows/stone/rock-02",
+      "custom/global/windows/stone/rock-03"
+    ]
+  },
+  "block.metal.break": {
+    "replace": true,
+    "category": "master",
+    "sounds": [
+      "custom/global/windows/metal/metal-01",
+      "custom/global/windows/metal/metal-02",
+      "custom/global/windows/metal/metal-03",
+      "custom/global/windows/metal/metal-04",
+      "custom/global/windows/metal/metal-05"
+    ]
+  },
+  "block.glass.break": {
+    "replace": true,
+    "category": "master",
+    "sounds": [
+      "custom/global/windows/glass/glass-01",
+      "custom/global/windows/glass/glass-02",
+      "custom/global/windows/glass/glass-03",
+      "custom/global/windows/glass/glass-04",
+      "custom/global/windows/glass/glass-05"
+    ]
+  },
+  "custom.global.windows.wood": {
+    "replace": true,
+    "category": "master",
+    "sounds": [
+      "custom/global/windows/wood/slam-01",
+      "custom/global/windows/wood/slam-02",
+      "custom/global/windows/wood/slam-03",
+      "custom/global/windows/wood/slam-04",
+      "custom/global/windows/wood/slam-05",
+      "custom/global/windows/wood/slam-06"
+    ]
+  },
+  "custom.global.windows.metal": {
+    "replace": true,
+    "category": "master",
+    "sounds": [
+      "custom/global/windows/metal/repair-01",
+      "custom/global/windows/metal/repair-02",
+      "custom/global/windows/metal/repair-03",
+      "custom/global/windows/metal/repair-04",
+      "custom/global/windows/metal/repair-05",
+      "custom/global/windows/metal/repair-06"
+    ]
+  },
+  "entity.generic.explode": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "random/levelup"
+    ]
+  },
+  "entity.zombie.death": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/zombie/death"
+    ]
+  },
+  "entity.zombie.hurt": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/zombie/attack-01",
+      "mob/zombie/attack-02",
+      "mob/zombie/attack-03"
+    ]
+  },
+  "entity.zombie.ambient": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/zombie/say-01",
+      "mob/zombie/say-02",
+      "mob/zombie/say-03",
+      "mob/zombie/say-04",
+      "mob/zombie/say-05"
+    ]
+  },
+  "entity.zombie_villager.converted": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/zombie_villager/converted"
+    ]
+  },
+  "entity.zombie_villager.death": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/zombie_villager/death_00",
+      "mob/zombie_villager/death_01",
+      "mob/zombie_villager/death_02",
+      "mob/zombie_villager/death_03",
+      "mob/zombie_villager/death_04",
+      "mob/zombie_villager/death_05",
+      "mob/zombie_villager/death_06",
+      "mob/zombie_villager/death_07",
+      "mob/zombie_villager/death_08",
+      "mob/zombie_villager/death_09",
+      "mob/zombie_villager/death_10"
+    ]
+  },
+  "entity.zombie_villager.hurt": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/zombie_villager/attack_00",
+      "mob/zombie_villager/attack_01",
+      "mob/zombie_villager/attack_02",
+      "mob/zombie_villager/attack_03",
+      "mob/zombie_villager/attack_04",
+      "mob/zombie_villager/attack_05",
+      "mob/zombie_villager/attack_06",
+      "mob/zombie_villager/attack_07",
+      "mob/zombie_villager/attack_08",
+      "mob/zombie_villager/attack_09",
+      "mob/zombie_villager/attack_10",
+      "mob/zombie_villager/attack_11",
+      "mob/zombie_villager/attack_12",
+      "mob/zombie_villager/attack_13",
+      "mob/zombie_villager/attack_14",
+      "mob/zombie_villager/attack_15",
+      "mob/zombie_villager/attack_16",
+      "mob/zombie_villager/attack_17",
+      "mob/zombie_villager/attack_18",
+      "mob/zombie_villager/attack_19",
+      "mob/zombie_villager/attack_20",
+      "mob/zombie_villager/attack_21",
+      "mob/zombie_villager/attack_22"
+    ]
+  },
+  "enchant.thorns.hit": {
+    "replace": true,
+    "category": "master",
+    "sounds": [
+      "random/levelup"
+    ]
+  },
+  "entity.zombie_villager.ambient": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/zombie_villager/say1",
+      "mob/zombie_villager/say2",
+      "mob/zombie_villager/say3",
+      "mob/zombie_villager/say4",
+      "mob/zombie_villager/say5",
+      "mob/zombie_villager/say6",
+      "mob/zombie_villager/say7",
+      "mob/zombie_villager/say8",
+      "mob/zombie_villager/say9",
+      "mob/zombie_villager/say10",
+      "mob/zombie_villager/say11",
+      "mob/zombie_villager/say12",
+      "mob/zombie_villager/say13",
+      "mob/zombie_villager/say14",
+      "mob/zombie_villager/say15"
+    ]
+  },
+  "entity.spider.ambient": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/spider/say1",
+      "mob/spider/say2",
+      "mob/spider/say3",
+      "mob/spider/say4",
+      "mob/spider/say5",
+      "mob/spider/say6",
+      "mob/spider/say7",
+      "mob/spider/say8",
+      "mob/spider/say9",
+      "mob/spider/say10",
+      "mob/spider/say11",
+      "mob/spider/say12"
+    ]
+  },
+  "entity.spider.hurt": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/spider/hurt_00",
+      "mob/spider/hurt_01",
+      "mob/spider/hurt_02",
+      "mob/spider/hurt_03",
+      "mob/spider/hurt_04",
+      "mob/spider/hurt_05",
+      "mob/spider/hurt_06",
+      "mob/spider/hurt_07",
+      "mob/spider/hurt_08",
+      "mob/spider/hurt_09"
+    ]
+  },
+  "entity.spider.death": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/spider/death-00",
+      "mob/spider/death-01",
+      "mob/spider/death-02",
+      "mob/spider/death-03",
+      "mob/spider/death-04",
+      "mob/spider/death-05",
+      "mob/spider/death-06",
+      "mob/spider/death-07"
+    ]
+  },
+  "entity.rabbit.ambient": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/rabbit/idle-01",
+      "mob/rabbit/idle-02",
+      "mob/rabbit/idle-03",
+      "mob/rabbit/idle-04",
+      "mob/rabbit/idle-05",
+      "mob/rabbit/idle-06",
+      "mob/rabbit/idle-07",
+      "mob/rabbit/idle-08",
+      "mob/rabbit/idle-09",
+      "mob/rabbit/idle-10"
+    ]
+  },
+  "entity.rabbit.attack": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/rabbit/attack-01",
+      "mob/rabbit/attack-02",
+      "mob/rabbit/attack-03",
+      "mob/rabbit/attack-04",
+      "mob/rabbit/attack-05",
+      "mob/rabbit/attack-06",
+      "mob/rabbit/attack-07",
+      "mob/rabbit/attack-08",
+      "mob/rabbit/attack-09",
+      "mob/rabbit/attack-10",
+      "mob/rabbit/attack-11"
+    ]
+  },
+  "entity.rabbit.death": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/rabbit/death-01",
+      "mob/rabbit/death-02",
+      "mob/rabbit/death-03",
+      "mob/rabbit/death-04",
+      "mob/rabbit/death-05",
+      "mob/rabbit/death-06",
+      "mob/rabbit/death-07"
+    ]
+  },
+  "entity.rabbit.hurt": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/rabbit/attack-01",
+      "mob/rabbit/attack-02",
+      "mob/rabbit/attack-03",
+      "mob/rabbit/attack-04",
+      "mob/rabbit/attack-05",
+      "mob/rabbit/attack-06",
+      "mob/rabbit/attack-07",
+      "mob/rabbit/attack-08",
+      "mob/rabbit/attack-09",
+      "mob/rabbit/attack-10",
+      "mob/rabbit/attack-11"
+    ]
+  },
+  "entity.wither_skeleton.death": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/wither_skeleton/death_00",
+      "mob/wither_skeleton/death_01"
+    ]
+  },
+  "entity.wither_skeleton.hurt": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/wither_skeleton/exert_00",
+      "mob/wither_skeleton/exert_01",
+      "mob/wither_skeleton/exert_02",
+      "mob/wither_skeleton/exert_03",
+      "mob/wither_skeleton/exert_04",
+      "mob/wither_skeleton/exert_05",
+      "mob/wither_skeleton/exert_06"
+    ]
+  },
+  "entity.wither_skeleton.ambient": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/wither_skeleton/say1",
+      "mob/wither_skeleton/say2",
+      "mob/wither_skeleton/say3",
+      "mob/wither_skeleton/say4",
+      "mob/wither_skeleton/say5",
+      "mob/wither_skeleton/say6",
+      "mob/wither_skeleton/say7",
+      "mob/wither_skeleton/say8",
+      "mob/wither_skeleton/say9",
+      "mob/wither_skeleton/say10",
+      "mob/wither_skeleton/say11",
+      "mob/wither_skeleton/say12",
+      "mob/wither_skeleton/say13"
+    ]
+  },
+  "entity.husk.death": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/husk/death"
+    ]
+  },
+  "entity.husk.hurt": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/husk/attack-01",
+      "mob/husk/attack-02",
+      "mob/husk/attack-03"
+    ]
+  },
+  "entity.husk.ambient": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/husk/say-01",
+      "mob/husk/say-02",
+      "mob/husk/say-03",
+      "mob/husk/say-04"
+    ]
+  },
+  "entity.skeleton.death": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/skeleton/death"
+    ]
+  },
+  "entity.skeleton.hurt": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "random/levelup"
+    ]
+  },
+  "entity.skeleton.ambient": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "mob/skeleton/idle"
+    ]
+  },
+  "entity.skeleton.step": {
+    "replace": true,
+    "category": "mob",
+    "sounds": [
+      "random/levelup"
+    ]
+  },
+  "custom.round.dogend": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "custom/round/dogend",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  },
+  "custom.round.dogstart": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "custom/round/dogstart",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  },
+  "custom.round.dogspawn": {
+    "category": "master",
+    "sounds": [
+      "custom/round/dogspawn"
+    ]
+  },
+  "custom.round.roundone": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "custom/round/roundone",
+        "stream": true
+      }
+    ]
+  },
+  "custom.round.newround": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "custom/round/newround",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  },
+  "custom.round.gameover1": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "custom/round/gameover1",
+        "stream": true
+      }
+    ]
+  },
+  "custom.round.gameover2": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "custom/round/gameover2",
+        "stream": true
+      }
+    ]
+  },
+  "custom.round.gameover3": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "custom/round/gameover3",
+        "stream": true
+      }
+    ]
+  },
+  "custom.round.gameover4": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "custom/round/gameover4",
+        "stream": true
+      }
+    ]
+  },
+  "custom.round.gameover5": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "custom/round/gameover5",
+        "stream": true
+      }
+    ]
+  },
+  "custom.round.gameover6": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "custom/round/gameover6",
+        "stream": true
+      }
+    ]
+  },
+  "custom.round.gameover7": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "custom/round/gameover7",
+        "stream": true
+      }
+    ]
+  },
+  "custom.round.gameover8": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "custom/round/gameover8",
+        "stream": true
+      }
+    ]
+  },
+  "custom.round.gameover0": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "custom/round/gameover0",
+        "stream": true
+      }
+    ]
+  },
+  "custom.global.boards.loop": {
+    "category": "master",
+    "sounds": [
+      "custom/global/windows/loop"
+    ]
+  },
+  "custom.powerup.x2points": {
+    "category": "master",
+    "sounds": [
+      "custom/global/powerup/x2points"
+    ]
+  },
+  "custom.powerup.instakill": {
+    "category": "master",
+    "sounds": [
+      "custom/global/powerup/instakill"
+    ]
+  },
+  "custom.powerup.nuke": {
+    "category": "master",
+    "sounds": [
+      "custom/global/powerup/nuke"
+    ]
+  },
+  "custom.powerup.maxammo": {
+    "category": "master",
+    "sounds": [
+      "custom/global/powerup/maxammo"
+    ]
+  },
+  "custom.powerup.carpenter": {
+    "category": "master",
+    "sounds": [
+      "custom/global/powerup/carpenter"
+    ]
+  },
+  "custom.powerup.death": {
+    "category": "master",
+    "sounds": [
+      "custom/global/powerup/death_machine"
+    ]
+  },
+  "custom.powerup.firesale": {
+    "category": "master",
+    "sounds": [
+      "custom/global/powerup/firesale"
+    ]
+  },
+  "custom.powerup.firesale_theme": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "custom/global/powerup/firesale_theme",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  },
+  "custom.powerup.firesale_theme_r": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "custom/global/powerup/firesale_theme_r",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  },
+  "custom.powerup.bonfire": {
+    "category": "master",
+    "sounds": [
+      "custom/global/powerup/bonfire"
+    ]
+  },
+  "custom.powerup.powerupspawn": {
+    "category": "master",
+    "sounds": [
+      "custom/global/powerup/powerupspawn"
+    ]
+  },
+  "custom.powerup.grab": {
+    "category": "master",
+    "sounds": [
+      "custom/global/powerup/grab"
+    ]
+  },
+  "custom.powerup.instakillend": {
+    "category": "master",
+    "sounds": [
+      "custom/global/powerup/instakillend"
+    ]
+  },
+  "custom.powerup.x2pointsend": {
+    "category": "master",
+    "sounds": [
+      "custom/global/powerup/x2pointsend"
+    ]
+  },
+  "custom.powerup.carpend": {
+    "category": "master",
+    "sounds": [
+      "custom/global/powerup/carpend"
+    ]
+  },
+  "custom.mysterybox.theme": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "custom/global/mysterybox/theme",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  },
+  "custom.mysterybox.teddy": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "custom/global/mysterybox/teddy",
+        "stream": true
+      }
+    ]
+  },
+  "custom.mysterybox.disappear": {
+    "category": "master",
+    "sounds": [
+      "custom/global/mysterybox/disappear"
+    ]
+  },
+  "custom.mysterybox.woosh": {
+    "category": "master",
+    "sounds": [
+      "custom/global/mysterybox/woosh"
+    ]
+  },
+  "custom.mysterybox.poof": {
+    "category": "master",
+    "sounds": [
+      "custom/global/mysterybox/poof"
+    ]
+  },
+  "custom.mysterybox.byebye": {
+    "category": "master",
+    "sounds": [
+      "custom/global/mysterybox/byebye"
+    ]
+  },
+  "custom.mysterybox.land": {
+    "category": "master",
+    "sounds": [
+      "custom/global/mysterybox/land"
+    ]
+  },
+  "custom.mysterybox.raygun": {
+    "category": "master",
+    "sounds": [
+      "custom/global/mysterybox/raygun"
+    ]
+  },
+  "custom.monkeybomb.tune": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "custom/weapons/monkeybomb/tune",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  },
+  "custom.monkeybomb.use": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/monkeybomb/use1",
+      "custom/weapons/monkeybomb/use2",
+      "custom/weapons/monkeybomb/use3"
+    ]
+  },
+  "custom.monkeybomb.exploding": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/monkeybomb/exploding1",
+      "custom/weapons/monkeybomb/exploding2",
+      "custom/weapons/monkeybomb/exploding3"
+    ]
+  },
+  "custom.monkeybomb.select": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/monkeybomb/select1",
+      "custom/weapons/monkeybomb/select2",
+      "custom/weapons/monkeybomb/select3"
+    ]
+  },
+  "custom.circuit.power_flux": {
+    "category": "master",
+    "sounds": [
+      "custom/global/circuit/power_flux"
+    ]
+  },
+  "custom.global.deny": {
+    "category": "master",
+    "sounds": [
+      "custom/global/deny"
+    ]
+  },
+  "custom.global.buy": {
+    "category": "master",
+    "sounds": [
+      "custom/global/buy"
+    ]
+  },
+  "custom.global.money": {
+    "category": "master",
+    "sounds": [
+      "custom/global/money"
+    ]
+  },
+  "custom.global.door_slide": {
+    "category": "master",
+    "sounds": [
+      "custom/global/door_slide"
+    ]
+  },
+  "custom.global.debris_vanish": {
+    "category": "master",
+    "sounds": [
+      "custom/global/debris_vanish"
+    ]
+  },
+  "custom.global.door_bang": {
+    "category": "master",
+    "sounds": [
+      "custom/global/door_bang"
+    ]
+  },
+  "custom.global.door_buzzer": {
+    "category": "master",
+    "sounds": [
+      "custom/global/door_buzzer"
+    ]
+  },
+  "custom.global.fence": {
+    "category": "master",
+    "sounds": [
+      "custom/global/fence"
+    ]
+  },
+  "custom.global.lab_door": {
+    "category": "master",
+    "sounds": [
+      "custom/global/lab_door"
+    ]
+  },
+  "custom.global.wood_fall": {
+    "category": "master",
+    "sounds": [
+      "custom/global/wood_fall"
+    ]
+  },
+  "custom.global.wood": {
+    "category": "master",
+    "sounds": [
+      "custom/global/wood",
+      "custom/global/wood1",
+      "custom/global/wood2"
+    ]
+  },
+  "custom.global.door_cotd_slide": {
+    "category": "master",
+    "sounds": [
+      "custom/global/door_cotd_slide"
+    ]
+  },
+  "custom.global.door_hinge": {
+    "category": "master",
+    "sounds": [
+      "custom/global/door_hinge_00",
+      "custom/global/door_hinge_01"
+    ]
+  },
+  "custom.global.buyjuggernog": {
+    "category": "master",
+    "sounds": [
+      "custom/global/buyjuggernog"
+    ]
+  },
+  "custom.global.buydoubletap": {
+    "category": "master",
+    "sounds": [
+      "custom/global/buydoubletap"
+    ]
+  },
+  "custom.global.buyspeed": {
+    "category": "master",
+    "sounds": [
+      "custom/global/buyspeed"
+    ]
+  },
+  "custom.global.buyrevive": {
+    "category": "master",
+    "sounds": [
+      "custom/global/buyrevive"
+    ]
+  },
+  "custom.global.buymule": {
+    "category": "master",
+    "sounds": [
+      "custom/global/buymule"
+    ]
+  },
+  "custom.global.buystam": {
+    "category": "master",
+    "sounds": [
+      "custom/global/buystam"
+    ]
+  },
+  "custom.global.buydeadshot": {
+    "category": "master",
+    "sounds": [
+      "custom/global/buydeadshot"
+    ]
+  },
+  "custom.global.buyphd": {
+    "category": "master",
+    "sounds": [
+      "custom/global/buyphd"
+    ]
+  },
+  "custom.global.perk_drink": {
+    "category": "master",
+    "sounds": [
+      "custom/global/perk_drink"
+    ]
+  },
+  "custom.pap.deny": {
+    "category": "master",
+    "sounds": [
+      "custom/global/pap/deny"
+    ]
+  },
+  "custom.pap.ready": {
+    "category": "master",
+    "sounds": [
+      "custom/global/pap/ready"
+    ]
+  },
+  "custom.pap.upgrade": {
+    "category": "master",
+    "sounds": [
+      "custom/global/pap/upgrade"
+    ]
+  },
+  "custom.weapon.shoot.pap": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/pap/pap_shot"
+    ]
+  },
+  "custom.weapon.shoot.ball": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/special/ball/ball_shot-01",
+      "custom/weapons/special/ball/ball_shot-02",
+      "custom/weapons/special/ball/ball_shot-03"
+    ]
+  },
+  "custom.weapon.reload_end.ball": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/special/ball/ball_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.m1911": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/pistol/m1911/m1911_shot-01",
+      "custom/weapons/pistol/m1911/m1911_shot-02",
+      "custom/weapons/pistol/m1911/m1911_shot-03",
+      "custom/weapons/pistol/m1911/m1911_shot-04",
+      "custom/weapons/pistol/m1911/m1911_shot-05"
+    ]
+  },
+  "custom.weapon.reload_start.m1911": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/pistol/m1911/m1911_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.m1911": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/pistol/m1911/m1911_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.cz75": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/pistol/cz75/cz75_shot-01",
+      "custom/weapons/pistol/cz75/cz75_shot-02",
+      "custom/weapons/pistol/cz75/cz75_shot-03",
+      "custom/weapons/pistol/cz75/cz75_shot-04",
+      "custom/weapons/pistol/cz75/cz75_shot-05"
+    ]
+  },
+  "custom.weapon.reload_start.cz75": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/pistol/cz75/cz75_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.cz75": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/pistol/cz75/cz75_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.python": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/pistol/python/python_shot-01",
+      "custom/weapons/pistol/python/python_shot-02",
+      "custom/weapons/pistol/python/python_shot-03",
+      "custom/weapons/pistol/python/python_shot-04",
+      "custom/weapons/pistol/python/python_shot-05"
+    ]
+  },
+  "custom.weapon.reload_start.python": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/pistol/python/python_reload_start"
+    ]
+  },
+  "custom.weapon.python_load": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/pistol/python/python_load"
+    ]
+  },
+  "custom.weapon.reload_end.python": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/pistol/python/python_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.aug": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/aug/aug_shot-01",
+      "custom/weapons/assault/aug/aug_shot-02",
+      "custom/weapons/assault/aug/aug_shot-03",
+      "custom/weapons/assault/aug/aug_shot-04",
+      "custom/weapons/assault/aug/aug_shot-05"
+    ]
+  },
+  "custom.weapon.reload_start.aug": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/aug/aug_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.aug": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/aug/aug_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.fal": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/fal/fal_shot-01",
+      "custom/weapons/assault/fal/fal_shot-02",
+      "custom/weapons/assault/fal/fal_shot-03",
+      "custom/weapons/assault/fal/fal_shot-04",
+      "custom/weapons/assault/fal/fal_shot-05"
+    ]
+  },
+  "custom.weapon.reload_start.fal": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/fal/fal_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.fal": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/fal/fal_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.comm": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/comm/comm_shot-01",
+      "custom/weapons/assault/comm/comm_shot-02",
+      "custom/weapons/assault/comm/comm_shot-03",
+      "custom/weapons/assault/comm/comm_shot-04",
+      "custom/weapons/assault/comm/comm_shot-05"
+    ]
+  },
+  "custom.weapon.reload_start.comm": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/comm/comm_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.comm": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/comm/comm_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.famas": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/famas/famas_shot-01",
+      "custom/weapons/assault/famas/famas_shot-02",
+      "custom/weapons/assault/famas/famas_shot-03",
+      "custom/weapons/assault/famas/famas_shot-04",
+      "custom/weapons/assault/famas/famas_shot-05"
+    ]
+  },
+  "custom.weapon.reload_start.famas": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/famas/famas_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.famas": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/famas/famas_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.galil": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/galil/galil_shot-01",
+      "custom/weapons/assault/galil/galil_shot-02",
+      "custom/weapons/assault/galil/galil_shot-03",
+      "custom/weapons/assault/galil/galil_shot-04",
+      "custom/weapons/assault/galil/galil_shot-05"
+    ]
+  },
+  "custom.weapon.reload_start.galil": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/galil/galil_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.galil": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/galil/galil_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.m14": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/m14/m14_shot-01",
+      "custom/weapons/assault/m14/m14_shot-02",
+      "custom/weapons/assault/m14/m14_shot-03",
+      "custom/weapons/assault/m14/m14_shot-04",
+      "custom/weapons/assault/m14/m14_shot-05"
+    ]
+  },
+  "custom.weapon.reload_start.m14": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/m14/m14_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.m14": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/m14/m14_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.g11": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/g11/g11_shot"
+    ]
+  },
+  "custom.weapon.reload_start.g11": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/g11/g11_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.g11": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/g11/g11_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.m16": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/assault/m16/m16_shot"
+    ]
+  },
+  "custom.weapon.shoot.spectre": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/smg/spectre/spectre_shot-01",
+      "custom/weapons/smg/spectre/spectre_shot-02",
+      "custom/weapons/smg/spectre/spectre_shot-03",
+      "custom/weapons/smg/spectre/spectre_shot-04",
+      "custom/weapons/smg/spectre/spectre_shot-05"
+    ]
+  },
+  "custom.weapon.reload_start.spectre": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/smg/spectre/spectre_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.spectre": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/smg/spectre/spectre_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.ak74": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/smg/ak74/ak74_shot-01",
+      "custom/weapons/smg/ak74/ak74_shot-02",
+      "custom/weapons/smg/ak74/ak74_shot-03",
+      "custom/weapons/smg/ak74/ak74_shot-04",
+      "custom/weapons/smg/ak74/ak74_shot-05"
+    ]
+  },
+  "custom.weapon.reload_start.ak74": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/smg/ak74/ak74_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.ak74": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/smg/ak74/ak74_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.mp5": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/smg/mp5/mp5_shot-01",
+      "custom/weapons/smg/mp5/mp5_shot-02",
+      "custom/weapons/smg/mp5/mp5_shot-03",
+      "custom/weapons/smg/mp5/mp5_shot-04",
+      "custom/weapons/smg/mp5/mp5_shot-05"
+    ]
+  },
+  "custom.weapon.reload_start.mp5": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/smg/mp5/mp5_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.mp5": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/smg/mp5/mp5_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.mpl": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/smg/mpl/mpl_shot-01",
+      "custom/weapons/smg/mpl/mpl_shot-02",
+      "custom/weapons/smg/mpl/mpl_shot-03",
+      "custom/weapons/smg/mpl/mpl_shot-04",
+      "custom/weapons/smg/mpl/mpl_shot-05"
+    ]
+  },
+  "custom.weapon.reload_start.mpl": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/smg/mpl/mpl_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.mpl": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/smg/mpl/mpl_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.pm63": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/smg/pm63/pm63_shot-01",
+      "custom/weapons/smg/pm63/pm63_shot-02",
+      "custom/weapons/smg/pm63/pm63_shot-03",
+      "custom/weapons/smg/pm63/pm63_shot-04",
+      "custom/weapons/smg/pm63/pm63_shot-05"
+    ]
+  },
+  "custom.weapon.reload_start.pm63": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/smg/pm63/pm63_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.pm63": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/smg/pm63/pm63_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.spas": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/shotgun/spas/spas_shot"
+    ]
+  },
+  "custom.weapon.reload_end.spas": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/shotgun/spas/spas_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.stake": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/shotgun/stake/stake_shot"
+    ]
+  },
+  "custom.weapon.shoot.stake_last": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/shotgun/stake/stake_shot_last"
+    ]
+  },
+  "custom.weapon.shoot.stake_quick": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/shotgun/stake/stake_shot_quick"
+    ]
+  },
+  "custom.weapon.shoot.hs10": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/shotgun/hs10/hs10_shot"
+    ]
+  },
+  "custom.weapon.reload_end.hs10": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/shotgun/hs10/hs10_reload_end"
+    ]
+  },
+  "custom.weapon.reload_start.oly": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/shotgun/oly/oly_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.oly": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/shotgun/oly/oly_reload_end"
+    ]
+  },
+  "custom.weapon.oly_load": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/shotgun/oly/oly_shell_in"
+    ]
+  },
+  "custom.weapon.shoot.trench": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/trench/trench_shot"
+    ]
+  },
+  "custom.weapon.shoot.trench_last": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/trench/trench_shot_last"
+    ]
+  },
+  "custom.weapon.shoot.trench_quick": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/trench/trench_shot_quick"
+    ]
+  },
+  "custom.weapon.trench_load": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/trench/trench_load-01",
+      "custom/weapons/waw/trench/trench_load-02",
+      "custom/weapons/waw/trench/trench_load-03"
+    ]
+  },
+  "custom.weapon.reload_end.trench": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/trench/trench_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.db": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/db/db_shot"
+    ]
+  },
+  "custom.weapon.shoot.dbsawn": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/db/dbsawn_shot"
+    ]
+  },
+  "custom.weapon.reload_start.db": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/db/db_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.db": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/db/db_reload_end"
+    ]
+  },
+  "custom.weapon.shotgun_pump": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/shotgun/shotgun_pump"
+    ]
+  },
+  "custom.weapon.shotgun_load": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/shotgun/shotgun_load-01",
+      "custom/weapons/shotgun/shotgun_load-02",
+      "custom/weapons/shotgun/shotgun_load-03",
+      "custom/weapons/shotgun/shotgun_load-04",
+      "custom/weapons/shotgun/shotgun_load-05",
+      "custom/weapons/shotgun/shotgun_load-06"
+    ]
+  },
+  "custom.weapon.shoot.drag": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/sniper/drag/drag_shot"
+    ]
+  },
+  "custom.weapon.reload_start.drag": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/sniper/drag/drag_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.drag": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/sniper/drag/drag_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.l96": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/sniper/l96/l96_shot"
+    ]
+  },
+  "custom.weapon.shoot.l96_quick": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/sniper/l96/l96_shot_quick"
+    ]
+  },
+  "custom.weapon.shoot.l96_last": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/sniper/l96/l96_shot_last"
+    ]
+  },
+  "custom.weapon.reload_start.l96": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/sniper/l96/l96_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.l96": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/sniper/l96/l96_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.ari": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/arisaka/ari_shot"
+    ]
+  },
+  "custom.weapon.shoot.ari_quick": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/arisaka/ari_shot_quick"
+    ]
+  },
+  "custom.weapon.shoot.ari_last": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/arisaka/ari_shot_last"
+    ]
+  },
+  "custom.weapon.ari_load": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/arisaka/ari_load"
+    ]
+  },
+  "custom.weapon.reload_end.ari": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/arisaka/ari_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.kar": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/kar/kar_shot-01",
+      "custom/weapons/waw/kar/kar_shot-02",
+      "custom/weapons/waw/kar/kar_shot-03",
+      "custom/weapons/waw/kar/kar_shot-04"
+    ]
+  },
+  "custom.weapon.kar_rechamber": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/kar/kar_rechamber"
+    ]
+  },
+  "custom.weapon.kar_rechamber_quick": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/kar/kar_rechamber_quick"
+    ]
+  },
+  "custom.weapon.kar_rechamber_last": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/kar/kar_rechamber_last"
+    ]
+  },
+  "custom.weapon.kar_load": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/kar/kar_load-01",
+      "custom/weapons/waw/kar/kar_load-02"
+    ]
+  },
+  "custom.weapon.reload_end.kar": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/kar/kar_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.gew": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/gew/gew_shot"
+    ]
+  },
+  "custom.weapon.reload_start.gew": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/gew/gew_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.gew": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/gew/gew_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.m1g": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/m1g/m1g_shot"
+    ]
+  },
+  "custom.weapon.shoot.m1g_last": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/m1g/m1g_shot_last"
+    ]
+  },
+  "custom.weapon.reload_end.m1g": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/m1g/m1g_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.m1c": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/m1c/m1c_shot"
+    ]
+  },
+  "custom.weapon.reload_start.m1c": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/m1c/m1c_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.m1c": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/m1c/m1c_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.stg": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/stg/stg_shot"
+    ]
+  },
+  "custom.weapon.reload_start.stg": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/stg/stg_reload_start"
+    ]
+  },
+  "custom.weapon.reload_mid.stg": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/stg/stg_reload_mid"
+    ]
+  },
+  "custom.weapon.reload_end.stg": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/stg/stg_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.mp40": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/mp40/mp40_shot"
+    ]
+  },
+  "custom.weapon.reload_start.mp40": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/mp40/mp40_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.mp40": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/mp40/mp40_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.thom": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/thompson/thom_shot"
+    ]
+  },
+  "custom.weapon.reload_start.thom": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/thompson/thom_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.thom": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/thompson/thom_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.typ": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/typ/typ_shot"
+    ]
+  },
+  "custom.weapon.reload_start.typ": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/typ/typ_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.typ": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/typ/typ_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.fg42": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/fg42/fg42_shot"
+    ]
+  },
+  "custom.weapon.reload_start.fg42": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/fg42/fg42_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.fg42": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/fg42/fg42_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.bar": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/bar/bar_shot"
+    ]
+  },
+  "custom.weapon.reload_start.bar": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/bar/bar_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.bar": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/waw/bar/bar_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.rpk": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/lmg/rpk/rpk_shot-01",
+      "custom/weapons/lmg/rpk/rpk_shot-02",
+      "custom/weapons/lmg/rpk/rpk_shot-03",
+      "custom/weapons/lmg/rpk/rpk_shot-04",
+      "custom/weapons/lmg/rpk/rpk_shot-05"
+    ]
+  },
+  "custom.weapon.reload_start.rpk": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/lmg/rpk/rpk_reload_0"
+    ]
+  },
+  "custom.weapon.reload_1.rpk": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/lmg/rpk/rpk_reload_1"
+    ]
+  },
+  "custom.weapon.reload_2.rpk": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/lmg/rpk/rpk_reload_2"
+    ]
+  },
+  "custom.weapon.reload_end.rpk": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/lmg/rpk/rpk_reload_3"
+    ]
+  },
+  "custom.weapon.shoot.hk21": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/lmg/hk21/hk21_shot-01",
+      "custom/weapons/lmg/hk21/hk21_shot-02",
+      "custom/weapons/lmg/hk21/hk21_shot-03",
+      "custom/weapons/lmg/hk21/hk21_shot-04"
+    ]
+  },
+  "custom.weapon.reload_start.hk21": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/lmg/hk21/hk21_reload_0"
+    ]
+  },
+  "custom.weapon.reload_1.hk21": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/lmg/hk21/hk21_reload_1"
+    ]
+  },
+  "custom.weapon.reload_end.hk21": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/lmg/hk21/hk21_reload_2"
+    ]
+  },
+  "custom.weapon.shoot.ray": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/wonder/ray/ray_shot"
+    ]
+  },
+  "custom.weapon.ray_impact": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/wonder/ray/ray_impact"
+    ]
+  },
+  "custom.weapon.reload_start.ray": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/wonder/ray/ray_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.ray": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/wonder/ray/ray_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.thun": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/wonder/thundergun/thun_shot"
+    ]
+  },
+  "custom.weapon.shoot.thun_last": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/wonder/thundergun/thun_shot_last"
+    ]
+  },
+  "custom.weapon.reload_start.thun": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/wonder/thundergun/thun_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.thun": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/wonder/thundergun/thun_reload_end"
+    ]
+  },
+  "custom.weapon.shoot.vr11": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/wonder/human/vr11_shot"
+    ]
+  },
+  "custom.weapon.reload_start.vr11": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/wonder/human/vr11_reload_start"
+    ]
+  },
+  "custom.weapon.reload_end.vr11": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/wonder/human/vr11_reload_end"
+    ]
+  },
+  "custom.weapon.vr11_impact": {
+    "category": "master",
+    "sounds": [
+      "custom/weapons/wonder/human/vr11_impact"
+    ]
+  }
+}

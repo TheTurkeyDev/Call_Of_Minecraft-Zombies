@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.game.features;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.util.PackModels;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -16,16 +17,41 @@ import java.util.stream.Collectors;
 
 public enum PerkType
 {
-	JUGGERNOG,
-	SPEED_COLA,
-	QUICK_REVIVE,
-	DOUBLE_TAP,
-	STAMIN_UP,
-	PHD_FLOPPER,
-	DEADSHOT_DAIQ,
-	MULE_KICK,
-	ELECTRIC_C,
-	DER_WUNDERFIZZ;
+	JUGGERNOG("perk/juggernog"),
+	SPEED_COLA("perk/speed_cola"),
+	QUICK_REVIVE("perk/quick_revive"),
+	DOUBLE_TAP("perk/double_tap"),
+	STAMIN_UP("perk/stamina_up"),
+	PHD_FLOPPER("perk/phd_flopper"),
+	DEADSHOT_DAIQ("perk/deadshot"),
+	MULE_KICK("perk/mule_kick"),
+	ELECTRIC_C("perk/electric_cherry"),
+	VULTURE_AID("perk/vulture_aid"),
+	TOMBSTONE_SODA("perk/tombstone"),
+	WHOS_WHO("perk/whos_who"),
+	DER_WUNDERFIZZ(null);
+
+	/**
+	 * Custom perk-bottle models are not shipped yet — the source pack only has an empty
+	 * {@code perk_bottle_base} template (no texture), which renders invisible. Until real
+	 * per-perk models exist, perks keep their distinct vanilla item icons. Flip to {@code true}
+	 * once {@code assets/comz/items/perk/<slug>} point at textured models.
+	 */
+	private static final boolean CUSTOM_PERK_MODELS = false;
+
+	/** COM:Z pack item-model key for this perk's bottle, or null (e.g. the random machine). */
+	private final String modelKey;
+
+	PerkType(String modelKey)
+	{
+		this.modelKey = modelKey;
+	}
+
+	/** Model key to apply, or null while custom perk models are not ready. */
+	private String activeModelKey()
+	{
+		return CUSTOM_PERK_MODELS ? modelKey : null;
+	}
 
 	public static PerkType getPerkType(String name)
 	{
@@ -34,6 +60,12 @@ public enum PerkType
 				return pt;
 		if(name.equalsIgnoreCase("der wunderfizz") || name.equalsIgnoreCase("wunderfizz") || name.equalsIgnoreCase("random"))
 			return DER_WUNDERFIZZ;
+		if(name.equalsIgnoreCase("vulture aid") || name.equalsIgnoreCase("vulture"))
+			return VULTURE_AID;
+		if(name.equalsIgnoreCase("tombstone soda") || name.equalsIgnoreCase("tombstone"))
+			return TOMBSTONE_SODA;
+		if(name.equalsIgnoreCase("whos who") || name.equalsIgnoreCase("who's who") || name.equalsIgnoreCase("whoswho"))
+			return WHOS_WHO;
 		return null;
 	}
 
@@ -42,8 +74,9 @@ public enum PerkType
 		final World world = player.getLocation().getWorld();
 		if(world != null)
 		{
-			COMZombies.scheduleTask(5, () -> world.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1, 1));
-			COMZombies.scheduleTask(10, () -> world.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1, 1));
+			String drink = com.theprogrammingturkey.comz.util.SoundConfig.get("perk.buy", Sound.ENTITY_GENERIC_DRINK.name());
+			COMZombies.scheduleTask(5, () -> com.theprogrammingturkey.comz.util.SoundUtil.play(world, player.getLocation(), drink, org.bukkit.SoundCategory.MASTER, 1, 1));
+			COMZombies.scheduleTask(10, () -> com.theprogrammingturkey.comz.util.SoundUtil.play(world, player.getLocation(), drink, org.bukkit.SoundCategory.MASTER, 1, 1));
 			COMZombies.scheduleTask(20, () -> world.playEffect(player.getLocation(), Effect.POTION_BREAK, 1));
 		}
 		ItemStack stack = new ItemStack(Material.AIR, 1);
@@ -86,9 +119,22 @@ public enum PerkType
 				stack = new ItemStack(Material.NETHER_STAR);
 				Perktype = "Electric Cherry";
 				break;
+			case VULTURE_AID:
+				stack = new ItemStack(Material.ROTTEN_FLESH);
+				Perktype = "Vulture Aid";
+				break;
+			case TOMBSTONE_SODA:
+				stack = new ItemStack(Material.WITHER_ROSE, 1);
+				Perktype = "Tombstone Soda";
+				break;
+			case WHOS_WHO:
+				stack = new ItemStack(Material.SKELETON_SKULL, 1);
+				Perktype = "Who's Who";
+				break;
 			default:
 				break;
 		}
+		PackModels.apply(stack, type.activeModelKey());
 		player.getInventory().setItem(slot, setItemMeta(stack, Perktype));
 		player.updateInventory();
 	}
@@ -96,7 +142,8 @@ public enum PerkType
 	public static void noPower(Player player)
 	{
 		World world = player.getLocation().getWorld();
-		world.playSound(player.getLocation(), Sound.ENTITY_GHAST_AMBIENT, 1L, 1L);
+		String noPower = com.theprogrammingturkey.comz.util.SoundConfig.get("perk.noPower", Sound.ENTITY_GHAST_AMBIENT.name());
+		com.theprogrammingturkey.comz.util.SoundUtil.play(world, player.getLocation(), noPower, org.bukkit.SoundCategory.MASTER, 1, 1);
 	}
 
 	private ItemStack setItemMeta(ItemStack item, String type)
@@ -139,9 +186,19 @@ public enum PerkType
 			case ELECTRIC_C:
 				stack = new ItemStack(Material.NETHER_STAR);
 				break;
+			case VULTURE_AID:
+				stack = new ItemStack(Material.ROTTEN_FLESH);
+				break;
+			case TOMBSTONE_SODA:
+				stack = new ItemStack(Material.WITHER_ROSE, 1);
+				break;
+			case WHOS_WHO:
+				stack = new ItemStack(Material.SKELETON_SKULL, 1);
+				break;
 			default:
 				break;
 		}
+		PackModels.apply(stack, type.activeModelKey());
 		return stack;
 	}
 

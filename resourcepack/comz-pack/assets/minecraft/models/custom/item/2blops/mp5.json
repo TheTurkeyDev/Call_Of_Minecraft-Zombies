@@ -1,0 +1,6 @@
+{
+    "parent": "custom/item/handheld_smg",
+	"textures": {
+		"layer0": "custom/item/2blops/mp5"
+	}
+}

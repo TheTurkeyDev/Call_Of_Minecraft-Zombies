@@ -1,5 +1,6 @@
 package com.theprogrammingturkey.comz.game.managers;
 
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.PerkType;
@@ -210,7 +211,7 @@ public class PlayerWeaponManager
 	{
 		for(WeaponInstance weapon : weapons)
 			if(weapon.getBaseWeapon().getWeaponType().equals(WeaponType.GRENADE))
-				return player.getInventory().contains(Material.SLIME_BALL, 4);
+				return player.getInventory().contains(Material.SLIME_BALL, ConfigManager.getMainConfig().maxGrenades);
 		return false;
 	}
 

@@ -9,26 +9,7 @@ import com.theprogrammingturkey.comz.game.actions.BaseAction;
 import com.theprogrammingturkey.comz.game.managers.WeaponManager;
 import com.theprogrammingturkey.comz.kits.KitManager;
 import com.theprogrammingturkey.comz.listeners.*;
-import com.theprogrammingturkey.comz.support.support_1_14_R1.NMSUtil_1_14_R1;
-import com.theprogrammingturkey.comz.support.support_1_15_R1.NMSUtil_1_15_R1;
-import com.theprogrammingturkey.comz.support.support_1_16_R1.NMSUtil_1_16_R1;
-import com.theprogrammingturkey.comz.support.support_1_16_R2.NMSUtil_1_16_R2;
-import com.theprogrammingturkey.comz.support.support_1_16_R3.NMSUtil_1_16_R3;
-import com.theprogrammingturkey.comz.support.support_1_17_R1.NMSUtil_1_17_R1;
-import com.theprogrammingturkey.comz.support.support_1_18_R1.NMSUtil_1_18_R1;
-import com.theprogrammingturkey.comz.support.support_1_18_R2.NMSUtil_1_18_R2;
-import com.theprogrammingturkey.comz.support.support_1_19_2_R2.NMSUtil_1_19_2_R1;
-import com.theprogrammingturkey.comz.support.support_1_19_2_R2.NMSUtil_1_19_2_R2;
-import com.theprogrammingturkey.comz.support.support_1_19_R1.NMSUtil_1_19_R1;
-import com.theprogrammingturkey.comz.support.support_1_19_R3.NMSUtil_1_19_R3;
-import com.theprogrammingturkey.comz.support.support_1_20_R1.NMSUtil_1_20_R1;
-import com.theprogrammingturkey.comz.support.support_1_20_R2.NMSUtil_1_20_R2;
-import com.theprogrammingturkey.comz.support.support_1_20_R3.NMSUtil_1_20_R3;
-import com.theprogrammingturkey.comz.support.support_1_20_R4.NMSUtil_1_20_R4;
-import com.theprogrammingturkey.comz.support.support_1_21_R1.NMSUtil_1_21_R1;
-import com.theprogrammingturkey.comz.support.support_1_21_R2.NMSUtil_1_21_R2;
-import com.theprogrammingturkey.comz.support.support_1_21_R3.NMSUtil_1_21_R3;
-import com.theprogrammingturkey.comz.support.support_1_21_R4.NMSUtil_1_21_R4;
+import com.theprogrammingturkey.comz.support.NMSUtil_Modern;
 import com.theprogrammingturkey.comz.util.PlaceholderHook;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -37,8 +18,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,7 +40,7 @@ public class COMZombies extends JavaPlugin
 	/**
 	 * Players currently performing some sort of action or maintenance
 	 */
-	public HashMap<Player, BaseAction> activeActions = new HashMap<>();
+	public Map<Player, BaseAction> activeActions = new ConcurrentHashMap<>();
 
 
 	/**
@@ -66,7 +48,7 @@ public class COMZombies extends JavaPlugin
 	 * sign, the value that corresponds to the player is the sign that the
 	 * player is editing.
 	 */
-	public HashMap<Player, Location> isEditingASign = new HashMap<>();
+	public Map<Player, Location> isEditingASign = new ConcurrentHashMap<>();
 
 	/**
 	 * Called when the plugin is reloading to cancel every remove spawn, create
@@ -122,86 +104,14 @@ public class COMZombies extends JavaPlugin
 
 		log.info(COMZombies.CONSOLE_PREFIX + "Version info | MC: " + version + " | Bukkit: " + Bukkit.getVersion() + " & " + Bukkit.getBukkitVersion() + " | CB: " + Bukkit.getServer().getClass().getPackage().getName());
 
-		switch(version)
-		{
-			case "1.14":
-			case "1.14.1":
-			case "1.14.2":
-			case "1.14.3":
-			case "1.14.4":
-				nmsUtil = new NMSUtil_1_14_R1();
-				break;
-			case "1.15":
-			case "1.15.1":
-			case "1.15.2":
-				nmsUtil = new NMSUtil_1_15_R1();
-				break;
-			case "1.16":
-			case "1.16.1":
-				nmsUtil = new NMSUtil_1_16_R1();
-				break;
-			case "1.16.2":
-			case "1.16.3":
-				nmsUtil = new NMSUtil_1_16_R2();
-				break;
-			case "1.16.4":
-			case "1.16.5":
-				nmsUtil = new NMSUtil_1_16_R3();
-				break;
-			case "1.17":
-			case "1.17.1":
-				nmsUtil = new NMSUtil_1_17_R1();
-				break;
-			case "1.18":
-			case "1.18.1":
-				nmsUtil = new NMSUtil_1_18_R1();
-				break;
-			case "1.18.2":
-				nmsUtil = new NMSUtil_1_18_R2();
-				break;
-			case "1.19":
-			case "1.19.1":
-				nmsUtil = new NMSUtil_1_19_R1();
-				break;
-			case "1.19.2":
-				nmsUtil = new NMSUtil_1_19_2_R1();
-				break;
-			case "1.19.3":
-				nmsUtil = new NMSUtil_1_19_2_R2();
-				break;
-			case "1.19.4":
-				nmsUtil = new NMSUtil_1_19_R3();
-				break;
-			case "1.20":
-			case "1.20.1":
-				nmsUtil = new NMSUtil_1_20_R1();
-				break;
-			case "1.20.2":
-				nmsUtil = new NMSUtil_1_20_R2();
-				break;
-			case "1.20.4":
-				nmsUtil = new NMSUtil_1_20_R3();
-				break;
-			case "1.20.5":
-			case "1.20.6":
-				nmsUtil = new NMSUtil_1_20_R4();
-				break;
-			case "1.21":
-			case "1.21.1":
-				nmsUtil = new NMSUtil_1_21_R1();
-				break;
-			case "1.21.3":
-				nmsUtil = new NMSUtil_1_21_R2();
-				break;
-			case "1.21.4":
-				nmsUtil = new NMSUtil_1_21_R3();
-				break;
-			case "1.21.5":
-				nmsUtil = new NMSUtil_1_21_R4();
-				break;
-			default:
-				throw new IllegalStateException("Sorry, COM:Z Does not current support server version" + version);
-		}
+		// COM:Z talks to the server only through INMSUtil. NMSUtil_Modern is a single
+		// pure-Bukkit implementation (Lidded + Player#sendBlockDamage) that works on every
+		// modern server (1.17+, including 26.2 and future releases), so there is no longer a
+		// per-version module to pick.
+		//
+		// To support a server too old for those Bukkit APIs, implement INMSUtil in a dedicated
+		// NMS module and dispatch to it here based on `version` (the seam is intentionally kept).
+		nmsUtil = new NMSUtil_Modern();
 	}
 
 	/**
@@ -215,6 +125,7 @@ public class COMZombies extends JavaPlugin
 		m.registerEvents(new EntityListener(), this);
 		m.registerEvents(new PlayerChatListener(), this);
 		m.registerEvents(new SignListener(), this);
+		m.registerEvents(new BarrierRepairListener(), this);
 		m.registerEvents(new OnPreCommandEvent(), this);
 		m.registerEvents(new OnBlockInteractEvent(), this);
 		m.registerEvents(new EXPListener(), this);
@@ -223,6 +134,7 @@ public class COMZombies extends JavaPlugin
 		m.registerEvents(new PlayerListener(), this);
 		m.registerEvents(new OnInventoryChangeEvent(), this);
 		m.registerEvents(new ScopeListener(), this);
+		m.registerEvents(new ResourcePackListener(), this);
 	}
 
 	/**

@@ -89,7 +89,7 @@ public class RayTrace
 	public void showParticles(World world, double blocksAway, float seperation, Color color)
 	{
 		for(Vector position : traverse(blocksAway, seperation))
-			world.spawnParticle(Particle.REDSTONE, position.getX(), position.getY(), position.getZ(), 0, 0, 0, 0, 1, new Particle.DustOptions(color, 1));
+			world.spawnParticle(Particle.DUST, position.getX(), position.getY(), position.getZ(), 0, 0, 0, 0, 1, new Particle.DustOptions(color, 1));
 	}
 
 
