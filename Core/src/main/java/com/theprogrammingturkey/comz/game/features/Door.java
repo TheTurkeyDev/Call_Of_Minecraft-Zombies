@@ -9,6 +9,7 @@ import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import com.theprogrammingturkey.comz.util.BlockUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,9 +17,11 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.BlockData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -28,8 +31,14 @@ public class Door
 	public String doorID;
 	private final Game game;
 	private int price = 0;
-	private final Map<Block, Material> blocks = new HashMap<>();
-	private final List<Location> signsLocations = new ArrayList<>();
+	// Full BlockData is stored (not just Material) so a door restores its blocks EXACTLY as
+	// authored — fence/wall/glass-pane connections, stair/slab shape, sign facing, etc. Restoring
+	// by Material alone lost that metadata, producing fences that render connection arms into air
+	// and signs that face the wrong way after the door closed again.
+	private final Map<Block, BlockData> blocks = new LinkedHashMap<>();
+	// Door price signs: location -> the sign's saved BlockData (its facing). May be null for legacy
+	// saves that predate facing capture, in which case we fall back to a default wall sign.
+	private final Map<Location, BlockData> signs = new LinkedHashMap<>();
 	private List<SpawnPoint> spawnsInRoomDoorLeadsTo = new ArrayList<>();
 	private boolean isOpened = false;
 	private boolean powerRequired = false;
@@ -69,17 +78,28 @@ public class Door
 
 		JsonArray blocksJson = new JsonArray();
 		saveJson.add("blocks", blocksJson);
-		for(Map.Entry<Block, Material> block : blocks.entrySet())
+		for(Map.Entry<Block, BlockData> block : blocks.entrySet())
 		{
 			JsonObject blockJson = CustomConfig.locationToJsonNoWorld(block.getKey().getLocation());
-			blockJson.addProperty("material", block.getValue().getKey().getKey());
+			BlockData data = block.getValue();
+			// Full block state; "material" kept too for readability / legacy fallback.
+			blockJson.addProperty("blockdata", data.getAsString());
+			blockJson.addProperty("material", data.getMaterial().getKey().getKey());
 			blocksJson.add(blockJson);
 		}
 
 		JsonArray signsJson = new JsonArray();
 		saveJson.add("signs", signsJson);
-		for(Location loc : signsLocations)
-			signsJson.add(CustomConfig.locationToJsonNoWorld(loc));
+		for(Map.Entry<Location, BlockData> sign : signs.entrySet())
+		{
+			JsonObject signJson = CustomConfig.locationToJsonNoWorld(sign.getKey());
+			BlockData data = sign.getValue();
+			if(data == null && BlockUtils.isSign(sign.getKey().getBlock()))
+				data = sign.getKey().getBlock().getBlockData();
+			if(data != null)
+				signJson.addProperty("blockdata", data.getAsString());
+			signsJson.add(signJson);
+		}
 
 
 		JsonArray spawnsJson = new JsonArray();
@@ -119,9 +139,9 @@ public class Door
 		}
 	}
 
-	private void loadSigns(JsonArray signs)
+	private void loadSigns(JsonArray signsJsonArray)
 	{
-		for(JsonElement signElem : signs)
+		for(JsonElement signElem : signsJsonArray)
 		{
 			if(!signElem.isJsonObject())
 				continue;
@@ -129,14 +149,16 @@ public class Door
 			Location loc = CustomConfig.getLocationWithWorld(signJson, "", game.getWorld());
 			if(loc != null)
 			{
+				BlockData savedData = parseBlockData(signJson);
+
 				Block block = loc.getBlock();
 				if(BlockUtils.isSign(block.getType()))
 				{
 					Sign sign = (Sign) block.getState();
-					String costLine = sign.getLine(3);
+					String costLine = ChatColor.stripColor(sign.getLine(3));
 					price = costLine.matches("[0-9]{1,9}") ? Integer.parseInt(costLine) : 750;
-					this.signsLocations.add(loc);
 				}
+				this.signs.put(loc, savedData);
 			}
 			else
 			{
@@ -179,12 +201,31 @@ public class Door
 
 	public void closeDoor()
 	{
-		for(Block block : blocks.keySet())
-			BlockUtils.setBlockTypeHelper(block, blocks.get(block));
+		// Restore door blocks to their EXACT saved state (no physics, so fence/pane/stair
+		// connections are exactly as authored rather than recomputed against half-restored
+		// neighbours). Blocks first so wall signs have their support back.
+		for(Map.Entry<Block, BlockData> entry : blocks.entrySet())
+			entry.getKey().setBlockData(entry.getValue(), false);
 
-		for(Location loc : signsLocations)
+		for(Map.Entry<Location, BlockData> entry : signs.entrySet())
 		{
-			Sign sign = (Sign) loc.getBlock().getState();
+			Block block = entry.getKey().getBlock();
+			BlockData savedData = entry.getValue();
+
+			// Restore the sign with its saved facing if we have it; otherwise fall back to a plain
+			// wall sign (legacy saves). A wall sign mounted on a door block pops off when the door
+			// opens (its support became air), so it is recreated here after the blocks are back.
+			if(savedData != null)
+				block.setBlockData(savedData, false);
+			else if(!(block.getState() instanceof Sign))
+				block.setType(Material.OAK_WALL_SIGN);
+
+			if(!(block.getState() instanceof Sign))
+			{
+				COMZombies.log.log(Level.WARNING, "Could not restore door sign at " + entry.getKey().getBlockX() + ", " + entry.getKey().getBlockY() + ", " + entry.getKey().getBlockZ() + " for door '" + doorID + "'; skipping.");
+				continue;
+			}
+			Sign sign = (Sign) block.getState();
 			sign.setLine(0, ChatColor.RED + "[Zombies]");
 			sign.setLine(1, ChatColor.AQUA + "Door");
 			sign.setLine(2, ChatColor.GOLD + "Price:");
@@ -201,13 +242,32 @@ public class Door
 
 	public void addSign(Location loc)
 	{
-		signsLocations.add(loc);
+		Block block = loc.getBlock();
+		signs.put(loc, BlockUtils.isSign(block.getType()) ? block.getBlockData() : null);
 		GameManager.INSTANCE.saveAllGames();
 	}
 
 	public List<Location> getSignsLocations()
 	{
-		return signsLocations;
+		return new ArrayList<>(signs.keySet());
+	}
+
+	/**
+	 * Parses a saved BlockData string from a json object, returning null if absent or invalid
+	 * (legacy saves, or a block type that no longer exists).
+	 */
+	private BlockData parseBlockData(JsonObject json)
+	{
+		if(!json.has("blockdata"))
+			return null;
+		try
+		{
+			return Bukkit.createBlockData(json.get("blockdata").getAsString());
+		}
+		catch(IllegalArgumentException e)
+		{
+			return null;
+		}
 	}
 
 	/**
@@ -228,9 +288,20 @@ public class Door
 
 			if(loc != null)
 			{
-				Material mat = BlockUtils.getMaterialFromKey(CustomConfig.getString(blockJson, "material", ""));
-				BlockUtils.setBlockTypeHelper(loc.getBlock(), mat);
-				this.blocks.put(loc.getBlock(), mat);
+				Block block = loc.getBlock();
+				BlockData data = parseBlockData(blockJson);
+				if(data != null)
+				{
+					block.setBlockData(data, false);
+				}
+				else
+				{
+					// Legacy fallback: only a material was saved.
+					Material mat = BlockUtils.getMaterialFromKey(CustomConfig.getString(blockJson, "material", ""));
+					BlockUtils.setBlockTypeHelper(block, mat);
+					data = block.getBlockData();
+				}
+				this.blocks.put(block, data);
 			}
 			else
 			{
@@ -263,7 +334,7 @@ public class Door
 					{
 						Location loc = new Location(p1.getWorld(), x + x1, y + y1, z + z1);
 						Block block = loc.getBlock();
-						blocks.put(block, block.getType());
+						blocks.put(block, block.getBlockData());
 					}
 				}
 			}
@@ -274,12 +345,7 @@ public class Door
 	public void addDoorBlock(Location loc)
 	{
 		Block block = loc.getBlock();
-		this.addDoorBlock(block, block.getType());
-	}
-
-	public void addDoorBlock(Block block, Material mat)
-	{
-		blocks.put(block, mat);
+		blocks.put(block, block.getBlockData());
 	}
 
 	public void removeDoorBlock(Location loc)

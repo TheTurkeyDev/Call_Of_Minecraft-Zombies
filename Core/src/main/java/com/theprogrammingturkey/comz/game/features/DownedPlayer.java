@@ -4,6 +4,7 @@ import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.Game;
+import com.theprogrammingturkey.comz.game.managers.PermaPerkManager;
 import com.theprogrammingturkey.comz.game.managers.PlayerWeaponManager;
 import com.theprogrammingturkey.comz.game.managers.WeaponManager;
 import com.theprogrammingturkey.comz.game.weapons.WeaponInstance;
@@ -46,7 +47,15 @@ public class DownedPlayer implements Listener
 		isPlayerDown = true;
 		PlayerStats stats = Leaderboard.getPlayerStatFromPlayer(player);
 		stats.setDowns(stats.getDowns() + 1);
-		player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "You have gone down and need to be revived!");
+		// The down message is sent by DownedPlayerManager.setPlayerDowned, which knows whether this
+		// is a co-op down (needs another player), a solo self-revive, or game over — so it isn't sent
+		// here (it used to always say "need to be revived", which made no sense in a solo game).
+		// Tier 3 — Tombstone Soda: snapshot perks BEFORE they are cleared so they can be reclaimed.
+		if(ConfigManager.getMainConfig().tombstoneEnabled && game.perkManager.hasPerk(player, PerkType.TOMBSTONE_SODA))
+		{
+			game.downedPlayerManager.storeTombstoneSnapshot(player.getUniqueId(), game.perkManager.getPlayersPerks(player));
+			player.sendMessage(ChatColor.GRAY + "Tombstone Soda will preserve your perks.");
+		}
 		game.perkManager.clearPlayersPerks(player);
 		PlayerWeaponManager manager = game.getPlayersWeapons(player);
 		guns[0] = manager.removeWeapon(1);
@@ -78,6 +87,9 @@ public class DownedPlayer implements Listener
 			reviver.sendMessage(ChatColor.GREEN + "You revived " + ChatColor.DARK_GREEN + player.getName());
 			PlayerStats stats = Leaderboard.getPlayerStatFromPlayer(reviver);
 			stats.setRevives(stats.getRevives() + 1);
+			// Tier 4 — perma-perk progression: count this revive toward the reviver's lifetime total
+			// and unlock any perma-perks whose play threshold has now been crossed.
+			PermaPerkManager.recordRevive(reviver);
 		}
 		clearDownedState();
 		game.downedPlayerManager.downedPlayerRevived(this);
@@ -85,6 +97,9 @@ public class DownedPlayer implements Listener
 		manager.removeWeapon(1);
 		manager.addWeapon(guns[0]);
 		manager.addWeapon(guns[1]);
+
+		// Tier 3 — Tombstone Soda: re-grant the snapshotted perks (one-shot) if one was saved.
+		game.downedPlayerManager.reclaimTombstonePerks(game, player);
 
 		if(reviver != null)
 			PointManager.INSTANCE.addPoints(reviver, 10);
@@ -129,7 +144,7 @@ public class DownedPlayer implements Listener
 
 	private void displayDown()
 	{
-		Firework f = (Firework) player.getWorld().spawnEntity(player.getLocation(), EntityType.FIREWORK);
+		Firework f = (Firework) player.getWorld().spawnEntity(player.getLocation(), EntityType.FIREWORK_ROCKET);
 		FireworkMeta meta = f.getFireworkMeta();
 		meta.setPower(1);
 		meta.addEffect(getRandomFireworkEffect());

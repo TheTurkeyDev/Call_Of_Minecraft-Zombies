@@ -2,6 +2,7 @@ package com.theprogrammingturkey.comz.game.weapons;
 
 import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.config.CustomConfig;
+import com.theprogrammingturkey.comz.util.Compat;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -28,7 +29,7 @@ public class Weapon
 	{
 		this.totalAmmo = CustomConfig.getInt(json, "total_ammo", 1);
 		this.damage = CustomConfig.getInt(json, "damage", 1);
-		this.material = Material.getMaterial(CustomConfig.getString(json, "material", ""));
+		this.material = Compat.material(CustomConfig.getString(json, "material", ""));
 		this.modelData = CustomConfig.getInt(json, "model_data", -1);
 	}
 

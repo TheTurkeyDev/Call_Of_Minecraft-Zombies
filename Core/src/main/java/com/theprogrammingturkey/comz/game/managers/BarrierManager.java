@@ -11,11 +11,12 @@ import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.spawning.SpawnPoint;
 import com.theprogrammingturkey.comz.util.BlockUtils;
 import com.theprogrammingturkey.comz.util.Util;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -61,8 +62,22 @@ public class BarrierManager
 				Location loc = CustomConfig.getLocationWithWorld(blockJson, "", game.getWorld());
 				if(loc != null)
 				{
-					Material mat = BlockUtils.getMaterialFromKey(CustomConfig.getString(blockJson, "material", ""));
-					barrier.addBarrierBlock(game.getWorld().getBlockAt(loc), mat);
+					Block worldBlock = game.getWorld().getBlockAt(loc);
+					BlockData data = null;
+					if(blockJson.has("blockdata"))
+					{
+						try
+						{
+							data = Bukkit.createBlockData(CustomConfig.getString(blockJson, "blockdata", ""));
+						}
+						catch(IllegalArgumentException ignored)
+						{
+						}
+					}
+					// Legacy saves (or an invalid string): capture the live, intact block's full data.
+					if(data == null)
+						data = worldBlock.getBlockData();
+					barrier.addBarrierBlock(worldBlock, data);
 				}
 				else
 				{
@@ -93,7 +108,13 @@ public class BarrierManager
 			for(Block block : barrier.getBlocks())
 			{
 				JsonObject blockJson = CustomConfig.locationToJsonNoWorld(block.getLocation());
-				blockJson.addProperty("material", block.getType().getKey().getKey());
+				// Save the STORED intact BlockData (not the live block, which may be broken to air
+				// when the save happens mid-round). "material" kept for readability / legacy fallback.
+				BlockData data = barrier.getBlockData(block);
+				if(data == null)
+					data = block.getBlockData();
+				blockJson.addProperty("blockdata", data.getAsString());
+				blockJson.addProperty("material", data.getMaterial().getKey().getKey());
 				barrierBlocks.add(blockJson);
 			}
 

@@ -5,11 +5,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.ConfigManager;
+import com.theprogrammingturkey.comz.config.ConfigSetup;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.Game.GameStatus;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Door;
+import com.theprogrammingturkey.comz.game.features.PowerUp;
 import com.theprogrammingturkey.comz.util.BlockUtils;
 import com.theprogrammingturkey.comz.util.Util;
 import org.bukkit.Bukkit;
@@ -20,10 +22,12 @@ import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class SpawnManager
 {
@@ -33,6 +37,7 @@ public class SpawnManager
 	{
 		roundSpawnerMap.put(RoundSpawnType.REGULAR, new ZombieSpawner());
 		roundSpawnerMap.put(RoundSpawnType.HELL_HOUNDS, new HellHoundSpawner());
+		roundSpawnerMap.put(RoundSpawnType.BOSS, new BossSpawner());
 	}
 
 	private final Game game;
@@ -44,6 +49,14 @@ public class SpawnManager
 	private final double spawnDelayFactor;
 	private int mobsSpawned = 0;
 	private int mobsToSpawn = 0;
+	private boolean dogRound = false;
+	private boolean bossRound = false;
+
+	/** 0L — stuck-detection state: last sampled location and accumulated no-progress ticks per mob. */
+	private final Map<Mob, Location> stuckLastLoc = new HashMap<>();
+	private final Map<Mob, Long> stuckTicks = new HashMap<>();
+	/** update() reschedules itself every 100 ticks, so that is the stuck-check sampling interval. */
+	private static final long STUCK_CHECK_INTERVAL = 100L;
 
 	public SpawnManager(Game game)
 	{
@@ -150,11 +163,41 @@ public class SpawnManager
 			return;
 
 		mobs.remove(entity);
+		stuckLastLoc.remove(entity);
+		stuckTicks.remove(entity);
 
 		if(mobs.isEmpty() && mobsSpawned >= mobsToSpawn)
+		{
+			if(dogRound && ConfigManager.getMainConfig().dogRoundMaxAmmoDrop)
+				game.powerUpManager.dropPowerUp(entity, PowerUp.MAX_AMMO);
+			// Tier 4 — last boss of a boss round drops a guaranteed Max Ammo + Random Perk.
+			if(bossRound && entity instanceof Mob)
+				BossSpawner.dropBossRewards(game, (Mob) entity);
 			game.nextWave();
+		}
+		else
+		{
+			maybeConvertLastZombie();
+		}
 
 		game.scoreboard.update();
+	}
+
+	/**
+	 * Tier 2 — When the wave is fully spawned and exactly one regular (non-dog) zombie remains
+	 * alive, and it is not already a crawler, convert it to a crawler so players can hold the
+	 * round. Called whenever the alive count drops (kills) and on the periodic update tick.
+	 */
+	private void maybeConvertLastZombie()
+	{
+		if(dogRound || bossRound)
+			return;
+		if(!shouldConvertLastZombie(mobs.size(), mobsSpawned, mobsToSpawn, ConfigManager.getMainConfig().lastZombieCrawler))
+			return;
+
+		Mob last = mobs.get(0);
+		if(!ZombieSpawner.isCrawler(last))
+			ZombieSpawner.convertToCrawler(game, last);
 	}
 
 	public boolean addPoint(SpawnPoint point)
@@ -179,41 +222,88 @@ public class SpawnManager
 
 	private List<SpawnPoint> getNearestPoints(Location loc, int numToGet)
 	{
-		List<SpawnPoint> points = game.spawnManager.getPoints();
+		return nearestPoints(game.spawnManager.getPoints(), loc, numToGet);
+	}
+
+	/**
+	 * Returns the {@code numToGet} spawn points closest to {@code loc}, nearest
+	 * first. Pure function extracted for testability.
+	 */
+	static List<SpawnPoint> nearestPoints(List<SpawnPoint> points, Location loc, int numToGet)
+	{
 		if(numToGet < 0)
 			throw new IllegalArgumentException("numToGet should not be less than zero");
 		if(numToGet == 0)
 			return new ArrayList<>();
 
-		int numPoints = Math.min(numToGet, points.size());
-		List<SpawnPoint> results = new ArrayList<>(numPoints);
-		for(int i = 0; i < numPoints; i++)
-			results.add(points.get(i));
+		return points.stream()
+				.sorted(Comparator.comparingDouble(point -> point.getLocation().distanceSquared(loc)))
+				.limit(numToGet)
+				.collect(Collectors.toCollection(ArrayList::new));
+	}
 
-		List<Double> distances = new ArrayList<>();
-		for(int i = 0; i < numToGet; i++)
-			distances.add(Double.POSITIVE_INFINITY);
+	/**
+	 * 0b — Maximum zombies allowed on the board at once. Scales with player count:
+	 * {@code base + perPlayer * (players - 1)}, clamped so a 0/1 player game uses {@code base}.
+	 */
+	public static int maxOnBoard(int players, int base, int perPlayer)
+	{
+		return base + perPlayer * Math.max(0, players - 1);
+	}
 
-		for(SpawnPoint point : points)
-		{
-			Location spawnLoc = point.getLocation();
-			double dx = spawnLoc.getBlockX() - loc.getBlockX();
-			double dy = spawnLoc.getBlockY() - loc.getBlockY();
-			double dz = spawnLoc.getBlockZ() - loc.getBlockZ();
-			double dist2 = (dx * dx) + (dy * dy) + (dz * dz);
-			for(int resultIndex = 0; resultIndex < results.size(); resultIndex++)
-			{
-				if(dist2 >= distances.get(resultIndex))
-					continue;
+	/**
+	 * 0b — Total zombies spawned in a given round. Early rounds (1-4) ramp up over the
+	 * board max; from round 5 on the wave multiplier takes over. Never less than 1.
+	 */
+	public static int zombiesThisRound(int wave, int players, int base, int perPlayer, double mult)
+	{
+		int boardMax = maxOnBoard(players, base, perPlayer);
+		double multiplier = wave <= 0 ? 1
+				: wave == 1 ? 0.2
+				: wave == 2 ? 0.4
+				: wave == 3 ? 0.6
+				: wave == 4 ? 0.8
+				: wave * mult;
+		return Math.max(1, (int) (multiplier * boardMax));
+	}
 
-				distances.add(resultIndex, dist2);
-				results.add(resultIndex, point);
-				results.remove(numPoints);
-				distances.remove(numPoints);
-				break;
-			}
-		}
-		return results;
+	/**
+	 * 0g — Number of hell hounds on a dog round: {@code perPlayer * players}, at least 1.
+	 */
+	public static int dogCount(int players, int perPlayer)
+	{
+		return Math.max(1, perPlayer * players);
+	}
+
+	/**
+	 * 0L — Running no-progress tick counter for a mob. Returns 0 the instant the mob makes
+	 * progress (moves at least {@code moveThreshold}); otherwise grows the previous counter by
+	 * one check interval. The caller teleports the mob once the result reaches the stuck threshold.
+	 */
+	public static long updateStuckTicks(long prevStuckTicks, double movedDistance, double moveThreshold, long intervalTicks)
+	{
+		return movedDistance >= moveThreshold ? 0L : prevStuckTicks + intervalTicks;
+	}
+
+	/**
+	 * Tier 2 — Whether the single remaining zombie of a round should be converted into a slow
+	 * crawler so players can hold the round. True only when the feature is enabled, the whole
+	 * wave has already been spawned ({@code mobsSpawned >= mobsToSpawn}) and exactly one zombie
+	 * is alive. Pure decision extracted for testability.
+	 */
+	public static boolean shouldConvertLastZombie(int aliveCount, int mobsSpawned, int mobsToSpawn, boolean enabled)
+	{
+		return enabled && aliveCount == 1 && mobsSpawned >= mobsToSpawn;
+	}
+
+	/**
+	 * Tier 4 — whether {@code wave} is a boss round given the configured cadence. Boss rounds are
+	 * disabled entirely when {@code every <= 0}, and round 0 never triggers one. Pure gate so the
+	 * cadence is unit-testable without a running game.
+	 */
+	public static boolean isBossRound(int wave, int every)
+	{
+		return every > 0 && wave > 0 && wave % every == 0;
 	}
 
 	private void smartSpawn(final int wave)
@@ -225,7 +315,8 @@ public class SpawnManager
 		if(this.mobsSpawned >= this.mobsToSpawn)
 			return;
 
-		if(mobs.size() >= ConfigManager.getMainConfig().maxZombies)
+		ConfigSetup cfg = ConfigManager.getMainConfig();
+		if(mobs.size() >= maxOnBoard(game.getPlayersInGame().size(), cfg.zombieBoardBase, cfg.zombieBoardPerPlayer))
 		{
 			COMZombies.scheduleTask((int) spawnInterval * 20L, () -> smartSpawn(wave));
 			return;
@@ -286,11 +377,64 @@ public class SpawnManager
 				if(mob.isDead())
 					removeEntity(mob);
 				else
-					mob.setTarget(getNearestPlayer(mob));
+				{
+					Player nearest = getNearestPlayer(mob);
+					mob.setTarget(nearest);
+					checkStuck(mob, nearest);
+				}
 			}
+
+			maybeConvertLastZombie();
 
 			update();
 		});
+	}
+
+	/**
+	 * 0L — Detects a mob that has made no progress for {@code zombieStuckSeconds} and teleports it
+	 * to a reachable (door-open) spawn point near the targeted player so it can resume pathing.
+	 * This is what unsticks the common "1 zombie left wedged on geometry" round hang.
+	 */
+	private void checkStuck(Mob mob, Player nearest)
+	{
+		ConfigSetup cfg = ConfigManager.getMainConfig();
+		// Crawlers are intentionally slow (the round-hold zombie) — never teleport them, or the
+		// "1 zombie left" crawler gets yanked to a spawn point away from where players are holding.
+		if(cfg.zombieStuckSeconds <= 0 || nearest == null || ZombieSpawner.isCrawler(mob))
+		{
+			stuckLastLoc.remove(mob);
+			stuckTicks.remove(mob);
+			return;
+		}
+
+		Location current = mob.getLocation();
+		Location last = stuckLastLoc.get(mob);
+		double moved = (last != null && last.getWorld() == current.getWorld()) ? last.distance(current) : Double.MAX_VALUE;
+		long accum = updateStuckTicks(stuckTicks.getOrDefault(mob, 0L), moved, cfg.zombieStuckMoveThreshold, STUCK_CHECK_INTERVAL);
+		stuckLastLoc.put(mob, current.clone());
+
+		if(accum >= (long) cfg.zombieStuckSeconds * 20L)
+		{
+			teleportStuckMob(mob, nearest);
+			accum = 0L;
+		}
+		stuckTicks.put(mob, accum);
+	}
+
+	/**
+	 * 0L — Teleports a stuck mob to the reachable spawn point nearest the target player.
+	 */
+	private void teleportStuckMob(Mob mob, Player target)
+	{
+		List<SpawnPoint> spawnable = points.stream().filter(this::canSpawn).collect(Collectors.toList());
+		if(spawnable.isEmpty())
+			return;
+		List<SpawnPoint> nearest = nearestPoints(spawnable, target.getLocation(), 1);
+		if(nearest.isEmpty())
+			return;
+		Location dest = nearest.get(0).getLocation().clone().add(0.5, 0, 0.5);
+		mob.teleport(dest);
+		mob.setTarget(target);
 	}
 
 	private Player getNearestPlayer(Entity e)
@@ -355,9 +499,27 @@ public class SpawnManager
 		canSpawn = false;
 		mobsSpawned = 0;
 
+		ConfigSetup cfg = ConfigManager.getMainConfig();
+
+		// Tier 4 — boss rounds take precedence over dog rounds on shared waves.
+		if(isBossRound(wave, cfg.bossRoundEveryX))
+		{
+			bossRound = true;
+			dogRound = false;
+			// Small wave: a handful of heavy bosses (at least 1, ~half the player count).
+			mobsToSpawn = Math.max(1, game.getPlayersInGame().size() / 2);
+			roundSpawner = roundSpawnerMap.get(RoundSpawnType.BOSS);
+			setSpawnInterval(spawnInterval / spawnDelayFactor);
+			if(spawnInterval < 0.5)
+				spawnInterval = 0.5;
+			return RoundSpawnType.BOSS;
+		}
+
 		if(game.getDogRoundEveryX() != -1 && game.getDogRoundEveryX() != 0 && wave % game.getDogRoundEveryX() == 0)
 		{
-			mobsToSpawn = 10;
+			bossRound = false;
+			dogRound = true;
+			mobsToSpawn = dogCount(game.getPlayersInGame().size(), cfg.dogsPerPlayer);
 			roundSpawner = roundSpawnerMap.get(RoundSpawnType.HELL_HOUNDS);
 			setSpawnInterval(spawnInterval / spawnDelayFactor);
 			if(spawnInterval < 0.5)
@@ -366,7 +528,9 @@ public class SpawnManager
 		}
 		else
 		{
-			mobsToSpawn = (int) ((wave * 0.15) * 30) + (2 * players.size());
+			bossRound = false;
+			dogRound = false;
+			mobsToSpawn = zombiesThisRound(wave, players.size(), cfg.zombieBoardBase, cfg.zombieBoardPerPlayer, cfg.zombieRoundMultiplier);
 			roundSpawner = roundSpawnerMap.get(RoundSpawnType.REGULAR);
 			setSpawnInterval(spawnInterval / spawnDelayFactor);
 			if(spawnInterval < 0.5)
@@ -424,6 +588,8 @@ public class SpawnManager
 		this.canSpawn = false;
 		this.mobsSpawned = 0;
 		this.mobsToSpawn = 0;
+		this.dogRound = false;
+		this.bossRound = false;
 		this.spawnInterval = COMZombies.getPlugin().getConfig().getInt("config.gameSettings.zombieSpawnDelay");
 	}
 

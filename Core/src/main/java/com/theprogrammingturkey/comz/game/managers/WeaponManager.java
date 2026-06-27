@@ -25,10 +25,37 @@ public class WeaponManager
 {
 	private static final List<Weapon> weapons = new ArrayList<>();
 
+	/**
+	 * Tier 2 — Name of the hardcoded Death Machine power-up minigun. Used by the power-up
+	 * listener to look the gun up via {@link #getGun(String)}.
+	 */
+	public static final String DEATH_MACHINE_NAME = "Death Machine";
+
 
 	public static void registerWeapon(Weapon weapon)
 	{
 		weapons.add(weapon);
+	}
+
+	/**
+	 * Builds the hardcoded Death Machine minigun handed out by the Death Machine power-up.
+	 * Very high fire rate (fireDelay 1 = 1200 RPM ceiling), effectively infinite ammo, and
+	 * high per-shot damage. It is a {@link BasicGun} with no Pack-a-Punch variant.
+	 */
+	private static BasicGun buildDeathMachine()
+	{
+		BasicGun gun = new BasicGun(DEATH_MACHINE_NAME, WeaponType.SPECIAL);
+		gun.material = org.bukkit.Material.IRON_BLOCK;
+		gun.modelData = -1;
+		gun.damage = 1000;
+		gun.fireDelay = 1;
+		gun.clipAmmo = 999;
+		gun.totalAmmo = 999999;
+		gun.reloadTime = 0;
+		gun.distance = 60;
+		gun.multiHit = true;
+		gun.sound = org.bukkit.Sound.ENTITY_IRON_GOLEM_ATTACK;
+		return gun;
 	}
 
 	/**
@@ -60,6 +87,9 @@ public class WeaponManager
 	{
 		List<Weapon> weaponsToChoose = weapons.stream().filter(weapon ->
 		{
+			// Death Machine is only ever handed out by its power-up, never by the mystery box.
+			if(weapon.getName().equals(DEATH_MACHINE_NAME))
+				return false;
 			if(weapon instanceof BaseGun && playerWeaponManager.hasGun((BaseGun) weapon))
 				return false;
 			return includePackaPunch || !(weapon instanceof PackAPunchGun);
@@ -101,6 +131,13 @@ public class WeaponManager
 		Weapon monkeyBomb = new Weapon("Monkey Bomb", WeaponType.MONKEY_BOMB);
 		monkeyBomb.totalAmmo = 4;
 		WeaponManager.registerWeapon(monkeyBomb);
+
+		// Tier 2 — Death Machine power-up minigun. Hardcoded (like grenade/monkey bomb) so it
+		// survives a guns.json reload and is always available by name to the power-up listener.
+		// fireDelay 1 = the 1200-RPM ceiling; huge ammo + damage make it the BO2 "delete everything"
+		// minigun for its short duration. Not Pack-a-Punchable and never offered by the mystery box
+		// (registered separately and only ever handed out by the Death Machine power-up).
+		registerWeapon(buildDeathMachine());
 
 		JsonElement jsonElement = ConfigManager.getConfig(COMZConfig.GUNS).getJson();
 		if(jsonElement.isJsonNull())
