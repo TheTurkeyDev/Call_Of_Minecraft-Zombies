@@ -22,7 +22,9 @@ import java.util.Map;
 
 public class Barrier implements Runnable
 {
-	private final Map<Block, Material> blocks = new HashMap<>();
+	// Full BlockData (not just Material) so barrier window blocks rebuild EXACTLY as authored —
+	// plank/stair orientation, fence/pane connections, etc. — instead of losing that metadata.
+	private final Map<Block, BlockData> blocks = new HashMap<>();
 	private Location repairLoc;
 	private BlockFace signFacing;
 	private final List<SpawnPoint> spawns = new ArrayList<>();
@@ -103,7 +105,7 @@ public class Barrier implements Runnable
 
 		for(Block b : blocks.keySet())
 			if(game.getWorld().getBlockAt(b.getLocation()).getType().equals(Material.AIR))
-				BlockUtils.setBlockTypeHelper(game.getWorld().getBlockAt(b.getLocation()), blocks.get(b));
+				game.getWorld().getBlockAt(b.getLocation()).setBlockData(blocks.get(b), false);
 		return stage <= -1;
 	}
 
@@ -115,7 +117,7 @@ public class Barrier implements Runnable
 
 		for(Block b : blocks.keySet())
 			if(b.getType().equals(Material.AIR))
-				BlockUtils.setBlockTypeHelper(b, blocks.get(b));
+				b.setBlockData(blocks.get(b), false);
 
 		BlockUtils.setBlockToAir(repairLoc);
 
@@ -130,12 +132,12 @@ public class Barrier implements Runnable
 	public void addBarrierBlock(Location loc)
 	{
 		Block block = loc.getBlock();
-		this.addBarrierBlock(block, block.getType());
+		this.addBarrierBlock(block, block.getBlockData());
 	}
 
-	public void addBarrierBlock(Block block, Material mat)
+	public void addBarrierBlock(Block block, BlockData data)
 	{
-		blocks.put(block, mat);
+		blocks.put(block, data);
 	}
 
 	public List<Block> getBlocks()
@@ -148,7 +150,7 @@ public class Barrier implements Runnable
 		return blocks.containsKey(b);
 	}
 
-	public Material getMaterial(Block b)
+	public BlockData getBlockData(Block b)
 	{
 		return blocks.get(b);
 	}

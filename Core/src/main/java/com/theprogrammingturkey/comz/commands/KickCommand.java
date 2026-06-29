@@ -28,11 +28,15 @@ public class KickCommand extends SubCommand
 		if(args.length == 1)
 		{
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Please specify a player to kick!");
+			return true;
 		}
-		else if(Bukkit.getPlayer(args[1]) != null)
+
+		// Bug fix: resolve the target once into a local so a disconnect between the existence
+		// check and a (formerly second) Bukkit.getPlayer() lookup cannot slip a null through.
+		Player kick = Bukkit.getPlayer(args[1]);
+		if(kick != null)
 		{
-			Player kick = Bukkit.getPlayer(args[1]);
-			if(kick == null || !GameManager.INSTANCE.isPlayerInGame(kick))
+			if(!GameManager.INSTANCE.isPlayerInGame(kick))
 			{
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "This player is not contained in any arena!");
 				return true;

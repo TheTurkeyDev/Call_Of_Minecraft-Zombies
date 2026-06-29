@@ -125,14 +125,16 @@ public class RandomBox
 						weapon = WeaponManager.getRandomWeapon(false, boxGame.getPlayersWeapons(player));
 						item.setItemStack(weapon.getStack());
 						namePlate.setCustomName(weapon.getName());
-						player.getWorld().playSound(boxLoc, Sound.BLOCK_NOTE_BLOCK_HARP, 1f, 1f);
+						com.theprogrammingturkey.comz.util.SoundUtil.play(player.getWorld(), boxLoc, com.theprogrammingturkey.comz.util.SoundConfig.get("box.spin", Sound.BLOCK_NOTE_BLOCK_HARP.name()), org.bukkit.SoundCategory.MASTER, 1f, 1f);
 					}
 					else if(time == 0)
 					{
 						if(!boxGame.isFireSale() && !boxGame.boxManager.isMultiBox() && boxGame.getTeddyBearPercent() != 0 && COMZombies.rand.nextInt(boxGame.getTeddyBearPercent()) == 0)
 						{
 							CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "Teddy Bear!!!!!!");
-							item.setItemStack(new ItemStack(Material.TOTEM_OF_UNDYING));
+							ItemStack teddy = new ItemStack(Material.TOTEM_OF_UNDYING);
+							com.theprogrammingturkey.comz.util.PackModels.apply(teddy, "misc/box_teddy");
+							item.setItemStack(teddy);
 							namePlate.setCustomName("");
 							namePlate.setCustomNameVisible(false);
 							item.setGravity(false);
@@ -155,7 +157,7 @@ public class RandomBox
 						}
 						else
 						{
-							player.getWorld().playSound(boxLoc, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
+							com.theprogrammingturkey.comz.util.SoundUtil.play(player.getWorld(), boxLoc, com.theprogrammingturkey.comz.util.SoundConfig.get("box.lock", Sound.ENTITY_EXPERIENCE_ORB_PICKUP.name()), org.bukkit.SoundCategory.MASTER, 1f, 1f);
 							gunSelected = true;
 						}
 					}
@@ -188,7 +190,7 @@ public class RandomBox
 	public void pickUpWeapon(Player player)
 	{
 		boxGame.getPlayersWeapons(player).addWeapon(weapon);
-		player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
+		com.theprogrammingturkey.comz.util.SoundUtil.play(player.getWorld(), player.getLocation(), com.theprogrammingturkey.comz.util.SoundConfig.get("box.pickup", Sound.BLOCK_LAVA_POP.name()), org.bukkit.SoundCategory.MASTER, 1, 1);
 		reset();
 	}
 

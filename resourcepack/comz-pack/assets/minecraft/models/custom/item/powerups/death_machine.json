@@ -1,0 +1,6 @@
+{
+    "parent": "custom/item/powerups/perk_bottle_base",
+	"textures": {
+		"layer0": "custom/item/powerups/death_machine"
+	}
+}

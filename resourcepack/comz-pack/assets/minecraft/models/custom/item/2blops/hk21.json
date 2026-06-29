@@ -1,0 +1,6 @@
+{
+    "parent": "custom/item/handheld_lmg",
+	"textures": {
+		"layer0": "custom/item/2blops/hk21"
+	}
+}

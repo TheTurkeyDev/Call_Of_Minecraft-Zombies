@@ -4,13 +4,17 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.RandomBox;
 import com.theprogrammingturkey.comz.util.BlockUtils;
+import com.theprogrammingturkey.comz.util.ParticleFX;
 import com.theprogrammingturkey.comz.util.Util;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -24,6 +28,8 @@ public class BoxManager
 	private final List<RandomBox> boxes = new ArrayList<>();
 	private RandomBox currentBox;
 	private boolean multiBox;
+	/** Repeating task id drawing the mystery-box locator beam(s); -1 when not running. */
+	private int beamTaskId = -1;
 
 	public BoxManager(Game game)
 	{
@@ -64,6 +70,11 @@ public class BoxManager
 
 	public void resetBoxes()
 	{
+		if(beamTaskId != -1)
+		{
+			Bukkit.getScheduler().cancelTask(beamTaskId);
+			beamTaskId = -1;
+		}
 		for(RandomBox box : this.boxes)
 			box.reset();
 	}
@@ -154,6 +165,34 @@ public class BoxManager
 			currentBox.removeBox();
 		currentBox = box;
 		currentBox.loadBox();
+		ensureBeamTask();
+	}
+
+	/**
+	 * Starts (once) the locator beam that marks the active mystery box so players can find it from
+	 * across the map — single-box mode beams the current box, multi-box mode beams them all. The task
+	 * self-cancels when the game is no longer INGAME, and is gated by config.visuals.boxBeam.
+	 */
+	private void ensureBeamTask()
+	{
+		if(beamTaskId != -1 || !ConfigManager.getMainConfig().visualsBoxBeam)
+			return;
+		beamTaskId = COMZombies.scheduleTask(0, 8, () ->
+		{
+			if(game.getStatus() != Game.GameStatus.INGAME)
+			{
+				Bukkit.getScheduler().cancelTask(beamTaskId);
+				beamTaskId = -1;
+				return;
+			}
+			List<RandomBox> active = multiBox ? boxes : (currentBox != null ? java.util.Collections.singletonList(currentBox) : java.util.Collections.emptyList());
+			for(RandomBox b : active)
+			{
+				Location base = b.getLocation();
+				if(base != null && base.getWorld() != null)
+					ParticleFX.beam(base.getWorld(), base.clone().add(0.5, 1.0, 0.5), 2.5, Color.fromRGB(0xFF, 0xD7, 0x00));
+			}
+		});
 	}
 
 	public void FireSale()
@@ -179,6 +218,7 @@ public class BoxManager
 	{
 		for(RandomBox b : boxes)
 			b.loadBox();
+		ensureBeamTask();
 	}
 
 	// Finds the closest locations to point loc, it results numToGet amount of

@@ -6,8 +6,10 @@ import com.theprogrammingturkey.comz.COMZombies;
 import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
+import com.theprogrammingturkey.comz.util.SoundUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -103,6 +105,41 @@ public class GunInstance extends WeaponInstance
 	}
 
 	/**
+	 * Pure, server-free reload-duration core. Minecraft runs at 20 TPS, so seconds
+	 * are converted to ticks at &times;20. A per-gun {@code reload_time} (seconds)
+	 * takes priority; {@code gunReload <= 0} falls back to the global config value.
+	 * Speed Cola multiplies the result by {@code speedColaMult} (0.5 = half reload).
+	 *
+	 * @param gunReload     per-gun reload in seconds, or 0/negative if unset
+	 * @param cfgReload     global config reload fallback in seconds
+	 * @param speedCola     whether the player has Speed Cola
+	 * @param speedColaMult Speed Cola reload multiplier (e.g. 0.5)
+	 * @return reload duration in server ticks
+	 */
+	public static long reloadTicks(double gunReload, double cfgReload, boolean speedCola, double speedColaMult)
+	{
+		double secs = gunReload > 0 ? gunReload : cfgReload;
+		return Math.round(secs * (speedCola ? speedColaMult : 1.0) * 20);
+	}
+
+	/**
+	 * Pure, server-free per-shot cooldown core. Double Tap divides the base fire
+	 * delay by {@code doubleTapMult} (1.5 = 50% faster). Speed Cola no longer
+	 * affects fire rate (Tier 0e rewire). Clamped to a minimum of 1 tick (the
+	 * 20-TPS / 1200-RPM ceiling).
+	 *
+	 * @param baseFireDelay base per-shot delay in ticks
+	 * @param doubleTap     whether the player has Double Tap
+	 * @param doubleTapMult Double Tap fire-delay divisor (e.g. 1.5)
+	 * @return per-shot cooldown in server ticks
+	 */
+	public static long fireDelayTicks(long baseFireDelay, boolean doubleTap, double doubleTapMult)
+	{
+		long ticks = doubleTap ? (long) (baseFireDelay / doubleTapMult) : baseFireDelay;
+		return Math.max(1, ticks);
+	}
+
+	/**
 	 * Used to reload this current weapon.
 	 */
 	public void reload()
@@ -115,8 +152,15 @@ public class GunInstance extends WeaponInstance
 				return;
 
 			isReloading = true;
+			String reloadSound = com.theprogrammingturkey.comz.util.SoundConfig.gun(gun.getName(), gun.isPackAPunched(), "reload", gun.reloadSoundKey);
+			SoundUtil.play(player, player.getLocation(), reloadSound, SoundCategory.PLAYERS, 1, 1);
 			Game game = GameManager.INSTANCE.getGame(player);
-			COMZombies.scheduleTask(ConfigManager.getMainConfig().reloadTime * 20L, () ->
+			long reloadTicks = reloadTicks(
+					gun.reloadTime,
+					ConfigManager.getMainConfig().reloadTime,
+					game.perkManager.hasPerk(player, PerkType.SPEED_COLA),
+					ConfigManager.getMainConfig().speedColaReloadMultiplier);
+			COMZombies.scheduleTask(reloadTicks, () ->
 			{
 				if(!(totalAmmo - (gun.clipAmmo - clipAmmo) < 0))
 				{
@@ -203,16 +247,18 @@ public class GunInstance extends WeaponInstance
 
 		World world = player.getWorld();
 
-		world.playSound(player.getLocation(), gun.sound, 1, 1);
+		String shootSound = com.theprogrammingturkey.comz.util.SoundConfig.gun(gun.getName(), gun.isPackAPunched(), "shoot", gun.soundKey);
+		SoundUtil.play(world, player.getLocation(), shootSound, SoundCategory.PLAYERS, 1, 1);
 
 		updateWeapon();
 		canFire = false;
 
 		Game game = GameManager.INSTANCE.getGame(player);
 		COMZombies.scheduleTask(
-				game.perkManager.hasPerk(player, PerkType.SPEED_COLA)
-						? (long) (this.gun.fireDelay / 1.25)
-						: this.gun.fireDelay
+				fireDelayTicks(
+						this.gun.fireDelay,
+						game.perkManager.hasPerk(player, PerkType.DOUBLE_TAP),
+						ConfigManager.getMainConfig().doubleTapFireMultiplier)
 				, () -> canFire = true);
 		return true;
 	}

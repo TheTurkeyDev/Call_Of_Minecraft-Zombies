@@ -1,0 +1,6 @@
+{
+    "parent": "custom/item/wonder/thundergun_holder",
+	"textures": {
+		"layer0": "custom/item/ww/thundergun"
+	}
+}

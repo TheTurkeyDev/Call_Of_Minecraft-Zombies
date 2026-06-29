@@ -15,6 +15,7 @@ import com.theprogrammingturkey.comz.config.CustomConfig;
 import com.theprogrammingturkey.comz.economy.PointManager;
 import com.theprogrammingturkey.comz.game.features.Barrier;
 import com.theprogrammingturkey.comz.game.features.Door;
+import com.theprogrammingturkey.comz.game.features.PerkType;
 import com.theprogrammingturkey.comz.game.features.PowerUp;
 import com.theprogrammingturkey.comz.game.features.RandomBox;
 import com.theprogrammingturkey.comz.game.managers.*;
@@ -78,6 +79,13 @@ public class Game
 	 * If fire salse is active
 	 */
 	private boolean isFireSale = false;
+
+	/**
+	 * Tier 2 — Global temporary Pack-a-Punch first-pack cost override. -1 means no
+	 * override is active and the per-sign cost is used; >= 0 replaces it (set by the
+	 * Bonfire Sale power-up, cleared when it expires).
+	 */
+	private int paPCostOverride = -1;
 
 	/**
 	 * If insta kill is active.
@@ -155,6 +163,21 @@ public class Game
 	public TeleporterManager teleporterManager;
 
 	/**
+	 * Tier 2 — contains all of the buyable kill-zone traps in the game
+	 */
+	public TrapManager trapManager;
+
+	/**
+	 * Tier 4 — contains all of the parts-collection / assembly buildable stations in the game
+	 */
+	public BuildableManager buildableManager;
+
+	/**
+	 * Tier 4 — the arena's easter-egg quest engine (per-arena multi-step objective)
+	 */
+	public QuestManager questManager;
+
+	/**
 	 * contains all of the downed players in the game
 	 */
 	public DownedPlayerManager downedPlayerManager;
@@ -199,6 +222,9 @@ public class Game
 		perkManager = new PerkManager();
 		powerUpManager = new PowerUpManager();
 		teleporterManager = new TeleporterManager(this);
+		trapManager = new TrapManager(this);
+		buildableManager = new BuildableManager(this);
+		questManager = new QuestManager(this);
 		downedPlayerManager = new DownedPlayerManager();
 		signManager = new SignManager(this);
 
@@ -219,6 +245,31 @@ public class Game
 	public List<Player> getPlayersInGame()
 	{
 		return gamePlayers.values().stream().filter(gp -> gp.isInGame() || gp.isDead()).map(GamePlayer::getPlayer).collect(Collectors.toList());
+	}
+
+	/**
+	 * Players who are still actively playing (state IN_GAME) — this INCLUDES the immobile downed
+	 * state (a downed player is still IN_GAME and may yet be revived) but EXCLUDES dead/spectating
+	 * players. Distinct from {@link #getPlayersInGame()}, which also counts dead players and so can
+	 * never reach zero on its own (a dead solo player would otherwise hang the game forever).
+	 */
+	public List<Player> getLivingPlayers()
+	{
+		return gamePlayers.values().stream().filter(GamePlayer::isInGame).map(GamePlayer::getPlayer).collect(Collectors.toList());
+	}
+
+	/**
+	 * Single authority for ending a running game once nobody can carry on. The moment an active
+	 * game has no IN_GAME players left — everyone is dead/spectating/left — the game ends. This is
+	 * the safety net for every death path (solo bleed-out, Who's Who timeout, the last co-op player
+	 * dying) because {@link #setDead(Player)} only flips a player to DEAD and DEAD players still
+	 * count in {@link #getPlayersInGame()}; without this check a solo player who bled out would be
+	 * left a permanent spectator in a session that never ends.
+	 */
+	public void checkGameEndCondition()
+	{
+		if(status == GameStatus.INGAME && getLivingPlayers().isEmpty())
+			endGame();
 	}
 
 	public boolean wasDisconnected(Player player)
@@ -469,6 +520,9 @@ public class Game
 
 		waveNumber++;
 
+		// Tier 4 — fire any "reach round N" easter-egg quest step now that the round advanced.
+		questManager.onRoundReached(waveNumber);
+
 		//get death and downed players and let them respawn or revive
 		for(Player player : getDeathPlayers())
 			addPlayer(player);
@@ -481,7 +535,7 @@ public class Game
 			KitManager.giveOutKitRoundRewards(this);
 			for(Player pl : getPlayersAndSpectators())
 			{
-				pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, ConfigManager.getMainConfig().roundSoundVolume, 1);
+				com.theprogrammingturkey.comz.util.SoundUtil.play(pl, pl.getLocation(), com.theprogrammingturkey.comz.util.SoundConfig.get("round.start", Sound.BLOCK_PORTAL_AMBIENT.name()), org.bukkit.SoundCategory.MASTER, ConfigManager.getMainConfig().roundSoundVolume, 1);
 				pl.sendTitle(ChatColor.RED + "Round " + waveNumber, ChatColor.GRAY + "starting in 10 seconds", 10, 60, 10);
 			}
 			delay = 200;
@@ -494,13 +548,23 @@ public class Game
 			for(Player pl : getPlayersAndSpectators())
 			{
 				pl.sendTitle(ChatColor.RED + "Round " + waveNumber, "", 10, 60, 10);
+
+				// Round-start ambience: dramatic stinger + brief eerie darkness for buildup (additive to the title above).
+				if(ConfigManager.getMainConfig().visualsRoundAmbience)
+				{
+					// Low-pitched vanilla stinger for a dramatic round-start cue (per-player, matching the title sends above).
+					com.theprogrammingturkey.comz.util.SoundUtil.play(pl, pl.getLocation(), Sound.ENTITY_WITHER_SPAWN.name(), org.bukkit.SoundCategory.MASTER, 0.7f, 0.6f);
+					// Short DARKNESS effect (~40 ticks) to sell the eerie buildup; weather is intentionally left untouched.
+					pl.addPotionEffect(new org.bukkit.potion.PotionEffect(PotionEffectType.DARKNESS, 40, 0, false, false, false));
+				}
+
 				switch(spawnType)
 				{
 					case REGULAR:
-						pl.playSound(pl.getLocation(), Sound.BLOCK_PORTAL_TRAVEL, ConfigManager.getMainConfig().roundSoundVolume, 1);
+						com.theprogrammingturkey.comz.util.SoundUtil.play(pl, pl.getLocation(), com.theprogrammingturkey.comz.util.SoundConfig.get("round.regular", Sound.BLOCK_PORTAL_TRAVEL.name()), org.bukkit.SoundCategory.MASTER, ConfigManager.getMainConfig().roundSoundVolume, 1);
 						break;
 					case HELL_HOUNDS:
-						pl.playSound(pl.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, ConfigManager.getMainConfig().roundSoundVolume, 1);
+						com.theprogrammingturkey.comz.util.SoundUtil.play(pl, pl.getLocation(), com.theprogrammingturkey.comz.util.SoundConfig.get("round.dogs", Sound.ENTITY_ENDER_DRAGON_GROWL.name()), org.bukkit.SoundCategory.MASTER, ConfigManager.getMainConfig().roundSoundVolume, 1);
 						break;
 				}
 			}
@@ -549,11 +613,16 @@ public class Game
 		{
 			PlayerWeaponManager manager = game.getPlayersWeapons(player);
 			manager.addWeapon(gun.getNewInstance(player, 1));
+			// BO2: start holding the M1911 (slot 1) — there's no longer a knife in slot 0 to hold.
+			player.getInventory().setHeldItemSlot(1);
 		}
 		else if(gun == null)
 		{
 			COMZombies.log.log(Level.SEVERE, "The " + startingGun + " is listed as the starting gun, but it could not be found! Did you forget to change this?");
 		}
+
+		// Tier 4 — apply any perma-perks this player has earned across previous games (passive bonuses).
+		PermaPerkManager.applyOnGameEntry(player);
 	}
 
 	/**
@@ -563,6 +632,7 @@ public class Game
 	 */
 	public void addPlayer(Player player)
 	{
+		com.theprogrammingturkey.comz.util.ResourcePackUtil.apply(player);
 		if(status == GameStatus.WAITING || status == GameStatus.STARTING)
 		{
 			gamePlayers.put(player, new GamePlayer(player));
@@ -623,6 +693,9 @@ public class Game
 	{
 		gamePlayers.computeIfAbsent(player, GamePlayer::new).setState(PlayerState.DEAD);
 		setPlayerSpectatorMode(player);
+		// A death may have been the last active player (solo bleed-out, Who's Who timeout, last
+		// co-op player). End the game if nobody is left playing so the session never hangs.
+		checkGameEndCondition();
 	}
 
 	public void setPlayerSpectatorMode(Player player)
@@ -715,7 +788,7 @@ public class Game
 	 */
 	public void forceNight()
 	{
-		arena.getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+		arena.getWorld().setGameRule(GameRule.ADVANCE_TIME, false);
 		arena.getWorld().setTime(18000L);
 	}
 
@@ -833,11 +906,24 @@ public class Game
 		spawnManager.killAll(false);
 		spawnManager.reset();
 		for(Door door : doorManager.getDoors())
-			door.closeDoor();
+		{
+			// Isolate each door: a failure to restore one door's blocks/sign must never abort the
+			// rest of the game-end cleanup (clearing players, scoreboard, points, etc.).
+			try
+			{
+				door.closeDoor();
+			} catch(Exception e)
+			{
+				COMZombies.log.log(Level.WARNING, "Failed to close door '" + door.doorID + "' while ending the game; continuing cleanup.", e);
+			}
+		}
 
 		boxManager.resetBoxes();
 		perkManager.clearPerks();
-		downedPlayerManager.clearDownedPlayers();
+		// Full reset (not just clearDownedPlayers): also wipes per-session solo self-revive uses,
+		// tombstone snapshots and any lingering Who's Who ghost so a re-used Game object starts the
+		// next session clean (otherwise solo self-revive uses would never replenish between games).
+		downedPlayerManager.reset();
 		turnOffPower();
 		boxManager.loadAllBoxes();
 		barrierManager.unloadAllBarriers();
@@ -845,6 +931,8 @@ public class Game
 		scoreboard = new GameScoreboard(this);
 		instaKill = false;
 		doublePoints = false;
+		isFireSale = false;
+		paPCostOverride = -1;
 		waveNumber = 0;
 		changingRound = false;
 		clearArena();
@@ -922,6 +1010,15 @@ public class Game
 		if(arenaSaveJson.has("teleporters"))
 			teleporterManager.loadAllTeleportersToGame(arenaSaveJson.get("teleporters").getAsJsonArray());
 
+		if(arenaSaveJson.has("traps"))
+			trapManager.loadAllTrapsToGame(arenaSaveJson.get("traps").getAsJsonArray());
+
+		if(arenaSaveJson.has("buildables"))
+			buildableManager.loadAllBuildablesToGame(arenaSaveJson.get("buildables").getAsJsonArray());
+
+		if(arenaSaveJson.has("quest"))
+			questManager.load(arenaSaveJson.get("quest"));
+
 		signManager.updateGame();
 
 		return true;
@@ -953,6 +1050,9 @@ public class Game
 		arenaSaveJson.add("barriers", barrierManager.save());
 		arenaSaveJson.add("doors", doorManager.save());
 		arenaSaveJson.add("teleporters", teleporterManager.save());
+		arenaSaveJson.add("traps", trapManager.save());
+		arenaSaveJson.add("buildables", buildableManager.save());
+		arenaSaveJson.add("quest", questManager.save());
 
 		return gamejson;
 	}
@@ -1008,22 +1108,6 @@ public class Game
 				lore.add("Holds 1 Gun");
 				lore.add("Requires MuleKick to work!");
 				break;
-			case 31:
-				data.setDisplayName("Perk Slot 1");
-				lore.add("Holds 1 Perk");
-				break;
-			case 32:
-				data.setDisplayName("Perk Slot 2");
-				lore.add("Holds 1 Perk");
-				break;
-			case 33:
-				data.setDisplayName("Perk Slot 3");
-				lore.add("Holds 1 Perk");
-				break;
-			case 34:
-				data.setDisplayName("Perk Slot 4");
-				lore.add("Holds 1 Perk");
-				break;
 			case 35:
 				data.setDisplayName("Grenade Slot");
 				lore.add("");
@@ -1037,26 +1121,19 @@ public class Game
 	public void assignPlayerInventory(Player player)
 	{
 		player.getInventory().clear();
-		ItemStack knife = getUnbreakableItem(Material.IRON_SWORD);
-		ItemMeta kMeta = knife.getItemMeta();
-		if(kMeta != null)
-			kMeta.setDisplayName(ChatColor.RED + "Knife");
-		knife.setItemMeta(kMeta);
+		// BO2: no starting knife item — you begin with just the M1911 (added in slot 1 at game start)
+		// and melee with whatever you hold (see EntityListener melee handler). Slot 0 is left empty.
 		ItemStack ib = new ItemStack(Material.GREEN_STAINED_GLASS_PANE, 1);
 		player.getInventory().setHelmet(getUnbreakableItem(Material.LEATHER_HELMET));
 		player.getInventory().setChestplate(getUnbreakableItem(Material.LEATHER_CHESTPLATE));
 		player.getInventory().setLeggings(getUnbreakableItem(Material.LEATHER_LEGGINGS));
 		player.getInventory().setBoots(getUnbreakableItem(Material.LEATHER_BOOTS));
-		player.getInventory().setItem(0, knife);
 		//player.getInventory().setItem(8, new ItemStack(Material.MAGMA_CREAM, 4));
 		player.getInventory().setItem(27, setItemMeta(27, ib));
 		player.getInventory().setItem(28, setItemMeta(28, ib));
 		player.getInventory().setItem(29, setItemMeta(29, ib));
 		player.getInventory().setItem(30, setItemMeta(30, ib));
-		player.getInventory().setItem(31, setItemMeta(31, ib));
-		player.getInventory().setItem(32, setItemMeta(32, ib));
-		player.getInventory().setItem(33, setItemMeta(33, ib));
-		player.getInventory().setItem(34, setItemMeta(34, ib));
+		// Slots 31-34 were "Perk Slot" placeholders; perks are HUD potion icons now, so leave them free.
 		player.getInventory().setItem(35, setItemMeta(35, ib));
 		player.updateInventory();
 	}
@@ -1110,12 +1187,103 @@ public class Game
 		return isFireSale;
 	}
 
+	public void setPaPCostOverride(int cost)
+	{
+		paPCostOverride = cost;
+	}
+
+	public int getPaPCostOverride()
+	{
+		return paPCostOverride;
+	}
+
+	/**
+	 * Tier 2 — pure decision for the effective Pack-a-Punch first-pack cost.
+	 * Returns {@code overrideCost} when an override is active ({@code >= 0});
+	 * otherwise the per-sign {@code signCost} is used.
+	 *
+	 * @param overrideCost the game's PaP cost override (-1 = none active)
+	 * @param signCost     the cost configured on the Pack-a-Punch sign
+	 * @return the cost the player should be charged
+	 */
+	public static int effectivePaPCost(int overrideCost, int signCost)
+	{
+		return overrideCost >= 0 ? overrideCost : signCost;
+	}
+
+	/**
+	 * Tier 0d — pure point calculation for a kill. Base reward plus optional
+	 * headshot/melee bonuses; Double Points doubles the whole total.
+	 */
+	public static int killPoints(int base, boolean headshot, boolean melee, int hsBonus, int meleeBonus, boolean doublePoints)
+	{
+		int total = base + (headshot ? hsBonus : 0) + (melee ? meleeBonus : 0);
+		return doublePoints ? total * 2 : total;
+	}
+
+	/**
+	 * Tier 2 — Vulture Aid: pure roll test. A drop fires when a 0-99 roll lands below the
+	 * configured percent chance (so chance 0 never drops, chance 100 always drops).
+	 */
+	public static boolean vultureDrops(int roll, int chancePercent)
+	{
+		return roll < chancePercent;
+	}
+
+	/**
+	 * Tier 2 — Vulture Aid: even-odds split of the reward. Even rolls award points, odd rolls
+	 * refill ammo.
+	 */
+	public static boolean vultureRewardIsPoints(int roll)
+	{
+		return roll % 2 == 0;
+	}
+
+	/**
+	 * Tier 2 — Vulture Aid: on a zombie kill, if the killer holds the perk, roll for a modest
+	 * drop. On success either award a small points bonus or refill the player's ammo (even odds),
+	 * with a subtle pickup effect.
+	 */
+	private void tryVultureDrop(Mob mob, Player player)
+	{
+		if(!(mob instanceof Zombie))
+			return;
+		if(!perkManager.hasPerk(player, PerkType.VULTURE_AID))
+			return;
+		if(!vultureDrops(COMZombies.rand.nextInt(100), ConfigManager.getMainConfig().vultureDropChance))
+			return;
+
+		if(vultureRewardIsPoints(COMZombies.rand.nextInt(100)))
+		{
+			PointManager.INSTANCE.addPoints(player, ConfigManager.getMainConfig().vulturePointsDrop);
+			PointManager.INSTANCE.notifyPlayer(player);
+		}
+		else
+		{
+			getPlayersWeapons(player).maxAmmo();
+		}
+
+		World world = player.getWorld();
+		if(world != null)
+		{
+			world.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.6f, 1.4f);
+			world.spawnParticle(org.bukkit.Particle.HAPPY_VILLAGER, player.getLocation().add(0, 1, 0), 6, 0.3, 0.5, 0.3);
+		}
+	}
+
 	public void damageMob(Mob mob, Player player, float damageAmount)
+	{
+		damageMob(mob, player, damageAmount, false, false);
+	}
+
+	public void damageMob(Mob mob, Player player, float damageAmount, boolean headshotKill, boolean meleeKill)
 	{
 		double mobHealth = mob.getHealth() - damageAmount;
 		mob.playEffect(EntityEffect.HURT);
 
-		if(isInstaKill())
+		// Tier 2 — Insta-Kill must not instantly remove a last-zombie crawler, otherwise it would
+		// auto-end the round players are deliberately holding. Crawlers take normal damage instead.
+		if(isInstaKill() && !com.theprogrammingturkey.comz.spawning.ZombieSpawner.isCrawler(mob))
 		{
 			if(mob instanceof Zombie)
 				player.getWorld().playSound(mob.getLocation(), Sound.ENTITY_ZOMBIE_DEATH, 1f, 1f);
@@ -1124,12 +1292,11 @@ public class Game
 
 			powerUpManager.powerUpDrop(mob, player);
 			mob.remove();
-			if(isDoublePoints())
-				PointManager.INSTANCE.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
-			else
-				PointManager.INSTANCE.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
+			PointManager.INSTANCE.addPoints(player, killPoints(ConfigManager.getMainConfig().pointsOnKill, headshotKill, meleeKill,
+					ConfigManager.getMainConfig().headshotKillBonus, ConfigManager.getMainConfig().meleeKillBonus, isDoublePoints()));
 
 			PointManager.INSTANCE.notifyPlayer(player);
+			tryVultureDrop(mob, player);
 			spawnManager.removeEntity(mob);
 
 			if(mob instanceof Zombie)
@@ -1151,12 +1318,11 @@ public class Game
 
 			powerUpManager.powerUpDrop(mob, player);
 			mob.remove();
-			if(isDoublePoints())
-				PointManager.INSTANCE.addPoints(player, ConfigManager.getMainConfig().pointsOnKill * 2);
-			else
-				PointManager.INSTANCE.addPoints(player, ConfigManager.getMainConfig().pointsOnKill);
+			PointManager.INSTANCE.addPoints(player, killPoints(ConfigManager.getMainConfig().pointsOnKill, headshotKill, meleeKill,
+					ConfigManager.getMainConfig().headshotKillBonus, ConfigManager.getMainConfig().meleeKillBonus, isDoublePoints()));
 
 			PointManager.INSTANCE.notifyPlayer(player);
+			tryVultureDrop(mob, player);
 			spawnManager.removeEntity(mob);
 
 			if(mob instanceof Zombie)
@@ -1211,10 +1377,43 @@ public class Game
 		if(downedPlayerManager.isDownedPlayer(player))
 			return;
 
+		// Tier 3 — Who's Who: a ghost mid self-revive is alive and mobile, so a fresh down must not
+		// re-trigger; ignore until the current ghost resolves (revive or timeout).
+		if(downedPlayerManager.isGhost(player))
+			return;
+
 		player.setFireTicks(0);
 
-		if(downedPlayerManager.numDownedPlayers() + 1 == getPlayersInGame().size())
+		// Tier 3 — Who's Who takes precedence over solo Quick Revive: in a solo game, if the lone
+		// player holds Who's Who, route them into ghost mode instead of the normal downed/death path
+		// (and instead of solo Quick Revive). See WhosWhoGhost for the simplified approximation.
+		boolean soloGame = getPlayersInGame().size() == 1;
+		if(DownedPlayerManager.canEnterWhosWho(soloGame, perkManager.hasPerk(player, PerkType.WHOS_WHO), downedPlayerManager.isGhost(player)))
+		{
+			if(downedPlayerManager.startWhosWho(player, this))
+				return;
+		}
+
+		// Tier 3 — solo Quick Revive self-revive: in a solo game the lone player going down would
+		// normally end the game; if they hold Quick Revive with uses remaining, down them instead so
+		// the auto-self-revive (scheduled in setPlayerDowned) can bring them back.
+		boolean solo = getPlayersInGame().size() == 1;
+		boolean canSelfRevive = solo && DownedPlayerManager.canSelfRevive(
+				true,
+				perkManager.hasPerk(player, PerkType.QUICK_REVIVE),
+				downedPlayerManager.getSelfReviveUses(player.getUniqueId(), ConfigManager.getMainConfig().soloQuickReviveUses));
+
+		if(!canSelfRevive && downedPlayerManager.numDownedPlayers() + 1 == getPlayersInGame().size())
+		{
+			// Everyone is now down/out with no self-revive available — the run is over. Make the
+			// ending explicit (BO2 shows a Game Over) instead of silently yanking the player out.
+			for(Player pl : getPlayersInGame())
+			{
+				pl.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "GAME OVER", ChatColor.GRAY + "You survived to round " + waveNumber, 10, 60, 20);
+				CommandUtil.sendMessageToPlayer(pl, ChatColor.DARK_RED + "" + ChatColor.BOLD + "GAME OVER" + ChatColor.GRAY + " — you reached round " + waveNumber + ".");
+			}
 			endGame();
+		}
 		else
 			downedPlayerManager.setPlayerDowned(player, this);
 	}

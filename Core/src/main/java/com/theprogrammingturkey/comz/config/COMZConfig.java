@@ -6,7 +6,9 @@ public enum COMZConfig
 	GUNS("guns"),
 	KITS("kits"),
 	STATS("stats"),
-	SIGNS("signs");
+	SIGNS("signs"),
+	SOUNDS("sounds"),
+	PLAYER_DATA("playerdata");
 
 	private final String name;
 

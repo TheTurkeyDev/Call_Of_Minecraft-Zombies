@@ -1,8 +1,23 @@
 config:
   perks:
-    maxPerks: 4
+    # Perks show as HUD potion-effect icons (not inventory slots); max is the 12 real perks.
+    maxPerks: 12
     #Juggernog health multiplier (2.5 -> 250 equivalent of COD)
     juggernogHealth: 2.5
+    #Deadshot Daiquiri extra headshot damage multiplier, applied on top of the base 1.5x headshot bonus.
+    deadshotHeadshotMultiplier: 2.0
+    #Speed Cola reload multiplier (0.5 = reload twice as fast). BO2: Speed Cola halves reload.
+    speedColaReloadMultiplier: 0.5
+    #Double Tap fire-delay divisor (1.5 = fire 1.5x faster). BO2: Double Tap speeds fire rate.
+    doubleTapFireMultiplier: 1.5
+    #Tombstone Soda: when true, a player holding the perk keeps their perks on down and reclaims them on their next revive/respawn. BO2 behavior.
+    tombstoneEnabled: true
+    #Solo self-revive: number of times Quick Revive auto-revives a lone player in a solo (1-player) game. BO1/BO2 solo behavior.
+    soloQuickReviveUses: 3
+    #Who's Who: seconds a lone player spends as a ghost to reach their body and self-revive before dying for real (simplified solo approximation; see DownedPlayerManager).
+    whosWhoSeconds: 20
+    #Who's Who: distance in blocks the ghost must be within of their body location to self-revive.
+    whosWhoReviveRange: 3.0
   gameSettings:
     #Range to allow knife attacks. (Values over 6 are set to 6, the vanilla value.)
     MeleeRange: 2
@@ -22,8 +37,13 @@ config:
     defaultPointsOnHit: 10
     #Default points when you kill a zombie, value * 2 on double points
     defaultPointsOnKill: 60
-    #Max possible zombies in an arena at once
+    #Max possible zombies in an arena at once (legacy; board max is now player-scaled below)
     maxZombies: 20
+    #BO2 board capacity: zombies alive at once = zombieBoardBase + zombieBoardPerPlayer*(players-1). BO2 = 24 + 6/extra player.
+    zombieBoardBase: 24
+    zombieBoardPerPlayer: 6
+    #BO2 per-round zombie count multiplier for rounds >= 5 (count = round * mult * boardMax). Rounds 1-4 ramp .2/.4/.6/.8.
+    zombieRoundMultiplier: 0.15
     #This is the amount to change the zombieSpawnDelay per round. Equation is zombieSpawnDelayFactor / zombieSpawnDelayFactor
     zombieSpawnDelayFactor: 1.05
     #Interval between zombies spawning, value decreases as rounds go up. This value is rounded down and is # of seconds.
@@ -34,14 +54,149 @@ config:
     ZoomTexture: false
     #Change the volume of the round sound
     roundSoundVolume: 0.2
-    #The amount of damage zombies do, 9 is the equivalent 3 hits down, juggernog after the 5th hit down
-    zombieDamage: 9
-    #The amount of seconds after being hit to be healed (standard 5)
-    healTime: 5
+    #The amount of damage zombies do. BO2: 10 = 2 hits down (no Jugg), ~5 hits with Juggernog.
+    zombieDamage: 10
+    #The amount of seconds after being hit to be healed. BO2: ~2.5s short delay then fast regen.
+    healTime: 2.5
+    #Per-zombie attack cooldown in ticks. Each zombie damages a player at most once per this; hits from different zombies STACK (no shared invuln). 20 = ~1s, matching BO2.
+    zombieAttackCooldownTicks: 20
+    #Bonus points on top of a kill when the killing blow is a headshot (BO2 headshot kill ~= +30).
+    headshotKillBonus: 30
+    #Bonus points on top of a kill when the killing blow is melee/knife (BO2 knife kill ~= +60).
+    meleeKillBonus: 60
+    #Base knife one-shots zombies through (and including) this round; knife damage derives from the HP curve at this round.
+    knifeOneShotThroughRound: 9
+    #When a round's zombies are all spawned and exactly one regular zombie remains, turn it into a slow gas-emitting crawler so players can hold the round (BO behavior).
+    lastZombieCrawler: true
+    #Max health (plugin HP scale) a zombie is set to when converted into a crawler.
+    crawlerHealth: 2.0
+    #Radius (blocks) around a crawler within which its toxic gas poisons players.
+    crawlerGasRadius: 3.0
+    #Seconds a zombie may make no progress before it teleports to a reachable spawn near a player (fixes stuck/"1 zombie left" hangs). 0 disables.
+    zombieStuckSeconds: 6
+    #A zombie moving less than this many blocks within a check interval counts as no progress.
+    zombieStuckMoveThreshold: 1.0
+    #Flat points awarded to every player by the Bonus Points power-up.
+    bonusPointsAmount: 100
+    #Maximum throwables (grenades / Monkey Bombs) a player may hold at once (buy-to-cap).
+    maxGrenades: 4
+    #Dogs spawned per player on a dog round (total = dogsPerPlayer * players). BO scales dogs by players, not round.
+    dogsPerPlayer: 3
+    #Guarantee a Max Ammo drop when the last dog of a dog round dies (BO behavior).
+    dogRoundMaxAmmoDrop: true
+    #Maximum power-ups allowed on the ground at once; oldest is removed beyond this (BO cap ~4).
+    maxPowerUpsOnGround: 4
+    #Re-picking a timed power-up (Insta-Kill/Double Points/Fire Sale) refreshes/extends its timer (BO behavior).
+    powerUpRefreshOnPickup: true
+    #Allow re-Pack-a-Punching an already-packed gun for an ammo refill (BO2 behavior).
+    packAPunchRepackEnabled: true
+    #Point cost to re-Pack-a-Punch a gun for an ammo refill.
+    packAPunchRepackCost: 2500
+    #Seconds the Death Machine power-up minigun is held before it is removed (BO2 ~30s).
+    deathMachineDurationSeconds: 30
+    #Pack-a-Punch first-pack cost while Bonfire Sale is active (also triggers a Fire Sale). BO2 ~1000.
+    bonfirePaPCost: 1000
+    #Vulture Aid: percent chance (0-100) that a zombie kill drops a reward for a player holding the perk.
+    vultureDropChance: 10
+    #Vulture Aid: points awarded when a Vulture Aid drop rolls the points reward (other rolls refill ammo).
+    vulturePointsDrop: 25
+    #Tier 4 boss rounds: a boss round (George Romero / Brutus, alternating) occurs every Nth wave. 0 disables boss rounds. Takes precedence over dog rounds on shared waves.
+    bossRoundEveryX: 0
+    #Boss max-health multiplier on top of the normal zombie health curve for the round (clamped so a boss is never weaker than a normal zombie).
+    bossHealthMultiplier: 8.0
+    #Brutus ability: seconds one of a damaged player's perks is temporarily disabled before being restored.
+    brutusDisableSeconds: 5
   ReviveSettings:
     ReviveTimer: 4
     ReviveRange: 2
     MaxDownTime: 60
+    #Solo self-revive: seconds before Quick Revive auto-revives a lone downed player in a solo game.
+    SoloReviveDelaySeconds: 5
   Economy:
     CostPerJoin: 0
     MoneyPerKill: 1
+  teleporter:
+    #Cooldown/recharge in seconds before a teleporter can be used again.
+    cooldownSeconds: 30
+    #Charge-up delay in ticks between activating a teleporter and the teleport firing (20 = 1s).
+    chargeUpTicks: 40
+    #Radius around the teleporter pad in which zombies are killed on activation (0 to disable).
+    padKillRadius: 3.0
+    #Play a sound when teleporting.
+    sound: true
+    #Seconds of Pack-a-Punch room access granted when a PaP-flagged teleporter is used (line 2 ends with "pap").
+    paPAccessSeconds: 30
+  trap:
+    #How long (seconds) a triggered trap stays active killing zombies.
+    durationSeconds: 10
+    #Cooldown (seconds) after a trap finishes before it can be re-triggered.
+    cooldownSeconds: 60
+    #Radius (blocks) around the trap center within which zombies are killed.
+    killRadius: 4.0
+  quest:
+    #Tier 4 easter-egg quest framework. A per-arena multi-step objective engine.
+    #Quests are authored entirely via data: a "quest" object in arenas.json plus
+    #[Zombies]/Quest signs placed in the world. See QuestManager for the schema.
+    #Points granted to every player in the arena when the easter-egg quest completes.
+    completionReward: 5000
+  wonderWeapons:
+    #Thundergun: velocity magnitude applied to each blasted zombie along the shooter's look direction (massive knockback).
+    thundergunKnockback: 3.0
+    #Wunderwaffe DG-2: max number of additional zombies the lightning chains to after the initial hit (caps the chain).
+    wunderwaffeChainCount: 5
+    #Wunderwaffe DG-2: radius (blocks) searched for the next nearest un-chained zombie from the last struck one.
+    wunderwaffeChainRadius: 6.0
+  bank:
+    #Tier 3 - percentage fee (0-100) taken off a Bank deposit; the remainder is banked. BO2-style levy. Bank balance persists across games per player UUID.
+    depositFeePercent: 10
+  buildable:
+    #Tier 4 - Zombie Shield: number of zombie hits the equipped shield absorbs (reduced/no damage) before it breaks and is consumed.
+    zombieShieldHits: 5
+    #Tier 4 - Zombie Shield: fraction (0.0-1.0) of zombie melee damage blocked while the shield is held. 1.0 = fully blocks, 0.5 = halves damage.
+    zombieShieldDamageReduction: 1.0
+    #Tier 4 - Buildable: point cost charged at the station to dispense one random missing part to the interacting player (how players obtain parts).
+    partCost: 500
+  permaPerks:
+    #Master switch for the whole perma-perk system. false = no progress tracked and no effects applied (server-owner off switch).
+    enabled: true
+    #Tier 4 - Perma-perks: long-term progression. Performing revives across games is tracked per player UUID (persisted in playerdata.json) and permanently unlocks passive bonuses applied at game entry.
+    #Perma Jugg (lite): lifetime revives required to unlock. Once unlocked, the player spawns into every game with a short Regeneration burst.
+    permaJuggReviveThreshold: 10
+    #Perma Jugg (lite): seconds of Regeneration granted at game entry once unlocked.
+    permaJuggRegenSeconds: 5
+    #Perma Quick Revive (lite): lifetime revives required to unlock. Once unlocked, the player spawns into every game with a short Speed burst to reach downed teammates faster.
+    permaQuickReviveThreshold: 15
+    #Perma Quick Revive (lite): seconds of Speed granted at game entry once unlocked.
+    permaQuickReviveSpeedSeconds: 5
+  resourcePack:
+    #Custom resource pack: push the COM:Z pack (custom gun/perk/power-up models + sounds) to players when they join a game.
+    #Host the pack .zip somewhere players can download it (e.g. a GitHub release asset or web server) and put the direct URL below.
+    enabled: false
+    #Direct download URL of the pack .zip.
+    url: ""
+    #40-char hex SHA-1 of the .zip (run `sha1sum pack.zip`). Lets clients cache the pack; leave empty to skip caching (re-downloads every join).
+    sha1: ""
+    #Force the pack: the client must accept it. With kickOnDecline below, players who refuse are removed from the game.
+    force: true
+    #Text shown in the client's accept-pack dialog.
+    prompt: "Install the Call of Minecraft: Zombies pack for custom guns, perks & sounds"
+    #When force is true, remove a player from their game if they decline or fail to download the pack.
+    kickOnDecline: false
+    #All sound mappings (event sounds, per-power-up, per-gun shoot/reload) live in the separate
+    #sounds.json config so they can be tuned in one place. See that file.
+  visuals:
+    #BO2-fidelity visual feedback layer. Each toggle independently enables/disables one cue; all default true.
+    #Ammo / reload readout in the action bar.
+    hud: true
+    #Ambient cues on round change (round-start stinger + brief darkness).
+    roundAmbience: true
+    #Hit feedback particles (blood / headshot sparkle) and damage pop-up text on zombie hits.
+    hitFeedback: true
+    #Boss health bar + stinger on boss rounds.
+    bossBar: true
+    #Vertical locator beam on the Mystery Box.
+    boxBeam: true
+    #Visual flourish (particle burst + jingle) when buying / receiving a perk.
+    perkFeedback: true
+    #Visual flourish (title + sound) when Pack-a-Punching a gun.
+    papFeedback: true

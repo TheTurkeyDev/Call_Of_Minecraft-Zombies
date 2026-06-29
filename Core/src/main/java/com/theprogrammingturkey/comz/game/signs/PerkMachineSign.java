@@ -10,8 +10,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 public class PerkMachineSign implements IGameSign
 {
@@ -72,10 +70,8 @@ public class PerkMachineSign implements IGameSign
 
 		Bukkit.getPluginManager().callEvent(new PlayerPerkPurchaseEvent(player, perk));
 		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You now have " + perk.toString().toLowerCase() + "!");
-		int slot = game.perkManager.getAvailablePerkSlot(player);
-		perk.initialEffect(player, perk, slot);
-		if(perk.equals(PerkType.STAMIN_UP))
-			player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
+		perk.initialEffect(player);
+		game.perkManager.applyPerkEffect(player, perk);
 
 		PointManager.INSTANCE.takePoints(player, cost);
 		PointManager.INSTANCE.notifyPlayer(player);

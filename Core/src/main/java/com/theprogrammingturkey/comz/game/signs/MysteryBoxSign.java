@@ -37,7 +37,7 @@ public class MysteryBoxSign implements IGameSign
 			if(PointManager.INSTANCE.canBuy(player, points))
 			{
 				box.Start(player, points);
-				player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
+				com.theprogrammingturkey.comz.util.SoundUtil.play(player.getWorld(), player.getLocation(), com.theprogrammingturkey.comz.util.SoundConfig.get("box.open", Sound.BLOCK_CHEST_OPEN.name()), org.bukkit.SoundCategory.MASTER, 1, 1);
 			}
 			else
 			{

@@ -1,0 +1,6 @@
+{
+    "parent": "custom/item/handheld_small",
+	"textures": {
+		"layer0": "custom/item/ww/pap/porters_x2"
+	}
+}

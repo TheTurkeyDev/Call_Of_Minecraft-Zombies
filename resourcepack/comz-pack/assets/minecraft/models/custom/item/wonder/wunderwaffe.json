@@ -1,0 +1,6 @@
+{
+    "parent": "custom/item/handheld_32",
+	"textures": {
+		"layer0": "custom/item/ww/wunderwaffe"
+	}
+}
