@@ -58,7 +58,7 @@ public class GunSign implements IGameSign
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You got the " + ChatColor.GOLD + "" + ChatColor.BOLD + gunType.getName() + ChatColor.RED + ChatColor.BOLD + "!");
 				manager.removeWeapon(manager.getGun(slot));
 				manager.addWeapon(gunType.getNewInstance(player, slot));
-				player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1, 1);
+				com.theprogrammingturkey.comz.util.SoundUtil.play(player.getWorld(), player.getLocation(), com.theprogrammingturkey.comz.util.SoundConfig.get("gun.buy", Sound.ENTITY_GHAST_SHOOT.name()), org.bukkit.SoundCategory.MASTER, 1, 1);
 				PointManager.INSTANCE.takePoints(player, buyPoints);
 				PointManager.INSTANCE.notifyPlayer(player);
 			}

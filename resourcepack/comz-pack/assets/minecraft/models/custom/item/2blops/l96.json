@@ -1,0 +1,6 @@
+{
+    "parent": "custom/item/handheld_long",
+	"textures": {
+		"layer0": "custom/item/2blops/l96"
+	}
+}

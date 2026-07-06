@@ -1,0 +1,6 @@
+{
+    "parent": "custom/item/handheld",
+	"textures": {
+		"layer0": "custom/item/2blops/pap/hades"
+	}
+}

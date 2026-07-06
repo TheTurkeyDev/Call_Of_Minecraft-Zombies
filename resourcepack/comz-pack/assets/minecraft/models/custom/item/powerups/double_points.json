@@ -1,0 +1,6 @@
+{
+    "parent": "custom/item/powerups/powerup_base",
+	"textures": {
+		"layer0": "custom/item/powerups/double_points"
+	}
+}

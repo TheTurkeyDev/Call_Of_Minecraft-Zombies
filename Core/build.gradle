@@ -16,54 +16,36 @@ repositories {
 
 dependencies {
     implementation project(':API')
-    implementation project(':NMS:1_21_R4')
-    implementation project(':NMS:1_21_R3')
-    implementation project(':NMS:1_21_R2')
-    implementation project(':NMS:1_21_R1')
-    implementation project(':NMS:1_20_R4')
-    implementation project(':NMS:1_20_R3')
-    implementation project(':NMS:1_20_R2')
-    implementation project(':NMS:1_20_R1')
-    implementation project(':NMS:1_19_R3')
-    implementation project(':NMS:1_19_2_R2')
-    implementation project(':NMS:1_19_2_R1')
-    implementation project(':NMS:1_19_R1')
-    implementation project(':NMS:1_18_R2')
-    implementation project(':NMS:1_18_R1')
-    implementation project(':NMS:1_17_R1')
-    implementation project(':NMS:1_16_R3')
-    implementation project(':NMS:1_16_R2')
-    implementation project(':NMS:1_16_R1')
-    implementation project(':NMS:1_15_R1')
-    implementation project(':NMS:1_14_R1')
     compileOnly "com.github.MilkBowl:VaultAPI:1.7.1"
-    implementation group: 'org.spigotmc', name: 'spigot-api', version: '1.16.4-R0.1-SNAPSHOT'
-    implementation group: 'org.spigotmc', name: 'spigot', version: '1.16.4-R0.1-SNAPSHOT'
+    implementation group: 'org.spigotmc', name: 'spigot-api', version: '26.2-R0.1-SNAPSHOT'
     implementation 'me.clip:placeholderapi:2.11.6'
+    // JSR-305 (javax.annotation.Nonnull) used to arrive transitively via spigot-api; 26.2 dropped it.
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
 
+    // WeaponMechanics — OPTIONAL soft-dependency for realistic 3D models + ballistic projectiles.
+    // compileOnly => NOT shaded into comzombies-Universal.jar, so the plugin still builds and runs
+    // when WM is absent. All WM-typed code is isolated in com.theprogrammingturkey.comz.integration.wm
+    // and only loaded after runtime detection (see COMZombies.onEnable / WeaponBackends).
+    compileOnly 'com.cjcrafter:weaponmechanics:4.1.0'
+    // MechanicsCore — WM's shared base (me.deecaad.core.*). Needed at compile time to resolve the
+    // WeaponMechanics plugin's superclass on the API call chain. Also compileOnly (provided by WM).
+    compileOnly 'com.cjcrafter:mechanicscore:4.1.0'
+
+}
+
+// WeaponMechanics 4.x ships Java 21 bytecode, but we target Java 17 (options.release = 17), so
+// Gradle's variant matching would reject it on the compile classpath. WM is compileOnly — never
+// shaded or run by us — so we only need its class files visible to javac. Raise the ACCEPTED jvm
+// version on the compile classpath to 21 (a consumer needing 21 still accepts the Java-17 spigot-api
+// and friends). The emitted bytecode is unaffected; options.release = 17 still governs our output.
+configurations.compileClasspath {
+    attributes {
+        attribute(org.gradle.api.attributes.java.TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 21)
+    }
 }
 
 jar {
     from project(":API").sourceSets.main.output.classesDirs
-    from project(":NMS:1_21_R3").sourceSets.main.output.classesDirs
-    from project(":NMS:1_21_R2").sourceSets.main.output.classesDirs
-    from project(":NMS:1_21_R1").sourceSets.main.output.classesDirs
-    from project(":NMS:1_20_R4").sourceSets.main.output.classesDirs
-    from project(":NMS:1_20_R3").sourceSets.main.output.classesDirs
-    from project(":NMS:1_20_R2").sourceSets.main.output.classesDirs
-    from project(":NMS:1_20_R1").sourceSets.main.output.classesDirs
-    from project(":NMS:1_19_R3").sourceSets.main.output.classesDirs
-    from project(":NMS:1_19_2_R2").sourceSets.main.output.classesDirs
-    from project(":NMS:1_19_2_R1").sourceSets.main.output.classesDirs
-    from project(":NMS:1_19_R1").sourceSets.main.output.classesDirs
-    from project(":NMS:1_18_R2").sourceSets.main.output.classesDirs
-    from project(":NMS:1_18_R1").sourceSets.main.output.classesDirs
-    from project(":NMS:1_17_R1").sourceSets.main.output.classesDirs
-    from project(":NMS:1_16_R3").sourceSets.main.output.classesDirs
-    from project(":NMS:1_16_R2").sourceSets.main.output.classesDirs
-    from project(":NMS:1_16_R1").sourceSets.main.output.classesDirs
-    from project(":NMS:1_15_R1").sourceSets.main.output.classesDirs
-    from project(":NMS:1_14_R1").sourceSets.main.output.classesDirs
 }
 
 processResources {

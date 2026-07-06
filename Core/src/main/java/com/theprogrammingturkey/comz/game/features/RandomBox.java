@@ -46,6 +46,8 @@ public class RandomBox
 	private Weapon weapon;
 	private Item item;
 	private ArmorStand namePlate;
+	/** BO2-fidelity: animated 3D box lid (pack-only). Null when the pack is disabled. */
+	private org.bukkit.entity.ItemDisplay lidDisplay;
 
 
 	public RandomBox(Location loc, BlockFace facing, Game game, String boxId, int cost)
@@ -89,6 +91,8 @@ public class RandomBox
 		if(chestLocation != null)
 			COMZombies.nmsUtil.playChestAction(chestLocation, true);
 
+		openLid();
+
 		running = true;
 		weapon = WeaponManager.getRandomWeapon(false, boxGame.getPlayersWeapons(player));
 		Location itemLoc;
@@ -125,14 +129,16 @@ public class RandomBox
 						weapon = WeaponManager.getRandomWeapon(false, boxGame.getPlayersWeapons(player));
 						item.setItemStack(weapon.getStack());
 						namePlate.setCustomName(weapon.getName());
-						player.getWorld().playSound(boxLoc, Sound.BLOCK_NOTE_BLOCK_HARP, 1f, 1f);
+						com.theprogrammingturkey.comz.util.SoundUtil.play(player.getWorld(), boxLoc, com.theprogrammingturkey.comz.util.SoundConfig.get("box.spin", Sound.BLOCK_NOTE_BLOCK_HARP.name()), org.bukkit.SoundCategory.MASTER, 1f, 1f);
 					}
 					else if(time == 0)
 					{
 						if(!boxGame.isFireSale() && !boxGame.boxManager.isMultiBox() && boxGame.getTeddyBearPercent() != 0 && COMZombies.rand.nextInt(boxGame.getTeddyBearPercent()) == 0)
 						{
 							CommandUtil.sendMessageToPlayer(player, ChatColor.DARK_RED + "Teddy Bear!!!!!!");
-							item.setItemStack(new ItemStack(Material.TOTEM_OF_UNDYING));
+							ItemStack teddy = new ItemStack(Material.TOTEM_OF_UNDYING);
+							com.theprogrammingturkey.comz.util.PackModels.apply(teddy, "misc/box_teddy");
+							item.setItemStack(teddy);
 							namePlate.setCustomName("");
 							namePlate.setCustomNameVisible(false);
 							item.setGravity(false);
@@ -155,7 +161,7 @@ public class RandomBox
 						}
 						else
 						{
-							player.getWorld().playSound(boxLoc, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
+							com.theprogrammingturkey.comz.util.SoundUtil.play(player.getWorld(), boxLoc, com.theprogrammingturkey.comz.util.SoundConfig.get("box.lock", Sound.ENTITY_EXPERIENCE_ORB_PICKUP.name()), org.bukkit.SoundCategory.MASTER, 1f, 1f);
 							gunSelected = true;
 						}
 					}
@@ -175,6 +181,35 @@ public class RandomBox
 		boxes.put(this, taskID);
 	}
 
+	/**
+	 * BO2-fidelity: spawn a 3D box lid above the chest and slide/tilt it open. Pack-gated — does
+	 * nothing without the resource pack, so the vanilla chest open (playChestAction) remains the visual.
+	 */
+	private void openLid()
+	{
+		if(chestLocation == null || !com.theprogrammingturkey.comz.util.PackModels.isPackEnabled())
+			return;
+		Location lidLoc = chestLocation.clone().add(0.5, 1.0, 0.5);
+		lidDisplay = com.theprogrammingturkey.comz.util.ModelDisplay.spawnModel(lidLoc.getWorld(), lidLoc, "machine/box_lid", 1.0f, 0f);
+		if(lidDisplay == null)
+			return;
+		// Tilt the lid back ~100° around its rear hinge (X axis) and lift slightly — the "box pops open" beat.
+		org.bukkit.util.Transformation open = new org.bukkit.util.Transformation(
+				new org.joml.Vector3f(0f, 0.15f, 0f),
+				new org.joml.AxisAngle4f((float) Math.toRadians(-100f), 1f, 0f, 0f),
+				new org.joml.Vector3f(1f, 1f, 1f),
+				new org.joml.AxisAngle4f(0f, 0f, 1f, 0f));
+		com.theprogrammingturkey.comz.util.ModelDisplay.animate(lidDisplay, open, 8);
+	}
+
+	/** Remove the box lid display (if any). */
+	private void closeLid()
+	{
+		if(lidDisplay != null && !lidDisplay.isDead())
+			lidDisplay.remove();
+		lidDisplay = null;
+	}
+
 	public boolean canActivate()
 	{
 		return !this.running;
@@ -188,7 +223,7 @@ public class RandomBox
 	public void pickUpWeapon(Player player)
 	{
 		boxGame.getPlayersWeapons(player).addWeapon(weapon);
-		player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
+		com.theprogrammingturkey.comz.util.SoundUtil.play(player.getWorld(), player.getLocation(), com.theprogrammingturkey.comz.util.SoundConfig.get("box.pickup", Sound.BLOCK_LAVA_POP.name()), org.bukkit.SoundCategory.MASTER, 1, 1);
 		reset();
 	}
 
@@ -200,6 +235,7 @@ public class RandomBox
 			item.remove();
 		if(namePlate != null)
 			namePlate.remove();
+		closeLid();
 		if(chestLocation != null)
 			COMZombies.nmsUtil.playChestAction(chestLocation, false);
 		Integer id = RandomBox.boxes.remove(RandomBox.this);

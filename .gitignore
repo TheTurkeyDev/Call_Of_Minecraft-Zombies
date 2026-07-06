@@ -14,3 +14,10 @@
 build/
 Core/bin/*
 .project
+
+# Local build/test harness (not part of the plugin build)
+/verification/
+
+# Local SFTP deploy credentials (never commit)
+scripts/deploy.config.ini
+scripts/

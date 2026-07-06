@@ -33,6 +33,15 @@ public class KitManager
 		return ERROR_KIT;
 	}
 
+	/** Names of every loaded kit, used by the build-mode Lobby tool to cycle Kit signs. */
+	public static List<String> getKitNames()
+	{
+		List<String> names = new ArrayList<>();
+		for(Kit k : kits)
+			names.add(k.getName());
+		return names;
+	}
+
 	public static void loadKits()
 	{
 		JsonElement jsonElement = ConfigManager.getConfig(COMZConfig.KITS).getJson();

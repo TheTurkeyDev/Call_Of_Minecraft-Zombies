@@ -71,6 +71,39 @@ public class SignListener implements Listener
 
 		GrenadeSign grenade = new GrenadeSign();
 		GAME_SIGNS.put("grenade", grenade);
+
+		TrapSign trap = new TrapSign();
+		GAME_SIGNS.put("trap", trap);
+
+		BankSign bank = new BankSign();
+		GAME_SIGNS.put("bank", bank);
+
+		FridgeSign fridge = new FridgeSign();
+		GAME_SIGNS.put("fridge", fridge);
+
+		BuildableSign buildable = new BuildableSign();
+		GAME_SIGNS.put("buildable", buildable);
+		GAME_SIGNS.put("build", buildable);
+		GAME_SIGNS.put("buildable station", buildable);
+
+		QuestSign quest = new QuestSign();
+		GAME_SIGNS.put("quest", quest);
+		GAME_SIGNS.put("easter egg", quest);
+	}
+
+	/**
+	 * Look up the {@link IGameSign} handler registered for a sign type keyword (the text that goes on
+	 * sign line index 1, e.g. {@code "perk machine"}). Returns {@code null} for an unknown keyword.
+	 * <p>
+	 * Exposed so the in-game build-mode tools can place a feature by re-dispatching the exact same
+	 * {@code onChange} logic an admin would trigger by hand-typing a sign — keeping a single source of
+	 * truth for sign formatting and feature registration (box/trap/buildable/etc).
+	 */
+	public static IGameSign getSignHandler(String keyword)
+	{
+		if(keyword == null)
+			return null;
+		return GAME_SIGNS.get(keyword.toLowerCase());
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -123,6 +156,11 @@ public class SignListener implements Listener
 	public void RightClickSign(PlayerInteractEvent event)
 	{
 		if(event.getClickedBlock() == null)
+			return;
+
+		// Build mode owns all interaction for its players (BuildModeListener handles sign clicks + the
+		// sneak-right price edit); don't run the normal sign-edit / buy path for them.
+		if(com.theprogrammingturkey.comz.game.builder.BuildModeManager.INSTANCE.isInBuild(event.getPlayer()))
 			return;
 
 		COMZombies plugin = COMZombies.getPlugin();

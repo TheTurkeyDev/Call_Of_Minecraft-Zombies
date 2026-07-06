@@ -36,7 +36,9 @@ public class PowerSign implements IGameSign
 		sign.setLine(0, ChatColor.RED + "[Zombies]");
 		sign.setLine(1, ChatColor.AQUA + "Power");
 		//TODO: Check that there are no other power signs
-		game.removePower(player);
+		// Placing a power sign ENABLES the arena power system (perks/PaP/power-doors then gate on power).
+		// Power still starts off each game; players switch it on by clicking this sign in-game.
+		game.enablePower(player);
 	}
 
 	@Override

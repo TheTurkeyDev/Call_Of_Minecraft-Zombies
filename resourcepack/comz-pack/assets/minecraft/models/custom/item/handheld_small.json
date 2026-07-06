@@ -1,0 +1,15 @@
+{
+    "parent": "item/generated",
+    "display": {
+        "thirdperson_righthand": {
+            "rotation": [ 0, -90, 50 ],
+            "translation": [ 0.0, 1.2, 0.1 ],
+            "scale": [ 0.7, 0.7, 0.7 ]
+        },
+        "firstperson_righthand": {
+            "rotation": [ 0, -90, 30 ],
+            "translation": [ 2.0, 1.0, -1.5 ],
+            "scale": [ 0.75, 0.75, 0.75 ]
+        }
+    }
+}

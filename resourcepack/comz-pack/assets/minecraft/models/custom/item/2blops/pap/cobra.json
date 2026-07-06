@@ -1,0 +1,6 @@
+{
+    "parent": "custom/item/handheld_small_32",
+	"textures": {
+		"layer0": "custom/item/2blops/pap/cobra"
+	}
+}
