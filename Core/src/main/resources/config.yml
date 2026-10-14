@@ -38,6 +38,11 @@ config:
     zombieDamage: 9
     #The amount of seconds after being hit to be healed (standard 5)
     healTime: 5
+  barrierRepair:
+    #How players repair barriers: BOTH, SNEAK (hold shift near the barrier) or BREAK (break the repair sign)
+    mode: BOTH
+    #Ticks between repair steps while sneaking (20 ticks = 1 second)
+    sneakRepairInterval: 20
   ReviveSettings:
     ReviveTimer: 4
     ReviveRange: 2
