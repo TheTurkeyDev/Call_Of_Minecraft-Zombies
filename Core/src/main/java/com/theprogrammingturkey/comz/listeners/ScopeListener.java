@@ -29,6 +29,9 @@ public class ScopeListener implements Listener
 			GunInstance g = manager.getGun(player.getInventory().getHeldItemSlot());
 			if(game.getStatus() == Game.GameStatus.INGAME)
 			{
+				if(e.isSneaking() && BarrierRepairListener.findSneakRepairableBarrier(game, player) != null)
+					return;
+
 				if(player.isSneaking())
 				{
 					player.setWalkSpeed(0.2F);

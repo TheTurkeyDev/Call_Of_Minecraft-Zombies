@@ -76,6 +76,13 @@ public class ConfigSetup
 
 	public double healTime;
 
+	public BarrierRepairMode barrierRepairMode;
+
+	/**
+	 * Ticks between repair steps while sneaking at a barrier.
+	 */
+	public long sneakRepairInterval;
+
 	/**
 	 * Main method to assign values to every field.
 	 */
@@ -105,6 +112,8 @@ public class ConfigSetup
 		zombieDamage = plugin.getConfig().getDouble("config.gameSettings.zombieDamage", 9);
 		juggernogHealth = plugin.getConfig().getDouble("config.perks.juggernogHealth", 2.5);
 		healTime = plugin.getConfig().getDouble("config.gameSettings.healTime", 5);
+		barrierRepairMode = BarrierRepairMode.parse(plugin.getConfig().getString("config.barrierRepair.mode"));
+		sneakRepairInterval = Math.max(1, plugin.getConfig().getLong("config.barrierRepair.sneakRepairInterval", 20));
 
 		Leaderboard.loadLeaderboard();
 	}

@@ -1,6 +1,7 @@
 package com.theprogrammingturkey.comz.listeners;
 
 import com.theprogrammingturkey.comz.COMZombies;
+import com.theprogrammingturkey.comz.config.ConfigManager;
 import com.theprogrammingturkey.comz.game.Game;
 import com.theprogrammingturkey.comz.game.GameManager;
 import com.theprogrammingturkey.comz.game.features.Barrier;
@@ -104,7 +105,11 @@ public class SignListener implements Listener
 			{
 				Game game = GameManager.INSTANCE.getGame(player);
 				Barrier b = game.barrierManager.getBarrierFromRepair(sign.getLocation());
-				if(b != null)
+				if(b != null && !ConfigManager.getMainConfig().barrierRepairMode.allowsBreak())
+				{
+					event.setCancelled(true);
+				}
+				else if(b != null)
 				{
 					b.repair(player);
 					event.setCancelled(true);
