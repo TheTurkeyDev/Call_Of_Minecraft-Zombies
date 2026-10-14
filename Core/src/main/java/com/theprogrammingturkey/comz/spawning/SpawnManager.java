@@ -20,10 +20,12 @@ import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class SpawnManager
 {
@@ -179,41 +181,13 @@ public class SpawnManager
 
 	private List<SpawnPoint> getNearestPoints(Location loc, int numToGet)
 	{
-		List<SpawnPoint> points = game.spawnManager.getPoints();
-		if(numToGet < 0)
-			throw new IllegalArgumentException("numToGet should not be less than zero");
-		if(numToGet == 0)
+		if(numToGet <= 0)
 			return new ArrayList<>();
 
-		int numPoints = Math.min(numToGet, points.size());
-		List<SpawnPoint> results = new ArrayList<>(numPoints);
-		for(int i = 0; i < numPoints; i++)
-			results.add(points.get(i));
-
-		List<Double> distances = new ArrayList<>();
-		for(int i = 0; i < numToGet; i++)
-			distances.add(Double.POSITIVE_INFINITY);
-
-		for(SpawnPoint point : points)
-		{
-			Location spawnLoc = point.getLocation();
-			double dx = spawnLoc.getBlockX() - loc.getBlockX();
-			double dy = spawnLoc.getBlockY() - loc.getBlockY();
-			double dz = spawnLoc.getBlockZ() - loc.getBlockZ();
-			double dist2 = (dx * dx) + (dy * dy) + (dz * dz);
-			for(int resultIndex = 0; resultIndex < results.size(); resultIndex++)
-			{
-				if(dist2 >= distances.get(resultIndex))
-					continue;
-
-				distances.add(resultIndex, dist2);
-				results.add(resultIndex, point);
-				results.remove(numPoints);
-				distances.remove(numPoints);
-				break;
-			}
-		}
-		return results;
+		return points.stream()
+				.sorted(Comparator.comparingDouble(point -> point.getLocation().distanceSquared(loc)))
+				.limit(numToGet)
+				.collect(Collectors.toCollection(ArrayList::new));
 	}
 
 	private void smartSpawn(final int wave)

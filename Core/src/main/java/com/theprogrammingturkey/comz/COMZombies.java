@@ -37,8 +37,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,7 +59,7 @@ public class COMZombies extends JavaPlugin
 	/**
 	 * Players currently performing some sort of action or maintenance
 	 */
-	public HashMap<Player, BaseAction> activeActions = new HashMap<>();
+	public Map<Player, BaseAction> activeActions = new ConcurrentHashMap<>();
 
 
 	/**
@@ -66,7 +67,7 @@ public class COMZombies extends JavaPlugin
 	 * sign, the value that corresponds to the player is the sign that the
 	 * player is editing.
 	 */
-	public HashMap<Player, Location> isEditingASign = new HashMap<>();
+	public Map<Player, Location> isEditingASign = new ConcurrentHashMap<>();
 
 	/**
 	 * Called when the plugin is reloading to cancel every remove spawn, create
