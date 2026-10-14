@@ -216,7 +216,6 @@ public class COMZombies extends JavaPlugin
 		m.registerEvents(new EntityListener(), this);
 		m.registerEvents(new PlayerChatListener(), this);
 		m.registerEvents(new SignListener(), this);
-		m.registerEvents(new BarrierRepairListener(), this);
 		m.registerEvents(new OnPreCommandEvent(), this);
 		m.registerEvents(new OnBlockInteractEvent(), this);
 		m.registerEvents(new EXPListener(), this);

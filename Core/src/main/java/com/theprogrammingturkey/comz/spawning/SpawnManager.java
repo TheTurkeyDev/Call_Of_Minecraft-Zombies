@@ -181,18 +181,7 @@ public class SpawnManager
 
 	private List<SpawnPoint> getNearestPoints(Location loc, int numToGet)
 	{
-		return nearestPoints(game.spawnManager.getPoints(), loc, numToGet);
-	}
-
-	/**
-	 * Returns the {@code numToGet} spawn points closest to {@code loc}, nearest
-	 * first. Pure function extracted for testability.
-	 */
-	static List<SpawnPoint> nearestPoints(List<SpawnPoint> points, Location loc, int numToGet)
-	{
-		if(numToGet < 0)
-			throw new IllegalArgumentException("numToGet should not be less than zero");
-		if(numToGet == 0)
+		if(numToGet <= 0)
 			return new ArrayList<>();
 
 		return points.stream()
